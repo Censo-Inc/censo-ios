@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import raygun4apple
 
 @main
 struct VaultApp: App {
@@ -44,6 +45,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             self.testing = true
         }
         #endif
+
+        let raygunClient = RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey)
+        raygunClient.applicationVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+
+        if Configuration.raygunEnabled {
+            raygunClient.enableCrashReporting()
+        }
 
         setupAppearance()
 

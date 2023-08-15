@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>compileBitcode</key>
+	<true/>
+	<key>destination</key>
+	<string>export</string>
+	<key>method</key>
+	<string>app-store</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>co.censo.Vault-staging</key>
+		<string>Vault Staging AppStore</string>
+		<key>co.censo.Vault-integration</key>
+		<string>Vault Integration AppStore</string>
+		<key>co.censo.Vault</key>
+		<string>Vault AppStore</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>1B5AD483C0DF4E0E45BAABCEB1D571B3639228A2</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>stripSwiftSymbols</key>
+	<false/>
+	<key>teamID</key>
+	<string>VN5U64MGYX</string>
+	<key>thinning</key>
+	<string>&lt;none&gt;</string>
+</dict>
+</plist>
