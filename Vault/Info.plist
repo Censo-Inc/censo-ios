@@ -2,11 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Configuration</key>
+	<dict>
+		<key>RAYGUN_API_KEY</key>
+		<string>$(RAYGUN_API_KEY)</string>
+		<key>RAYGUN_ENABLED</key>
+		<string>$(RAYGUN_ENABLED)</string>
+	</dict>
 	<key>MIN_VERSION_URL</key>
 	<string>$(MIN_VERSION_URL)</string>
-	<key>RAYGUN_API_KEY</key>
-	<string>$(RAYGUN_API_KEY)</string>
-	<key>RAYGUN_ENABLED</key>
-	<string>$(RAYGUN_ENABLED)</string>
 </dict>
 </plist>

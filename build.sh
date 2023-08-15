@@ -50,7 +50,7 @@ elif [[ $ENVIRONMENT == 'staging' ]]; then
   export PROVISIONING_PROFILE="Vault Staging AppStore"
   export RAYGUN_APPLICATION_ID="283706g"
 else
-  echo "Unknown environment. Use one of 'develop', 'preprod', 'demo2',or 'production'"
+  echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
   exit 1
 fi
 
