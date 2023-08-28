@@ -92,7 +92,6 @@ struct UserCreation: View {
                 showError(error)
             }
         }
-
     }
 }
 
