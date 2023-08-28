@@ -17,6 +17,7 @@ enum API {
     case createUser(name: String)
     case createContact(type: Contact.`Type`, value: String)
     case verifyContact(Contact, code: String)
+    case registerPushToken(String)
 }
 
 extension API: TargetType {
@@ -42,6 +43,8 @@ extension API: TargetType {
             return "v1/contacts/\(contact.identifier)/verification-code"
         case .createDevice:
             return "v1/device"
+        case .registerPushToken:
+            return "v1/notification-tokens"
         }
     }
 
@@ -53,7 +56,8 @@ extension API: TargetType {
         case .createUser,
              .createContact,
              .verifyContact,
-             .createDevice:
+             .createDevice,
+             .registerPushToken:
             return .post
         }
     }
@@ -77,7 +81,13 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "verificationCode": code
             ])
+        case .registerPushToken(let token):
+            return .requestJSONEncodable([
+                "token": token,
+                "deviceType": "Ios"
+            ])
         }
+        
     }
 
     var headers: [String : String]? {

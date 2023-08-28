@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 import raygun4apple
 
 @main
@@ -22,13 +23,35 @@ struct VaultApp: App {
                     .lockedByBiometry {
                         Locked()
                     }
+                    .onAppear {
+                        handlePushRegistration()
+                    }
             }
             #else
             ContentView()
                 .lockedByBiometry {
                     Locked()
                 }
+                .onAppear {
+                    handlePushRegistration()
+                }
             #endif
+        }
+    }
+    
+    private func handlePushRegistration() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .notDetermined {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
+                        if result {
+                            UIApplication.shared.registerForRemoteNotifications()
+                        }
+                    }
+                } else if settings.authorizationStatus == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
         }
     }
 }
@@ -37,6 +60,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     #if DEBUG
     var testing: Bool = false
     #endif
+    
+    var provider: MoyaProvider<API> = MoyaProvider()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
@@ -56,6 +81,28 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         setupAppearance()
 
         return true
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+        debugPrint("didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken.hexEncodedString())")
+        if let deviceKey = SecureEnclaveWrapper.deviceKey() {
+            provider.request(.registerPushToken(deviceToken.hexEncodedString())) { result in
+                switch result {
+                case .failure(let error):
+                    debugPrint("Error submitting push token: \(error.localizedDescription)")
+                case .success(let response) where response.statusCode >= 400:
+                    debugPrint("Could not submit push token: \(String(data: response.data, encoding: .utf8) ?? "")")
+                case .success:
+                    break
+                }
+            }
+        }
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        debugPrint("Failed to register for remote notifications: \(error.localizedDescription)")
+        RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey).send(error: error, tags: ["push-registration"], customData: nil)
     }
 
     func setupAppearance() {
