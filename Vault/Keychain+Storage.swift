@@ -22,3 +22,13 @@ public extension Keychain {
         clear(account: vaultService, service: vaultService)
     }
 }
+
+public extension Keychain {
+    static private let guardianshipService = "co.censo.guardianship"
+
+    static func encryptedGuardianShip() throws -> Data? {
+        try load(account: guardianshipService, service: guardianshipService)
+    }
+
+
+}

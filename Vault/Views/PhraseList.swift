@@ -10,10 +10,15 @@ import SwiftUI
 struct PhraseList: View {
     @StateObject private var vaultStorage: VaultStorage
 
-    @State private var showingAddPhrase = false
     @State private var selection: DecodedPhrase?
     @State private var error: Error? = nil
     @State private var showingAlert = false
+    @State private var currentSheet: Sheet?
+
+    enum Sheet {
+        case addPhrase
+        case guardianSetup
+    }
 
     init(vaultStorage: @autoclosure @escaping () -> VaultStorage) {
         self._vaultStorage = StateObject(wrappedValue: vaultStorage())
@@ -39,15 +44,28 @@ struct PhraseList: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingAddPhrase = true
+                        currentSheet = .addPhrase
                     } label: {
                         Image(systemName: "plus")
                     }
                     .accessibilityIdentifier("addPhrase")
                 }
+
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        presentGuardianship()
+                    } label: {
+                        Image(systemName: "person.3.sequence.fill")
+                    }
+                }
             }
-            .sheet(isPresented: $showingAddPhrase) {
-                NewPhrase(vaultStorage: vaultStorage)
+            .sheet(item: $currentSheet) { sheet in
+                switch sheet {
+                case .addPhrase:
+                    NewPhrase(vaultStorage: vaultStorage)
+                case .guardianSetup:
+                    GuardianSetup()
+                }
             }
             .alert("Error", isPresented: $showingAlert, presenting: error) { _ in
                 Button {
@@ -85,6 +103,38 @@ struct PhraseList: View {
                     self.showingAlert = true
                 }
             }
+        }
+    }
+
+    private func presentGuardianship() {
+        if let encryptedGuardianship = try? Keychain.encryptedGuardianShip(),
+           let deviceKey = SecureEnclaveWrapper.deviceKey() {
+            deviceKey.preauthenticatedKey { result in
+                switch result {
+                case .success(let preauthenticatedKey):
+                    if let guardianshipData = try? preauthenticatedKey.decrypt(data: encryptedGuardianship),
+                       let guardianship = try? JSONDecoder().decode(Guardianship.self, from: guardianshipData) {
+
+                    } else {
+                        break
+                    }
+                case .failure:
+                    break
+                }
+            }
+        } else {
+            currentSheet = .guardianSetup
+        }
+    }
+}
+
+extension PhraseList.Sheet: Identifiable {
+    var id: Int {
+        switch self {
+        case .addPhrase:
+            return 0
+        case .guardianSetup:
+            return 1
         }
     }
 }

@@ -32,6 +32,19 @@
 		3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */; };
 		3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */; };
 		3D0C1EC52A83E23C00AB3A48 /* SampleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */; };
+		3D37968F2A8C1BE600913581 /* GuardianSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37968E2A8C1BE600913581 /* GuardianSetup.swift */; };
+		3D3796922A8C225D00913581 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 3D3796912A8C225D00913581 /* Moya */; };
+		3D3796952A8C228B00913581 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796942A8C228B00913581 /* API.swift */; };
+		3D3796972A8C291A00913581 /* AsyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796962A8C291A00913581 /* AsyncResult.swift */; };
+		3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796982A8C2B9D00913581 /* RetryView.swift */; };
+		3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37969A2A8C3C4200913581 /* APIProvider.swift */; };
+		3D37969D2A8D3F2600913581 /* UserCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37969C2A8D3F2600913581 /* UserCreation.swift */; };
+		3D37969F2A8E692A00913581 /* EmailSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37969E2A8E692A00913581 /* EmailSetup.swift */; };
+		3D3796A32A8ED8C300913581 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A22A8ED8C300913581 /* Verification.swift */; };
+		3D3796A52A8F255F00913581 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A42A8F255F00913581 /* Models.swift */; };
+		3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A62A8FCDD200913581 /* PhoneSetup.swift */; };
+		3D3796A92A954F2A00913581 /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A82A954F2A00913581 /* UserSetup.swift */; };
+		3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796AD2A96EC2000913581 /* Guardianship.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 /* End PBXBuildFile section */
@@ -73,6 +86,18 @@
 		3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodedPhrase.swift; sourceTree = "<group>"; };
 		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
 		3D0C1EBA2A83E22200AB3A48 /* VaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D37968E2A8C1BE600913581 /* GuardianSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianSetup.swift; sourceTree = "<group>"; };
+		3D3796942A8C228B00913581 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		3D3796962A8C291A00913581 /* AsyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncResult.swift; sourceTree = "<group>"; };
+		3D3796982A8C2B9D00913581 /* RetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryView.swift; sourceTree = "<group>"; };
+		3D37969A2A8C3C4200913581 /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
+		3D37969C2A8D3F2600913581 /* UserCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCreation.swift; sourceTree = "<group>"; };
+		3D37969E2A8E692A00913581 /* EmailSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSetup.swift; sourceTree = "<group>"; };
+		3D3796A22A8ED8C300913581 /* Verification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
+		3D3796A42A8F255F00913581 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		3D3796A62A8FCDD200913581 /* PhoneSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSetup.swift; sourceTree = "<group>"; };
+		3D3796A82A954F2A00913581 /* UserSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
+		3D3796AD2A96EC2000913581 /* Guardianship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardianship.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +108,7 @@
 			files = (
 				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D0C1EA82A83C1DC00AB3A48 /* BIP39 in Frameworks */,
+				3D3796922A8C225D00913581 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,9 +149,11 @@
 				3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */,
 				3D0C1EA02A83BA4F00AB3A48 /* Keychain+Storage.swift */,
 				3D0C1EA22A83BBD900AB3A48 /* VaultStorage.swift */,
+				3D3796962A8C291A00913581 /* AsyncResult.swift */,
 				3D0C1EAB2A83DE0800AB3A48 /* Models */,
 				3D0C1E9A2A83B3EE00AB3A48 /* KeyManagement */,
 				3D0C1E992A83B3CA00AB3A48 /* Views */,
+				3D3796932A8C226D00913581 /* API */,
 				3D0C1E7B2A83A79600AB3A48 /* Assets.xcassets */,
 				3D0C1E9C2A83B53900AB3A48 /* Theme.xcassets */,
 				3D0C1E7D2A83A79600AB3A48 /* Preview Content */,
@@ -153,6 +181,8 @@
 				3D0C1E9E2A83B75E00AB3A48 /* PhraseList.swift */,
 				3D0C1EA42A83BDB000AB3A48 /* NewPhrase.swift */,
 				3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */,
+				3D3796982A8C2B9D00913581 /* RetryView.swift */,
+				3D3796AA2A956BD900913581 /* PolicySetup */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -181,6 +211,7 @@
 				3D0C1EAC2A83DE1000AB3A48 /* Vault.swift */,
 				3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */,
 				3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */,
+				3D3796AD2A96EC2000913581 /* Guardianship.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,6 +222,29 @@
 				3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */,
 			);
 			path = VaultTests;
+			sourceTree = "<group>";
+		};
+		3D3796932A8C226D00913581 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				3D3796942A8C228B00913581 /* API.swift */,
+				3D37969A2A8C3C4200913581 /* APIProvider.swift */,
+				3D3796A42A8F255F00913581 /* Models.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		3D3796AA2A956BD900913581 /* PolicySetup */ = {
+			isa = PBXGroup;
+			children = (
+				3D37968E2A8C1BE600913581 /* GuardianSetup.swift */,
+				3D3796A82A954F2A00913581 /* UserSetup.swift */,
+				3D37969C2A8D3F2600913581 /* UserCreation.swift */,
+				3D37969E2A8E692A00913581 /* EmailSetup.swift */,
+				3D3796A22A8ED8C300913581 /* Verification.swift */,
+				3D3796A62A8FCDD200913581 /* PhoneSetup.swift */,
+			);
+			path = PolicySetup;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +266,7 @@
 			packageProductDependencies = (
 				3D0C1EA72A83C1DC00AB3A48 /* BIP39 */,
 				3DD9C37D2A8BD68F00F1E497 /* raygun4apple */,
+				3D3796912A8C225D00913581 /* Moya */,
 			);
 			productName = Vault;
 			productReference = 3D0C1E742A83A79400AB3A48 /* Vault.app */;
@@ -266,6 +321,7 @@
 			packageReferences = (
 				3D0C1EA62A83C1DC00AB3A48 /* XCRemoteSwiftPackageReference "BIP39" */,
 				3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */,
+				3D3796902A8C225D00913581 /* XCRemoteSwiftPackageReference "Moya" */,
 			);
 			productRefGroup = 3D0C1E752A83A79400AB3A48 /* Products */;
 			projectDirPath = "";
@@ -302,22 +358,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D37969D2A8D3F2600913581 /* UserCreation.swift in Sources */,
+				3D3796972A8C291A00913581 /* AsyncResult.swift in Sources */,
 				3D0C1E8E2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift in Sources */,
 				3D0C1EA12A83BA4F00AB3A48 /* Keychain+Storage.swift in Sources */,
+				3D3796A32A8ED8C300913581 /* Verification.swift in Sources */,
+				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
 				3D0C1E862A83A87E00AB3A48 /* BiometryCheck.swift in Sources */,
+				3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
+				3D3796A52A8F255F00913581 /* Models.swift in Sources */,
 				3D0C1E982A83B0AF00AB3A48 /* BiometryFailed.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				3D0C1E962A83ADB300AB3A48 /* ActiveSessionView.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
+				3D37969F2A8E692A00913581 /* EmailSetup.swift in Sources */,
+				3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */,
 				3D0C1EAA2A83D3FD00AB3A48 /* PhraseView.swift in Sources */,
 				3D0C1E7A2A83A79400AB3A48 /* ContentView.swift in Sources */,
 				3D0C1E942A83AD4100AB3A48 /* InvalidatedDeviceKeyView.swift in Sources */,
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
+				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
+				3D3796952A8C228B00913581 /* API.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
+				3D37968F2A8C1BE600913581 /* GuardianSetup.swift in Sources */,
+				3D3796A92A954F2A00913581 /* UserSetup.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				3D0C1EA32A83BBD900AB3A48 /* VaultStorage.swift in Sources */,
@@ -349,6 +417,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://api.censo.co";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -411,6 +480,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://api.censo.co";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -565,6 +635,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://integration.censo.dev";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -677,6 +748,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://staging.censo.dev";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -789,6 +861,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://integration.censo.dev";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -895,6 +968,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				API_BASE_URL = "https://staging.censo.dev";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1050,6 +1124,14 @@
 				kind = branch;
 			};
 		};
+		3D3796902A8C225D00913581 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.0;
+			};
+		};
 		3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MindscapeHQ/raygun4apple.git";
@@ -1065,6 +1147,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3D0C1EA62A83C1DC00AB3A48 /* XCRemoteSwiftPackageReference "BIP39" */;
 			productName = BIP39;
+		};
+		3D3796912A8C225D00913581 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D3796902A8C225D00913581 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
 		};
 		3DD9C37D2A8BD68F00F1E497 /* raygun4apple */ = {
 			isa = XCSwiftPackageProductDependency;
