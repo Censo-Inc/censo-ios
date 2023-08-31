@@ -48,10 +48,24 @@
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB230C92A9D1373009FAE91 /* Data+Hex.swift */; };
+		6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F662AA128E3001A4454 /* SecretSharer.swift */; };
+		6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F682AA1292C001A4454 /* BigInt+Recovery.swift */; };
+		6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F6C2AA12AF2001A4454 /* BigInt */; };
+		6CC60F742AA12F21001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F732AA12F21001A4454 /* raygun4apple */; };
+		6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */; };
+		6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8B2AA134F8001A4454 /* raygun4apple */; };
+		6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8D2AA134FC001A4454 /* BigInt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		3D0C1EC02A83E22200AB3A48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3D0C1E6C2A83A79400AB3A48 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D0C1E732A83A79400AB3A48;
+			remoteInfo = Vault;
+		};
+		6CC60F802AA13466001A4454 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3D0C1E6C2A83A79400AB3A48 /* Project object */;
 			proxyType = 1;
@@ -102,6 +116,10 @@
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		6CB230C92A9D1373009FAE91 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		6CC60F5F2A9D31CA001A4454 /* VaultDebug (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VaultDebug (Integration).entitlements"; sourceTree = "<group>"; };
+		6CC60F662AA128E3001A4454 /* SecretSharer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretSharer.swift; sourceTree = "<group>"; };
+		6CC60F682AA1292C001A4454 /* BigInt+Recovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BigInt+Recovery.swift"; sourceTree = "<group>"; };
+		6CC60F7C2AA13466001A4454 /* VaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretSharerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +130,7 @@
 				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D0C1EA82A83C1DC00AB3A48 /* BIP39 in Frameworks */,
 				3D3796922A8C225D00913581 /* Moya in Frameworks */,
+				6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +138,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CC60F742AA12F21001A4454 /* raygun4apple in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6CC60F792AA13466001A4454 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */,
+				6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,9 +157,11 @@
 		3D0C1E6B2A83A79400AB3A48 = {
 			isa = PBXGroup;
 			children = (
-				3D0C1EB22A83DF5B00AB3A48 /* VaultTests */,
+				3D0C1EB22A83DF5B00AB3A48 /* VaultUITests */,
 				3D0C1E762A83A79400AB3A48 /* Vault */,
+				6CC60F7D2AA13466001A4454 /* VaultTests */,
 				3D0C1E752A83A79400AB3A48 /* Products */,
+				6CC60F722AA12F21001A4454 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -139,6 +170,7 @@
 			children = (
 				3D0C1E742A83A79400AB3A48 /* Vault.app */,
 				3D0C1EBA2A83E22200AB3A48 /* VaultUITests.xctest */,
+				6CC60F7C2AA13466001A4454 /* VaultTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -146,6 +178,7 @@
 		3D0C1E762A83A79400AB3A48 /* Vault */ = {
 			isa = PBXGroup;
 			children = (
+				6CC60F6A2AA12976001A4454 /* Recovery */,
 				6CC60F5F2A9D31CA001A4454 /* VaultDebug (Integration).entitlements */,
 				6CB230C82A9D1354009FAE91 /* Helpers */,
 				3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */,
@@ -221,12 +254,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		3D0C1EB22A83DF5B00AB3A48 /* VaultTests */ = {
+		3D0C1EB22A83DF5B00AB3A48 /* VaultUITests */ = {
 			isa = PBXGroup;
 			children = (
 				3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */,
 			);
-			path = VaultTests;
+			path = VaultUITests;
 			sourceTree = "<group>";
 		};
 		3D3796932A8C226D00913581 /* API */ = {
@@ -260,6 +293,30 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		6CC60F6A2AA12976001A4454 /* Recovery */ = {
+			isa = PBXGroup;
+			children = (
+				6CC60F662AA128E3001A4454 /* SecretSharer.swift */,
+				6CC60F682AA1292C001A4454 /* BigInt+Recovery.swift */,
+			);
+			path = Recovery;
+			sourceTree = "<group>";
+		};
+		6CC60F722AA12F21001A4454 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6CC60F7D2AA13466001A4454 /* VaultTests */ = {
+			isa = PBXGroup;
+			children = (
+				6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */,
+			);
+			path = VaultTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -280,6 +337,7 @@
 				3D0C1EA72A83C1DC00AB3A48 /* BIP39 */,
 				3DD9C37D2A8BD68F00F1E497 /* raygun4apple */,
 				3D3796912A8C225D00913581 /* Moya */,
+				6CC60F6C2AA12AF2001A4454 /* BigInt */,
 			);
 			productName = Vault;
 			productReference = 3D0C1E742A83A79400AB3A48 /* Vault.app */;
@@ -299,9 +357,34 @@
 				3D0C1EC12A83E22200AB3A48 /* PBXTargetDependency */,
 			);
 			name = VaultUITests;
+			packageProductDependencies = (
+				6CC60F732AA12F21001A4454 /* raygun4apple */,
+			);
 			productName = VaultUITests;
 			productReference = 3D0C1EBA2A83E22200AB3A48 /* VaultUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		6CC60F7B2AA13466001A4454 /* VaultTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6CC60F822AA13466001A4454 /* Build configuration list for PBXNativeTarget "VaultTests" */;
+			buildPhases = (
+				6CC60F782AA13466001A4454 /* Sources */,
+				6CC60F792AA13466001A4454 /* Frameworks */,
+				6CC60F7A2AA13466001A4454 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6CC60F812AA13466001A4454 /* PBXTargetDependency */,
+			);
+			name = VaultTests;
+			packageProductDependencies = (
+				6CC60F8B2AA134F8001A4454 /* raygun4apple */,
+				6CC60F8D2AA134FC001A4454 /* BigInt */,
+			);
+			productName = VaultTests;
+			productReference = 6CC60F7C2AA13466001A4454 /* VaultTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -320,6 +403,10 @@
 						CreatedOnToolsVersion = 14.3.1;
 						TestTargetID = 3D0C1E732A83A79400AB3A48;
 					};
+					6CC60F7B2AA13466001A4454 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = 3D0C1E732A83A79400AB3A48;
+					};
 				};
 			};
 			buildConfigurationList = 3D0C1E6F2A83A79400AB3A48 /* Build configuration list for PBXProject "Vault" */;
@@ -335,6 +422,7 @@
 				3D0C1EA62A83C1DC00AB3A48 /* XCRemoteSwiftPackageReference "BIP39" */,
 				3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */,
 				3D3796902A8C225D00913581 /* XCRemoteSwiftPackageReference "Moya" */,
+				6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */,
 			);
 			productRefGroup = 3D0C1E752A83A79400AB3A48 /* Products */;
 			projectDirPath = "";
@@ -342,6 +430,7 @@
 			targets = (
 				3D0C1E732A83A79400AB3A48 /* Vault */,
 				3D0C1EB92A83E22200AB3A48 /* VaultUITests */,
+				6CC60F7B2AA13466001A4454 /* VaultTests */,
 			);
 		};
 /* End PBXProject section */
@@ -364,6 +453,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CC60F7A2AA13466001A4454 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -378,6 +474,7 @@
 				3D3796A32A8ED8C300913581 /* Verification.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
+				6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */,
 				3D0C1E862A83A87E00AB3A48 /* BiometryCheck.swift in Sources */,
 				3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
@@ -388,6 +485,7 @@
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
+				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
 				3D37969F2A8E692A00913581 /* EmailSetup.swift in Sources */,
 				3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */,
 				3D0C1EAA2A83D3FD00AB3A48 /* PhraseView.swift in Sources */,
@@ -416,6 +514,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CC60F782AA13466001A4454 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -423,6 +529,11 @@
 			isa = PBXTargetDependency;
 			target = 3D0C1E732A83A79400AB3A48 /* Vault */;
 			targetProxy = 3D0C1EC02A83E22200AB3A48 /* PBXContainerItemProxy */;
+		};
+		6CC60F812AA13466001A4454 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3D0C1E732A83A79400AB3A48 /* Vault */;
+			targetProxy = 6CC60F802AA13466001A4454 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1086,6 +1197,108 @@
 			};
 			name = "Release (Staging)";
 		};
+		6CC60F832AA13466001A4454 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = Debug;
+		};
+		6CC60F842AA13466001A4454 /* Debug (Staging) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = "Debug (Staging)";
+		};
+		6CC60F852AA13466001A4454 /* Debug (Integration) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = "Debug (Integration)";
+		};
+		6CC60F862AA13466001A4454 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = Release;
+		};
+		6CC60F872AA13466001A4454 /* Release (Staging) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = "Release (Staging)";
+		};
+		6CC60F882AA13466001A4454 /* Release (Integration) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Vault";
+			};
+			name = "Release (Integration)";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1128,6 +1341,19 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		6CC60F822AA13466001A4454 /* Build configuration list for PBXNativeTarget "VaultTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6CC60F832AA13466001A4454 /* Debug */,
+				6CC60F842AA13466001A4454 /* Debug (Staging) */,
+				6CC60F852AA13466001A4454 /* Debug (Integration) */,
+				6CC60F862AA13466001A4454 /* Release */,
+				6CC60F872AA13466001A4454 /* Release (Staging) */,
+				6CC60F882AA13466001A4454 /* Release (Integration) */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -1155,6 +1381,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/attaswift/BigInt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1172,6 +1406,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
 			productName = raygun4apple;
+		};
+		6CC60F6C2AA12AF2001A4454 /* BigInt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */;
+			productName = BigInt;
+		};
+		6CC60F732AA12F21001A4454 /* raygun4apple */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
+			productName = raygun4apple;
+		};
+		6CC60F8B2AA134F8001A4454 /* raygun4apple */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
+			productName = raygun4apple;
+		};
+		6CC60F8D2AA134FC001A4454 /* BigInt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */;
+			productName = BigInt;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
