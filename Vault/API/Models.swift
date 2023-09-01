@@ -14,12 +14,20 @@ typealias Base64EncodedData = String
 
 extension API {
     struct User: Decodable {
-        var name: String
+        // this may change once Ievgen adds to API, but this roughly matches what was discussed
+        enum FaceVerificatonStatus: String, Decodable {
+            case notEnrolled = "NotEnrolled"   // user associated with the device has no face enrolled
+            case enrolled    = "NotAuthorized" // user associated with the device has a face enrolled but not authorized for the device
+            case authorized  = "Authorized"    // this device passed face authorization
+        }
+
         var contacts: [Contact]
+        var faceVerificationStatus: `FaceVerificatonStatus`
+        var encryptedData: Base64EncodedData?
     }
 
     struct Contact: Decodable {
-        enum `Type`: String, Decodable {
+        enum `Type`: String, Codable {
             case email = "Email"
             case phone = "Phone"
         }
@@ -34,6 +42,15 @@ extension API {
         var name: String
         var participantId: ParticipantId
         var guardianId: String?
+    }
+    
+    struct CreateUserApiRequest: Encodable {
+        var contactType: Contact.`Type`
+        var value: String
+    }
+    
+    struct CreateUserApiResponse: Decodable {
+        var verificationId: String
     }
     
     struct CreatePolicyApiRequest: Encodable {

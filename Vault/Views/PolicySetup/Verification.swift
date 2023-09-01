@@ -110,7 +110,7 @@ struct Verification: View {
     private func sendVerification() {
         isVerifying = true
 
-        apiProvider.request(.createContact(type: contact.contactType, value: contact.value)) { result in
+        apiProvider.request(.createUser(contactType: contact.contactType, value: contact.value)) { result in
             isVerifying = false
 
             switch result {
@@ -127,7 +127,7 @@ struct Verification: View {
     private func submit() {
         isVerifying = true
 
-        apiProvider.request(.verifyContact(contact, code: token)) { result in
+        apiProvider.request(.contactVerification(verificationId: "", code: token)) { result in
             switch result {
             case .success(let response) where response.statusCode <= 400:
                 onSuccess()

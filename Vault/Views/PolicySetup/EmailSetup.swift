@@ -33,10 +33,6 @@ struct EmailSetup: View {
 
             Spacer()
 
-            Text("\(user.name.split(separator: " ").first.flatMap(String.init) ?? user.name),")
-                .font(.title)
-                .padding()
-
             Text("    We need to collect and verify your contact information in the event you need to recover your secret")
 
             Spacer()
@@ -57,7 +53,7 @@ struct EmailSetup: View {
             Spacer()
 
             Button {
-                createContact()
+                createUser()
             } label: {
                 Group {
                     if inProgress {
@@ -87,15 +83,14 @@ struct EmailSetup: View {
         self.showingError = true
     }
 
-    private func createContact() {
+    private func createUser() {
         inProgress = true
 
-        apiProvider.request(.createContact(type: .email, value: email)) { result in
+        apiProvider.decodableRequest(.createUser(contactType: .email, value: email)) { (result: Result<API.CreateUserApiResponse, MoyaError>) in
             switch result {
-            case .success(let response) where response.statusCode <= 400:
-                onSuccess()
             case .success(let response):
-                showError(MoyaError.statusCode(response))
+                // response.verificationId should be sent back
+                onSuccess()
             case .failure(let error):
                 showError(error)
             }
@@ -139,7 +134,7 @@ struct EmailSetup_Previews: PreviewProvider {
 
 extension API.User {
     static var sample: Self {
-        .init(name: "Scruffy", contacts: [])
+        .init(contacts: [], faceVerificationStatus: API.User.FaceVerificatonStatus.authorized)
     }
 }
 #endif

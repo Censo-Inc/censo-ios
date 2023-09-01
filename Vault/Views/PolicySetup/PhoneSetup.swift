@@ -47,7 +47,7 @@ struct PhoneSetup: View {
             Spacer()
 
             Button {
-                createContact()
+                createUser()
             } label: {
                 Group {
                     if inProgress {
@@ -77,15 +77,14 @@ struct PhoneSetup: View {
         self.showingError = true
     }
 
-    private func createContact() {
+    private func createUser() {
         inProgress = true
 
-        apiProvider.request(.createContact(type: .phone, value: phone)) { result in
+        apiProvider.decodableRequest(.createUser(contactType: .phone, value: phone)) { (result: Result<API.CreateUserApiResponse, MoyaError>) in
             switch result {
-            case .success(let response) where response.statusCode <= 400:
-                onSuccess()
             case .success(let response):
-                showError(MoyaError.statusCode(response))
+                // response.verificationId needs to be sent back
+                onSuccess()
             case .failure(let error):
                 showError(error)
             }

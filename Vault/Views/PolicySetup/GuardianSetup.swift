@@ -13,7 +13,7 @@ struct GuardianSetup: View {
 
     @State private var loadingState: UserLoadingState = .idle
     @State private var transitionForward = true
-    @State private var setupStep: SetupStep = .name
+    @State private var setupStep: SetupStep = .email
     @State private var inProgress = false
 
     enum UserLoadingState {
@@ -23,7 +23,6 @@ struct GuardianSetup: View {
     }
 
     enum SetupStep {
-        case name
         case email
         case emailVerification(API.Contact)
         case phone
@@ -32,7 +31,6 @@ struct GuardianSetup: View {
 
         var stepNumber: Int {
             switch self {
-            case .name: return 0
             case .email: return 1
             case .emailVerification: return 2
             case .phone: return 3
@@ -90,7 +88,7 @@ struct GuardianSetup: View {
     private func reload() {
         inProgress = true
 
-        apiProvider.decodableRequest(.user) { (result: Result<API.User, MoyaError>) in
+        apiProvider.decodableRequest(.users) { (result: Result<API.User, MoyaError>) in
             inProgress = false
 
             switch result {
@@ -100,7 +98,7 @@ struct GuardianSetup: View {
                 withAnimation {
                     self.loadingState = .success(user)
                 }
-            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 204:
+            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
                 transitionForward = true
 
                 withAnimation {
@@ -115,7 +113,7 @@ struct GuardianSetup: View {
 
 extension API.User {
     static var empty: Self {
-        .init(name: "", contacts: [])
+        .init(contacts: [], faceVerificationStatus: API.User.FaceVerificatonStatus.authorized)
     }
 }
 

@@ -12,11 +12,9 @@ import UIKit
 enum API {
     case minVersion
 
-    case user
-    case createDevice
-    case createUser(name: String)
-    case createContact(type: Contact.`Type`, value: String)
-    case verifyContact(Contact, code: String)
+    case users
+    case createUser(contactType: Contact.`Type`, value: String)
+    case contactVerification(verificationId: String, code: String)
     case registerPushToken(String)
     case policies
     case policy(policyKey: Base58EncodedPublicKey)
@@ -45,11 +43,11 @@ extension API: TargetType {
         switch self {
         case .minVersion:
             return ""
-        case .createContact:
-            return "v1/contacts"
+        case .contactVerification(let verificationId, _):
+            return "v1/verifications/\(verificationId)/code"
         case .createUser,
-             .user:
-            return "v1/user"
+             .users:
+            return "v1/users"
         case .createPolicy,
              .policies:
             return "v1/policies"
@@ -60,10 +58,6 @@ extension API: TargetType {
              .confirmGuardianship(let policyKey, _, _),
              .confirmShardReceived(let policyKey, _, _):
             return "v1/policies/\(policyKey)"
-        case .verifyContact(let contact, _):
-            return "v1/contacts/\(contact.identifier)/verification-code"
-        case .createDevice:
-            return "v1/device"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .ownerTasks:
@@ -76,16 +70,14 @@ extension API: TargetType {
     var method: Moya.Method {
         switch self {
         case .minVersion,
-             .user,
+             .users,
              .policies,
              .policy,
              .ownerTasks,
              .guardianTasks:
             return .get
         case .createUser,
-             .createContact,
-             .verifyContact,
-             .createDevice,
+             .contactVerification,
              .registerPushToken,
              .createPolicy,
              .changeGuardians,
@@ -100,23 +92,17 @@ extension API: TargetType {
     var task: Moya.Task {
         switch self {
         case .minVersion,
-             .user,
-             .createDevice,
+             .users,
              .policies,
              .policy,
              .ownerTasks,
              .guardianTasks:
             return .requestPlain
-        case .createUser(let name):
-            return .requestJSONEncodable([
-                "name": name
-            ])
-        case .createContact(let type, let value):
-            return .requestJSONEncodable([
-                "contactType": type.rawValue,
-                "value": value
-            ])
-        case .verifyContact(_, let code):
+        case .createUser(let contactType, let value):
+            return .requestJSONEncodable(
+                CreateUserApiRequest(contactType: contactType, value: value)
+            )
+        case .contactVerification(_, let code):
             return .requestJSONEncodable([
                 "verificationCode": code
             ])

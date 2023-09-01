@@ -18,13 +18,10 @@ struct UserSetup: View {
 
     var body: some View {
         switch setupStep {
-        case .name:
-            UserCreation(user: user, onSuccess: {
-                onUpdate(API.User(name: "Name", contacts: []), .email)
-            })
+
         case .email:
             EmailSetup(user: user, onBack: {
-                onUpdate(user, .name)
+                onUpdate(user, .email)
             }, onSuccess: reloadUser)
         case .emailVerification(let contact):
             Verification(contact: contact, onBack: {
@@ -32,7 +29,7 @@ struct UserSetup: View {
             }, onSuccess: reloadUser)
         case .phone:
             PhoneSetup(user: user, onBack: {
-                onUpdate(user, .name)
+                onUpdate(user, .email)
             }, onSuccess: reloadUser)
         case .phoneVerification(let contact):
             Verification(contact: contact, onBack: {
@@ -44,7 +41,7 @@ struct UserSetup: View {
     }
 
     private func reloadUser() {
-        apiProvider.decodableRequest(.user) { (result: Result<API.User, MoyaError>) in
+        apiProvider.decodableRequest(.users) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
                 onUpdate(user, user.setupStep)
@@ -58,8 +55,6 @@ struct UserSetup: View {
 extension API.User {
     var setupStep: GuardianSetup.SetupStep {
         switch (emailContact, phoneContact) {
-        case (.none, .none) where name.isEmpty:
-            return .name
         case (.none, .some(let contact)) where contact.verified:
             return .email
         case (.none, .none):
