@@ -8,7 +8,24 @@
 import Foundation
 
 extension Data {
-    func hexEncodedString() -> String {
-        return map { String(format: "%02hhx", $0) }.joined()
+    public var bytes: Array<UInt8> {
+      Array(self)
     }
+
+    public func toHexString() -> String {
+      self.bytes.toHexString()
+    }
+}
+
+
+extension Array where Element == UInt8 {
+  public func toHexString() -> String {
+    `lazy`.reduce(into: "") {
+      var s = String($1, radix: 16)
+      if s.count == 1 {
+        s = "0" + s
+      }
+      $0 += s
+    }
+  }
 }
