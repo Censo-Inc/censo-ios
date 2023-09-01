@@ -9,16 +9,17 @@ import SwiftUI
 import Moya
 
 struct APIProviderEnvironmentKey: EnvironmentKey {
-    static var defaultValue: MoyaProvider<API> = MoyaProvider()
+    static var defaultValue: MoyaProvider<API> = MoyaProvider(
+        plugins: [
+            AuthPlugin()
+        ]
+    )
 }
 
 extension EnvironmentValues {
     var apiProvider: MoyaProvider<API> {
         get {
             self[APIProviderEnvironmentKey.self]
-        }
-        set {
-            self[APIProviderEnvironmentKey.self] = newValue
         }
     }
 }

@@ -67,8 +67,11 @@ extension DeviceKey {
             } else {
                 do {
                     let preauthenticatedKey = try self.preauthenticatedKey(context: context)
-                    let sampleData = Data(repeating: 1, count: 8)
-                    _ = try preauthenticatedKey.signature(for: sampleData)
+                    let timestamp = Date()
+                    let signature = try preauthenticatedKey.signature(for: timestamp.ISO8601Format().data(using: .utf8)!)
+                    let deviceKeyTimestamp = DeviceKeyTimestamp(timestamp: timestamp, signature: signature)
+
+                    try? Keychain.saveDeviceKeyTimestamp(deviceKeyTimestamp)
 
                     completion(.success(preauthenticatedKey))
                 } catch (let error as NSError) where error._domain == "CryptoTokenKit" && error._code == -3 {

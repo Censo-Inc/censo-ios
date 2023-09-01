@@ -20,7 +20,7 @@ struct RetryView: View {
                 .multilineTextAlignment(.center)
                 .padding()
 
-            Button(action: action) {
+            Button(action: retry) {
                 Text("Retry")
                     .frame(width: 100)
             }
@@ -29,6 +29,26 @@ struct RetryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+
+    private func retry() {
+        switch error {
+        case MoyaError.statusCode(let response) where response.statusCode == 401:
+            if let deviceKey = SecureEnclaveWrapper.deviceKey() {
+                deviceKey.preauthenticatedKey { result in
+                    switch result {
+                    case .success:
+                        action()
+                    case .failure:
+                        break
+                    }
+                }
+            } else {
+                action()
+            }
+        default:
+            action()
+        }
     }
 
     private func showHelp() {
@@ -46,6 +66,8 @@ extension Error {
         switch self as Error {
         case MoyaError.statusCode(let response) where response.statusCode == 418:
             return "Censo is currently under maintenance, please try again in a few minutes."
+        case MoyaError.statusCode(let response) where response.statusCode == 401:
+            return "Your session has expired and needs to be reauthenticated."
         case MoyaError.underlying(AFError.sessionTaskFailed(let error as NSError), _) where error.code == -1001:
             return "Your request timed out. Please retry"
         case MoyaError.underlying(AFError.sessionTaskFailed(let error as NSError), _) where error.code == -1009:
@@ -63,7 +85,6 @@ struct RetryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             RetryView(error: URLError(.badURL), action: { })
-                .navigationTitle(Text("Approvals"))
         }
     }
 }

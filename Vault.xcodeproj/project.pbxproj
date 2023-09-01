@@ -45,6 +45,7 @@
 		3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A62A8FCDD200913581 /* PhoneSetup.swift */; };
 		3D3796A92A954F2A00913581 /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A82A954F2A00913581 /* UserSetup.swift */; };
 		3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796AD2A96EC2000913581 /* Guardianship.swift */; };
+		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB230C92A9D1373009FAE91 /* Data+Hex.swift */; };
@@ -99,6 +100,7 @@
 		3D3796A62A8FCDD200913581 /* PhoneSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSetup.swift; sourceTree = "<group>"; };
 		3D3796A82A954F2A00913581 /* UserSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
 		3D3796AD2A96EC2000913581 /* Guardianship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardianship.swift; sourceTree = "<group>"; };
+		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		6CB230C92A9D1373009FAE91 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		6CC60F5F2A9D31CA001A4454 /* VaultDebug (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VaultDebug (Integration).entitlements"; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				3D3796942A8C228B00913581 /* API.swift */,
 				3D37969A2A8C3C4200913581 /* APIProvider.swift */,
 				3D3796A42A8F255F00913581 /* Models.swift */,
+				3D9817532AA15265003A4CD0 /* AuthPlugin.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 				3D0C1E982A83B0AF00AB3A48 /* BiometryFailed.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				3D0C1E962A83ADB300AB3A48 /* ActiveSessionView.swift in Sources */,
+				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,

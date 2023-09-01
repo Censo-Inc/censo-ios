@@ -96,7 +96,8 @@ extension API: TargetType {
             "X-IsApi": "true",
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
-            "X-Censo-App-Version": Bundle.main.shortVersionString
+            "X-Censo-App-Version": Bundle.main.shortVersionString,
+            "X-Censo-Device-Public-Key": (try? SecureEnclaveWrapper.deviceKey()?.publicExternalRepresentation().base64EncodedString()) ?? ""
         ]
     }
 }

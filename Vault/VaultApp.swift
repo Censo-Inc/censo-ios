@@ -61,7 +61,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     var testing: Bool = false
     #endif
     
-    var provider: MoyaProvider<API> = MoyaProvider()
+    var provider: MoyaProvider<API> = MoyaProvider(plugins: [AuthPlugin()])
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
