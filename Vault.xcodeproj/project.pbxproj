@@ -32,17 +32,22 @@
 		3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */; };
 		3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */; };
 		3D0C1EC52A83E23C00AB3A48 /* SampleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */; };
-		3D37968F2A8C1BE600913581 /* GuardianSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37968E2A8C1BE600913581 /* GuardianSetup.swift */; };
+		3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */; };
+		3D23ACC82AAB8ECB00F55C5D /* OwnerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */; };
+		3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */; };
+		3D23ACCA2AAB8ECB00F55C5D /* ContactSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */; };
+		3D23ACCB2AAB8ECB00F55C5D /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC32AAB8ECB00F55C5D /* Verification.swift */; };
+		3D23ACCC2AAB8ECB00F55C5D /* PhoneSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */; };
+		3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */; };
+		3D23ACCE2AAB8ECB00F55C5D /* PolicyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */; };
+		3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; };
+		3D23ACD12AAB8F0200F55C5D /* FaceTecSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3D3796922A8C225D00913581 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 3D3796912A8C225D00913581 /* Moya */; };
 		3D3796952A8C228B00913581 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796942A8C228B00913581 /* API.swift */; };
 		3D3796972A8C291A00913581 /* AsyncResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796962A8C291A00913581 /* AsyncResult.swift */; };
 		3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796982A8C2B9D00913581 /* RetryView.swift */; };
 		3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37969A2A8C3C4200913581 /* APIProvider.swift */; };
-		3D37969F2A8E692A00913581 /* EmailSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D37969E2A8E692A00913581 /* EmailSetup.swift */; };
-		3D3796A32A8ED8C300913581 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A22A8ED8C300913581 /* Verification.swift */; };
 		3D3796A52A8F255F00913581 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A42A8F255F00913581 /* Models.swift */; };
-		3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A62A8FCDD200913581 /* PhoneSetup.swift */; };
-		3D3796A92A954F2A00913581 /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796A82A954F2A00913581 /* UserSetup.swift */; };
 		3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796AD2A96EC2000913581 /* Guardianship.swift */; };
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
@@ -56,7 +61,6 @@
 		6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8B2AA134F8001A4454 /* raygun4apple */; };
 		6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8D2AA134FC001A4454 /* BigInt */; };
 		6CC60F902AA763EA001A4454 /* RandomHex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomHex.swift */; };
-		6CC60F922AA7660F001A4454 /* PolicyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F912AA7660F001A4454 /* PolicyEntry.swift */; };
 		6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
 		6CC60F982AA7D77E001A4454 /* EncryptionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */; };
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
@@ -80,6 +84,20 @@
 			remoteInfo = Vault;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3D23ACD22AAB8F0200F55C5D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3D23ACD12AAB8F0200F55C5D /* FaceTecSDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3D0C1E742A83A79400AB3A48 /* Vault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vault.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,16 +126,20 @@
 		3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodedPhrase.swift; sourceTree = "<group>"; };
 		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
 		3D0C1EBA2A83E22200AB3A48 /* VaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3D37968E2A8C1BE600913581 /* GuardianSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianSetup.swift; sourceTree = "<group>"; };
+		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
+		3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerSetup.swift; sourceTree = "<group>"; };
+		3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
+		3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactSetup.swift; sourceTree = "<group>"; };
+		3D23ACC32AAB8ECB00F55C5D /* Verification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
+		3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneSetup.swift; sourceTree = "<group>"; };
+		3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecSetup.swift; sourceTree = "<group>"; };
+		3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolicyEntry.swift; sourceTree = "<group>"; };
+		3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
 		3D3796942A8C228B00913581 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		3D3796962A8C291A00913581 /* AsyncResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncResult.swift; sourceTree = "<group>"; };
 		3D3796982A8C2B9D00913581 /* RetryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryView.swift; sourceTree = "<group>"; };
 		3D37969A2A8C3C4200913581 /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
-		3D37969E2A8E692A00913581 /* EmailSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSetup.swift; sourceTree = "<group>"; };
-		3D3796A22A8ED8C300913581 /* Verification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
 		3D3796A42A8F255F00913581 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		3D3796A62A8FCDD200913581 /* PhoneSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSetup.swift; sourceTree = "<group>"; };
-		3D3796A82A954F2A00913581 /* UserSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
 		3D3796AD2A96EC2000913581 /* Guardianship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardianship.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -128,7 +150,6 @@
 		6CC60F7C2AA13466001A4454 /* VaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretSharerTests.swift; sourceTree = "<group>"; };
 		6CC60F8F2AA763EA001A4454 /* RandomHex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomHex.swift; sourceTree = "<group>"; };
-		6CC60F912AA7660F001A4454 /* PolicyEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyEntry.swift; sourceTree = "<group>"; };
 		6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKey.swift; sourceTree = "<group>"; };
 		6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyTests.swift; sourceTree = "<group>"; };
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
@@ -144,6 +165,7 @@
 				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D0C1EA82A83C1DC00AB3A48 /* BIP39 in Frameworks */,
 				3D3796922A8C225D00913581 /* Moya in Frameworks */,
+				3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */,
 				6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -234,7 +256,7 @@
 				3D0C1EA42A83BDB000AB3A48 /* NewPhrase.swift */,
 				3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */,
 				3D3796982A8C2B9D00913581 /* RetryView.swift */,
-				3D3796AA2A956BD900913581 /* PolicySetup */,
+				3D23ACBE2AAB8ECB00F55C5D /* OwnerSetup */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -277,6 +299,21 @@
 			path = VaultUITests;
 			sourceTree = "<group>";
 		};
+		3D23ACBE2AAB8ECB00F55C5D /* OwnerSetup */ = {
+			isa = PBXGroup;
+			children = (
+				3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */,
+				3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */,
+				3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */,
+				3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */,
+				3D23ACC32AAB8ECB00F55C5D /* Verification.swift */,
+				3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */,
+				3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */,
+				3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */,
+			);
+			path = OwnerSetup;
+			sourceTree = "<group>";
+		};
 		3D3796932A8C226D00913581 /* API */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,19 +323,6 @@
 				3D9817532AA15265003A4CD0 /* AuthPlugin.swift */,
 			);
 			path = API;
-			sourceTree = "<group>";
-		};
-		3D3796AA2A956BD900913581 /* PolicySetup */ = {
-			isa = PBXGroup;
-			children = (
-				3D37968E2A8C1BE600913581 /* GuardianSetup.swift */,
-				3D3796A82A954F2A00913581 /* UserSetup.swift */,
-				3D37969E2A8E692A00913581 /* EmailSetup.swift */,
-				3D3796A22A8ED8C300913581 /* Verification.swift */,
-				3D3796A62A8FCDD200913581 /* PhoneSetup.swift */,
-				6CC60F912AA7660F001A4454 /* PolicyEntry.swift */,
-			);
-			path = PolicySetup;
 			sourceTree = "<group>";
 		};
 		6CB230C82A9D1354009FAE91 /* Helpers */ = {
@@ -324,6 +348,7 @@
 		6CC60F722AA12F21001A4454 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -348,6 +373,7 @@
 				3D0C1E702A83A79400AB3A48 /* Sources */,
 				3D0C1E712A83A79400AB3A48 /* Frameworks */,
 				3D0C1E722A83A79400AB3A48 /* Resources */,
+				3D23ACD22AAB8F0200F55C5D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -488,14 +514,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D23ACCA2AAB8ECB00F55C5D /* ContactSetup.swift in Sources */,
 				3D3796972A8C291A00913581 /* AsyncResult.swift in Sources */,
 				3D0C1E8E2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift in Sources */,
 				3D0C1EA12A83BA4F00AB3A48 /* Keychain+Storage.swift in Sources */,
 				6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */,
-				3D3796A32A8ED8C300913581 /* Verification.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */,
+				3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomHex.swift in Sources */,
 				3D0C1E862A83A87E00AB3A48 /* BiometryCheck.swift in Sources */,
 				3D3796AE2A96EC2000913581 /* Guardianship.swift in Sources */,
@@ -505,30 +532,31 @@
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				3D0C1E962A83ADB300AB3A48 /* ActiveSessionView.swift in Sources */,
-				6CC60F922AA7660F001A4454 /* PolicyEntry.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
 				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
 				6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */,
-				3D37969F2A8E692A00913581 /* EmailSetup.swift in Sources */,
-				3D3796A72A8FCDD200913581 /* PhoneSetup.swift in Sources */,
 				3D0C1EAA2A83D3FD00AB3A48 /* PhraseView.swift in Sources */,
 				3D0C1E7A2A83A79400AB3A48 /* ContentView.swift in Sources */,
 				3D0C1E942A83AD4100AB3A48 /* InvalidatedDeviceKeyView.swift in Sources */,
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
 				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
+				3D23ACC82AAB8ECB00F55C5D /* OwnerSetup.swift in Sources */,
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
-				3D37968F2A8C1BE600913581 /* GuardianSetup.swift in Sources */,
-				3D3796A92A954F2A00913581 /* UserSetup.swift in Sources */,
+				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
+				3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */,
+				3D23ACCB2AAB8ECB00F55C5D /* Verification.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
+				3D23ACCC2AAB8ECB00F55C5D /* PhoneSetup.swift in Sources */,
 				3D0C1EA32A83BBD900AB3A48 /* VaultStorage.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
+				3D23ACCE2AAB8ECB00F55C5D /* PolicyEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,6 +724,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Vault/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";
@@ -728,6 +760,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Vault/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";
@@ -859,6 +895,10 @@
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
 				EXECUTABLE_PREFIX = integration;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";
@@ -972,6 +1012,10 @@
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
 				EXECUTABLE_PREFIX = staging;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";
@@ -1079,6 +1123,10 @@
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
 				EXECUTABLE_PREFIX = integration;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";
@@ -1186,6 +1234,10 @@
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
 				EXECUTABLE_PREFIX = staging;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Vault/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Censo uses Face ID to verify identity";

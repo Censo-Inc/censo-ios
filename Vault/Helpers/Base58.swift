@@ -7,15 +7,6 @@
 
 import Foundation
 
-//
-//  Base58.swift
-//  Censo
-//
-//  Created by Ata Namvari on 2022-03-10.
-//
-
-import Foundation
-
 public struct Base58 {
     static let base58Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
@@ -116,7 +107,6 @@ public struct Base58 {
         return result
     }
 }
-
 
 extension String {
     func base58Data() -> Data? {

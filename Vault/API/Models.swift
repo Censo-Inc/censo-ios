@@ -14,28 +14,47 @@ typealias Base64EncodedData = String
 
 extension API {
     struct User: Decodable {
-        // this may change once Ievgen adds to API, but this roughly matches what was discussed
-        enum FaceVerificatonStatus: String, Decodable {
-            case notEnrolled = "NotEnrolled"   // user associated with the device has no face enrolled
-            case enrolled    = "NotAuthorized" // user associated with the device has a face enrolled but not authorized for the device
-            case authorized  = "Authorized"    // this device passed face authorization
-        }
-
         var contacts: [Contact]
-        var faceVerificationStatus: `FaceVerificatonStatus`
+        var biometricVerificationRequired: Bool
         var encryptedData: Base64EncodedData?
+
+        var emailContact: API.Contact? {
+            contacts.first(where: { $0.contactType == .email })
+        }
+        
+        var phoneContact: API.Contact? {
+            contacts.first(where: { $0.contactType == .phone })
+        }
     }
 
     struct Contact: Decodable {
-        enum `Type`: String, Codable {
+        enum ContactType: String, Codable {
             case email = "Email"
             case phone = "Phone"
         }
 
         var identifier: String
-        var contactType: `Type`
+        var contactType: ContactType
         var value: String
         var verified: Bool
+    }
+
+    struct InitiBiometryVerificationApiResponse: Decodable {
+        var id: String
+        var sessionToken: String
+        var deviceKeyId: String
+        var biometryEncryptionPublicKey: String
+        var firstTime: Bool
+    }
+
+    struct ConfirmBiometryVerificationApiRequest: Encodable {
+        var faceScan: String
+        var auditTrailImage: String
+        var lowQualityAuditTrailImage: String
+    }
+
+    struct ConfirmBiometryVerificationApiResponse: Decodable {
+        var scanResultBlob: String
     }
     
     struct GuardianInvite: Encodable {
@@ -45,7 +64,7 @@ extension API {
     }
     
     struct CreateUserApiRequest: Encodable {
-        var contactType: Contact.`Type`
+        var contactType: Contact.ContactType
         var value: String
     }
     

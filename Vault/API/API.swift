@@ -12,8 +12,8 @@ import UIKit
 enum API {
     case minVersion
 
-    case users
-    case createUser(contactType: Contact.`Type`, value: String)
+    case user
+    case createUser(contactType: Contact.ContactType, value: String)
     case contactVerification(verificationId: String, code: String)
     case registerPushToken(String)
     case createPolicy(
@@ -30,7 +30,9 @@ enum API {
     case confirmGuardianship(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
     case confirmShardReceived(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
     case guardianTasks(participantId: ParticipantId)
-    
+
+    case initBiometryVerification
+    case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
 }
 
 extension API: TargetType {
@@ -48,10 +50,10 @@ extension API: TargetType {
         case .minVersion:
             return ""
         case .contactVerification(let verificationId, _):
-            return "v1/verifications/\(verificationId)/code"
+            return "v1/contact-verifications/\(verificationId)/code"
         case .createUser,
-             .users:
-            return "v1/users"
+             .user:
+            return "v1/user"
         case .createPolicy:
             return "v1/policies"
         case .changeGuardians(let intermediatePublicKey, _):
@@ -70,13 +72,17 @@ extension API: TargetType {
             return "v1/notification-tokens"
         case .guardianTasks(let participantId):
             return "v1/guardian-tasks/\(participantId)"
+        case .initBiometryVerification:
+            return "/v1/biometry-verifications"
+        case .confirmBiometryVerification(let verificationId, _, _, _):
+            return "v1/biometry-verifications/\(verificationId)/biometry"
         }
     }
 
     var method: Moya.Method {
         switch self {
         case .minVersion,
-             .users,
+             .user,
              .guardianTasks:
             return .get
         case .createUser,
@@ -88,7 +94,9 @@ extension API: TargetType {
              .acceptGuardianship,
              .confirmGuardianship,
              .confirmShardReceived,
-             .inviteGuardian:
+             .inviteGuardian,
+             .initBiometryVerification,
+             .confirmBiometryVerification:
             return .post
         }
     }
@@ -96,9 +104,10 @@ extension API: TargetType {
     var task: Moya.Task {
         switch self {
         case .minVersion,
-             .users,
+             .declineGuardianship,
+             .user,
              .guardianTasks,
-             .declineGuardianship:
+             .initBiometryVerification:
             return .requestPlain
         case .createUser(let contactType, let value):
             return .requestJSONEncodable(
@@ -143,6 +152,10 @@ extension API: TargetType {
             return .requestJSONEncodable(
                 InviteGuardianApiRequest(deviceEncryptedPin: deviceEncryptedPin)
             )
+        case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
+            return .requestJSONEncodable(
+                ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
+            )
         }
         
     }
@@ -154,8 +167,14 @@ extension API: TargetType {
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
             "X-Censo-App-Version": Bundle.main.shortVersionString,
-            "X-Censo-Device-Public-Key": (try? SecureEnclaveWrapper.deviceKey()?.publicExternalRepresentation().base64EncodedString()) ?? ""
+            "X-Censo-Device-Public-Key": (try? SecureEnclaveWrapper.deviceKey()?.publicExternalRepresentation().base58EncodedString()) ?? ""
         ]
+    }
+}
+
+extension Data {
+    func base58EncodedString() -> String {
+        Base58.encode(bytes)
     }
 }
 

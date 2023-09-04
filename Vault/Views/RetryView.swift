@@ -74,6 +74,8 @@ extension Error {
             return "You don't seem to be connected to the internet. Please check your connection and retry"
         case Keychain.KeychainError.couldNotLoad:
             return "Unable to retrieve data from your keychain"
+        case let facetecError as FacetecError:
+            return facetecError.message;
         default:
             return "Something went wrong"
         }

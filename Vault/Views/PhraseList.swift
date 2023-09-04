@@ -64,7 +64,7 @@ struct PhraseList: View {
                 case .addPhrase:
                     NewPhrase(vaultStorage: vaultStorage)
                 case .guardianSetup:
-                    GuardianSetup()
+                    OwnerSetup()
                 }
             }
             .alert("Error", isPresented: $showingAlert, presenting: error) { _ in
