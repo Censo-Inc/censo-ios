@@ -9,7 +9,7 @@ import XCTest
 import BigInt
 @testable import Vault
 
-final class SeedRecoveryTests: XCTestCase {
+final class SecretSharerTests: XCTestCase {
 
     func testSecretSharerSequentialSmallOrder() {
         var rnd = SystemRandomNumberGenerator()
