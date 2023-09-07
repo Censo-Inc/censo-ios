@@ -17,13 +17,13 @@ enum API {
     case contactVerification(verificationId: String, code: String)
     case registerPushToken(String)
     case policies
-    case policy(policyKey: Base58EncodedPublicKey)
-    case createPolicy(policyKey: Base58EncodedPublicKey, threshold: Int, guardians: [GuardianInvite])
-    case changeGuardians(policyKey: Base58EncodedPublicKey, guardians: [GuardianInvite])
-    case declineGuardianship(policyKey: Base58EncodedPublicKey, participantId: ParticipantId)
-    case acceptGuardianship(policyKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedVerificationData: Base64EncodedData)
-    case confirmGuardianship(policyKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
-    case confirmShardReceived(policyKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
+    case policy(intermediateKey: Base58EncodedPublicKey)
+    case createPolicy(intermediateKey: Base58EncodedPublicKey, threshold: Int, guardians: [GuardianInvite])
+    case changeGuardians(intermediateKey: Base58EncodedPublicKey, guardians: [GuardianInvite])
+    case declineGuardianship(intermediateKey: Base58EncodedPublicKey, participantId: ParticipantId)
+    case acceptGuardianship(intermediateKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedVerificationData: Base64EncodedData)
+    case confirmGuardianship(intermediateKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
+    case confirmShardReceived(intermediateKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
     case guardianTasks(participantId: ParticipantId)
     case ownerTasks
     
@@ -51,13 +51,13 @@ extension API: TargetType {
         case .createPolicy,
              .policies:
             return "v1/policies"
-        case .changeGuardians(let policyKey, _),
-             .policy(let policyKey),
-             .declineGuardianship(let policyKey, _),
-             .acceptGuardianship(let policyKey, _, _),
-             .confirmGuardianship(let policyKey, _, _),
-             .confirmShardReceived(let policyKey, _, _):
-            return "v1/policies/\(policyKey)"
+        case .changeGuardians(let intermediateKey, _),
+             .policy(let intermediateKey),
+             .declineGuardianship(let intermediateKey, _),
+             .acceptGuardianship(let intermediateKey, _, _),
+             .confirmGuardianship(let intermediateKey, _, _),
+             .confirmShardReceived(let intermediateKey, _, _):
+            return "v1/policies/\(intermediateKey)"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .ownerTasks:
@@ -111,9 +111,9 @@ extension API: TargetType {
                 "token": token,
                 "deviceType": "Ios"
             ])
-        case .createPolicy(let policyKey, let threshold, let guardians):
+        case .createPolicy(let intermediateKey, let threshold, let guardians):
             return .requestJSONEncodable(
-                CreatePolicyApiRequest(policyKey: policyKey, threshold: threshold, guardiansToInvite: guardians)
+                CreatePolicyApiRequest(intermediateKey: intermediateKey, threshold: threshold, guardiansToInvite: guardians)
             )
         case .changeGuardians(_, let guardians):
             return .requestJSONEncodable(
