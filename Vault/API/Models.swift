@@ -54,7 +54,7 @@ extension API {
     }
     
     struct CreatePolicyApiRequest: Encodable {
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
         var threshold: Int
         var guardiansToInvite: [GuardianInvite]
     }
@@ -85,7 +85,7 @@ extension API {
             case activate  = "Active"
         }
         var status: `Status`
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
         var threshold: Int
         var guardians: [Guardian]
     }
@@ -121,23 +121,23 @@ extension API {
     
     struct InvitePending: Decodable {
         var ownerInfo: OwnerInfo
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
     }
     
     struct ShardAvailable: Decodable {
         var ownerInfo: OwnerInfo
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
         var shardData: Base64EncodedData
     }
     
     struct GuardianDeclined: Decodable {
         var guardianInfo: GuardianInfo
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
     }
     
     struct GuardianAccepted: Decodable {
         var guardianInfo: GuardianInfo
-        var policyKey: Base58EncodedPublicKey
+        var intermediateKey: Base58EncodedPublicKey
         var encryptedVerificationData: Base64EncodedData
     }
     
