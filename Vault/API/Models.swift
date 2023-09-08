@@ -16,7 +16,7 @@ extension API {
     struct User: Decodable {
         var contacts: [Contact]
         var biometricVerificationRequired: Bool
-        var encryptedData: Base64EncodedData?
+        var ownerState: OwnerState?
 
         var emailContact: API.Contact? {
             contacts.first(where: { $0.contactType == .email })
@@ -82,22 +82,6 @@ extension API {
     
     struct UpdatePolicyApiRequest: Encodable {
         var guardiansToInvite: [GuardianInvite]
-    }
-    
-    struct Guardian: Decodable {
-        enum `Status`: String, Decodable {
-            case invited   = "Invited"
-            case declined  = "Declined"
-            case accepted  = "Accepted"
-            case confirmed = "Confirmed"
-            case active    = "Active"
-        }
-    
-        var id: String
-        var name: String
-        var participantId: ParticipantId
-        var status: `Status`
-        var encryptedVerificationData: Base64EncodedData?
     }
     
     struct AcceptGuardianshipApiRequest: Encodable {

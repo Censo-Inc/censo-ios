@@ -52,6 +52,7 @@
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
+		6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8A87032AAB83DB002E54D6 /* OwnerState.swift */; };
 		6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB230C92A9D1373009FAE91 /* Data+Hex.swift */; };
 		6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F662AA128E3001A4454 /* SecretSharer.swift */; };
 		6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F682AA1292C001A4454 /* BigInt+Recovery.swift */; };
@@ -143,6 +144,7 @@
 		3D3796AD2A96EC2000913581 /* Guardianship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardianship.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		6C8A87032AAB83DB002E54D6 /* OwnerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerState.swift; sourceTree = "<group>"; };
 		6CB230C92A9D1373009FAE91 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		6CC60F5F2A9D31CA001A4454 /* VaultDebug (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VaultDebug (Integration).entitlements"; sourceTree = "<group>"; };
 		6CC60F662AA128E3001A4454 /* SecretSharer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretSharer.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 				3D37969A2A8C3C4200913581 /* APIProvider.swift */,
 				3D3796A42A8F255F00913581 /* Models.swift */,
 				3D9817532AA15265003A4CD0 /* AuthPlugin.swift */,
+				6C8A87032AAB83DB002E54D6 /* OwnerState.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */,
 				3D23ACCB2AAB8ECB00F55C5D /* Verification.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
+				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				3D23ACCC2AAB8ECB00F55C5D /* PhoneSetup.swift in Sources */,
 				3D0C1EA32A83BBD900AB3A48 /* VaultStorage.swift in Sources */,
