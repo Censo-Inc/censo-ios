@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias Instant = String
+typealias Instant = Date
 protocol Guardian {
     var label: String { get set }
     var participantId: ParticipantId { get set }
@@ -28,7 +28,7 @@ extension API {
         struct TrustedGuardian: Guardian, Codable {
             var label: String
             var participantId: ParticipantId
-            var attribute: GuardianStatus.Onboarded
+            var attributes: GuardianStatus.Onboarded
         }
         
         enum GuardianCodingKeys: String, CodingKey {
@@ -81,11 +81,11 @@ extension API {
         }
         
         struct Declined: Codable {
-            var eviceEncryptedShard: Base64EncodedData
+            var deviceEncryptedShard: Base64EncodedData
         }
         
         struct Accepted: Codable {
-            var guardianTransportEncryptedShard: Base64EncodedData
+            var deviceEncryptedShard: Base64EncodedData
             var signature: Base64EncodedData
             var timeMillis: Int64
             var guardianTransportPublicKey: Base58EncodedPublicKey
@@ -153,7 +153,7 @@ extension API {
         }
     }
     
-    struct VaultSecret: Codable {
+    struct VaultSecret: Codable, Equatable {
         var encryptedSeedPhrase: Base64EncodedData
         var seedPhraseHash: Base64EncodedData
         var label: String
@@ -183,7 +183,36 @@ extension API {
         
         struct Ready: Codable {
             var policy: Policy<PolicyGuardian.TrustedGuardian>
-            var vaul: Vault
+            var vault: Vault
+        }
+        
+        enum OwnerStateCodingKeys: String, CodingKey {
+            case type
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: OwnerStateCodingKeys.self)
+            let type = try container.decode(String.self, forKey: .type)
+            switch type {
+            case "PolicySetup":
+                self = .policySetup(try PolicySetup(from: decoder))
+            case "Ready":
+                self = .ready(try Ready(from: decoder))
+            default:
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Owner State")
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
+            switch self {
+            case .policySetup(let policySetup):
+                try container.encode("PolicySetup", forKey: .type)
+                try policySetup.encode(to: encoder)
+            case .ready(let ready):
+                try container.encode("Ready", forKey: .type)
+                try ready.encode(to: encoder)
+            }
         }
     }
     
