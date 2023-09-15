@@ -14,9 +14,9 @@ final class PolicySetupHelperTests: XCTestCase {
     func testPolicySetupAndRecovery() throws {
         let deviceKey = DeviceKey.sample
         let guardians = [
-            GuardianProspect(label: "Guardian 1", participantId: generatePartitionId()),
-            GuardianProspect(label: "Guardian 2", participantId: generatePartitionId()),
-            GuardianProspect(label: "Guardian 2", participantId: generatePartitionId())
+            GuardianProspect(label: "Guardian 1", participantId: generateParticipantId()),
+            GuardianProspect(label: "Guardian 2", participantId: generateParticipantId()),
+            GuardianProspect(label: "Guardian 2", participantId: generateParticipantId())
         ]
         let policySetupHelper = try PolicySetupHelper(threshold: 2, guardians: guardians, deviceKey: deviceKey)
         
@@ -43,7 +43,7 @@ final class PolicySetupHelperTests: XCTestCase {
         // decrypt and recover the the master key
         let recoveredMasterPrivateKey = try EncryptionKey.generateFromPrivateKeyRaw(
             data: recoveredIntermediatePrivateKey.decrypt(
-                data: Data(base64Encoded: policySetupHelper.encryptedMasterPrivateKey)!
+                base64EncodedString: policySetupHelper.encryptedMasterPrivateKey
             )
         )
         XCTAssertEqual(
@@ -53,7 +53,7 @@ final class PolicySetupHelperTests: XCTestCase {
         
         // make sure we can decrypt with recovered master and get back original data
         XCTAssertEqual(
-            String(decoding: try recoveredMasterPrivateKey.decrypt(data: encryptedSeedPhrase), as: UTF8.self),
+            String(decoding: try recoveredMasterPrivateKey.decrypt(base64EncodedString: encryptedSeedPhrase), as: UTF8.self),
             seedPhrase
         )
     }
@@ -67,7 +67,7 @@ final class PolicySetupHelperTests: XCTestCase {
         let devicePrivateKey = try EncryptionKey.generateFromPrivateKeyX963(data: data!)
         let guardianInvite = policySetupHelper.guardianInvites[index]
         
-        let decryptedData = try devicePrivateKey.decrypt(data: Data(base64Encoded: guardianInvite.encryptedShard)!).toHexString()
-        return Point(x: BigInt(guardianInvite.participantId, radix: 16)!, y: BigInt(decryptedData, radix: 16)!)
+        let decryptedData = try devicePrivateKey.decrypt(base64EncodedString: guardianInvite.encryptedShard).toHexString()
+        return Point(x: guardianInvite.participantId.bigInt, y: BigInt(decryptedData, radix: 16)!)
     }
 }

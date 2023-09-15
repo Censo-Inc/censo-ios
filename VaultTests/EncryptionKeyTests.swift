@@ -38,7 +38,7 @@ final class EncryptionKeyTests: XCTestCase {
         let dataToEncrypt = generateRandomHex(lenght: 32).hexData()!
         XCTAssertEqual(
             dataToEncrypt.toBase58(),
-            try privateKey.decrypt(data: publicKey.encrypt(data: dataToEncrypt)).toBase58()
+            try privateKey.decrypt(base64EncodedString: publicKey.encrypt(data: dataToEncrypt)).toBase58()
         )
     }
 }

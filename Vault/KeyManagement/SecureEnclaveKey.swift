@@ -19,7 +19,7 @@ enum SecKeyError: Error {
 }
 
 extension SecureEnclaveKey {
-    public func encrypt(data: Data) throws -> Data {
+    public func encrypt(data: Data) throws -> Base64EncodedString {
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
             throw SecKeyError.invalidKey
         }
@@ -38,7 +38,7 @@ extension SecureEnclaveKey {
             throw error!.takeRetainedValue() as Error
         }
 
-        return encryptedData!
+        return Base64EncodedString(data: encryptedData!)
     }
 
     public func decrypt(data: Data) throws -> Data {

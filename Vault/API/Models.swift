@@ -8,10 +8,6 @@
 import Foundation
 
 
-typealias ParticipantId = String
-typealias Base58EncodedPublicKey = String
-typealias Base64EncodedData = String
-
 extension API {
     struct User: Decodable {
         var contacts: [Contact]
@@ -61,7 +57,7 @@ extension API {
     struct GuardianInvite: Encodable {
         var name: String
         var participantId: ParticipantId
-        var encryptedShard: Base64EncodedData
+        var encryptedShard: Base64EncodedString
     }
     
     struct CreateUserApiRequest: Encodable {
@@ -77,7 +73,7 @@ extension API {
         var intermediatePublicKey: Base58EncodedPublicKey
         var threshold: Int
         var guardiansToInvite: [GuardianInvite]
-        var encryptedMasterPrivateKey: Base64EncodedData
+        var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
     }
     
@@ -86,20 +82,20 @@ extension API {
     }
     
     struct AcceptGuardianshipApiRequest: Encodable {
-        var signature: Base64EncodedData
+        var signature: Base64EncodedString
         var timeMillis: Int64
     }
     
     struct ConfirmGuardianshipApiRequest: Encodable {
-        var encryptedShard: Base64EncodedData
+        var encryptedShard: Base64EncodedString
     }
     
     struct ConfirmShardReceiptApiRequest: Encodable {
-        var encryptedShard: Base64EncodedData
+        var encryptedShard: Base64EncodedString
     }
     
     struct InviteGuardianApiRequest: Encodable {
-        var deviceEncryptedPin: Base64EncodedData
+        var deviceEncryptedPin: Base64EncodedString
     }
     
     struct OwnerInfo: Decodable {
@@ -115,7 +111,7 @@ extension API {
     struct ShardAvailable: Decodable {
         var ownerInfo: OwnerInfo
         var intermediatePublicKey: Base58EncodedPublicKey
-        var shardData: Base64EncodedData
+        var shardData: Base64EncodedString
     }
     
     enum GuardianTask: Decodable {
