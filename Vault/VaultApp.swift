@@ -20,21 +20,11 @@ struct VaultApp: App {
                 ContentView()
             } else {
                 ContentView()
-                    .lockedByBiometry {
-                        Locked()
-                    }
-                    .onAppear {
-                        handlePushRegistration()
-                    }
+                    .onAppear(perform: handlePushRegistration)
             }
             #else
             ContentView()
-                .lockedByBiometry {
-                    Locked()
-                }
-                .onAppear {
-                    handlePushRegistration()
-                }
+                .onAppear(perform: handlePushRegistration)
             #endif
         }
     }
@@ -42,13 +32,7 @@ struct VaultApp: App {
     private func handlePushRegistration() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
-                if settings.authorizationStatus == .notDetermined {
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
-                        if result {
-                            UIApplication.shared.registerForRemoteNotifications()
-                        }
-                    }
-                } else if settings.authorizationStatus == .authorized {
+                if settings.authorizationStatus == .authorized {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             }

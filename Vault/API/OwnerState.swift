@@ -7,100 +7,49 @@
 
 import Foundation
 
-typealias Instant = Date
-protocol Guardian {
-    var label: String { get set }
-    var participantId: ParticipantId { get set }
-}
-
 extension API {
-    
-    enum PolicyGuardian: Codable {
-        case prospect(ProspectGuardian)
-        case trusted(TrustedGuardian)
-        
-        struct ProspectGuardian: Guardian, Codable {
-            var label: String
-            var participantId: ParticipantId
-            var status: GuardianStatus
-        }
-        
-        struct TrustedGuardian: Guardian, Codable {
-            var label: String
-            var participantId: ParticipantId
-            var attributes: GuardianStatus.Onboarded
-        }
-        
-        enum GuardianCodingKeys: String, CodingKey {
-            case type
-        }
-        
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: GuardianCodingKeys.self)
-            let type = try container.decode(String.self, forKey: .type)
-            switch type {
-            case "Prospect":
-                self = .prospect(try ProspectGuardian(from: decoder))
-            case "Trusted":
-                self = .trusted(try TrustedGuardian(from: decoder))
-            default:
-                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Guardian \(type)")
-            }
-        }
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: GuardianCodingKeys.self)
-            switch self {
-            case .prospect(let status):
-                try container.encode("Prospect", forKey: .type)
-                try status.encode(to: encoder)
-            case .trusted(let status):
-                try container.encode("Trusted", forKey: .type)
-                try status.encode(to: encoder)
-            }
-        }
+    struct ProspectGuardian: Codable {
+        var label: String
+        var invitationId: String?
+        var participantId: ParticipantId
+        var status: GuardianStatus
+    }
+
+    struct TrustedGuardian: Codable {
+        var label: String
+        var participantId: ParticipantId
+        var attributes: GuardianStatus.Onboarded
     }
     
-    
     enum GuardianStatus: Codable {
-        case initial(Initial)
+        case initial
         case invited(Invited)
-        case declined(Declined)
+        case declined
         case accepted(Accepted)
         case confirmed(Confirmed)
         case onboarded(Onboarded)
         
-        struct Initial: Codable {
-            var deviceEncryptedShard: Base64EncodedData
-        }
-        
         struct Invited: Codable {
-            var deviceEncryptedShard: Base64EncodedData
-            var deviceEncryptedPin: Base64EncodedData
-            var invitedAt: Instant
+            var invitedAt: Date
         }
-        
-        struct Declined: Codable {
-            var deviceEncryptedShard: Base64EncodedData
-        }
-        
+
         struct Accepted: Codable {
-            var deviceEncryptedShard: Base64EncodedData
             var signature: Base64EncodedData
             var timeMillis: Int64
-            var guardianTransportPublicKey: Base58EncodedPublicKey
-            var acceptedAt: Instant
+            var guardianPublicKey: Base58EncodedPublicKey
+            var acceptedAt: Date
         }
         
         struct Confirmed: Codable {
-            var guardianTransportEncryptedShard: Base64EncodedData
-            var confirmedAt: Instant
+            var guardianKeySignature: String
+            var guardianPublicKey: String
+            var timeMillis: Int64
+            var confirmedAt: Date
         }
         
         struct Onboarded: Codable {
             var guardianEncryptedData: Base64EncodedData
-            var passwordHash: Base64EncodedData
-            var createdAt: Instant
+            var createdAt: Date
         }
         
         enum GuardianStatusCodingKeys: String, CodingKey {
@@ -112,11 +61,11 @@ extension API {
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "Initial":
-                self = .initial(try Initial(from: decoder))
+                self = .initial
             case "Invited":
                 self = .invited(try Invited(from: decoder))
             case "Declined":
-                self = .declined(try Declined(from: decoder))
+                self = .declined
             case "Accepted":
                 self = .accepted(try Accepted(from: decoder))
             case "Confirmed":
@@ -131,15 +80,13 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: GuardianStatusCodingKeys.self)
             switch self {
-            case .initial(let status):
+            case .initial:
                 try container.encode("Initial", forKey: .type)
-                try status.encode(to: encoder)
             case .invited(let status):
                 try container.encode("Invited", forKey: .type)
                 try status.encode(to: encoder)
-            case .declined(let status):
+            case .declined:
                 try container.encode("Declined", forKey: .type)
-                try status.encode(to: encoder)
             case .accepted(let status):
                 try container.encode("Accepted", forKey: .type)
                 try status.encode(to: encoder)
@@ -157,32 +104,32 @@ extension API {
         var encryptedSeedPhrase: Base64EncodedData
         var seedPhraseHash: Base64EncodedData
         var label: String
-        var createdAt: Instant
+        var createdAt: Date
     }
     
     struct Vault: Codable {
         var secrets: [VaultSecret]
         var publicMasterEncryptionKey: Base58EncodedPublicKey
     }
-    struct Policy<T: Guardian>: Codable where T:Codable {
-        var createdAt: Instant
-        var guardians: [T]
+
+    struct Policy: Codable {
+        var createdAt: Date
+        var guardians: [TrustedGuardian]
         var threshold: UInt
         var encryptedMasterKey: Base64EncodedData
         var intermediateKey: Base58EncodedPublicKey
     }
     
     enum OwnerState: Codable {
-        case policySetup(PolicySetup)
+        case guardianSetup(GuardianSetup)
         case ready(Ready)
         
-        struct PolicySetup: Codable {
-            var policy: Policy<PolicyGuardian.ProspectGuardian>
-            var publicMasterEncryptionKey: Base58EncodedPublicKey
+        struct GuardianSetup: Codable {
+            var guardians: [ProspectGuardian]
         }
         
         struct Ready: Codable {
-            var policy: Policy<PolicyGuardian.TrustedGuardian>
+            var policy: Policy
             var vault: Vault
         }
         
@@ -194,8 +141,8 @@ extension API {
             let container = try decoder.container(keyedBy: OwnerStateCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
             switch type {
-            case "PolicySetup":
-                self = .policySetup(try PolicySetup(from: decoder))
+            case "GuardianSetup":
+                self = .guardianSetup(try GuardianSetup(from: decoder))
             case "Ready":
                 self = .ready(try Ready(from: decoder))
             default:
@@ -206,8 +153,8 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
             switch self {
-            case .policySetup(let policySetup):
-                try container.encode("PolicySetup", forKey: .type)
+            case .guardianSetup(let policySetup):
+                try container.encode("GuardianSetup", forKey: .type)
                 try policySetup.encode(to: encoder)
             case .ready(let ready):
                 try container.encode("Ready", forKey: .type)
@@ -215,6 +162,4 @@ extension API {
             }
         }
     }
-    
 }
-

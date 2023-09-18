@@ -34,7 +34,7 @@ struct SecureEnclaveWrapper {
     static var accessControl: SecAccessControl {
         SecAccessControlCreateWithFlags(kCFAllocatorDefault,
                                         kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-                                        [.privateKeyUsage, .biometryCurrentSet],
+                                        [.privateKeyUsage],
                                         nil)!
     }
 

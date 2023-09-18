@@ -123,13 +123,17 @@ struct PolicyEntry: View {
             return
         }
 
-        apiProvider.request(.createPolicy(
-            intermediatePublicKey: policySetupHelper.intermediatePublicKey,
-            threshold: threshold,
-            guardians: policySetupHelper.guardianInvites,
-            encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
-            masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey
-        )) { result in
+        apiProvider.request(
+            .createPolicy(
+                API.CreatePolicyApiRequest(
+                    intermediatePublicKey: policySetupHelper.intermediatePublicKey,
+                    threshold: threshold,
+                    guardiansToInvite: policySetupHelper.guardianInvites,
+                    encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
+                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey
+                )
+            )
+        ) { result in
             switch result {
             case .success(let response) where response.statusCode <= 400:
                 onSuccess()

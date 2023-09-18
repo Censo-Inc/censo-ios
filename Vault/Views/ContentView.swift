@@ -12,7 +12,7 @@ struct ContentView: View {
 
     enum SessionState {
         case idle
-        case active(DeviceKey, Vault)
+        case active(DeviceKey)
         case failedToActivate(Error)
     }
 
@@ -21,21 +21,8 @@ struct ContentView: View {
         case .idle:
             ProgressView()
                 .onAppear(perform: reloadState)
-        case .active(let deviceKey, let vault):
-            ActiveSessionView(deviceKey: deviceKey, vault: vault, onSessionInvalidated: { error in
-                session = .failedToActivate(error)
-            })
-        case .failedToActivate(let error as NSError) where error.domain == "com.apple.LocalAuthentication":
-            BiometryFailed(onRetry: reloadState)
-        case .failedToActivate(DeviceKey.DeviceKeyError.keyInvalidatedByBiometryChange):
-            InvalidatedDeviceKeyView {
-                do {
-                    try SecureEnclaveWrapper.removeDeviceKey()
-                    reloadState()
-                } catch {
-                    self.session = .failedToActivate(error)
-                }
-            }
+        case .active(let deviceKey):
+            OwnerSetup()
         case .failedToActivate:
             Text("Something went wrong")
         }
@@ -44,35 +31,17 @@ struct ContentView: View {
     private func reloadState() {
         #if DEBUG
         if CommandLine.isTesting {
-            Keychain.removeVault()
-            self.session = .active(.sample, Vault(entries: [:]))
+            self.session = .active(.sample)
             return
         }
         #endif
 
         if let deviceKey = SecureEnclaveWrapper.deviceKey() {
-            deviceKey.preauthenticatedKey { result in
-                switch result {
-                case .success(let preauthenticatedKey):
-                    do {
-                        if let encryptedVault = try Keychain.encryptedVault() {
-                            let vaultData = try preauthenticatedKey.decrypt(data: encryptedVault)
-                            let vault = try JSONDecoder().decode(Vault.self, from: vaultData)
-                            self.session = .active(deviceKey, vault)
-                        } else {
-                            self.session = .active(deviceKey, Vault(entries: [:]))
-                        }
-                    } catch {
-                        self.session = .failedToActivate(error)
-                    }
-                case .failure(let error):
-                    self.session = .failedToActivate(error)
-                }
-            }
+            self.session = .active(deviceKey)
         } else {
             do {
                 let deviceKey = try SecureEnclaveWrapper.generateDeviceKey()
-                self.session = .active(deviceKey, Vault(entries: [:]))
+                self.session = .active(deviceKey)
             } catch {
                 self.session = .failedToActivate(error)
             }

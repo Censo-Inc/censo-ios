@@ -40,11 +40,6 @@ extension SecureEnclaveKey {
 
         return encryptedData!
     }
-}
-
-struct PreauthenticatedKey<Key> where Key : SecureEnclaveKey {
-    fileprivate(set) var key: Key
-    fileprivate var secKey: SecKey
 
     public func decrypt(data: Data) throws -> Data {
         let algorithm: SecKeyAlgorithm = .eciesEncryptionCofactorVariableIVX963SHA256AESGCM
@@ -88,10 +83,6 @@ struct PreauthenticatedKey<Key> where Key : SecureEnclaveKey {
     }
 }
 
-enum PreauthSecureEnclaveKeyError: Error {
-    case keyNoLongerExists
-}
-
 extension SecureEnclaveKey {
     public func publicExternalRepresentation() throws -> Data {
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
@@ -105,19 +96,5 @@ extension SecureEnclaveKey {
         }
 
         return data!
-    }
-
-    public func preauthenticatedKey(context: LAContext) throws -> PreauthenticatedKey<Self> {
-        #if DEBUG
-        if CommandLine.isTesting {
-            return PreauthenticatedKey(key: self, secKey: self.secKey)
-        }
-        #endif
-
-        if let key = SecureEnclaveWrapper.loadKey(name: identifier, authenticationContext: context) {
-            return PreauthenticatedKey(key: self, secKey: key)
-        } else {
-            throw PreauthSecureEnclaveKeyError.keyNoLongerExists
-        }
     }
 }

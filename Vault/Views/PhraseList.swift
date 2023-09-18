@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct PhraseList: View {
-    @StateObject private var vaultStorage: VaultStorage
-
     @State private var selection: DecodedPhrase?
     @State private var error: Error? = nil
     @State private var showingAlert = false
@@ -20,15 +18,11 @@ struct PhraseList: View {
         case guardianSetup
     }
 
-    init(vaultStorage: @autoclosure @escaping () -> VaultStorage) {
-        self._vaultStorage = StateObject(wrappedValue: vaultStorage())
-    }
+    var names: [String] { [] }
 
     var body: some View {
         NavigationStack {
             List {
-                let names = vaultStorage.names
-
                 ForEach(0..<names.count, id: \.self) { i in
                     let name = names[i]
 
@@ -50,19 +44,11 @@ struct PhraseList: View {
                     }
                     .accessibilityIdentifier("addPhrase")
                 }
-
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        presentGuardianship()
-                    } label: {
-                        Image(systemName: "person.3.sequence.fill")
-                    }
-                }
             }
             .sheet(item: $currentSheet) { sheet in
                 switch sheet {
                 case .addPhrase:
-                    NewPhrase(vaultStorage: vaultStorage)
+                    NewPhrase()
                 case .guardianSetup:
                     OwnerSetup()
                 }
@@ -93,38 +79,7 @@ struct PhraseList: View {
     }
 
     private func present(name: String) {
-        vaultStorage.decodedPhrase(name: name) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let decodedPhrase):
-                    self.selection = decodedPhrase
-                case .failure(let error):
-                    self.error = error
-                    self.showingAlert = true
-                }
-            }
-        }
-    }
 
-    private func presentGuardianship() {
-        if let encryptedGuardianship = try? Keychain.encryptedGuardianShip(),
-           let deviceKey = SecureEnclaveWrapper.deviceKey() {
-            deviceKey.preauthenticatedKey { result in
-                switch result {
-                case .success(let preauthenticatedKey):
-                    if let guardianshipData = try? preauthenticatedKey.decrypt(data: encryptedGuardianship),
-                       let guardianship = try? JSONDecoder().decode(Guardianship.self, from: guardianshipData) {
-
-                    } else {
-                        break
-                    }
-                case .failure:
-                    break
-                }
-            }
-        } else {
-            currentSheet = .guardianSetup
-        }
     }
 }
 
@@ -151,7 +106,7 @@ extension DateFormatter {
 #if DEBUG
 struct PhraseList_Previews: PreviewProvider {
     static var previews: some View {
-        PhraseList(vaultStorage: VaultStorage(vault: .sample, deviceKey: .sample))
+        PhraseList()
     }
 }
 

@@ -16,23 +16,22 @@ enum API {
     case createUser(contactType: Contact.ContactType, value: String)
     case contactVerification(verificationId: String, code: String)
     case registerPushToken(String)
-    case createPolicy(
-        intermediatePublicKey: Base58EncodedPublicKey,
-        threshold: Int,
-        guardians: [GuardianInvite],
-        encryptedMasterPrivateKey: Base64EncodedData,
-        masterEncryptionPublicKey: Base58EncodedPublicKey
-    )
-    case changeGuardians(intermediatePublicKey: Base58EncodedPublicKey, guardians: [GuardianInvite])
-    case inviteGuardian(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, deviceEncryptedPin: Base64EncodedData)
-    case declineGuardianship(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId)
-    case acceptGuardianship(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, signature: Base64EncodedData, timeMillis: Int64)
-    case confirmGuardianship(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
-    case confirmShardReceived(intermediatePublicKey: Base58EncodedPublicKey, participantId: ParticipantId, encryptedShard: Base64EncodedData)
-    case guardianTasks(participantId: ParticipantId)
+
+    case createGuardian(name: String)
+    case deleteGuardian(ParticipantId)
+    case inviteGuardian(ParticipantId)
+    case confirmGuardian(ConfirmGuardianRequest)
+
+    case createPolicy(CreatePolicyApiRequest)
 
     case initBiometryVerification
     case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
+
+    struct ConfirmGuardianRequest: Codable {
+        var participantId: ParticipantId
+        var keyConfirmationSignature: String
+        var keyConfirmationTimeMillis: Int64
+    }
 }
 
 extension API: TargetType {
@@ -56,22 +55,16 @@ extension API: TargetType {
             return "v1/user"
         case .createPolicy:
             return "v1/policies"
-        case .changeGuardians(let intermediatePublicKey, _):
-            return "v1/policies/\(intermediatePublicKey)"
-        case .declineGuardianship(let intermediatePublicKey, let participantId):
-            return "v1/policies/\(intermediatePublicKey)/guardian/\(participantId)/decline"
-        case .acceptGuardianship(let intermediatePublicKey, let participantId, _, _):
-            return "v1/policies/\(intermediatePublicKey)/guardian/\(participantId)/accept"
-        case .confirmGuardianship(let intermediatePublicKey, let participantId, _):
-            return "v1/policies/\(intermediatePublicKey)/guardian/\(participantId)/confirmation"
-        case .confirmShardReceived(let intermediatePublicKey, let participantId, _):
-            return "v1/policies/\(intermediatePublicKey)/guardian/\(participantId)/shard-receipt-confirmation"
-        case .inviteGuardian(let intermediatePublicKey, let participantId, _):
-            return "v1/policies/\(intermediatePublicKey)/guardian/\(participantId)/invitation"
+        case .createGuardian:
+            return "v1/guardians"
+        case .deleteGuardian(let id):
+            return "v1/guardians/\(id)"
+        case .inviteGuardian(let id):
+            return "v1/guardians/\(id)/invite"
+        case .confirmGuardian(let request):
+            return "v1/guardians/\(request.participantId)/confirm"
         case .registerPushToken:
             return "v1/notification-tokens"
-        case .guardianTasks(let participantId):
-            return "v1/guardian-tasks/\(participantId)"
         case .initBiometryVerification:
             return "/v1/biometry-verifications"
         case .confirmBiometryVerification(let verificationId, _, _, _):
@@ -82,32 +75,30 @@ extension API: TargetType {
     var method: Moya.Method {
         switch self {
         case .minVersion,
-             .user,
-             .guardianTasks:
+             .user:
             return .get
         case .createUser,
              .contactVerification,
              .registerPushToken,
              .createPolicy,
-             .changeGuardians,
-             .declineGuardianship,
-             .acceptGuardianship,
-             .confirmGuardianship,
-             .confirmShardReceived,
+             .createGuardian,
+             .confirmGuardian,
              .inviteGuardian,
              .initBiometryVerification,
              .confirmBiometryVerification:
             return .post
+        case .deleteGuardian:
+            return .delete
         }
     }
 
     var task: Moya.Task {
         switch self {
         case .minVersion,
-             .declineGuardianship,
              .user,
-             .guardianTasks,
-             .initBiometryVerification:
+             .initBiometryVerification,
+             .inviteGuardian,
+             .deleteGuardian:
             return .requestPlain
         case .createUser(let contactType, let value):
             return .requestJSONEncodable(
@@ -122,40 +113,19 @@ extension API: TargetType {
                 "token": token,
                 "deviceType": "Ios"
             ])
-        case .createPolicy(let intermediatePublicKey, let threshold, let guardians, let encryptedMasterPrivateKey, let masterEncryptionPublicKey):
-            return .requestJSONEncodable(
-                CreatePolicyApiRequest(
-                    intermediatePublicKey: intermediatePublicKey,
-                    threshold: threshold,
-                    guardiansToInvite: guardians,
-                    encryptedMasterPrivateKey: encryptedMasterPrivateKey,
-                    masterEncryptionPublicKey: masterEncryptionPublicKey
-                )
-            )
-        case .changeGuardians(_, let guardians):
-            return .requestJSONEncodable(
-                UpdatePolicyApiRequest(guardiansToInvite: guardians)
-            )
-        case .acceptGuardianship(_, _, let signature, let timeMillis):
-            return .requestJSONEncodable(
-                AcceptGuardianshipApiRequest(signature: signature, timeMillis: timeMillis)
-            )
-        case .confirmGuardianship(_, _, let encryptedShard):
-            return .requestJSONEncodable(
-                ConfirmGuardianshipApiRequest(encryptedShard: encryptedShard)
-            )
-        case .confirmShardReceived(_, _, let encryptedShard):
-            return .requestJSONEncodable(
-                ConfirmShardReceiptApiRequest(encryptedShard: encryptedShard)
-            )
-        case .inviteGuardian(_, _, let deviceEncryptedPin):
-            return .requestJSONEncodable(
-                InviteGuardianApiRequest(deviceEncryptedPin: deviceEncryptedPin)
-            )
+        case .createPolicy(let request):
+            return .requestJSONEncodable(request)
+
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
             )
+        case .createGuardian(name: let name):
+            return .requestJSONEncodable(
+                ["name": name]
+            )
+        case .confirmGuardian(let request):
+            return .requestJSONEncodable(request)
         }
         
     }

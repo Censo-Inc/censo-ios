@@ -46,48 +46,6 @@ extension SecureEnclaveWrapper {
     }
 }
 
-extension DeviceKey {
-    enum DeviceKeyError: Error {
-        case keyInvalidatedByBiometryChange
-    }
-
-    func preauthenticatedKey(_ completion: @escaping (Result<PreauthenticatedKey<DeviceKey>, Error>) -> Void) {
-        #if DEBUG
-        if CommandLine.isTesting {
-            completion(.success(try! self.preauthenticatedKey(context: LAContext())))
-            return
-        }
-        #endif
-
-        let context = LAContext()
-        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Identify Yourself") { success, error in
-            if let error = error {
-                // not authenticated
-                completion(.failure(error))
-            } else {
-                do {
-                    let preauthenticatedKey = try self.preauthenticatedKey(context: context)
-                    let timestamp = Date()
-                    let signature = try preauthenticatedKey.signature(for: timestamp.ISO8601Format().data(using: .utf8)!)
-                    let deviceKeyTimestamp = DeviceKeyTimestamp(timestamp: timestamp, signature: signature)
-
-                    try? Keychain.saveDeviceKeyTimestamp(deviceKeyTimestamp)
-
-                    completion(.success(preauthenticatedKey))
-                } catch (let error as NSError) where error._domain == "CryptoTokenKit" && error._code == -3 {
-                    // key no longer valid
-
-                    completion(.failure(DeviceKeyError.keyInvalidatedByBiometryChange))
-                } catch {
-                    // other error
-                    print(error)
-                    completion(.failure(error))
-                }
-            }
-        }
-    }
-}
-
 #if DEBUG
 extension DeviceKey {
     static var sample: DeviceKey {

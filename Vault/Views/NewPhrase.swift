@@ -15,8 +15,6 @@ struct NewPhrase: View {
     @State private var error: Error? = nil
     @State private var showingAlert = false
 
-    var vaultStorage: VaultStorage
-
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
@@ -34,7 +32,8 @@ struct NewPhrase: View {
 
                 Button {
                     do {
-                        try vaultStorage.insertPhrase(withName: name, words: words)
+                        // TODO: Add
+
                         dismiss()
                     } catch {
                         self.error = error
@@ -76,7 +75,7 @@ struct NewPhrase: View {
 #if DEBUG
 struct NewPhrase_Previews: PreviewProvider {
     static var previews: some View {
-        NewPhrase(vaultStorage: .init(vault: .sample, deviceKey: .sample))
+        NewPhrase()
     }
 }
 #endif

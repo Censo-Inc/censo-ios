@@ -20,7 +20,7 @@ struct RetryView: View {
                 .multilineTextAlignment(.center)
                 .padding()
 
-            Button(action: retry) {
+            Button(action: action) {
                 Text("Retry")
                     .frame(width: 100)
             }
@@ -29,26 +29,6 @@ struct RetryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private func retry() {
-        switch error {
-        case MoyaError.statusCode(let response) where response.statusCode == 401:
-            if let deviceKey = SecureEnclaveWrapper.deviceKey() {
-                deviceKey.preauthenticatedKey { result in
-                    switch result {
-                    case .success:
-                        action()
-                    case .failure:
-                        break
-                    }
-                }
-            } else {
-                action()
-            }
-        default:
-            action()
-        }
     }
 
     private func showHelp() {
