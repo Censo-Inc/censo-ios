@@ -42,6 +42,7 @@ extension API {
     struct InitiBiometryVerificationApiResponse: Decodable {
         var id: String
         var sessionToken: String
+        var productionKeyText: String
         var deviceKeyId: String
         var biometryEncryptionPublicKey: String
         var firstTime: Bool

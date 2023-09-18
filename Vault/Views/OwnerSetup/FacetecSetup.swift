@@ -87,6 +87,7 @@ struct FacetecSetup: View {
             case .success(let response):
                 FaceTec.sdk.initialize(
                     deviceKeyId: response.deviceKeyId,
+                    productionKeyText: response.productionKeyText,
                     faceScanEncryptionKey: response.biometryEncryptionPublicKey
                 ) { success in
                     if success {
@@ -105,10 +106,10 @@ struct FacetecSetup: View {
 }
 
 extension FaceTecSDKProtocol {
-    func initialize(deviceKeyId: String, faceScanEncryptionKey: String, completion: @escaping (Bool) -> Void) {
+    func initialize(deviceKeyId: String, productionKeyText: String, faceScanEncryptionKey: String, completion: @escaping (Bool) -> Void) {
 #if PRODUCTION
         FaceTec.sdk.initializeInProductionMode(
-            productionKeyText: "SOMEKEYTEXT",
+            productionKeyText: productionKeyText,
             deviceKeyIdentifier: deviceKeyId, faceScanEncryptionKey:
             faceScanEncryptionKey,
             completion: completion
