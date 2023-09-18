@@ -107,12 +107,20 @@ struct FacetecSetup: View {
 
 extension FaceTecSDKProtocol {
     func initialize(deviceKeyId: String, productionKeyText: String, faceScanEncryptionKey: String, completion: @escaping (Bool) -> Void) {
+#if PRODUCTION
         FaceTec.sdk.initializeInProductionMode(
             productionKeyText: productionKeyText,
             deviceKeyIdentifier: deviceKeyId, faceScanEncryptionKey:
             faceScanEncryptionKey,
             completion: completion
         )
+#else
+        FaceTec.sdk.initializeInDevelopmentMode(
+            deviceKeyIdentifier: deviceKeyId,
+            faceScanEncryptionKey: faceScanEncryptionKey,
+            completion: completion
+        )
+#endif
     }
 }
 
