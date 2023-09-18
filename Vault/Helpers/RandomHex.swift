@@ -8,7 +8,7 @@
 import Foundation
 import BigInt
 
-func generatePartitionId() -> BigInt {
+func generateParticipantId() -> BigInt {
     return BigInt(generateRandomHex(lenght: 64), radix: 16)!
 }
     

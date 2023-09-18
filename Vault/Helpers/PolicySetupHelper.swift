@@ -11,7 +11,7 @@ import BigInt
 struct PolicySetupHelper {
     var shards: [Point]
     var masterEncryptionPublicKey: Base58EncodedPublicKey
-    var encryptedMasterPrivateKey: Base64EncodedData
+    var encryptedMasterPrivateKey: Base64EncodedString
     var intermediatePublicKey: Base58EncodedPublicKey
     var guardianInvites: [API.GuardianInvite] = []
     var deviceKey: DeviceKey
@@ -29,7 +29,7 @@ struct PolicySetupHelper {
         masterEncryptionPublicKey = try masterEncryptionKey.publicExternalRepresentation()
         let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
         intermediatePublicKey = try intermediateEncryptionKey.publicExternalRepresentation()
-        encryptedMasterPrivateKey = try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw()).base64EncodedString()
+        encryptedMasterPrivateKey = try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw())
         let sharer = try SecretSharer(
             secret: BigInt(intermediateEncryptionKey.privateKeyRaw().toHexString(), radix: 16)!,
             threshold: threshold,
@@ -40,13 +40,13 @@ struct PolicySetupHelper {
         self.guardianInvites = try guardians.map({
             API.GuardianInvite(
                 name: $0.label,
-                participantId: $0.participantId.magnitude.to32PaddedHexString(),
-                encryptedShard: try getEncryptedShard(participant: $0.participantId).base64EncodedString()
+                participantId: ParticipantId(bigInt: $0.participantId),
+                encryptedShard: try getEncryptedShard(participant: $0.participantId)
             )
         })
     }
     
-    private func getEncryptedShard(participant: BigInt) throws -> Data {
+    private func getEncryptedShard(participant: BigInt) throws -> Base64EncodedString {
         guard let shard = self.shards.first(where: {$0.x == participant}) else {
             throw PolicySetupError.badParticipantId
         }

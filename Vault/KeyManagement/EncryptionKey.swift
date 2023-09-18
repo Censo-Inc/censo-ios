@@ -15,7 +15,7 @@ struct EncryptionKey {
         self.secKey = secKey
     }
     
-    public func publicExternalRepresentation() throws -> String {
+    public func publicExternalRepresentation() throws -> Base58EncodedPublicKey {
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
             throw SecKeyError.invalidKey
         }
@@ -26,7 +26,7 @@ struct EncryptionKey {
             throw error!.takeRetainedValue() as Error
         }
 
-        return Base58.encode([UInt8](data!))
+        return try Base58EncodedPublicKey(data: data!)
     }
     
     public func privateKeyX963() throws -> Data {
@@ -44,7 +44,7 @@ struct EncryptionKey {
         return try P256.Signing.PrivateKey.init(x963Representation: privateKeyX963()).rawRepresentation
     }
     
-    public func encrypt(data: Data) throws -> Data {
+    public func encrypt(data: Data) throws -> Base64EncodedString {
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
             throw SecKeyError.invalidKey
         }
@@ -63,10 +63,10 @@ struct EncryptionKey {
             throw error!.takeRetainedValue() as Error
         }
 
-        return encryptedData!
+        return Base64EncodedString(data: encryptedData!)
     }
 
-    public func decrypt(data: Data) throws -> Data {
+    public func decrypt(base64EncodedString: Base64EncodedString) throws -> Data {
         let algorithm: SecKeyAlgorithm = .eciesEncryptionCofactorVariableIVX963SHA256AESGCM
 
         guard SecKeyIsAlgorithmSupported(secKey, .decrypt, algorithm) else {
@@ -77,7 +77,7 @@ struct EncryptionKey {
         var error: Unmanaged<CFError>?
         let decryptedData = SecKeyCreateDecryptedData(secKey,
                                                       algorithm,
-                                                      data as CFData,
+                                                      base64EncodedString.data as CFData,
                                                       &error) as Data?
 
         guard decryptedData != nil else {
@@ -87,7 +87,7 @@ struct EncryptionKey {
         return decryptedData!
     }
     
-    func signature(for data: Data) throws -> Data {
+    func signature(for data: Data) throws -> Base64EncodedString {
         let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
 
         guard SecKeyIsAlgorithmSupported(secKey, .sign, algorithm) else {
@@ -104,10 +104,10 @@ struct EncryptionKey {
             throw error!.takeRetainedValue() as Error
         }
 
-        return signature!
+        return Base64EncodedString(data: signature!)
     }
     
-    func verifySignature(for data: Data, signature: Data) throws -> Bool {
+    func verifySignature(for data: Data, signature: Base64EncodedString) throws -> Bool {
         let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
 
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
@@ -118,7 +118,7 @@ struct EncryptionKey {
         var error: Unmanaged<CFError>?
         return SecKeyVerifySignature(publicKey, algorithm,
                                      data as CFData,
-                                     signature as CFData,
+                                     signature.data as CFData,
                                      &error)
     }
     
@@ -131,7 +131,7 @@ struct EncryptionKey {
         let privateKey = SecKeyCreateWithData(data as NSData, [
             kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
             kSecAttrKeyClass: kSecAttrKeyClassPrivate,
-        ] as NSDictionary, nil)
+        ] as NSDictionary, &error)
         guard privateKey != nil else {
             throw error!.takeRetainedValue() as Error
         }
@@ -140,10 +140,10 @@ struct EncryptionKey {
     
     static func generateFromPublicExternalRepresentation(base58PublicKey: Base58EncodedPublicKey) throws -> EncryptionKey {
         var error: Unmanaged<CFError>?
-        let privateKey = SecKeyCreateWithData(Data(Base58.decode(base58PublicKey)) as NSData, [
+        let privateKey = SecKeyCreateWithData(base58PublicKey.data as NSData, [
             kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
             kSecAttrKeyClass: kSecAttrKeyClassPublic,
-        ] as NSDictionary, nil)
+        ] as NSDictionary, &error)
         guard privateKey != nil else {
             throw error!.takeRetainedValue() as Error
         }

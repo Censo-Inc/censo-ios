@@ -34,21 +34,21 @@ extension API {
         }
 
         struct Accepted: Codable {
-            var signature: Base64EncodedData
+            var signature: Base64EncodedString
             var timeMillis: Int64
             var guardianPublicKey: Base58EncodedPublicKey
             var acceptedAt: Date
         }
         
         struct Confirmed: Codable {
-            var guardianKeySignature: String
+            var guardianKeySignature: Base64EncodedString
             var guardianPublicKey: String
             var timeMillis: Int64
             var confirmedAt: Date
         }
         
         struct Onboarded: Codable {
-            var guardianEncryptedData: Base64EncodedData
+            var guardianEncryptedData: Base64EncodedString
             var createdAt: Date
         }
         
@@ -101,8 +101,8 @@ extension API {
     }
     
     struct VaultSecret: Codable, Equatable {
-        var encryptedSeedPhrase: Base64EncodedData
-        var seedPhraseHash: Base64EncodedData
+        var encryptedSeedPhrase: Base64EncodedString
+        var seedPhraseHash: Base64EncodedString
         var label: String
         var createdAt: Date
     }
@@ -116,7 +116,7 @@ extension API {
         var createdAt: Date
         var guardians: [TrustedGuardian]
         var threshold: UInt
-        var encryptedMasterKey: Base64EncodedData
+        var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
     }
     

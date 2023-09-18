@@ -55,7 +55,7 @@ struct PolicyEntry: View {
                                 guardianProspects.append(
                                     GuardianProspect(
                                         label: nextGuardianName,
-                                        participantId: generatePartitionId()
+                                        participantId: generateParticipantId()
                                     )
                                 )
                                 nextGuardianName=""

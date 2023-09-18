@@ -61,6 +61,8 @@
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
+		6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */; };
+		6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575452AB4E85B00E1D737 /* String+Hex.swift */; };
 		6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8A87032AAB83DB002E54D6 /* OwnerState.swift */; };
 		6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB230C92A9D1373009FAE91 /* Data+Hex.swift */; };
 		6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F662AA128E3001A4454 /* SecretSharer.swift */; };
@@ -76,6 +78,7 @@
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
 		6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */; };
 		6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */; };
+		6CFB21AC2AB8856800F06BA3 /* ValueWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -156,6 +159,8 @@
 		3D3796A42A8F255F00913581 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrappers.swift; sourceTree = "<group>"; };
+		6C6575452AB4E85B00E1D737 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
 		6C8A87032AAB83DB002E54D6 /* OwnerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerState.swift; sourceTree = "<group>"; };
 		6CB230C92A9D1373009FAE91 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		6CC60F5F2A9D31CA001A4454 /* VaultDebug (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VaultDebug (Integration).entitlements"; sourceTree = "<group>"; };
@@ -169,6 +174,7 @@
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
 		6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelper.swift; sourceTree = "<group>"; };
 		6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelperTests.swift; sourceTree = "<group>"; };
+		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +309,7 @@
 				3D0C1EAC2A83DE1000AB3A48 /* Vault.swift */,
 				3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */,
 				3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */,
+				6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -374,6 +381,7 @@
 				6CC60F8F2AA763EA001A4454 /* RandomHex.swift */,
 				6CC60F992AA7D8A5001A4454 /* Base58.swift */,
 				6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */,
+				6C6575452AB4E85B00E1D737 /* String+Hex.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -401,6 +409,7 @@
 				6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */,
 				6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */,
 				6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */,
+				6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */,
 			);
 			path = VaultTests;
 			sourceTree = "<group>";
@@ -595,6 +604,7 @@
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */,
+				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomHex.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
@@ -606,6 +616,7 @@
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
+				6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */,
 				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
 				6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */,
 				3D0C1EAA2A83D3FD00AB3A48 /* PhraseView.swift in Sources */,
@@ -664,6 +675,7 @@
 				6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */,
 				6CC60F982AA7D77E001A4454 /* EncryptionKeyTests.swift in Sources */,
 				6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */,
+				6CFB21AC2AB8856800F06BA3 /* ValueWrapperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1582,6 +1594,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
@@ -1599,6 +1612,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
@@ -1616,6 +1630,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
@@ -1633,6 +1648,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
@@ -1650,6 +1666,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
@@ -1667,6 +1684,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
