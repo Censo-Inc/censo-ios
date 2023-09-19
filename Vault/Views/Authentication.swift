@@ -10,9 +10,9 @@ import AuthenticationServices
 
 struct Authentication<Content>: View where Content : View {
     @State private var credentialState: ASAuthorizationAppleIDProvider.CredentialState?
-    @State private var deviceKey: Result<DeviceKey, Error>?
+    @State private var session: Result<Session, Error>?
 
-    @ViewBuilder var content: (DeviceKey) -> Content
+    @ViewBuilder var content: (Session) -> Content
 
     var body: some View {
         switch credentialState {
@@ -23,11 +23,11 @@ struct Authentication<Content>: View where Content : View {
              .revoked:
             Login(onSuccess: fetchCredentialState)
         case .authorized:
-            switch deviceKey {
+            switch session {
             case .none:
                 Text("No DeviceKey")
-            case .success(let deviceKey):
-                content(deviceKey)
+            case .success(let session):
+                content(session)
             case .failure:
                 Text("There was an error generating a device key")
             }
@@ -37,20 +37,20 @@ struct Authentication<Content>: View where Content : View {
     }
 
     private func fetchCredentialState() {
-        guard let userIdentifier = Keychain.userIdentifier else {
+        guard let userCredentials = Keychain.userCredentials else {
             self.credentialState = .notFound
             return
         }
 
-        ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userIdentifier) { state, error in
-            if let deviceKey = SecureEnclaveWrapper.deviceKey() {
-                self.deviceKey = .success(deviceKey)
+        ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userCredentials.userIdentifier) { state, error in
+            if let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
+                self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
             } else {
                 do {
-                    let deviceKey = try SecureEnclaveWrapper.generateDeviceKey()
-                    self.deviceKey = .success(deviceKey)
+                    let deviceKey = try SecureEnclaveWrapper.generateDeviceKey(userIdentifier: userCredentials.userIdentifier)
+                    self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
                 } catch {
-                    self.deviceKey = .failure(error)
+                    self.session = .failure(error)
                 }
             }
 

@@ -20,29 +20,29 @@ struct DeviceKey: SecureEnclaveKey {
 }
 
 extension SecureEnclaveWrapper {
-    static func deviceKeyIdentifier() -> String {
-        return "deviceKey"
+    static func deviceKeyIdentifier(userIdentifier: String) -> String {
+        return "deviceKey-\(userIdentifier)"
     }
 
-    static func deviceKey(authenticationContext: LAContext? = nil) -> DeviceKey? {
-        guard let secKey = loadKey(name: deviceKeyIdentifier(), authenticationContext: authenticationContext) else {
+    static func deviceKey(userIdentifier: String) -> DeviceKey? {
+        guard let secKey = loadKey(name: deviceKeyIdentifier(userIdentifier: userIdentifier), authenticationContext: nil) else {
             return nil
         }
 
-        return DeviceKey(identifier: deviceKeyIdentifier(), secKey: secKey)
+        return DeviceKey(identifier: deviceKeyIdentifier(userIdentifier: userIdentifier), secKey: secKey)
     }
 
-    static func generateDeviceKey(authenticationContext: LAContext? = nil) throws -> DeviceKey {
-        if let deviceKey = deviceKey(authenticationContext: authenticationContext) {
+    static func generateDeviceKey(userIdentifier: String) throws -> DeviceKey {
+        if let deviceKey = deviceKey(userIdentifier: userIdentifier) {
             return deviceKey
         } else {
-            let secKey = try makeAndStoreKey(name: deviceKeyIdentifier(), authenticationContext: authenticationContext)
-            return DeviceKey(identifier: deviceKeyIdentifier(), secKey: secKey)
+            let secKey = try makeAndStoreKey(name: deviceKeyIdentifier(userIdentifier: userIdentifier), authenticationContext: nil)
+            return DeviceKey(identifier: deviceKeyIdentifier(userIdentifier: userIdentifier), secKey: secKey)
         }
     }
 
-    static func removeDeviceKey() throws {
-        SecureEnclaveWrapper.removeKey(name: deviceKeyIdentifier())
+    static func removeDeviceKey(for userIdentifier: String) throws {
+        SecureEnclaveWrapper.removeKey(name: deviceKeyIdentifier(userIdentifier: userIdentifier))
     }
 }
 

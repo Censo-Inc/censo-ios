@@ -9,7 +9,14 @@ import SwiftUI
 import AuthenticationServices
 
 struct Login: View {
+    @State private var showingError = false
+    @State private var error: Error?
+
     var onSuccess: () -> Void
+
+    enum AppleSignInError: Error {
+        case noIdentityToken
+    }
 
     var body: some View {
         VStack {
@@ -26,19 +33,36 @@ struct Login: View {
                 switch result {
                     case .success(let authResults):
                         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                            Keychain.userIdentifier = appleIDCredential.user
+                            guard let idToken = appleIDCredential.identityToken else {
+                                showError(AppleSignInError.noIdentityToken)
+                                break
+                            }
+
+                            Keychain.userCredentials = .init(idToken: idToken, userIdentifier: appleIDCredential.user)
                             onSuccess()
                         } else {
                             break
                         }
                     case .failure(let error):
-                        print("Authorisation failed: \(error.localizedDescription)")
+                        showError(error)
                 }
             }
             .signInWithAppleButtonStyle(.black)
             .frame(height: 44)
             .padding()
         }
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button(role: .cancel, action: {}) {
+                Text("OK")
+            }
+        } message: { error in
+            Text("There was an error trying to sign you in: \(error.localizedDescription)")
+        }
+    }
+
+    private func showError(_ error: Error) {
+        self.showingError = true
+        self.error = error
     }
 }
 

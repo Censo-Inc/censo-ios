@@ -9,22 +9,25 @@ import Foundation
 import Moya
 import UIKit
 
-enum API {
-    case minVersion
+struct API {
+    var deviceKey: DeviceKey
+    var endpoint: Endpoint
 
-    case user
-    case signIn(identityToken: String, jwtToken: String)
-    case registerPushToken(String)
+    enum Endpoint {
+        case user
+        case signIn(UserCredentials)
+        case registerPushToken(String)
 
-    case createGuardian(name: String)
-    case deleteGuardian(ParticipantId)
-    case inviteGuardian(InviteGuardianApiRequest)
-    case confirmGuardian(ConfirmGuardianApiRequest)
+        case createGuardian(name: String)
+        case deleteGuardian(ParticipantId)
+        case inviteGuardian(InviteGuardianApiRequest)
+        case confirmGuardian(ConfirmGuardianApiRequest)
 
-    case createPolicy(CreatePolicyApiRequest)
+        case createPolicy(CreatePolicyApiRequest)
 
-    case initBiometryVerification
-    case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
+        case initBiometryVerification
+        case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
+    }
 
     struct ConfirmGuardianRequest: Codable {
         var participantId: ParticipantId
@@ -35,18 +38,11 @@ enum API {
 
 extension API: TargetType {
     var baseURL: URL {
-        switch self {
-        case .minVersion:
-            return Configuration.minVersionURL
-        default:
-            return Configuration.apiBaseURL
-        }
+        Configuration.apiBaseURL
     }
 
     var path: String {
-        switch self {
-        case .minVersion:
-            return ""
+        switch endpoint {
         case .signIn:
             return "v1/sign-in"
         case .user:
@@ -71,9 +67,8 @@ extension API: TargetType {
     }
 
     var method: Moya.Method {
-        switch self {
-        case .minVersion,
-             .user:
+        switch endpoint {
+        case .user:
             return .get
         case .deleteGuardian:
             return .delete
@@ -90,16 +85,13 @@ extension API: TargetType {
     }
 
     var task: Moya.Task {
-        switch self {
-        case .minVersion,
-             .user,
+        switch endpoint {
+        case .user,
              .initBiometryVerification,
              .deleteGuardian:
             return .requestPlain
-        case .signIn(let identityToken, let jwtToken):
-            return .requestJSONEncodable(
-                ["identityToken": identityToken, "jwtToken": jwtToken]
-            )
+        case .signIn(let credentials):
+            return .requestJSONEncodable(credentials)
         case .registerPushToken(let token):
             return .requestJSONEncodable([
                 "token": token,
@@ -132,8 +124,7 @@ extension API: TargetType {
             "X-IsApi": "true",
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
-            "X-Censo-App-Version": Bundle.main.shortVersionString,
-            "X-Censo-Device-Public-Key": (try? SecureEnclaveWrapper.deviceKey()?.publicExternalRepresentation().base58EncodedString()) ?? ""
+            "X-Censo-App-Version": Bundle.main.shortVersionString
         ]
     }
 }

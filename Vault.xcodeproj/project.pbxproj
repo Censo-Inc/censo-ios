@@ -18,7 +18,6 @@
 		3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E8F2A83AA3D00AB3A48 /* SecureEnclaveKey.swift */; };
 		3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */; };
 		3D0C1E9D2A83B53900AB3A48 /* Theme.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D0C1E9C2A83B53900AB3A48 /* Theme.xcassets */; };
-		3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E9E2A83B75E00AB3A48 /* PhraseList.swift */; };
 		3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EA42A83BDB000AB3A48 /* NewPhrase.swift */; };
 		3D0C1EA82A83C1DC00AB3A48 /* BIP39 in Frameworks */ = {isa = PBXBuildFile; productRef = 3D0C1EA72A83C1DC00AB3A48 /* BIP39 */; };
 		3D0C1EAA2A83D3FD00AB3A48 /* PhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */; };
@@ -27,9 +26,6 @@
 		3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */; };
 		3D0C1EC52A83E23C00AB3A48 /* SampleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */; };
 		3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */; };
-		3D23ACC82AAB8ECB00F55C5D /* OwnerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */; };
-		3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */; };
-		3D23ACCA2AAB8ECB00F55C5D /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */; };
 		3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */; };
 		3D23ACCE2AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */; };
 		3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; };
@@ -61,7 +57,12 @@
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		3DE0B9772ABA2ECD0001F3A3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
 		3DE0B9782ABA2ECD0001F3A3 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9762ABA2ECD0001F3A3 /* Login.swift */; };
-		3DE0B97A2ABA2EDB0001F3A3 /* Keychain+UserIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9792ABA2EDB0001F3A3 /* Keychain+UserIdentifier.swift */; };
+		3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */; };
+		3DE0B97B2ABA32B00001F3A3 /* RemoteResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */; };
+		3DE0B97D2ABA56BA0001F3A3 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B97C2ABA56BA0001F3A3 /* SignIn.swift */; };
+		3DE0B97F2ABA57160001F3A3 /* MoyaProvider+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */; };
+		3DE0B9812ABA5F0C0001F3A3 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */; };
+		3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9822ABA5F4A0001F3A3 /* Session.swift */; };
 		6C6575352AAF980800E1D737 /* GuardianOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */; };
 		6C65753C2AB3502E00E1D737 /* Base32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753B2AB3502E00E1D737 /* Base32.swift */; };
 		6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
@@ -130,7 +131,6 @@
 		3D0C1E8F2A83AA3D00AB3A48 /* SecureEnclaveKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveKey.swift; sourceTree = "<group>"; };
 		3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		3D0C1E9C2A83B53900AB3A48 /* Theme.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Theme.xcassets; sourceTree = "<group>"; };
-		3D0C1E9E2A83B75E00AB3A48 /* PhraseList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseList.swift; sourceTree = "<group>"; };
 		3D0C1EA42A83BDB000AB3A48 /* NewPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhrase.swift; sourceTree = "<group>"; };
 		3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseView.swift; sourceTree = "<group>"; };
 		3D0C1EAC2A83DE1000AB3A48 /* Vault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vault.swift; sourceTree = "<group>"; };
@@ -139,9 +139,6 @@
 		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
 		3D0C1EBA2A83E22200AB3A48 /* VaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
-		3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerSetup.swift; sourceTree = "<group>"; };
-		3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
-		3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecSetup.swift; sourceTree = "<group>"; };
 		3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolicyAndGuardianSetup.swift; sourceTree = "<group>"; };
 		3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
@@ -164,7 +161,11 @@
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		3DE0B9762ABA2ECD0001F3A3 /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
-		3DE0B9792ABA2EDB0001F3A3 /* Keychain+UserIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Keychain+UserIdentifier.swift"; sourceTree = "<group>"; };
+		3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
+		3DE0B97C2ABA56BA0001F3A3 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
+		3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaProvider+Session.swift"; sourceTree = "<group>"; };
+		3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Owner.swift; sourceTree = "<group>"; };
+		3DE0B9822ABA5F4A0001F3A3 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianOnboarding.swift; sourceTree = "<group>"; };
 		6C65753B2AB3502E00E1D737 /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
 		6C65753D2AB388D700E1D737 /* TotpUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotpUtils.swift; sourceTree = "<group>"; };
@@ -258,7 +259,7 @@
 				3D0C1E772A83A79400AB3A48 /* VaultApp.swift */,
 				3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */,
 				3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */,
-				3DE0B9792ABA2EDB0001F3A3 /* Keychain+UserIdentifier.swift */,
+				3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */,
 				3D3796932A8C226D00913581 /* API */,
 				6CB230C82A9D1354009FAE91 /* Helpers */,
 				3D0C1E9A2A83B3EE00AB3A48 /* KeyManagement */,
@@ -283,12 +284,12 @@
 		3D0C1E992A83B3CA00AB3A48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				6C6575382AB09F7200E1D737 /* Shared */,
 				3D0C1E9B2A83B40E00AB3A48 /* ButtonStyles */,
 				3D0C1E792A83A79400AB3A48 /* ContentView.swift */,
+				3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */,
+				3DE0B97C2ABA56BA0001F3A3 /* SignIn.swift */,
 				3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */,
 				3DE0B9762ABA2ECD0001F3A3 /* Login.swift */,
-				3D0C1E9E2A83B75E00AB3A48 /* PhraseList.swift */,
 				3D0C1EA42A83BDB000AB3A48 /* NewPhrase.swift */,
 				3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */,
 				3D3796982A8C2B9D00913581 /* RetryView.swift */,
@@ -323,6 +324,7 @@
 				3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */,
 				3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */,
 				6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */,
+				3DE0B9822ABA5F4A0001F3A3 /* Session.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -339,9 +341,6 @@
 			isa = PBXGroup;
 			children = (
 				3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */,
-				3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */,
-				3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */,
-				3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */,
 				3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */,
 				3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */,
 				6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */,
@@ -382,15 +381,9 @@
 				3D9817532AA15265003A4CD0 /* AuthPlugin.swift */,
 				6C8A87032AAB83DB002E54D6 /* OwnerState.swift */,
 				3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */,
+				3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */,
 			);
 			path = API;
-			sourceTree = "<group>";
-		};
-		6C6575382AB09F7200E1D737 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Shared;
 			sourceTree = "<group>";
 		};
 		6CB230C82A9D1354009FAE91 /* Helpers */ = {
@@ -619,13 +612,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D23ACCA2AAB8ECB00F55C5D /* SignIn.swift in Sources */,
 				3D0C1E8E2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift in Sources */,
 				6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */,
 				6C6575352AAF980800E1D737 /* GuardianOnboarding.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				6C65753C2AB3502E00E1D737 /* Base32.swift in Sources */,
-				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */,
@@ -638,7 +629,7 @@
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
-				3DE0B97A2ABA2EDB0001F3A3 /* Keychain+UserIdentifier.swift in Sources */,
+				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
 				3DE0B9782ABA2ECD0001F3A3 /* Login.swift in Sources */,
@@ -649,16 +640,19 @@
 				3D0C1E7A2A83A79400AB3A48 /* ContentView.swift in Sources */,
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
 				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
-				3D23ACC82AAB8ECB00F55C5D /* OwnerSetup.swift in Sources */,
+				3DE0B9812ABA5F0C0001F3A3 /* Owner.swift in Sources */,
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
-				3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */,
+				3DE0B97F2ABA57160001F3A3 /* MoyaProvider+Session.swift in Sources */,
+				3DE0B97B2ABA32B00001F3A3 /* RemoteResult.swift in Sources */,
+				3DE0B97D2ABA56BA0001F3A3 /* SignIn.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
+				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3D23ACCE2AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift in Sources */,

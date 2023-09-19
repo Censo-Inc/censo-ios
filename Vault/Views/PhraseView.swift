@@ -29,7 +29,7 @@ struct PhraseView: View {
 
     var body: some View {
         VStack (alignment: .leading){
-            Text("Added on \(DateFormatter.mediumFormatter.string(from: createdAt))")
+            Text("Added on \(DateFormatter().string(from: createdAt))")
                 .padding(20)
                 .foregroundColor(.gray)
 

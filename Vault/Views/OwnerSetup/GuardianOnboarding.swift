@@ -24,7 +24,8 @@ struct GuardianOnboarding: View {
     @State private var timerPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     @State private var totpSecret: Data?
-    
+
+    var session: Session
     var guardian: API.ProspectGuardian
     var onSuccess: () -> Void
     
@@ -121,19 +122,19 @@ struct GuardianOnboarding: View {
             let timeMillis = UInt64(Date().timeIntervalSince1970 / 1000)
             guard let participantIdData = participantId.value.data(using: .hexadecimal),
                   let timeMillisData = String(timeMillis).data(using: .utf8),
-                  let deviceKey = SecureEnclaveWrapper.deviceKey(),
-                  let signature = try? deviceKey.signature(for: accepted.guardianPublicKey.data + participantIdData + timeMillisData) else {
+                  let signature = try? session.deviceKey.signature(for: accepted.guardianPublicKey.data + participantIdData + timeMillisData) else {
                 confirmationSucceeded = false
                 return
             }
             apiProvider.decodableRequest(
-                .confirmGuardian(
+                with: session,
+                endpoint: .confirmGuardian(
                     API.ConfirmGuardianApiRequest(
                         participantId: participantId,
                         keyConfirmationSignature: Base64EncodedString(data: signature),
                         keyConfirmationTimeMillis: timeMillis
                     )
-                 )
+                )
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -166,14 +167,14 @@ struct GuardianOnboarding: View {
     }
     
     private func inviteGuardian() {
-        guard let deviceKey = SecureEnclaveWrapper.deviceKey(),
-              let secret = try? generateBase32().decodeBase32(),
-              let deviceEncryptedTotpSecret = try? deviceKey.encrypt(data: secret) else {
+        guard let secret = try? generateBase32().decodeBase32(),
+              let deviceEncryptedTotpSecret = try? session.deviceKey.encrypt(data: secret) else {
             showError(PolicySetupError.cannotCreateTotpSecret)
             return
         }
         apiProvider.decodableRequest(
-            .inviteGuardian(
+            with: session,
+            endpoint: .inviteGuardian(
                 API.InviteGuardianApiRequest(
                     participantId: guardian.participantId,
                     deviceEncryptedTotpSecret: deviceEncryptedTotpSecret
@@ -191,7 +192,7 @@ struct GuardianOnboarding: View {
     }
     
     private func reloadUser() {
-        apiProvider.decodableRequest(.user) { (result: Result<API.User, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
                 onOwnerStateUpdate(ownerState: user.ownerState)
@@ -208,9 +209,8 @@ struct GuardianOnboarding: View {
                 if let prospectGuardian = guardianSetup.guardians.first(where: {$0.participantId == guardian.participantId}) {
                     if (self.invitationId != prospectGuardian.invitationId) {
                         self.invitationId = prospectGuardian.invitationId
-                        if let deviceKey = SecureEnclaveWrapper.deviceKey(),
-                           let deviceEncryptedTotpSecret = prospectGuardian.deviceEncryptedTotpSecret,
-                           let totpSecret = try? deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
+                        if let deviceEncryptedTotpSecret = prospectGuardian.deviceEncryptedTotpSecret,
+                           let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
                             self.totpSecret = totpSecret
                         }
                     }

@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Moya
 
 struct ContentView: View {
     var body: some View {
-        Authentication { deviceKey in
-            OwnerSetup()
+        Authentication { session in
+            Owner(session: session)
         }
     }
 }

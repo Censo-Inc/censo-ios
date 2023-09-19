@@ -11,6 +11,7 @@ import FaceTecSDK
 struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     @Environment(\.apiProvider) var apiProvider
 
+    var session: Session
     var verificationId: String
     var sessionToken: String
     var onBack: () -> Void
@@ -31,7 +32,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     typealias Coordinator = FacetecUIKitWrapperCoordinator
 
     func makeCoordinator() -> Coordinator {
-        FacetecUIKitWrapperCoordinator(apiProvider: apiProvider, verificationId: verificationId, onSuccess: onSuccess, onBack: onBack, onError: onError)
+        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onSuccess: onSuccess, onBack: onBack, onError: onError)
     }
 }
 
@@ -40,13 +41,15 @@ struct FaceTecSessionError: Error {
 }
 
 class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate {
+    var session: Session
     var apiProvider: MoyaProvider<API>
     var verificationId: String
     var onSuccess: () -> Void
     var onBack: () -> Void
     var onError: (Error) -> Void
 
-    init(apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping () -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void) {
+    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping () -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void) {
+        self.session = session
         self.apiProvider = apiProvider
         self.verificationId = verificationId
         self.onSuccess = onSuccess
@@ -69,12 +72,15 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
     }
 
     private func uploadResultsToServer(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) { // Send facescan to server
-        apiProvider.decodableRequest(.confirmBiometryVerification(
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .confirmBiometryVerification(
                 verificationId: verificationId,
                 faceScan: sessionResult.faceScanBase64 ?? "",
                 auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
                 lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
-        )) { [weak self] (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
+            )
+        ) { [weak self] (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 FaceTecCustomization.setOverrideResultScreenSuccessMessage("Authenticated")

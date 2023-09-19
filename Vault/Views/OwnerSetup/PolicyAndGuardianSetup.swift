@@ -27,7 +27,8 @@ struct  PolicyAndGuardianSetup: View {
     @State private var error: Error?
     @State private var showingAdd = false
     @State private var allGuardiansConfirmed = false
-    
+
+    var session: Session
     var onSuccess: () -> Void
     
     var body: some View {
@@ -56,7 +57,7 @@ struct  PolicyAndGuardianSetup: View {
                                     }
                                 default:
                                     NavigationLink(guardian.label) {
-                                        GuardianOnboarding(guardian: guardian, onSuccess: reloadUser)
+                                        GuardianOnboarding(session: session, guardian: guardian, onSuccess: reloadUser)
                                     }
                                 }
                             }.onDelete(perform: deleteGuardian)
@@ -139,7 +140,7 @@ struct  PolicyAndGuardianSetup: View {
     
     func deleteGuardian(indexSet: IndexSet) {
         if let participantToDelete = indexSet.map({ self.guardianProspects[$0].participantId }).first {
-            apiProvider.request(.deleteGuardian(participantToDelete)) { result in
+            apiProvider.request(with: session, endpoint: .deleteGuardian(participantToDelete)) { result in
                 switch result {
                 case .success(let response) where response.statusCode < 400:
                     DispatchQueue.main.async {
@@ -178,7 +179,8 @@ struct  PolicyAndGuardianSetup: View {
         }
 
         apiProvider.request(
-            .createPolicy(
+            with: session,
+            endpoint: .createPolicy(
                 API.CreatePolicyApiRequest(
                     intermediatePublicKey: policySetupHelper.intermediatePublicKey,
                     threshold: threshold,
@@ -201,7 +203,7 @@ struct  PolicyAndGuardianSetup: View {
     }
     
     private func createGuardian(name: String) {
-        apiProvider.decodableRequest(.createGuardian(name: name)) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .createGuardian(name: name)) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
                     onOwnerStateUpdate(ownerState: response.ownerState)
@@ -242,7 +244,7 @@ struct  PolicyAndGuardianSetup: View {
     }
     
     private func reloadUser() {
-        apiProvider.decodableRequest(.user) { (result: Result<API.User, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
                 onOwnerStateUpdate(ownerState: user.ownerState)
@@ -254,8 +256,22 @@ struct  PolicyAndGuardianSetup: View {
     }
 }
 
+#if DEBUG
 struct PolicyAndGuardianSetup_Previews: PreviewProvider {
     static var previews: some View {
-        PolicyAndGuardianSetup(onSuccess: {})
+        PolicyAndGuardianSetup(session: .sample, onSuccess: {})
     }
 }
+
+extension Session {
+    static var sample: Self {
+        .init(deviceKey: .sample, userCredentials: .sample)
+    }
+}
+
+extension UserCredentials {
+    static var sample: Self {
+        .init(idToken: Data(), userIdentifier: "userIdentifier")
+    }
+}
+#endif

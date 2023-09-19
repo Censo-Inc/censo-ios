@@ -25,6 +25,7 @@ struct FacetecSetup: View {
         case error(Error)
     }
 
+    var session: Session
     var userGuid: String
     var onSuccess: () -> Void
 
@@ -46,7 +47,8 @@ struct FacetecSetup: View {
             }
             .onAppear {
                 apiProvider.request(
-                    .confirmBiometryVerification(
+                    with: session,
+                    endpoint: .confirmBiometryVerification(
                         verificationId: initBiometryResponse.id,
                         faceScan: userGuid.data(using: .utf8)!.base64EncodedString(),
                         auditTrailImage: userGuid.data(using: .utf8)!.base64EncodedString(),
@@ -82,7 +84,7 @@ struct FacetecSetup: View {
     }
 
     private func prepareBiometryVerification() {
-        apiProvider.decodableRequest(.initBiometryVerification) { (result: Result<API.InitiBiometryVerificationApiResponse, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitiBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 FaceTec.sdk.initialize(
@@ -128,7 +130,7 @@ extension FaceTecSDKProtocol {
 struct FacetecSetup_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecSetup(userGuid: "", onSuccess: {})
+            FacetecSetup(session: .sample, userGuid: "", onSuccess: {})
         }
     }
 }

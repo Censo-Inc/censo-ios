@@ -70,8 +70,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
         debugPrint("didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken.toHexString())")
-        if let deviceKey = SecureEnclaveWrapper.deviceKey() {
-            provider.request(.registerPushToken(deviceToken.toHexString())) { result in
+        if let userCredentials = Keychain.userCredentials, let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
+            provider.request(API(deviceKey: deviceKey, endpoint: .registerPushToken(deviceToken.toHexString()))) { result in
                 switch result {
                 case .failure(let error):
                     debugPrint("Error submitting push token: \(error.localizedDescription)")
