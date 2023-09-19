@@ -29,11 +29,9 @@
 		3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */; };
 		3D23ACC82AAB8ECB00F55C5D /* OwnerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */; };
 		3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */; };
-		3D23ACCA2AAB8ECB00F55C5D /* ContactSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */; };
-		3D23ACCB2AAB8ECB00F55C5D /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC32AAB8ECB00F55C5D /* Verification.swift */; };
-		3D23ACCC2AAB8ECB00F55C5D /* PhoneSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */; };
+		3D23ACCA2AAB8ECB00F55C5D /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */; };
 		3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */; };
-		3D23ACCE2AAB8ECB00F55C5D /* PolicyEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */; };
+		3D23ACCE2AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */; };
 		3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; };
 		3D23ACD12AAB8F0200F55C5D /* FaceTecSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3D23ACDA2AB22C9200F55C5D /* GuardianApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */; };
@@ -61,6 +59,9 @@
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
+		6C6575352AAF980800E1D737 /* GuardianOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */; };
+		6C65753C2AB3502E00E1D737 /* Base32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753B2AB3502E00E1D737 /* Base32.swift */; };
+		6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
 		6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */; };
 		6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575452AB4E85B00E1D737 /* String+Hex.swift */; };
 		6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8A87032AAB83DB002E54D6 /* OwnerState.swift */; };
@@ -72,7 +73,7 @@
 		6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */; };
 		6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8B2AA134F8001A4454 /* raygun4apple */; };
 		6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8D2AA134FC001A4454 /* BigInt */; };
-		6CC60F902AA763EA001A4454 /* RandomHex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomHex.swift */; };
+		6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */; };
 		6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
 		6CC60F982AA7D77E001A4454 /* EncryptionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */; };
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
@@ -137,11 +138,9 @@
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
 		3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerSetup.swift; sourceTree = "<group>"; };
 		3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSetup.swift; sourceTree = "<group>"; };
-		3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactSetup.swift; sourceTree = "<group>"; };
-		3D23ACC32AAB8ECB00F55C5D /* Verification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
-		3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneSetup.swift; sourceTree = "<group>"; };
+		3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecSetup.swift; sourceTree = "<group>"; };
-		3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolicyEntry.swift; sourceTree = "<group>"; };
+		3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolicyAndGuardianSetup.swift; sourceTree = "<group>"; };
 		3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
 		3D23ACD72AB22C9100F55C5D /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianApp.swift; sourceTree = "<group>"; };
@@ -160,6 +159,9 @@
 		3D3796A42A8F255F00913581 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianOnboarding.swift; sourceTree = "<group>"; };
+		6C65753B2AB3502E00E1D737 /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
+		6C65753D2AB388D700E1D737 /* TotpUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotpUtils.swift; sourceTree = "<group>"; };
 		6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrappers.swift; sourceTree = "<group>"; };
 		6C6575452AB4E85B00E1D737 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
 		6C8A87032AAB83DB002E54D6 /* OwnerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerState.swift; sourceTree = "<group>"; };
@@ -169,7 +171,7 @@
 		6CC60F682AA1292C001A4454 /* BigInt+Recovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BigInt+Recovery.swift"; sourceTree = "<group>"; };
 		6CC60F7C2AA13466001A4454 /* VaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretSharerTests.swift; sourceTree = "<group>"; };
-		6CC60F8F2AA763EA001A4454 /* RandomHex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomHex.swift; sourceTree = "<group>"; };
+		6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomUtils.swift; sourceTree = "<group>"; };
 		6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKey.swift; sourceTree = "<group>"; };
 		6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyTests.swift; sourceTree = "<group>"; };
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 		3D0C1E992A83B3CA00AB3A48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6C6575382AB09F7200E1D737 /* Shared */,
 				3D0C1E9B2A83B40E00AB3A48 /* ButtonStyles */,
 				3D0C1E792A83A79400AB3A48 /* ContentView.swift */,
 				3D0C1E9E2A83B75E00AB3A48 /* PhraseList.swift */,
@@ -329,11 +332,10 @@
 				3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */,
 				3D23ACC02AAB8ECB00F55C5D /* OwnerSetup.swift */,
 				3D23ACC12AAB8ECB00F55C5D /* UserSetup.swift */,
-				3D23ACC22AAB8ECB00F55C5D /* ContactSetup.swift */,
-				3D23ACC32AAB8ECB00F55C5D /* Verification.swift */,
-				3D23ACC42AAB8ECB00F55C5D /* PhoneSetup.swift */,
+				3D23ACC22AAB8ECB00F55C5D /* SignIn.swift */,
 				3D23ACC52AAB8ECB00F55C5D /* FacetecSetup.swift */,
-				3D23ACC62AAB8ECB00F55C5D /* PolicyEntry.swift */,
+				3D23ACC62AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift */,
+				6C6575342AAF980800E1D737 /* GuardianOnboarding.swift */,
 			);
 			path = OwnerSetup;
 			sourceTree = "<group>";
@@ -375,14 +377,23 @@
 			path = API;
 			sourceTree = "<group>";
 		};
+		6C6575382AB09F7200E1D737 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		6CB230C82A9D1354009FAE91 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				6CB230C92A9D1373009FAE91 /* Data+Hex.swift */,
-				6CC60F8F2AA763EA001A4454 /* RandomHex.swift */,
+				6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */,
 				6CC60F992AA7D8A5001A4454 /* Base58.swift */,
 				6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */,
 				6C6575452AB4E85B00E1D737 /* String+Hex.swift */,
+				6C65753B2AB3502E00E1D737 /* Base32.swift */,
+				6C65753D2AB388D700E1D737 /* TotpUtils.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -599,15 +610,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D23ACCA2AAB8ECB00F55C5D /* ContactSetup.swift in Sources */,
+				3D23ACCA2AAB8ECB00F55C5D /* SignIn.swift in Sources */,
 				3D0C1E8E2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift in Sources */,
 				6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */,
+				6C6575352AAF980800E1D737 /* GuardianOnboarding.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
+				6C65753C2AB3502E00E1D737 /* Base32.swift in Sources */,
 				3D0C1E9F2A83B75E00AB3A48 /* PhraseList.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Recovery.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecSetup.swift in Sources */,
-				6CC60F902AA763EA001A4454 /* RandomHex.swift in Sources */,
+				6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
 				3D3796A52A8F255F00913581 /* Models.swift in Sources */,
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
@@ -630,14 +643,13 @@
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
 				3D23ACC92AAB8ECB00F55C5D /* UserSetup.swift in Sources */,
-				3D23ACCB2AAB8ECB00F55C5D /* Verification.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
-				3D23ACCC2AAB8ECB00F55C5D /* PhoneSetup.swift in Sources */,
+				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
-				3D23ACCE2AAB8ECB00F55C5D /* PolicyEntry.swift in Sources */,
+				3D23ACCE2AAB8ECB00F55C5D /* PolicyAndGuardianSetup.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1212,6 +1224,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG INTEGRATION";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1448,6 +1461,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = INTEGRATION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1594,13 +1608,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1612,13 +1627,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1630,13 +1646,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1648,13 +1665,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1666,13 +1684,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1684,13 +1703,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.VaultTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

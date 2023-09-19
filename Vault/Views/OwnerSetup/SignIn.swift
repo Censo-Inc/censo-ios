@@ -6,41 +6,30 @@
 //
 
 import SwiftUI
+import CryptoKit
 import Moya
 
-struct ContactSetup: View {
+struct SignIn: View {
     @Environment(\.apiProvider) var apiProvider
 
-    @State private var contactType: API.Contact.ContactType = .email
     @State private var value: String = ""
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
 
-    var onSuccess: (PendingContactVerification) -> Void
+    var onSuccess: () -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
             Spacer()
 
-            Text("    We need to collect and verify your contact information in the event you need to recover your secret")
+            Text("    Login in with your Apple Id")
 
             Spacer()
                 .frame(maxHeight: 60)
 
-            HStack {
-                Text("Contact method:")
-                    .font(.title2)
-                Spacer()
 
-                Picker("Contact Method", selection: $contactType) {
-                    Text("Email").tag(API.Contact.ContactType.email)
-                    Text("SMS").tag(API.Contact.ContactType.phone)
-                }
-                .tint(.Censo.red)
-            }
-
-            TextField("Type here", text: $value)
+            TextField("Type Apple Id here", text: $value)
                 .font(.title)
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
@@ -55,7 +44,7 @@ struct ContactSetup: View {
                     if inProgress {
                         ProgressView()
                     } else {
-                        Text("Verify")
+                        Text("Sign In")
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -82,10 +71,12 @@ struct ContactSetup: View {
     private func createUser() {
         inProgress = true
 
-        apiProvider.decodableRequest(.createUser(contactType: contactType, value: value)) { (result: Result<API.CreateUserApiResponse, MoyaError>) in
+        apiProvider.request(.signIn(identityToken: Data(SHA256.hash(data: value.data(using: .utf8)!)).toHexString(), jwtToken: "")) { result in
             switch result {
+            case .success(let response) where response.statusCode < 400:
+                onSuccess()
             case .success(let response):
-                onSuccess(PendingContactVerification(contactType: .email, contactValue: value, verificationId: response.verificationId))
+                showError(MoyaError.statusCode(response))
             case .failure(let error):
                 showError(error)
             }
@@ -119,10 +110,10 @@ struct BackButtonBar: View {
 
 
 #if DEBUG
-struct EmailSetup_Previews: PreviewProvider {
+struct SignIn_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ContactSetup(onSuccess: { _ in })
+            SignIn(onSuccess: {})
         }
     }
 }

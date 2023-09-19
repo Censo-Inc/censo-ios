@@ -12,29 +12,33 @@ import BigInt
 final class PolicySetupHelperTests: XCTestCase {
     
     func testPolicySetupAndRecovery() throws {
-        let deviceKey = DeviceKey.sample
-        let guardians = [
-            GuardianProspect(label: "Guardian 1", participantId: generateParticipantId()),
-            GuardianProspect(label: "Guardian 2", participantId: generateParticipantId()),
-            GuardianProspect(label: "Guardian 2", participantId: generateParticipantId())
+        let guardianEncryptionKeys = [
+            try EncryptionKey.generateRandomKey(),
+            try EncryptionKey.generateRandomKey(),
+            try EncryptionKey.generateRandomKey()
         ]
-        let policySetupHelper = try PolicySetupHelper(threshold: 2, guardians: guardians, deviceKey: deviceKey)
-        
+        let guardians = [
+            (ParticipantId(bigInt: generateParticipantId()), try guardianEncryptionKeys[0].publicExternalRepresentation()),
+            (ParticipantId(bigInt: generateParticipantId()), try guardianEncryptionKeys[1].publicExternalRepresentation()),
+            (ParticipantId(bigInt: generateParticipantId()), try guardianEncryptionKeys[2].publicExternalRepresentation())
+        ]
+        let policySetupHelper = try PolicySetupHelper(threshold: 2, guardians: guardians)
+
         // encrypt some data with master key so we test recovery
         let seedPhrase = "Seed Phrase"
         let encryptedSeedPhrase = try EncryptionKey.generateFromPublicExternalRepresentation(
             base58PublicKey: policySetupHelper.masterEncryptionPublicKey
         ).encrypt(data: Data(seedPhrase.utf8))
-        
+
         // recover the intermediate key from shards
         let recoveredIntermediatePrivateKeyData = try SecretSharerUtils.recoverSecret(
             shares: [
-                getPoint(policySetupHelper, 0, deviceKey),
-                getPoint(policySetupHelper, 1, deviceKey),
+                getPoint(policySetupHelper, 0, guardianEncryptionKeys[0]),
+                getPoint(policySetupHelper, 1, guardianEncryptionKeys[1]),
             ],
             order: ORDER
         )
-    
+
         let recoveredIntermediatePrivateKey = try EncryptionKey.generateFromPrivateKeyRaw(data: recoveredIntermediatePrivateKeyData.magnitude.serialize())
         XCTAssertEqual(
             policySetupHelper.intermediatePublicKey,
@@ -50,7 +54,7 @@ final class PolicySetupHelperTests: XCTestCase {
             policySetupHelper.masterEncryptionPublicKey,
             try recoveredMasterPrivateKey.publicExternalRepresentation()
         )
-        
+
         // make sure we can decrypt with recovered master and get back original data
         XCTAssertEqual(
             String(decoding: try recoveredMasterPrivateKey.decrypt(base64EncodedString: encryptedSeedPhrase), as: UTF8.self),
@@ -58,16 +62,10 @@ final class PolicySetupHelperTests: XCTestCase {
         )
     }
     
-    func getPoint(_ policySetupHelper: PolicySetupHelper, _ index: Int, _ deviceKey: DeviceKey) throws -> Point {
-        var error: Unmanaged<CFError>?
-        let data = SecKeyCopyExternalRepresentation(deviceKey.secKey, &error) as Data?
-        guard data != nil else {
-            throw error!.takeRetainedValue() as Error
-        }
-        let devicePrivateKey = try EncryptionKey.generateFromPrivateKeyX963(data: data!)
-        let guardianInvite = policySetupHelper.guardianInvites[index]
-        
-        let decryptedData = try devicePrivateKey.decrypt(base64EncodedString: guardianInvite.encryptedShard).toHexString()
-        return Point(x: guardianInvite.participantId.bigInt, y: BigInt(decryptedData, radix: 16)!)
+    func getPoint(_ policySetupHelper: PolicySetupHelper, _ index: Int, _ guardianKey: EncryptionKey) throws -> Point {
+
+        let guardian = policySetupHelper.guardians[index]
+        let decryptedData = try guardianKey.decrypt(base64EncodedString: guardian.encryptedShard).toHexString()
+        return Point(x: guardian.participantId.bigInt, y: BigInt(decryptedData, radix: 16)!)
     }
 }

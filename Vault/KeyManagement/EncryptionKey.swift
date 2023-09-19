@@ -140,14 +140,14 @@ struct EncryptionKey {
     
     static func generateFromPublicExternalRepresentation(base58PublicKey: Base58EncodedPublicKey) throws -> EncryptionKey {
         var error: Unmanaged<CFError>?
-        let privateKey = SecKeyCreateWithData(base58PublicKey.data as NSData, [
+        let publicKey = SecKeyCreateWithData(base58PublicKey.data as NSData, [
             kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
             kSecAttrKeyClass: kSecAttrKeyClassPublic,
         ] as NSDictionary, &error)
-        guard privateKey != nil else {
+        guard publicKey != nil else {
             throw error!.takeRetainedValue() as Error
         }
-        return EncryptionKey(secKey: privateKey!)
+        return EncryptionKey(secKey: publicKey!)
     }
     
     static func generateRandomKey() throws -> EncryptionKey {

@@ -114,6 +114,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
+extension Notification.Name {
+    static let userDidReceiveRemoteNotification = Notification.Name("userDidReceiveRemoteNotification")
+}
+
 extension UINavigationController: UIGestureRecognizerDelegate {
     override open func viewDidLoad() {
         super.viewDidLoad()

@@ -8,22 +8,25 @@
 import Foundation
 import BigInt
 
+enum PolicySetupError: Error {
+    case badParticipantId
+    case badGuardianSignature
+    case shardEncryptionError
+    case badPublicKey
+    case cannotCreateTotpSecret
+}
+
 struct PolicySetupHelper {
     var shards: [Point]
     var masterEncryptionPublicKey: Base58EncodedPublicKey
     var encryptedMasterPrivateKey: Base64EncodedString
     var intermediatePublicKey: Base58EncodedPublicKey
-    var guardianInvites: [API.GuardianInvite] = []
-    var deviceKey: DeviceKey
-    
-    enum PolicySetupError: Error {
-        case badParticipantId
-    }
+    var guardians: [API.Guardian] = []
+
 
     init(
         threshold: Int,
-        guardians: [GuardianProspect],
-        deviceKey: DeviceKey
+        guardians: [(ParticipantId, Base58EncodedPublicKey)]
     ) throws {
         let masterEncryptionKey = try EncryptionKey.generateRandomKey()
         masterEncryptionPublicKey = try masterEncryptionKey.publicExternalRepresentation()
@@ -33,23 +36,21 @@ struct PolicySetupHelper {
         let sharer = try SecretSharer(
             secret: BigInt(intermediateEncryptionKey.privateKeyRaw().toHexString(), radix: 16)!,
             threshold: threshold,
-            participants: guardians.map({$0.participantId})
+            participants: guardians.map({$0.0.bigInt})
         )
         self.shards = sharer.shards
-        self.deviceKey = deviceKey
-        self.guardianInvites = try guardians.map({
-            API.GuardianInvite(
-                name: $0.label,
-                participantId: ParticipantId(bigInt: $0.participantId),
-                encryptedShard: try getEncryptedShard(participant: $0.participantId)
+        self.guardians = try guardians.map({
+            API.Guardian(
+                participantId: $0.0,
+                encryptedShard: try getEncryptedShard(participantId: $0.0.bigInt, guardianPublicKey: $0.1)
             )
         })
     }
     
-    private func getEncryptedShard(participant: BigInt) throws -> Base64EncodedString {
-        guard let shard = self.shards.first(where: {$0.x == participant}) else {
+    private func getEncryptedShard(participantId: BigInt, guardianPublicKey: Base58EncodedPublicKey) throws -> Base64EncodedString {
+        guard let shard = self.shards.first(where: {$0.x == participantId}) else {
             throw PolicySetupError.badParticipantId
         }
-        return try deviceKey.encrypt(data: shard.y.magnitude.serialize())
+        return try EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: guardianPublicKey).encrypt(data: shard.y.magnitude.serialize())
     }
 }

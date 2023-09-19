@@ -11,6 +11,7 @@ extension API {
     struct ProspectGuardian: Codable {
         var label: String
         var invitationId: String?
+        var deviceEncryptedTotpSecret: Base64EncodedString?
         var participantId: ParticipantId
         var status: GuardianStatus
     }
@@ -42,13 +43,13 @@ extension API {
         
         struct Confirmed: Codable {
             var guardianKeySignature: Base64EncodedString
-            var guardianPublicKey: String
+            var guardianPublicKey: Base58EncodedPublicKey
             var timeMillis: Int64
-            var confirmedAt: Date
+            var createdAt: Date
         }
         
         struct Onboarded: Codable {
-            var guardianEncryptedData: Base64EncodedString
+            var guardianEncryptedShard: Base64EncodedString
             var createdAt: Date
         }
         
@@ -153,9 +154,9 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
             switch self {
-            case .guardianSetup(let policySetup):
+            case .guardianSetup(let guardianSetup):
                 try container.encode("GuardianSetup", forKey: .type)
-                try policySetup.encode(to: encoder)
+                try guardianSetup.encode(to: encoder)
             case .ready(let ready):
                 try container.encode("Ready", forKey: .type)
                 try ready.encode(to: encoder)

@@ -79,7 +79,7 @@ struct Base64EncodedString: Codable, Equatable {
     }
 }
 
-struct ParticipantId: Codable, Equatable {
+struct ParticipantId: Codable, Equatable, Hashable {
     var value: String
     var bigInt: BigInt
     
@@ -107,6 +107,10 @@ struct ParticipantId: Codable, Equatable {
         } catch {
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid ParticipantId")
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
     }
     
     func encode(to encoder: Encoder) throws {

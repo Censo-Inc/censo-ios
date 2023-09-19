@@ -12,7 +12,7 @@ struct OwnerSetup: View {
 
     @State private var loadingState: UserLoadingState = .idle
     @State private var transitionForward = true
-    @State private var setupStep: SetupStep = .contact
+    @State private var setupStep: SetupStep = .signIn
     @State private var inProgress = false
 
     enum UserLoadingState {
@@ -22,16 +22,16 @@ struct OwnerSetup: View {
     }
 
     enum SetupStep {
-        case contact
-        case contactVerification(PendingContactVerification)
-        case faceTec(API.Contact)
+        case signIn
+        case faceTec(String)
+        case policyAndGuardianSetup
         case done
 
         var stepNumber: Int {
             switch self {
-            case .contact: return 1
-            case .contactVerification: return 2
-            case .faceTec: return 3
+            case .signIn: return 1
+            case .faceTec: return 2
+            case .policyAndGuardianSetup: return 3
             case .done: return 4
             }
         }
@@ -111,7 +111,7 @@ struct OwnerSetup: View {
 
 extension API.User {
     static var empty: Self {
-        .init(contacts: [], biometricVerificationRequired: true)
+        .init(userGuid: "")
     }
 }
 

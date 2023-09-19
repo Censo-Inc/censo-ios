@@ -13,14 +13,13 @@ enum API {
     case minVersion
 
     case user
-    case createUser(contactType: Contact.ContactType, value: String)
-    case contactVerification(verificationId: String, code: String)
+    case signIn(identityToken: String, jwtToken: String)
     case registerPushToken(String)
 
     case createGuardian(name: String)
     case deleteGuardian(ParticipantId)
-    case inviteGuardian(ParticipantId)
-    case confirmGuardian(ConfirmGuardianRequest)
+    case inviteGuardian(InviteGuardianApiRequest)
+    case confirmGuardian(ConfirmGuardianApiRequest)
 
     case createPolicy(CreatePolicyApiRequest)
 
@@ -48,21 +47,20 @@ extension API: TargetType {
         switch self {
         case .minVersion:
             return ""
-        case .contactVerification(let verificationId, _):
-            return "v1/contact-verifications/\(verificationId)/code"
-        case .createUser,
-             .user:
+        case .signIn:
+            return "v1/sign-in"
+        case .user:
             return "v1/user"
         case .createPolicy:
             return "v1/policies"
         case .createGuardian:
             return "v1/guardians"
         case .deleteGuardian(let id):
-            return "v1/guardians/\(id)"
-        case .inviteGuardian(let id):
-            return "v1/guardians/\(id)/invite"
+            return "v1/guardians/\(id.value)"
+        case .inviteGuardian(let request):
+            return "v1/guardians/\(request.participantId.value)/invitation"
         case .confirmGuardian(let request):
-            return "v1/guardians/\(request.participantId)/confirm"
+            return "v1/guardians/\(request.participantId.value)/confirmation"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .initBiometryVerification:
@@ -77,8 +75,9 @@ extension API: TargetType {
         case .minVersion,
              .user:
             return .get
-        case .createUser,
-             .contactVerification,
+        case .deleteGuardian:
+            return .delete
+        case .signIn,
              .registerPushToken,
              .createPolicy,
              .createGuardian,
@@ -87,8 +86,6 @@ extension API: TargetType {
              .initBiometryVerification,
              .confirmBiometryVerification:
             return .post
-        case .deleteGuardian:
-            return .delete
         }
     }
 
@@ -97,17 +94,12 @@ extension API: TargetType {
         case .minVersion,
              .user,
              .initBiometryVerification,
-             .inviteGuardian,
              .deleteGuardian:
             return .requestPlain
-        case .createUser(let contactType, let value):
+        case .signIn(let identityToken, let jwtToken):
             return .requestJSONEncodable(
-                CreateUserApiRequest(contactType: contactType, value: value)
+                ["identityToken": identityToken, "jwtToken": jwtToken]
             )
-        case .contactVerification(_, let code):
-            return .requestJSONEncodable([
-                "verificationCode": code
-            ])
         case .registerPushToken(let token):
             return .requestJSONEncodable([
                 "token": token,
@@ -116,6 +108,9 @@ extension API: TargetType {
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
 
+        case .confirmGuardian(let request):
+            return .requestJSONEncodable(request)
+            
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
@@ -124,7 +119,8 @@ extension API: TargetType {
             return .requestJSONEncodable(
                 ["name": name]
             )
-        case .confirmGuardian(let request):
+            
+        case .inviteGuardian(let request):
             return .requestJSONEncodable(request)
         }
         

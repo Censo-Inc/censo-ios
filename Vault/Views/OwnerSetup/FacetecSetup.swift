@@ -25,7 +25,7 @@ struct FacetecSetup: View {
         case error(Error)
     }
 
-    var contact: API.Contact
+    var userGuid: String
     var onSuccess: () -> Void
 
     var body: some View {
@@ -48,9 +48,9 @@ struct FacetecSetup: View {
                 apiProvider.request(
                     .confirmBiometryVerification(
                         verificationId: initBiometryResponse.id,
-                        faceScan: contact.identifier,
-                        auditTrailImage: contact.identifier,
-                        lowQualityAuditTrailImage: contact.identifier
+                        faceScan: userGuid.data(using: .utf8)!.base64EncodedString(),
+                        auditTrailImage: userGuid.data(using: .utf8)!.base64EncodedString(),
+                        lowQualityAuditTrailImage: userGuid.data(using: .utf8)!.base64EncodedString()
                     )
                 ) { result in
                     switch result {
@@ -128,14 +128,9 @@ extension FaceTecSDKProtocol {
 struct FacetecSetup_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecSetup(contact: .sample, onSuccess: {})
+            FacetecSetup(userGuid: "", onSuccess: {})
         }
     }
 }
 
-extension API.Contact {
-    static var sample: Self {
-        API.Contact(identifier: "", contactType: .email, value: "something@test.com", verified: true)
-    }
-}
 #endif

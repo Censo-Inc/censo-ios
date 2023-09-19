@@ -18,19 +18,15 @@ struct UserSetup: View {
 
     var body: some View {
         switch setupStep {
-        case .contact:
-            ContactSetup { verification in
-                onUpdate(user, .contactVerification(verification))
-            }
-        case .contactVerification(let pendingContactVerification):
-            Verification(verification: pendingContactVerification, onBack: {
-                onUpdate(user, .contact)
-            }, onSuccess: reloadUser)
-        case .faceTec(let contact):
-            FacetecSetup(contact: contact, onSuccess: reloadUser)
+        case .signIn:
+            SignIn(onSuccess: reloadUser)
+        case .faceTec(let userGuid):
+            FacetecSetup(userGuid: userGuid, onSuccess: reloadUser)
+        case .policyAndGuardianSetup:
+            PolicyAndGuardianSetup(onSuccess: reloadUser)
         case .done:
             VStack(alignment: .leading) {
-                Text("Success.")
+                Text("Phrase Entry goes here!")
             }
         }
     }
@@ -49,12 +45,15 @@ struct UserSetup: View {
 
 extension API.User {
     var setupStep: OwnerSetup.SetupStep {
-        if contacts.count == 0 {
-            return .contact
+        
+        if ownerState == nil {
+            return .policyAndGuardianSetup
         }
-
-        if biometricVerificationRequired, let contact = contacts.first {
-            return .faceTec(contact)
+        
+        switch (ownerState!) {
+        case .guardianSetup:
+            return .policyAndGuardianSetup
+        default: break;
         }
 
         return .done
