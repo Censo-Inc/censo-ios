@@ -49,10 +49,6 @@ extension API: TargetType {
         switch self {
         case .registerDevice(_, let deviceKey),
              .guardianState(let deviceKey):
-            let timestamp = Date()
-            let timestampString = timestamp.ISO8601Format()
-            let signature = try? deviceKey.signature(for: timestampString.data(using: .utf8) ?? Data())
-
             return [
                 "Content-Type": "application/json",
                 "X-IsApi": "true",
@@ -60,8 +56,6 @@ extension API: TargetType {
                 "X-Censo-Device-Type": UIDevice.current.systemName,
                 "X-Censo-App-Version": Bundle.main.shortVersionString,
                 "X-Censo-Device-Public-Key": (try? deviceKey.publicExternalRepresentation().base58EncodedString()) ?? "",
-                "X-Censo-Timestamp": timestampString,
-                "Authorization": "signature \(signature?.base58EncodedString() ?? "")"
             ]
         }
     }
@@ -80,7 +74,11 @@ extension Bundle {
 }
 
 struct APIProviderEnvironmentKey: EnvironmentKey {
-    static var defaultValue: MoyaProvider<API> = MoyaProvider()
+    static var defaultValue: MoyaProvider<API> = MoyaProvider(
+        plugins: [
+            AuthPlugin()
+        ]
+    )
 }
 
 extension EnvironmentValues {
