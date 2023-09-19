@@ -10,14 +10,24 @@ import Moya
 
 struct AuthPlugin: Moya.PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
-        if let deviceKeyTimestamp = try? Keychain.loadDeviceKeyTimestamp() {
-            var request = request
-            request.addValue(deviceKeyTimestamp.timestamp.ISO8601Format(), forHTTPHeaderField: "X-Censo-Timestamp")
-            request.addValue("signature \(deviceKeyTimestamp.signature.base64EncodedString())", forHTTPHeaderField: "Authorization")
-            return request
+        if let deviceKey = SecureEnclaveWrapper.deviceKey() {
+            return addAuthHeaders(request: request, deviceKey: deviceKey)
         } else {
             return request
         }
+    }
+    private func addAuthHeaders(request: URLRequest, deviceKey: DeviceKey) -> URLRequest {
+        var request = request
+        let timestamp = Date()
+        let timestampString = timestamp.ISO8601Format()
+        let requestPath = request.url?.path ?? ""
+        let requestQuery = request.url?.query == nil ? "" : "?\(request.url!.query!)"
+        let requestBody = (request.httpBody ?? Data()).base64EncodedString()
+        let dataToSign = ((request.httpMethod ?? "") + requestPath + requestQuery + requestBody + timestampString).data(using: .utf8) ?? Data()
+        let signature = (try? deviceKey.signature(for: dataToSign))?.base64EncodedString() ?? ""
+        request.addValue(timestampString, forHTTPHeaderField: "X-Censo-Timestamp")
+        request.addValue("signature \(signature)", forHTTPHeaderField: "Authorization")
+        return request
     }
 
     func process(_ result: Result<Moya.Response, MoyaError>, target: Moya.TargetType) -> Result<Moya.Response, MoyaError> {
@@ -29,29 +39,6 @@ struct AuthPlugin: Moya.PluginType {
         default:
             return result
         }
-    }
-}
-
-struct DeviceKeyTimestamp: Codable {
-    var timestamp: Date
-    var signature: Data
-}
-
-extension Keychain {
-    private static let deviceKeyTimestampService = "co.censo.device-key-timestamp"
-
-    static func loadDeviceKeyTimestamp() throws -> DeviceKeyTimestamp? {
-        if let data = try load(account: deviceKeyTimestampService, service: deviceKeyTimestampService) {
-            let decoder = JSONDecoder()
-            return try decoder.decode(DeviceKeyTimestamp.self, from: data)
-        } else {
-            return nil
-        }
-    }
-
-    static func saveDeviceKeyTimestamp(_ timestamp: DeviceKeyTimestamp) throws {
-        let data = try JSONEncoder().encode(timestamp)
-        try save(account: deviceKeyTimestampService, service: deviceKeyTimestampService, data: data)
     }
 }
 
