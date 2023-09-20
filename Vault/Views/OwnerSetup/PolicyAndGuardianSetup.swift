@@ -13,15 +13,16 @@ struct  PolicyAndGuardianSetup: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
 
-    enum LoadingState {
+    enum SetupState {
         case loading
-        case loaded
+        case guardianSetup
+        case enrollment
     }
     
     @State private var guardianProspects: [API.ProspectGuardian] = []
     @State private var threshold: Int = 0
     @State private var nextGuardianName: String = ""
-    @State private var loadingState: LoadingState = .loading
+    @State private var setupState: SetupState = .loading
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
@@ -33,10 +34,18 @@ struct  PolicyAndGuardianSetup: View {
     
     var body: some View {
         NavigationView {
-            switch (loadingState) {
+            switch (setupState) {
             case .loading:
                 ProgressView().onAppear { reloadUser() }
-            case .loaded:
+            case .enrollment:
+                FacetecAuth(
+                    session: session,
+                    onSuccess: onSuccess,
+                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                        self.createPolicyRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData)!
+                    }
+                )
+            case .guardianSetup:
                 VStack {
                     
                     Section(header: Text("Guardians").bold().foregroundColor(Color.black)) {
@@ -105,7 +114,7 @@ struct  PolicyAndGuardianSetup: View {
                         
                         
                         Button {
-                            self.createPolicy()
+                            setupState = .enrollment
                         } label: {
                             if inProgress {
                                 ProgressView()
@@ -163,10 +172,8 @@ struct  PolicyAndGuardianSetup: View {
         self.error = error
         self.showingError = true
     }
-        
-    private func createPolicy() {
-        inProgress = true
-        
+    
+    private func createPolicyRequest(biometryVerificationId: String, biometryData: API.FacetecBiometry) -> API.Endpoint? {
         var policySetupHelper: PolicySetupHelper
         do {
             policySetupHelper = try PolicySetupHelper(
@@ -175,31 +182,19 @@ struct  PolicyAndGuardianSetup: View {
             )
         } catch {
             showError(error)
-            return
+            return nil
         }
-
-        apiProvider.request(
-            with: session,
-            endpoint: .createPolicy(
+        return .createPolicy(
                 API.CreatePolicyApiRequest(
                     intermediatePublicKey: policySetupHelper.intermediatePublicKey,
                     threshold: threshold,
                     guardians: policySetupHelper.guardians,
                     encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
-                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey
+                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey,
+                    biometryVerificationId: biometryVerificationId,
+                    biometryData: biometryData
                 )
             )
-        ) { result in
-            switch result {
-            case .success(let response) where response.statusCode < 400:
-                inProgress = false
-                onSuccess()
-            case .success(let response):
-                showError(MoyaError.statusCode(response))
-            case .failure(let error):
-                showError(error)
-            }
-        }
     }
     
     private func createGuardian(name: String) {
@@ -248,7 +243,7 @@ struct  PolicyAndGuardianSetup: View {
             switch result {
             case .success(let user):
                 onOwnerStateUpdate(ownerState: user.ownerState)
-                loadingState = .loaded
+                setupState = .guardianSetup
             default:
                 break
             }

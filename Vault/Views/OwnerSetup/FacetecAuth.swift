@@ -13,21 +13,20 @@ struct FacetecError: Error, Sendable {
     var status: FaceTecSDKStatus
 }
 
-struct FacetecSetup: View {
+struct FacetecAuth: View {
     @Environment(\.apiProvider) var apiProvider
 
     @State private var setupStep: SetupStep = .idle
 
     enum SetupStep {
         case idle
-        case loading
-        case ready(API.InitiBiometryVerificationApiResponse)
+        case ready(API.InitBiometryVerificationApiResponse)
         case error(Error)
     }
 
     var session: Session
-    var userGuid: String
     var onSuccess: () -> Void
+    var onReadyToUploadResults: ResultsReadyCallback
 
     var body: some View {
         switch setupStep {
@@ -36,10 +35,6 @@ struct FacetecSetup: View {
                 Text("Preparing liveness detection")
             }
             .onAppear(perform: prepareBiometryVerification)
-        case .loading:
-            ProgressView {
-                Text("Preparing liveness detection")
-            }
         case .ready(let initBiometryResponse):
             #if INTEGRATION
             ProgressView {
@@ -48,11 +43,13 @@ struct FacetecSetup: View {
             .onAppear {
                 apiProvider.request(
                     with: session,
-                    endpoint: .confirmBiometryVerification(
-                        verificationId: initBiometryResponse.id,
-                        faceScan: userGuid.data(using: .utf8)!.base64EncodedString(),
-                        auditTrailImage: userGuid.data(using: .utf8)!.base64EncodedString(),
-                        lowQualityAuditTrailImage: userGuid.data(using: .utf8)!.base64EncodedString()
+                    endpoint: onReadyToUploadResults(
+                        initBiometryResponse.id,
+                        API.FacetecBiometry(
+                            faceScan: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                            auditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                            lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
+                        )
                     )
                 ) { result in
                     switch result {
@@ -67,6 +64,7 @@ struct FacetecSetup: View {
             }
             #else
             FacetecUIKitWrapper(
+                session: session,
                 verificationId: initBiometryResponse.id,
                 sessionToken: initBiometryResponse.sessionToken,
                 onBack: {
@@ -75,16 +73,17 @@ struct FacetecSetup: View {
                 onSuccess: onSuccess,
                 onError: { error in
                     setupStep = .error(error)
-                }
+                },
+                onReadyToUploadResults: onReadyToUploadResults
             )
             #endif
         case .error(let error):
-            RetryView(error: error, action: { setupStep = .loading })
+            RetryView(error: error, action: { setupStep = .idle })
         }
     }
 
     private func prepareBiometryVerification() {
-        apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitiBiometryVerificationApiResponse, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 FaceTec.sdk.initialize(
@@ -127,10 +126,10 @@ extension FaceTecSDKProtocol {
 }
 
 #if DEBUG
-struct FacetecSetup_Previews: PreviewProvider {
+struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecSetup(session: .sample, userGuid: "", onSuccess: {})
+            FacetecAuth(session: .sample, onSuccess: {}, onReadyToUploadResults: {_,_ in .user})
         }
     }
 }

@@ -109,6 +109,10 @@ struct GuardianOnboarding: View {
             loadingState = .loading
             reloadUser()
         }
+        .onDisappear() {
+            timerPublisher.upstream.connect().cancel()
+            refreshStatePublisher.upstream.connect().cancel()
+        }
     }
     
     private func confirmGuardianship(participantId: ParticipantId, accepted: API.GuardianStatus.Accepted) {

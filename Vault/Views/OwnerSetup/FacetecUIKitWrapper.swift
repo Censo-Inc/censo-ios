@@ -8,6 +8,8 @@ import SwiftUI
 import Moya
 import FaceTecSDK
 
+typealias ResultsReadyCallback = (String, API.FacetecBiometry) -> API.Endpoint
+
 struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     @Environment(\.apiProvider) var apiProvider
 
@@ -17,6 +19,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     var onBack: () -> Void
     var onSuccess: () -> Void
     var onError: (Error) -> Void
+    var onReadyToUploadResults: ResultsReadyCallback
 
     typealias UIViewControllerType = UIViewController
 
@@ -32,7 +35,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     typealias Coordinator = FacetecUIKitWrapperCoordinator
 
     func makeCoordinator() -> Coordinator {
-        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onSuccess: onSuccess, onBack: onBack, onError: onError)
+        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onSuccess: onSuccess, onBack: onBack, onError: onError, onReadyToUploadResults: onReadyToUploadResults)
     }
 }
 
@@ -47,14 +50,16 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
     var onSuccess: () -> Void
     var onBack: () -> Void
     var onError: (Error) -> Void
+    var onReadyToUploadResults: ResultsReadyCallback
 
-    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping () -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void) {
+    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping () -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback) {
         self.session = session
         self.apiProvider = apiProvider
         self.verificationId = verificationId
         self.onSuccess = onSuccess
         self.onBack = onBack
         self.onError = onError
+        self.onReadyToUploadResults = onReadyToUploadResults
     }
 
     func processSessionWhileFaceTecSDKWaits(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) {
@@ -74,12 +79,14 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
     private func uploadResultsToServer(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) { // Send facescan to server
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .confirmBiometryVerification(
-                verificationId: verificationId,
-                faceScan: sessionResult.faceScanBase64 ?? "",
-                auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
-                lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
-            )
+            endpoint: onReadyToUploadResults(
+                verificationId,
+                API.FacetecBiometry(
+                    faceScan: sessionResult.faceScanBase64 ?? "",
+                    auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
+                    lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
+                )
+           )
         ) { [weak self] (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):

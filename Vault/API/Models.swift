@@ -13,14 +13,19 @@ extension API {
         var userGuid: String
         var ownerState: OwnerState?
     }
+    
+    struct FacetecBiometry: Encodable {
+        var faceScan: String
+        var auditTrailImage: String
+        var lowQualityAuditTrailImage: String
+    }
 
-    struct InitiBiometryVerificationApiResponse: Decodable {
+    struct InitBiometryVerificationApiResponse: Decodable {
         var id: String
         var sessionToken: String
         var productionKeyText: String
         var deviceKeyId: String
         var biometryEncryptionPublicKey: String
-        var firstTime: Bool
     }
 
     struct ConfirmBiometryVerificationApiRequest: Encodable {
@@ -48,6 +53,13 @@ extension API {
         var guardians: [Guardian]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var biometryVerificationId: String
+        var biometryData: FacetecBiometry
+    }
+    
+    struct CreatePolicyApiResponse: Decodable {
+        var ownerState: OwnerState
+        var scanResultBlob: String
     }
     
     struct ConfirmGuardianApiRequest: Encodable {
