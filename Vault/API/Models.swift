@@ -10,7 +10,7 @@ import Foundation
 
 extension API {
     struct User: Decodable {
-        var userGuid: String
+        var identityToken: String
         var ownerState: OwnerState?
     }
     
