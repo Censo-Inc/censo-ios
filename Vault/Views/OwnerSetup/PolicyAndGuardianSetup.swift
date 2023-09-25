@@ -40,7 +40,7 @@ struct  PolicyAndGuardianSetup: View {
             case .enrollment:
                 FacetecAuth(
                     session: session,
-                    onSuccess: onSuccess,
+                    onSuccess: { response in onSuccess() },
                     onReadyToUploadResults: { biomentryVerificationId, biometryData in
                         self.createPolicyRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData)!
                     }

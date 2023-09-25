@@ -28,16 +28,8 @@ struct Owner: View {
                 PolicyAndGuardianSetup(session: session, onSuccess: reload)
             case .guardianSetup:
                 PolicyAndGuardianSetup(session: session, onSuccess: reload)
-            case .ready:
-                List {
-                    Text("Congrats!!")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(Color.green)
-                    Spacer(minLength: 2)
-                    Text("On the Vault screen now!!")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(Color.green)
-                }.multilineTextAlignment(.center)
+            case .ready(let ready):
+                VaultScreen(session: session, lockState: VaultScreen.LockState(ready.unlockedForSeconds), refreshOwnerState: reload)
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
             SignIn(session: session, onSuccess: reload) {

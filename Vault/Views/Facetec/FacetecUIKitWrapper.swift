@@ -17,7 +17,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     var verificationId: String
     var sessionToken: String
     var onBack: () -> Void
-    var onSuccess: () -> Void
+    var onSuccess: (API.OwnerState) -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
 
@@ -47,12 +47,13 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
     var session: Session
     var apiProvider: MoyaProvider<API>
     var verificationId: String
-    var onSuccess: () -> Void
+    var onSuccess: (API.OwnerState) -> Void
     var onBack: () -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
+    var ownerState: API.OwnerState? = nil
 
-    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping () -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback) {
+    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping (API.OwnerState) -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback) {
         self.session = session
         self.apiProvider = apiProvider
         self.verificationId = verificationId
@@ -92,6 +93,7 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
             case .success(let response):
                 FaceTecCustomization.setOverrideResultScreenSuccessMessage("Authenticated")
 
+                self?.ownerState = response.ownerState
                 // In v9.2.0+, simply pass in scanResultBlob to the proceedToNextStep function to advance the User flow.
                 // scanResultBlob is a proprietary, encrypted blob that controls the logic for what happens next for the User.
                 faceScanResultCallback.onFaceScanGoToNextStep(scanResultBlob: response.scanResultBlob)
@@ -107,6 +109,8 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
      This method will be called exactly once after the Session has completed and when using the Session constructor with a FaceTecFaceScanProcessor.
      */
     func onFaceTecSDKCompletelyDone() {
-        onSuccess()
+        if (ownerState != nil) {
+            onSuccess(ownerState!)
+        }
     }
 }

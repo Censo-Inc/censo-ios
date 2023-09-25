@@ -28,6 +28,9 @@ struct API {
 
         case initBiometryVerification
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
+        
+        case unlock(UnlockApiRequest)
+        case lock
     }
 
     struct ConfirmGuardianRequest: Codable {
@@ -66,6 +69,10 @@ extension API: TargetType {
             return "/v1/biometry-verifications"
         case .confirmBiometryVerification(let verificationId, _, _, _):
             return "v1/biometry-verifications/\(verificationId)/biometry"
+        case .unlock:
+            return "v1/unlock"
+        case .lock:
+            return "v1/lock"
         }
     }
 
@@ -83,7 +90,9 @@ extension API: TargetType {
              .rejectGuardianVerification,
              .inviteGuardian,
              .initBiometryVerification,
-             .confirmBiometryVerification:
+             .confirmBiometryVerification,
+             .unlock,
+             .lock:
             return .post
         }
     }
@@ -119,6 +128,11 @@ extension API: TargetType {
             
         case .inviteGuardian(let request):
             return .requestJSONEncodable(request)
+            
+        case .unlock(let request):
+            return .requestJSONEncodable(request)
+        case .lock:
+            return .requestPlain
         }
         
     }

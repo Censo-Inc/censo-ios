@@ -104,6 +104,7 @@
 		6CD6DB052ABCAE7D00974035 /* GuardianError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD6DB042ABCAE7D00974035 /* GuardianError.swift */; };
 		6CD6DB062ABCD76E00974035 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
 		6CFB21AC2AB8856800F06BA3 /* ValueWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */; };
+		E447AB952ABDCEF5005FBDE7 /* VaultScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* VaultScreen.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 /* End PBXBuildFile section */
 
@@ -213,6 +214,7 @@
 		6CD6DB032ABCA30500974035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6CD6DB042ABCAE7D00974035 /* GuardianError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianError.swift; sourceTree = "<group>"; };
 		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
+		E447AB942ABDCEF5005FBDE7 /* VaultScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,6 +327,7 @@
 				3D0C1EA92A83D3FD00AB3A48 /* PhraseView.swift */,
 				3D3796982A8C2B9D00913581 /* RetryView.swift */,
 				3D23ACBE2AAB8ECB00F55C5D /* OwnerSetup */,
+				E447AB942ABDCEF5005FBDE7 /* VaultScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -684,6 +687,7 @@
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
+				E447AB952ABDCEF5005FBDE7 /* VaultScreen.swift in Sources */,
 				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,

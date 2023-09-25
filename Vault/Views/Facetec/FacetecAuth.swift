@@ -25,7 +25,7 @@ struct FacetecAuth: View {
     }
 
     var session: Session
-    var onSuccess: () -> Void
+    var onSuccess: (API.OwnerState) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
 
     var body: some View {
@@ -41,7 +41,7 @@ struct FacetecAuth: View {
                 Text("Skipping biometry...")
             }
             .onAppear {
-                apiProvider.request(
+                apiProvider.decodableRequest(
                     with: session,
                     endpoint: onReadyToUploadResults(
                         initBiometryResponse.id,
@@ -51,12 +51,10 @@ struct FacetecAuth: View {
                             lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
                         )
                     )
-                ) { result in
+                ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                     switch result {
-                    case .success(let response) where response.statusCode < 400:
-                        onSuccess()
                     case .success(let response):
-                        setupStep = .error(MoyaError.statusCode(response))
+                        onSuccess(response.ownerState)
                     case .failure(let error):
                         setupStep = .error(error)
                     }
@@ -129,7 +127,7 @@ extension FaceTecSDKProtocol {
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecAuth(session: .sample, onSuccess: {}, onReadyToUploadResults: {_,_ in .user})
+            FacetecAuth(session: .sample, onSuccess: {_ in }, onReadyToUploadResults: {_,_ in .user})
         }
     }
 }

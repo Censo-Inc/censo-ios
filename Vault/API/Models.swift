@@ -35,6 +35,7 @@ extension API {
     }
 
     struct ConfirmBiometryVerificationApiResponse: Decodable {
+        var ownerState: OwnerState
         var scanResultBlob: String
     }
     
@@ -74,4 +75,17 @@ extension API {
         var deviceEncryptedTotpSecret: Base64EncodedString
     }
     
+    struct UnlockApiRequest: Encodable {
+        var biometryVerificationId: String
+        var biometryData: FacetecBiometry
+    }
+    
+    struct UnlockApiResponse: Decodable {
+        var ownerState: OwnerState
+        var scanResultBlob: String
+    }
+    
+    struct LockApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
 }
