@@ -18,6 +18,7 @@ struct GuardianOnboarding: View {
     @State private var error: Error?
     @State private var currentDate: Date = Date()
     @State private var guardianStatus: API.GuardianStatus = .initial
+    @State private var accepted = false
     @State private var invitationId: String?
     @State private var loadingState: LoadingState = .loading
     @State private var confirmationSucceeded: Bool = false
@@ -44,21 +45,29 @@ struct GuardianOnboarding: View {
             case .loaded:
                 List {
                     Section(header: Text("Invitation").bold().foregroundColor(Color.black)) {
-                        if let inviteId = invitationId,
-                           let link = URL(string: "vault://guardian/\(inviteId)") {
+                        if accepted {
+                            Text("\(guardian.label) Accepted")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else if let inviteId = invitationId,
+                           let link = URL(string: "censo-guardian://invite/\(inviteId)") {
                             ShareLink(item: link,
                                       subject: Text("Censo Invitation Link for \(guardian.label)"),
                                       message: Text("Censo Invitation Link for \(guardian.label)")
                             ){
                                 Text("Share Invitation Link")
+                                    .frame(maxWidth: .infinity, alignment: .center)
                             }
                         } else {
                             Text("Invitation Pending")
+                                .frame(maxWidth: .infinity, alignment: .center)
                         }
-                    }
+                    }.multilineTextAlignment(.center)
                     Section(header: Text("Code Verification").bold().foregroundColor(Color.black)) {
-                        if let totpSecret = totpSecret {
-                            Text("Once \(guardian.label) is ready to be confirmed, please provide the below code").font(.title2).multilineTextAlignment(.center)
+                        if !accepted {
+                            Text("Waiting for \(guardian.label) to accept")
+                        } else if let totpSecret = totpSecret {
+                            Text("Have them enter this code into the Guardian app.")
+                                .frame(maxWidth: .infinity, alignment: .center)
                             HStack {
                                 Text(TotpUtils.getOTP(date: currentDate, secret: totpSecret)).font(.title)
                                 Spacer()
@@ -69,16 +78,22 @@ struct GuardianOnboarding: View {
                             Text("Code Pending")
                         }
                     }
-                    Section(header: Text("Confirmation Status").bold().foregroundColor(Color.black)) {
+                    Section(header: Text("Verification Status").bold().foregroundColor(Color.black)) {
                         switch(guardianStatus) {
-                        case .accepted:
-                            if confirmationSucceeded {
-                                Text("Confirmation Pending")
+                        case .verificationSubmitted(let status):
+                            switch (status.verificationStatus) {
+                            case .waitingForVerification:
+                                Text("Verification Pending")
                                     .frame(maxWidth: .infinity, alignment: .center)
-                            } else {
-                                Text("Confirmation failed for \(guardian.label). Have them try again.")
+                            case .notSubmitted:
+                                Text("Not Confirmed")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            case .rejected:
+                                Text("Verification failed for \(guardian.label). They will try again")
                                     .frame(maxWidth: .infinity, alignment: .center)
                                     .foregroundColor(Color.red)
+                            case .verified:
+                                EmptyView()
                             }
                         default:
                             Text("Not Confirmed")
@@ -86,7 +101,7 @@ struct GuardianOnboarding: View {
                         }
                     }.multilineTextAlignment(.center)
                     
-                }
+                }.multilineTextAlignment(.center)
             }
         }
         .navigationBarTitle("Onboarding \(guardian.label)", displayMode: .inline)
@@ -115,18 +130,18 @@ struct GuardianOnboarding: View {
         }
     }
     
-    private func confirmGuardianship(participantId: ParticipantId, accepted: API.GuardianStatus.Accepted) {
+    private func confirmGuardianship(participantId: ParticipantId, status: API.GuardianStatus.VerificationSubmitted) {
         do {
-            confirmationSucceeded = try verifyGuardianSignature(accepted: accepted)
+            confirmationSucceeded = try verifyGuardianSignature(status: status)
         } catch {
             confirmationSucceeded = false
         }
 
         if confirmationSucceeded {
-            let timeMillis = UInt64(Date().timeIntervalSince1970 / 1000)
+            let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
             guard let participantIdData = participantId.value.data(using: .hexadecimal),
                   let timeMillisData = String(timeMillis).data(using: .utf8),
-                  let signature = try? session.deviceKey.signature(for: accepted.guardianPublicKey.data + participantIdData + timeMillisData) else {
+                  let signature = try? session.deviceKey.signature(for: status.guardianPublicKey.data + participantIdData + timeMillisData) else {
                 confirmationSucceeded = false
                 return
             }
@@ -147,21 +162,23 @@ struct GuardianOnboarding: View {
                     showError(error)
                 }
             }
+        } else {
+            rejectGuardianVerification()
         }
     }
     
     
-    private func verifyGuardianSignature(accepted: API.GuardianStatus.Accepted) throws -> Bool {
+    private func verifyGuardianSignature(status: API.GuardianStatus.VerificationSubmitted) throws -> Bool {
         guard let totpSecret = totpSecret,
-              let timeMillisBytes = String(accepted.timeMillis).data(using: .utf8),
-              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: accepted.guardianPublicKey) else {
+              let timeMillisBytes = String(status.timeMillis).data(using: .utf8),
+              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.guardianPublicKey) else {
             return false
         }
         
-        let acceptedDate = Date(timeIntervalSince1970: Double(accepted.timeMillis) / 1000.0)
+        let acceptedDate = Date(timeIntervalSince1970: Double(status.timeMillis) / 1000.0)
         for date in [acceptedDate, acceptedDate - TotpUtils.period, acceptedDate + TotpUtils.period] {
             if let codeBytes = TotpUtils.getOTP(date: date, secret: totpSecret).data(using: .utf8) {
-                if try publicKey.verifySignature(for: codeBytes + timeMillisBytes, signature: accepted.signature) {
+                if try publicKey.verifySignature(for: codeBytes + timeMillisBytes, signature: status.signature) {
                     return true
                 }
             }
@@ -184,6 +201,21 @@ struct GuardianOnboarding: View {
                     deviceEncryptedTotpSecret: deviceEncryptedTotpSecret
                 )
             )
+        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+                switch result {
+                case .success(let response):
+                    onOwnerStateUpdate(ownerState: response.ownerState)
+                    loadingState = .loaded
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+    }
+    
+    private func rejectGuardianVerification() {
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .rejectGuardianVerification(guardian.participantId)
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -230,9 +262,15 @@ struct GuardianOnboarding: View {
                         } else {
                             loadingState = .loaded
                         }
-                    case .accepted(let accepted):
+                    case .verificationSubmitted(let verificationSubmitted):
                         loadingState = .loaded
-                        confirmGuardianship(participantId: prospectGuardian.participantId, accepted: accepted)
+                        if verificationSubmitted.verificationStatus == .waitingForVerification {
+                            confirmGuardianship(participantId: prospectGuardian.participantId, status: verificationSubmitted)
+                        }
+                        accepted = true
+                    case .accepted:
+                        loadingState = .loaded
+                        accepted = true
                     }
                     guardianStatus = prospectGuardian.status
                 }

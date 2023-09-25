@@ -22,6 +22,7 @@ struct API {
         case deleteGuardian(ParticipantId)
         case inviteGuardian(InviteGuardianApiRequest)
         case confirmGuardian(ConfirmGuardianApiRequest)
+        case rejectGuardianVerification(ParticipantId)
 
         case createPolicy(CreatePolicyApiRequest)
 
@@ -57,6 +58,8 @@ extension API: TargetType {
             return "v1/guardians/\(request.participantId.value)/invitation"
         case .confirmGuardian(let request):
             return "v1/guardians/\(request.participantId.value)/confirmation"
+        case .rejectGuardianVerification(let id):
+            return "v1/guardians/\(id.value)/verification/reject"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .initBiometryVerification:
@@ -77,6 +80,7 @@ extension API: TargetType {
              .createPolicy,
              .createGuardian,
              .confirmGuardian,
+             .rejectGuardianVerification,
              .inviteGuardian,
              .initBiometryVerification,
              .confirmBiometryVerification:
@@ -88,6 +92,7 @@ extension API: TargetType {
         switch endpoint {
         case .user,
              .initBiometryVerification,
+             .rejectGuardianVerification,
              .deleteGuardian:
             return .requestPlain
         case .signIn(let credentials):
@@ -124,7 +129,8 @@ extension API: TargetType {
             "X-IsApi": "true",
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
-            "X-Censo-App-Version": Bundle.main.shortVersionString
+            "X-Censo-App-Version": Bundle.main.shortVersionString,
+            "X-Censo-App-Identifer": Bundle.main.bundleIdentifier ?? "Unknown"
         ]
     }
 }

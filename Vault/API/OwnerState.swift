@@ -27,6 +27,7 @@ extension API {
         case invited(Invited)
         case declined
         case accepted(Accepted)
+        case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
         case onboarded(Onboarded)
         
@@ -35,22 +36,27 @@ extension API {
         }
 
         struct Accepted: Codable {
+            var acceptedAt: Date
+        }
+        
+        struct VerificationSubmitted: Codable {
             var signature: Base64EncodedString
             var timeMillis: Int64
             var guardianPublicKey: Base58EncodedPublicKey
-            var acceptedAt: Date
+            var verificationStatus: VerificationStatus
+            var submittedAt: Date
         }
         
         struct Confirmed: Codable {
             var guardianKeySignature: Base64EncodedString
             var guardianPublicKey: Base58EncodedPublicKey
             var timeMillis: Int64
-            var createdAt: Date
+            var confirmedAt: Date
         }
         
         struct Onboarded: Codable {
             var guardianEncryptedShard: Base64EncodedString
-            var createdAt: Date
+            var onboardedAt: Date
         }
         
         enum GuardianStatusCodingKeys: String, CodingKey {
@@ -69,6 +75,8 @@ extension API {
                 self = .declined
             case "Accepted":
                 self = .accepted(try Accepted(from: decoder))
+            case "VerificationSubmitted":
+                self = .verificationSubmitted(try VerificationSubmitted(from: decoder))
             case "Confirmed":
                 self = .confirmed(try Confirmed(from: decoder))
             case "Onboarded":
@@ -90,6 +98,9 @@ extension API {
                 try container.encode("Declined", forKey: .type)
             case .accepted(let status):
                 try container.encode("Accepted", forKey: .type)
+                try status.encode(to: encoder)
+            case .verificationSubmitted(let status):
+                try container.encode("VerificationSubmitted", forKey: .type)
                 try status.encode(to: encoder)
             case .confirmed(let status):
                 try container.encode("Confirmed", forKey: .type)

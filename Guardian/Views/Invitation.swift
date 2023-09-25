@@ -35,6 +35,7 @@ struct Invitation: View {
                     Text("Proceed")
                         .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(FilledButtonStyle())
             }
             .buttonStyle(.borderedProminent)
             .disabled(inviteCode.isEmpty)
