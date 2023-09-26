@@ -143,6 +143,7 @@ extension API {
         struct Ready: Codable {
             var policy: Policy
             var vault: Vault
+            var unlockedForSeconds: UInt?
         }
         
         enum OwnerStateCodingKeys: String, CodingKey {
