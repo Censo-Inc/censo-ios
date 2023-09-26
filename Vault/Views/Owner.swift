@@ -25,9 +25,9 @@ struct Owner: View {
         case .success(let user):
             switch user.ownerState {
             case .none:
-                PolicySetup(session: session, onSuccess: reload)
+                ApproversSetup()
             case .initial:
-                PolicySetup(session: session, onSuccess: reload)
+                ApproversSetup()
             case .guardianSetup:
                 GuardianActivation(session: session, onSuccess: reload)
             case .ready(let ready):

@@ -97,20 +97,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 246.0/255.0, green: 246.0/255.0, blue: 246.0/255.0, alpha: 1)
-        appearance.titleTextAttributes = [.foregroundColor: UIColor(red: 26.0/255.0, green: 25.0/255.0, blue: 25.0/255.0, alpha: 1)]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor(red: 26.0/255.0, green: 25.0/255.0, blue: 25.0/255.0, alpha: 1)]
+        appearance.backgroundColor = UIColor(named: "darkBlue")
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.shadowImage = UIImage()
         appearance.shadowColor = .clear
         let buttonAppearance = UIBarButtonItemAppearance()
-        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(red: 26.0/255.0, green: 25.0/255.0, blue: 25.0/255.0, alpha: 1)]
+        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.buttonAppearance = buttonAppearance
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
 
-        UINavigationBar.appearance().tintColor = UIColor(red: 26.0/255.0, green: 25.0/255.0, blue: 25.0/255.0, alpha: 1)
-        UINavigationBar.appearance().barTintColor = UIColor(red: 26.0/255.0, green: 25.0/255.0, blue: 25.0/255.0, alpha: 1)
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().barTintColor = UIColor.white
     }
 }
 
