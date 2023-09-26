@@ -133,11 +133,13 @@ extension API {
     }
     
     enum OwnerState: Codable {
+        case initial
         case guardianSetup(GuardianSetup)
         case ready(Ready)
         
         struct GuardianSetup: Codable {
             var guardians: [ProspectGuardian]
+            var threshold: Int?
         }
         
         struct Ready: Codable {
@@ -154,6 +156,8 @@ extension API {
             let container = try decoder.container(keyedBy: OwnerStateCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
             switch type {
+            case "Initial":
+                self = .initial
             case "GuardianSetup":
                 self = .guardianSetup(try GuardianSetup(from: decoder))
             case "Ready":
@@ -166,6 +170,8 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
             switch self {
+            case .initial:
+                try container.encode("Initial", forKey: .type)
             case .guardianSetup(let guardianSetup):
                 try container.encode("GuardianSetup", forKey: .type)
                 try guardianSetup.encode(to: encoder)

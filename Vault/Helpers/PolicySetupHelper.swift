@@ -21,7 +21,7 @@ struct PolicySetupHelper {
     var masterEncryptionPublicKey: Base58EncodedPublicKey
     var encryptedMasterPrivateKey: Base64EncodedString
     var intermediatePublicKey: Base58EncodedPublicKey
-    var guardians: [API.Guardian] = []
+    var guardians: [API.GuardianShard] = []
 
 
     init(
@@ -40,7 +40,7 @@ struct PolicySetupHelper {
         )
         self.shards = sharer.shards
         self.guardians = try guardians.map({
-            API.Guardian(
+            API.GuardianShard(
                 participantId: $0.0,
                 encryptedShard: try getEncryptedShard(participantId: $0.0.bigInt, guardianPublicKey: $0.1)
             )

@@ -37,4 +37,9 @@ struct TotpUtils {
         let remainder = Int(UInt64(date.timeIntervalSince1970.rounded()) % UInt64(period.rounded()))
         return Int(period.rounded()) - remainder
     }
+    
+    static func getPercentDone(date: Date) -> Double {
+        let remainder = UInt64(date.timeIntervalSince1970.rounded()) % UInt64(period.rounded())
+        return Double(remainder) / period
+    }
 }

@@ -18,13 +18,12 @@ struct API {
         case signIn(UserCredentials)
         case registerPushToken(String)
 
-        case createGuardian(name: String)
-        case deleteGuardian(ParticipantId)
         case inviteGuardian(InviteGuardianApiRequest)
         case confirmGuardian(ConfirmGuardianApiRequest)
         case rejectGuardianVerification(ParticipantId)
 
         case createPolicy(CreatePolicyApiRequest)
+        case setupPolicy(SetupPolicyApiRequest)
 
         case initBiometryVerification
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
@@ -53,10 +52,8 @@ extension API: TargetType {
             return "v1/user"
         case .createPolicy:
             return "v1/policies"
-        case .createGuardian:
-            return "v1/guardians"
-        case .deleteGuardian(let id):
-            return "v1/guardians/\(id.value)"
+        case .setupPolicy:
+            return "v1/policy-setup"
         case .inviteGuardian(let request):
             return "v1/guardians/\(request.participantId.value)/invitation"
         case .confirmGuardian(let request):
@@ -80,12 +77,10 @@ extension API: TargetType {
         switch endpoint {
         case .user:
             return .get
-        case .deleteGuardian:
-            return .delete
         case .signIn,
              .registerPushToken,
              .createPolicy,
-             .createGuardian,
+             .setupPolicy,
              .confirmGuardian,
              .rejectGuardianVerification,
              .inviteGuardian,
@@ -101,8 +96,7 @@ extension API: TargetType {
         switch endpoint {
         case .user,
              .initBiometryVerification,
-             .rejectGuardianVerification,
-             .deleteGuardian:
+             .rejectGuardianVerification:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable(credentials)
@@ -113,6 +107,9 @@ extension API: TargetType {
             ])
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
+            
+        case .setupPolicy(let request):
+            return .requestJSONEncodable(request)
 
         case .confirmGuardian(let request):
             return .requestJSONEncodable(request)
@@ -120,10 +117,6 @@ extension API: TargetType {
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
-            )
-        case .createGuardian(name: let name):
-            return .requestJSONEncodable(
-                ["name": name]
             )
             
         case .inviteGuardian(let request):

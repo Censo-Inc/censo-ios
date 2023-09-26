@@ -25,9 +25,11 @@ struct Owner: View {
         case .success(let user):
             switch user.ownerState {
             case .none:
-                PolicyAndGuardianSetup(session: session, onSuccess: reload)
+                PolicySetup(session: session, onSuccess: reload)
+            case .initial:
+                PolicySetup(session: session, onSuccess: reload)
             case .guardianSetup:
-                PolicyAndGuardianSetup(session: session, onSuccess: reload)
+                GuardianActivation(session: session, onSuccess: reload)
             case .ready(let ready):
                 VaultScreen(session: session, unlockedForSeconds: ready.unlockedForSeconds, refreshOwnerState: reload) {
                     Text("Here is your vault")

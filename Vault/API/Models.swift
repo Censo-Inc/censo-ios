@@ -39,7 +39,12 @@ extension API {
         var scanResultBlob: String
     }
     
-    struct Guardian: Encodable {
+    struct GuardianSetup: Encodable {
+        var participantId: ParticipantId
+        var label: String
+    }
+    
+    struct GuardianShard: Encodable {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
     }
@@ -48,14 +53,18 @@ extension API {
         var ownerState: OwnerState
     }
     
-    struct CreatePolicyApiRequest: Encodable {
-        var intermediatePublicKey: Base58EncodedPublicKey
+    struct SetupPolicyApiRequest: Encodable {
         var threshold: Int
-        var guardians: [Guardian]
-        var encryptedMasterPrivateKey: Base64EncodedString
-        var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var guardians: [GuardianSetup]
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
+    }
+    
+    struct CreatePolicyApiRequest: Encodable {
+        var intermediatePublicKey: Base58EncodedPublicKey
+        var guardianShards: [GuardianShard]
+        var encryptedMasterPrivateKey: Base64EncodedString
+        var masterEncryptionPublicKey: Base58EncodedPublicKey
     }
     
     struct CreatePolicyApiResponse: Decodable {
