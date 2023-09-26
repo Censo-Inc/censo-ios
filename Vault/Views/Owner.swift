@@ -29,7 +29,9 @@ struct Owner: View {
             case .guardianSetup:
                 PolicyAndGuardianSetup(session: session, onSuccess: reload)
             case .ready(let ready):
-                VaultScreen(session: session, lockState: VaultScreen.LockState(ready.unlockedForSeconds), refreshOwnerState: reload)
+                VaultScreen(session: session, unlockedForSeconds: ready.unlockedForSeconds, refreshOwnerState: reload) {
+                    Text("Here is your vault")
+                }
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
             SignIn(session: session, onSuccess: reload) {

@@ -9,14 +9,16 @@ import Foundation
 import SwiftUI
 import Moya
 
-struct VaultScreen: View {
+struct VaultScreen<Content: View>: View {
     @Environment(\.apiProvider) var apiProvider
     
-    var session: Session
+    private let content: Content
+    private var session: Session
+    private var refreshOwnerState: () -> Void
     
     enum LockState {
         case locked
-        case unlocked(locksInSeconds: UInt)
+        case unlocked(locksAt: Date)
         case unlockInProgress
         case lockInProgress
         case lockFailed(error: Error)
@@ -25,14 +27,21 @@ struct VaultScreen: View {
             if unlockedForSeconds == nil {
                 self = .locked
             } else {
-                self = .unlocked(locksInSeconds: unlockedForSeconds!)
+                self = .unlocked(
+                    locksAt: Date.now.addingTimeInterval(Double(unlockedForSeconds!))
+                )
             }
         }
     }
     
-    @State var lockState: LockState
+    @State private var lockState: LockState
     
-    var refreshOwnerState: () -> Void
+    init(session: Session, unlockedForSeconds: UInt?, refreshOwnerState: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
+        self.content = content()
+        self.session = session
+        self.refreshOwnerState = refreshOwnerState
+        self._lockState = State(initialValue: LockState(unlockedForSeconds))
+    }
     
     var body: some View {
         VStack {
@@ -45,9 +54,9 @@ struct VaultScreen: View {
                     Text("Unlock").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(FilledButtonStyle())
-            case .unlocked(let locksInSeconds):
-                Text("Vault is unlocked")
-                LockCountDown(secondsRemaining: locksInSeconds, onTimeout: {
+            case .unlocked(let locksAt):
+                content
+                LockCountDown(locksAt: locksAt, onTimeout: {
                     self.lockState = .locked
                     refreshOwnerState()
                 })
@@ -100,6 +109,7 @@ struct VaultScreen: View {
 
 
 struct LockCountDown: View {
+    var locksAt: Date
     @State var secondsRemaining: UInt = 0
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -109,11 +119,14 @@ struct LockCountDown: View {
         VStack {
             Text("Locks in \(secondsRemaining) seconds")
         }
+        .onAppear {
+            secondsRemaining = UInt(locksAt.timeIntervalSinceNow)
+        }
         .onReceive(timer) { time in
-            if secondsRemaining > 0 {
-                secondsRemaining -= 1
-            } else {
+            if (Date.now >= locksAt) {
                 onTimeout()
+            } else {
+                secondsRemaining = UInt(locksAt.timeIntervalSinceNow)
             }
         }
     }
