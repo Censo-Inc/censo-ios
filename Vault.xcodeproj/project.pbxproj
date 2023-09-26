@@ -28,8 +28,6 @@
 		3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */; };
 		3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */; };
 		3D23ACCE2AAB8ECB00F55C5D /* GuardianActivation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACC62AAB8ECB00F55C5D /* GuardianActivation.swift */; };
-		3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; };
-		3D23ACD12AAB8F0200F55C5D /* FaceTecSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3D23ACDA2AB22C9200F55C5D /* GuardianApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */; };
 		3D23ACDC2AB22C9200F55C5D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACDB2AB22C9200F55C5D /* ContentView.swift */; };
 		3D23ACDE2AB22C9500F55C5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D23ACDD2AB22C9500F55C5D /* Assets.xcassets */; };
@@ -91,6 +89,8 @@
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
 		6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */; };
 		6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */; };
+		6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; };
+		6CD3B04A2AC3517100CE1C18 /* FaceTecSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CD6DAE82ABB4E8000974035 /* Guardian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD6DAE72ABB4E8000974035 /* Guardian.swift */; };
 		6CD6DAE92ABB509C00974035 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
 		6CD6DAEA2ABB50A500974035 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9762ABA2ECD0001F3A3 /* Login.swift */; };
@@ -132,13 +132,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3D23ACD22AAB8F0200F55C5D /* Embed Frameworks */ = {
+		6CD3B0462AC34B8500CE1C18 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3D23ACD12AAB8F0200F55C5D /* FaceTecSDK.framework in Embed Frameworks */,
+				6CD3B04A2AC3517100CE1C18 /* FaceTecSDK.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,7 +168,6 @@
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecAuth.swift; sourceTree = "<group>"; };
 		3D23ACC62AAB8ECB00F55C5D /* GuardianActivation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuardianActivation.swift; sourceTree = "<group>"; };
-		3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceTecSDK.framework; sourceTree = "<group>"; };
 		3D23ACD72AB22C9100F55C5D /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianApp.swift; sourceTree = "<group>"; };
 		3D23ACDB2AB22C9200F55C5D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -220,6 +219,7 @@
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
 		6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelper.swift; sourceTree = "<group>"; };
 		6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelperTests.swift; sourceTree = "<group>"; };
+		6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FaceTecSDK.xcframework; sourceTree = "<group>"; };
 		6CD6DAE72ABB4E8000974035 /* Guardian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardian.swift; sourceTree = "<group>"; };
 		6CD6DAEE2ABC77ED00974035 /* VerificationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationStatus.swift; sourceTree = "<group>"; };
 		6CD6DB022ABCA0DD00974035 /* GuardianDebug (Integration).entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "GuardianDebug (Integration).entitlements"; sourceTree = "<group>"; };
@@ -237,8 +237,8 @@
 				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D0C1EA82A83C1DC00AB3A48 /* BIP39 in Frameworks */,
 				3D3796922A8C225D00913581 /* Moya in Frameworks */,
-				3D23ACD02AAB8F0100F55C5D /* FaceTecSDK.framework in Frameworks */,
 				6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */,
+				6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,7 +481,7 @@
 		6CC60F722AA12F21001A4454 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3D23ACCF2AAB8F0100F55C5D /* FaceTecSDK.framework */,
+				6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -528,7 +528,7 @@
 				3D0C1E702A83A79400AB3A48 /* Sources */,
 				3D0C1E712A83A79400AB3A48 /* Frameworks */,
 				3D0C1E722A83A79400AB3A48 /* Resources */,
-				3D23ACD22AAB8F0200F55C5D /* Embed Frameworks */,
+				6CD3B0462AC34B8500CE1C18 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
