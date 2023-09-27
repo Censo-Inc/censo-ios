@@ -11,32 +11,32 @@ import Moya
 struct Owner: View {
     @Environment(\.apiProvider) var apiProvider
 
-    @RemoteResult<API.User, API> private var user
+    @RemoteResult<API.OwnerState, API> private var ownerStateResource
 
     var session: Session
 
     var body: some View {
-        switch user {
+        switch ownerStateResource {
         case .idle:
             ProgressView()
                 .onAppear(perform: reload)
         case .loading:
             ProgressView()
-        case .success(let user):
-            switch user.ownerState {
-            case .none:
-                ApproversSetup()
+        case .success(let ownerState):
+            switch ownerState {
             case .initial:
                 ApproversSetup()
             case .guardianSetup:
                 GuardianActivation(session: session, onSuccess: reload)
             case .ready(let ready):
-                SecretsListView(
-                    session: session,
-                    unlockedForSeconds: ready.unlockedForSeconds,
-                    vault: ready.vault,
-                    refreshOwnerState: reload
-                )
+                LockUnlockWrapper(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockTimeOut: reload) {
+                    SecretsListView(
+                        session: session,
+                        unlockedForSeconds: ready.unlockedForSeconds,
+                        vault: ready.vault,
+                        onOwnerStateUpdated: replaceOwnerState
+                    )
+                }
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
             SignIn(session: session, onSuccess: reload) {
@@ -47,7 +47,15 @@ struct Owner: View {
         }
     }
 
+    private func replaceOwnerState(newOwnerState: API.OwnerState) {
+        _ownerStateResource.replace(newOwnerState)
+    }
+    
     private func reload() {
-        _user.reload(with: apiProvider, target: session.target(for: .user))
+        _ownerStateResource.reload(
+            with: apiProvider,
+            target: session.target(for: .user),
+            adaptSuccess: { (user: API.User) in user.ownerState }
+        )
     }
 }

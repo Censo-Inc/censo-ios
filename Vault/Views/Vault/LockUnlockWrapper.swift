@@ -14,7 +14,8 @@ struct LockUnlockWrapper<Content: View>: View {
     
     private let content: Content
     private var session: Session
-    private var refreshOwnerState: () -> Void
+    private var onOwnerStateUpdated: (API.OwnerState) -> Void
+    private var onUnlockTimeOut: () -> Void
     
     enum LockState {
         case locked
@@ -36,10 +37,17 @@ struct LockUnlockWrapper<Content: View>: View {
     
     @State private var lockState: LockState
     
-    init(_ session: Session, _ unlockedForSeconds: UInt?, _ refreshOwnerState: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
+    init(
+        _ session: Session,
+        _ unlockedForSeconds: UInt?,
+        onOwnerStateUpdated: @escaping (API.OwnerState) -> Void,
+        onUnlockTimeOut: @escaping () -> Void,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
         self.content = content()
         self.session = session
-        self.refreshOwnerState = refreshOwnerState
+        self.onOwnerStateUpdated = onOwnerStateUpdated
+        self.onUnlockTimeOut = onUnlockTimeOut
         self._lockState = State(initialValue: LockState(unlockedForSeconds))
     }
     
@@ -59,7 +67,7 @@ struct LockUnlockWrapper<Content: View>: View {
                 Spacer()
                 LockCountDown(locksAt: locksAt, onTimeout: {
                     self.lockState = .locked
-                    refreshOwnerState()
+                    onUnlockTimeOut()
                 })
                 Button {
                     lock()
@@ -104,7 +112,7 @@ struct LockUnlockWrapper<Content: View>: View {
         default:
             break
         }
-        refreshOwnerState()
+        onOwnerStateUpdated(ownerState)
     }
 }
 

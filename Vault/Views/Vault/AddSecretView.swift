@@ -15,7 +15,7 @@ struct AddSecretView: View {
     
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
-    var onSuccess: () -> Void
+    var onSuccess: (API.OwnerState) -> Void
     var onCancel: () -> Void
     
     @State private var secretLabel: String = ""
@@ -91,8 +91,8 @@ struct AddSecretView: View {
             )
             apiProvider.decodableRequest(with: session, endpoint: .storeSecret(payload)) { (result: Result<API.StoreSecretApiResponse, MoyaError>) in
                 switch result {
-                case .success:
-                    onSuccess()
+                case .success(let payload):
+                    onSuccess(payload.ownerState)
                 case .failure(let error):
                     showError(error)
                 }

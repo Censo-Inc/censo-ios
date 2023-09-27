@@ -11,7 +11,7 @@ import Foundation
 extension API {
     struct User: Decodable {
         var identityToken: String
-        var ownerState: OwnerState?
+        var ownerState: OwnerState
     }
     
     struct FacetecBiometry: Encodable {

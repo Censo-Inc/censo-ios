@@ -33,4 +33,19 @@ struct RemoteResult<Model, Target>: DynamicProperty where Model : Decodable, Tar
             }
         }
     }
+    
+    func reload<ResponseModel : Decodable>(with apiProvider: MoyaProvider<Target>, target: Target, adaptSuccess: @escaping (ResponseModel) -> Model) {
+        apiProvider.decodableRequest(target) { (result: Result<ResponseModel, MoyaError>) in
+            switch result {
+            case .success(let model):
+                loadingState = .success(adaptSuccess(model))
+            case .failure(let error):
+                loadingState = .failure(error)
+            }
+        }
+    }
+    
+    func replace(_ newState: Model) {
+        loadingState = .success(newState)
+    }
 }
