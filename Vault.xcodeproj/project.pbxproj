@@ -308,6 +308,7 @@
 				3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */,
 				3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */,
 				3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */,
+				3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */,
 				3D3796932A8C226D00913581 /* API */,
 				6CB230C82A9D1354009FAE91 /* Helpers */,
 				3D0C1E9A2A83B3EE00AB3A48 /* KeyManagement */,
@@ -410,7 +411,6 @@
 				3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */,
 				3D23ACEB2AB233C300F55C5D /* API.swift */,
 				6CD6DB042ABCAE7D00974035 /* GuardianError.swift */,
-				3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */,
 				3D23ACDD2AB22C9500F55C5D /* Assets.xcassets */,
 				3D23ACDF2AB22C9500F55C5D /* Preview Content */,
 			);
