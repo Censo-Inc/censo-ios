@@ -78,7 +78,6 @@ extension API {
         var keyConfirmationTimeMillis: UInt64
     }
     
-    
     struct InviteGuardianApiRequest: Encodable {
         var participantId: ParticipantId
         var deviceEncryptedTotpSecret: Base64EncodedString
@@ -95,6 +94,20 @@ extension API {
     }
     
     struct LockApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct StoreSecretApiRequest : Encodable {
+        var encryptedSeedPhrase: Base64EncodedString
+        var seedPhraseHash: String
+        var label: String
+    }
+    
+    struct StoreSecretApiResponse : Decodable {
+        var ownerState: OwnerState
+}
+    
+    struct DeleteSecretApiResponse : Decodable {
         var ownerState: OwnerState
     }
 }

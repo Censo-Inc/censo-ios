@@ -1,15 +1,15 @@
 //
-//  VaultScreen.swift
+//  LockUnlockWrapper.swift
 //  Vault
 //
-//  Created by Anton Onyshchenko on 22.09.23.
+//  Created by Anton Onyshchenko on 27.09.23.
 //
 
 import Foundation
 import SwiftUI
 import Moya
 
-struct VaultScreen<Content: View>: View {
+struct LockUnlockWrapper<Content: View>: View {
     @Environment(\.apiProvider) var apiProvider
     
     private let content: Content
@@ -36,7 +36,7 @@ struct VaultScreen<Content: View>: View {
     
     @State private var lockState: LockState
     
-    init(session: Session, unlockedForSeconds: UInt?, refreshOwnerState: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
+    init(_ session: Session, _ unlockedForSeconds: UInt?, _ refreshOwnerState: @escaping () -> Void, @ViewBuilder content: @escaping () -> Content) {
         self.content = content()
         self.session = session
         self.refreshOwnerState = refreshOwnerState
@@ -56,12 +56,13 @@ struct VaultScreen<Content: View>: View {
                 .buttonStyle(FilledButtonStyle())
             case .unlocked(let locksAt):
                 content
+                Spacer()
                 LockCountDown(locksAt: locksAt, onTimeout: {
                     self.lockState = .locked
                     refreshOwnerState()
                 })
                 Button {
-                    unlock()
+                    lock()
                 } label: {
                     Text("Lock").frame(maxWidth: .infinity)
                 }
@@ -69,7 +70,7 @@ struct VaultScreen<Content: View>: View {
             case .lockInProgress:
                 ProgressView()
             case .lockFailed(let error):
-                RetryView(error: error, action: { unlock() })
+                RetryView(error: error, action: { lock() })
             case .unlockInProgress:
                 FacetecAuth(
                     session: session,
@@ -84,7 +85,7 @@ struct VaultScreen<Content: View>: View {
         }
     }
     
-    private func unlock() {
+    private func lock() {
         lockState = .lockInProgress
         apiProvider.decodableRequest(with: session, endpoint: .lock) { (result: Result<API.LockApiResponse, MoyaError>) in
             switch result {

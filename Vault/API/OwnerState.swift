@@ -113,6 +113,7 @@ extension API {
     }
     
     struct VaultSecret: Codable, Equatable {
+        var guid: String
         var encryptedSeedPhrase: Base64EncodedString
         var seedPhraseHash: Base64EncodedString
         var label: String
