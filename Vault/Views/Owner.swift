@@ -29,7 +29,7 @@ struct Owner: View {
             case .guardianSetup:
                 GuardianActivation(session: session, onSuccess: reload)
             case .ready(let ready):
-                LockUnlockWrapper(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockTimeOut: reload) {
+                LockedScreen(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockedTimeOut: reload) {
                     SecretsListView(
                         session: session,
                         unlockedForSeconds: ready.unlockedForSeconds,

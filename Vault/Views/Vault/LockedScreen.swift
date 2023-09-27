@@ -1,5 +1,5 @@
 //
-//  LockUnlockWrapper.swift
+//  LockedScreen.swift
 //  Vault
 //
 //  Created by Anton Onyshchenko on 27.09.23.
@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 import Moya
 
-struct LockUnlockWrapper<Content: View>: View {
+struct LockedScreen<Content: View>: View {
     @Environment(\.apiProvider) var apiProvider
     
     private let content: Content
     private var session: Session
     private var onOwnerStateUpdated: (API.OwnerState) -> Void
-    private var onUnlockTimeOut: () -> Void
+    private var onUnlockedTimeOut: () -> Void
     
     enum LockState {
         case locked
@@ -41,13 +41,13 @@ struct LockUnlockWrapper<Content: View>: View {
         _ session: Session,
         _ unlockedForSeconds: UInt?,
         onOwnerStateUpdated: @escaping (API.OwnerState) -> Void,
-        onUnlockTimeOut: @escaping () -> Void,
+        onUnlockedTimeOut: @escaping () -> Void,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.content = content()
         self.session = session
         self.onOwnerStateUpdated = onOwnerStateUpdated
-        self.onUnlockTimeOut = onUnlockTimeOut
+        self.onUnlockedTimeOut = onUnlockedTimeOut
         self._lockState = State(initialValue: LockState(unlockedForSeconds))
     }
     
@@ -67,7 +67,7 @@ struct LockUnlockWrapper<Content: View>: View {
                 Spacer()
                 LockCountDown(locksAt: locksAt, onTimeout: {
                     self.lockState = .locked
-                    onUnlockTimeOut()
+                    onUnlockedTimeOut()
                 })
                 Button {
                     lock()
