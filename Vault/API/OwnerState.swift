@@ -140,6 +140,7 @@ extension API {
         struct GuardianSetup: Codable {
             var guardians: [ProspectGuardian]
             var threshold: Int?
+            var unlockedForSeconds: UInt?
         }
         
         struct Ready: Codable {
@@ -147,7 +148,7 @@ extension API {
             var vault: Vault
             var unlockedForSeconds: UInt?
         }
-        
+
         enum OwnerStateCodingKeys: String, CodingKey {
             case type
         }
