@@ -30,6 +30,9 @@ struct API {
         
         case unlock(UnlockApiRequest)
         case lock
+        
+        case storeSecret(StoreSecretApiRequest)
+        case deleteSecret(guid: String)
     }
 
     struct ConfirmGuardianRequest: Codable {
@@ -70,6 +73,10 @@ extension API: TargetType {
             return "v1/unlock"
         case .lock:
             return "v1/lock"
+        case .storeSecret:
+            return "v1/vault/secrets"
+        case .deleteSecret(let guid):
+            return "v1/vault/secrets/\(guid)"
         }
     }
 
@@ -77,6 +84,8 @@ extension API: TargetType {
         switch endpoint {
         case .user:
             return .get
+        case .deleteSecret:
+            return .delete
         case .signIn,
              .registerPushToken,
              .createPolicy,
@@ -87,7 +96,8 @@ extension API: TargetType {
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
-             .lock:
+             .lock,
+             .storeSecret:
             return .post
         }
     }
@@ -125,6 +135,11 @@ extension API: TargetType {
         case .unlock(let request):
             return .requestJSONEncodable(request)
         case .lock:
+            return .requestPlain
+            
+        case .storeSecret(let request):
+            return .requestJSONEncodable(request)
+        case .deleteSecret:
             return .requestPlain
         }
         
