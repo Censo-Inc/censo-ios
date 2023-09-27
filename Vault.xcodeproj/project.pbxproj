@@ -56,6 +56,9 @@
 		3D82146C2AC29EB400AC2598 /* ApproverSetupEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D82146B2AC29EB400AC2598 /* ApproverSetupEmpty.swift */; };
 		3D82146E2AC29ED700AC2598 /* ApproverSetupNonEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D82146D2AC29ED700AC2598 /* ApproverSetupNonEmpty.swift */; };
 		3D8214702AC2A0F700AC2598 /* RequiredApprovals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D82146F2AC2A0F700AC2598 /* RequiredApprovals.swift */; };
+		3D8214722AC33F9700AC2598 /* SecurityPlanReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214712AC33F9700AC2598 /* SecurityPlanReview.swift */; };
+		3D8214742AC3414F00AC2598 /* ThresholdSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214732AC3414F00AC2598 /* ThresholdSlider.swift */; };
+		3D8214762AC342AF00AC2598 /* ApproversList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214752AC342AF00AC2598 /* ApproversList.swift */; };
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
@@ -196,6 +199,9 @@
 		3D82146B2AC29EB400AC2598 /* ApproverSetupEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproverSetupEmpty.swift; sourceTree = "<group>"; };
 		3D82146D2AC29ED700AC2598 /* ApproverSetupNonEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproverSetupNonEmpty.swift; sourceTree = "<group>"; };
 		3D82146F2AC2A0F700AC2598 /* RequiredApprovals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredApprovals.swift; sourceTree = "<group>"; };
+		3D8214712AC33F9700AC2598 /* SecurityPlanReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityPlanReview.swift; sourceTree = "<group>"; };
+		3D8214732AC3414F00AC2598 /* ThresholdSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdSlider.swift; sourceTree = "<group>"; };
+		3D8214752AC342AF00AC2598 /* ApproversList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversList.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -454,6 +460,9 @@
 				3D82146B2AC29EB400AC2598 /* ApproverSetupEmpty.swift */,
 				3D82146D2AC29ED700AC2598 /* ApproverSetupNonEmpty.swift */,
 				3D82146F2AC2A0F700AC2598 /* RequiredApprovals.swift */,
+				3D8214712AC33F9700AC2598 /* SecurityPlanReview.swift */,
+				3D8214732AC3414F00AC2598 /* ThresholdSlider.swift */,
+				3D8214752AC342AF00AC2598 /* ApproversList.swift */,
 			);
 			path = SecurityPlan;
 			sourceTree = "<group>";
@@ -740,6 +749,7 @@
 				3D3796A52A8F255F00913581 /* Models.swift in Sources */,
 				3DE0B9772ABA2ECD0001F3A3 /* Authentication.swift in Sources */,
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
+				3D8214722AC33F9700AC2598 /* SecurityPlanReview.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
@@ -761,6 +771,7 @@
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
 				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
 				3D8214702AC2A0F700AC2598 /* RequiredApprovals.swift in Sources */,
+				3D8214762AC342AF00AC2598 /* ApproversList.swift in Sources */,
 				3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */,
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
 				3DE0B9812ABA5F0C0001F3A3 /* Owner.swift in Sources */,
@@ -775,6 +786,7 @@
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
+				3D8214742AC3414F00AC2598 /* ThresholdSlider.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,

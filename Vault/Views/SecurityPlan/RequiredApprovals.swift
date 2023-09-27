@@ -16,13 +16,17 @@ private extension Int {
 struct RequiredApprovals: View {
     @Environment(\.dismiss) var dismiss
 
-    @State private var threshold: Float
+    @State private var threshold: Int
 
-    var approvers: [String]
+    @Binding var approvers: [String]
+    @Binding var showingAddApprover: Bool
+    var onEdit: (Int) -> Void
 
-    init(approvers: [String]) {
-        self._threshold = State(initialValue: Float(approvers.count.recommendedThreshold))
-        self.approvers = approvers
+    init(approvers: Binding<[String]>, showingAddApprover: Binding<Bool>, onEdit: @escaping (Int) -> Void) {
+        self._threshold = State(initialValue: approvers.wrappedValue.count.recommendedThreshold)
+        self._approvers = approvers
+        self._showingAddApprover = showingAddApprover
+        self.onEdit = onEdit
     }
 
     private var recommendedThreshold: Int {
@@ -53,46 +57,8 @@ struct RequiredApprovals: View {
 
                 Spacer()
 
-                VStack {
-                    HStack {
-                        ForEach(1...approvers.count, id: \.self) { i in
-                            Image(systemName: "iphone")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 15)
-                                .overlay {
-                                    if i <= Int(threshold) {
-                                        Image(systemName: "checkmark")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 7)
-                                    }
-                                }
-
-                            if i != approvers.count {
-                                Spacer()
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 5)
-
-                    Slider(value: $threshold, in: 1...Float(approvers.count), step: 1)
-                        .tint(.Censo.darkBlue)
-
-                    HStack {
-                        ForEach(1...approvers.count, id: \.self) { i in
-                            Text("\(i)")
-                                .font(.caption.bold())
-
-                            if i != approvers.count {
-                                Spacer()
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 10)
-                }
-                .padding(.horizontal, 25)
-                .padding(.vertical, 30)
+                ThresholdSlider(threshold: $threshold, totalApprovers: approvers.count)
+                    .padding(.vertical, 30)
 
                 VStack {
                     Text("\(Int(threshold))").bold() + Text(" of ").font(.caption) + Text("\(approvers.count)").bold()
@@ -112,8 +78,13 @@ struct RequiredApprovals: View {
             .padding(.horizontal)
             .buttonStyle(BorderedButtonStyle())
 
-            Button {
-
+            NavigationLink {
+                SecurityPlanReview(
+                    approvers: $approvers,
+                    threshold: $threshold,
+                    showingAddApprover: $showingAddApprover,
+                    onEdit: onEdit
+                )
             } label: {
                 Text("Next: Review")
             }
@@ -141,11 +112,15 @@ struct RequiredApprovals: View {
     }
 }
 
+
+
 #if DEBUG
 struct RequiredApprovals_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            RequiredApprovals(approvers: ["Ben", "Steve", "John"])
+            RequiredApprovals(approvers: .constant(["Ben", "Jerry"]), showingAddApprover: .constant(false)) { _ in
+                
+            }
         }
     }
 }
