@@ -137,13 +137,9 @@ struct Guardian: View {
         inProgress = true
         apiProvider.request(with: session, endpoint: .acceptInvitation(inviteCode)) { result in
             switch result {
-            case .success(let response) where response.statusCode < 400:
+            case .success(_):
                 inProgress = false
                 reload()
-            case .success(let response) where response.statusCode == 403:
-                showError(GuardianError.alreadyUsed)
-            case .success(let response):
-                showError(MoyaError.statusCode(response))
             case .failure(let error):
                 showError(error)
             }
@@ -154,10 +150,8 @@ struct Guardian: View {
         inProgress = true
         apiProvider.request(with: session, endpoint: .declineInvitation(inviteCode)) { result in
             switch result {
-            case .success(let response) where response.statusCode < 400:
+            case .success(_):
                 dismiss()
-            case .success(let response):
-                showError(MoyaError.statusCode(response))
             case .failure(let error):
                 showError(error)
             }

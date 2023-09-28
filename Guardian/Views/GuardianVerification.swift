@@ -111,7 +111,7 @@ struct GuardianVerification: View {
               let timeMillisData = String(timeMillis).data(using: .utf8),
               let guardianPublicKey = try? guardianKey?.publicExternalRepresentation(),
               let signature = try? guardianKey?.signature(for: codeBytes + timeMillisData) else {
-            showError(GuardianError.failedToCreateSignature)
+            showError(CensoError.failedToCreateSignature)
             return
         }
         

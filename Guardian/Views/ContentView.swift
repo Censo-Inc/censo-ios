@@ -63,7 +63,7 @@ struct ContentView: View {
         } else {
             self.isPresented = false
             self.showingError = true
-            self.currentError = GuardianError.invalidInvitationCode
+            self.currentError = CensoError.invalidInvitationCode
         }
         
     }

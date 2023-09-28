@@ -9,9 +9,6 @@ import Moya
 import FaceTecSDK
 import raygun4apple
 
-struct FacetecError: Error, Sendable {
-    var status: FaceTecSDKStatus
-}
 
 struct FacetecAuth: View {
     @Environment(\.apiProvider) var apiProvider
@@ -92,7 +89,7 @@ struct FacetecAuth: View {
                     if success {
                         setupStep = .ready(response)
                     } else {
-                        let error = FacetecError(status: FaceTec.sdk.getStatus())
+                        let error = FacetecError(rawStatus: FaceTec.sdk.getStatus().rawValue)
                         RaygunClient.sharedInstance().send(error: error, tags: ["FaceTec"], customData: nil)
                         setupStep = .error(error)
                     }

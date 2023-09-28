@@ -8,5 +8,5 @@
 import Foundation
 
 struct FacetecError: Error, Sendable {
-    var status: FaceTecSDKStatus
+    var rawStatus: Int
 }

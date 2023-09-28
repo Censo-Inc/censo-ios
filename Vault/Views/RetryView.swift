@@ -44,18 +44,17 @@ import Alamofire
 extension Error {
     var message: String {
         switch self as Error {
-        case MoyaError.statusCode(let response) where response.statusCode == 418:
-            return "Censo is currently under maintenance, please try again in a few minutes."
-        case MoyaError.statusCode(let response) where response.statusCode == 401:
-            return "Your session has expired and needs to be reauthenticated."
+            
         case MoyaError.underlying(AFError.sessionTaskFailed(let error as NSError), _) where error.code == -1001:
             return "Your request timed out. Please retry"
         case MoyaError.underlying(AFError.sessionTaskFailed(let error as NSError), _) where error.code == -1009:
             return "You don't seem to be connected to the internet. Please check your connection and retry"
         case Keychain.KeychainError.couldNotLoad:
             return "Unable to retrieve data from your keychain"
+        case MoyaError.underlying(let error, _):
+            return error.localizedDescription
         case let facetecError as FacetecError:
-            return facetecError.message;
+            return "Facetec failed with status \(facetecError.rawStatus)";
         default:
             return "Something went wrong"
         }
