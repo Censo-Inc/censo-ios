@@ -13,3 +13,14 @@ enum VerificationStatus: String, Codable {
     case verified = "Verified"
     case rejected = "Rejected"
 }
+
+extension VerificationStatus {
+    func isPending() -> Bool {
+        return switch (self) {
+        case .waitingForVerification:
+            true
+        default:
+            false
+        }
+    }
+}

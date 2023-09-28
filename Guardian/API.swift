@@ -18,6 +18,7 @@ struct API {
     enum Endpoint {
         case user
         case signIn(UserCredentials)
+        case registerPushToken(String)
 
         case declineInvitation(InvitationId)
         case acceptInvitation(InvitationId)
@@ -72,13 +73,17 @@ struct API {
         }
     }
     
-    struct GuardianState: Codable {
+struct GuardianState: Codable {
         var participantId: ParticipantId
         var phase: GuardianPhase
     }
     
     struct GuardianUser: Decodable {
         var guardianStates: [GuardianState]
+    }
+    
+    struct AcceptInvitationApiResponse: Codable {
+        var guardianState: GuardianState
     }
     
     struct SubmitGuardianVerificationApiRequest: Codable {
@@ -109,6 +114,8 @@ extension API: TargetType {
             return "v1/guardianship-invitations/\(id)/accept"
         case .submitVerification(let id, _):
             return "v1/guardianship-invitations/\(id)/verification"
+        case .registerPushToken:
+            return "v1/notification-tokens"
         }
     }
 
@@ -117,7 +124,8 @@ extension API: TargetType {
         case .signIn,
              .declineInvitation,
              .acceptInvitation,
-             .submitVerification:
+             .submitVerification,
+             .registerPushToken:
             return .post
         case .user:
             return .get
@@ -134,6 +142,11 @@ extension API: TargetType {
             return .requestJSONEncodable(credentials)
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
+        case .registerPushToken(let token):
+            return .requestJSONEncodable([
+                "token": token,
+                "deviceType": "Ios"
+            ])
         }
     }
 

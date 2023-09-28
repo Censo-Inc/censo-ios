@@ -17,6 +17,8 @@ struct ContentView: View {
     @State private var attemptingURL: URL?
     @State private var isPresented = false
 
+    @RemoteResult<API.GuardianUser, API> private var user
+
     var body: some View {
         NavigationStack {
             Invitation(inviteCode: $inviteCode, onValidateCode: checkInviteCode)

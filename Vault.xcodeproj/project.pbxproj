@@ -39,8 +39,6 @@
 		3D23ACEF2AB2352800F55C5D /* SecureEnclaveKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E8F2A83AA3D00AB3A48 /* SecureEnclaveKey.swift */; };
 		3D23ACF02AB2358000F55C5D /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
 		3D23ACF12AB2359400F55C5D /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB230C92A9D1373009FAE91 /* Data+Hex.swift */; };
-		3D23ACF32AB2368400F55C5D /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF22AB2368400F55C5D /* Configuration.swift */; };
-		3D23ACF52AB2604F00F55C5D /* GuardianVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF42AB2604F00F55C5D /* GuardianVerification.swift */; };
 		3D23ACF72AB2612A00F55C5D /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF62AB2612A00F55C5D /* Invitation.swift */; };
 		3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */; };
 		3D23ACFA2AB264E600F55C5D /* MoyaProvider+Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */; };
@@ -74,6 +72,8 @@
 		3DFF192A2AC6B55A006111B2 /* PolicySetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF19292AC6B55A006111B2 /* PolicySetup.swift */; };
 		3DFF192C2AC6BD11006111B2 /* IdentityEstablished.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF192B2AC6BD11006111B2 /* IdentityEstablished.swift */; };
 		3DFF192E2AC6C7DC006111B2 /* OpenVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF192D2AC6C7DC006111B2 /* OpenVault.swift */; };
+		3DFF19522AC95574006111B2 /* PinInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF194E2AC954E8006111B2 /* PinInputField.swift */; };
+		3DFF19532AC95578006111B2 /* PinInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF19502AC954FE006111B2 /* PinInput.swift */; };
 		6C021BDC2ABDC529005A68FD /* Theme.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D0C1E9C2A83B53900AB3A48 /* Theme.xcassets */; };
 		6C23727D2AC4A3600072E256 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C23727C2AC4A3600072E256 /* Error.swift */; };
 		6C23727F2AC4AA3F0072E256 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C23727C2AC4A3600072E256 /* Error.swift */; };
@@ -121,6 +121,12 @@
 		6CD6DAFF2ABC9D6000974035 /* CensoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */; };
 		6CD6DB062ABCD76E00974035 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
 		6CFB21AC2AB8856800F06BA3 /* ValueWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */; };
+		BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */; };
+		BD6485332AC49AE200BC0B1B /* InfoBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214692AC28C4000AC2598 /* InfoBoard.swift */; };
+		BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = BD6485342AC49EA300BC0B1B /* raygun4apple */; };
+		BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
+		BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */; };
+		BD64853B2AC5DDB200BC0B1B /* GuardianError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD64853A2AC5DDB200BC0B1B /* GuardianError.swift */; };
 		E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */; };
 		E45A14562AC4309F00EDBC10 /* LockedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* LockedScreen.swift */; };
 		E45A14582AC46F4C00EDBC10 /* AddSecretView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */; };
@@ -187,8 +193,6 @@
 		3D23ACDD2AB22C9500F55C5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D23ACE02AB22C9500F55C5D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3D23ACEB2AB233C300F55C5D /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		3D23ACF22AB2368400F55C5D /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
-		3D23ACF42AB2604F00F55C5D /* GuardianVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianVerification.swift; sourceTree = "<group>"; };
 		3D23ACF62AB2612A00F55C5D /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaProvider+Decodable.swift"; sourceTree = "<group>"; };
 		3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteResult.swift; sourceTree = "<group>"; };
@@ -218,6 +222,8 @@
 		3DFF19292AC6B55A006111B2 /* PolicySetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetup.swift; sourceTree = "<group>"; };
 		3DFF192B2AC6BD11006111B2 /* IdentityEstablished.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityEstablished.swift; sourceTree = "<group>"; };
 		3DFF192D2AC6C7DC006111B2 /* OpenVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenVault.swift; sourceTree = "<group>"; };
+		3DFF194E2AC954E8006111B2 /* PinInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinInputField.swift; sourceTree = "<group>"; };
+		3DFF19502AC954FE006111B2 /* PinInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinInput.swift; sourceTree = "<group>"; };
 		6C021BDD2ABDE875005A68FD /* VaultDebug (Staging).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VaultDebug (Staging).entitlements"; sourceTree = "<group>"; };
 		6C021BDE2ABDE8B2005A68FD /* GuardianDebug (Staging).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "GuardianDebug (Staging).entitlements"; sourceTree = "<group>"; };
 		6C23727C2AC4A3600072E256 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -246,6 +252,9 @@
 		6CD6DB022ABCA0DD00974035 /* GuardianDebug (Integration).entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "GuardianDebug (Integration).entitlements"; sourceTree = "<group>"; };
 		6CD6DB032ABCA30500974035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
+		BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitation.swift; sourceTree = "<group>"; };
+		BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitVerification.swift; sourceTree = "<group>"; };
+		BD64853A2AC5DDB200BC0B1B /* GuardianError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardianError.swift; sourceTree = "<group>"; };
 		E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsListView.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* LockedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedScreen.swift; sourceTree = "<group>"; };
 		E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSecretView.swift; sourceTree = "<group>"; };
@@ -277,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D23ACEA2AB233AE00F55C5D /* Moya in Frameworks */,
+				BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */,
 				6CD6DAF92ABC9C0A00974035 /* BigInt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -425,11 +435,11 @@
 				6CD6DB032ABCA30500974035 /* Info.plist */,
 				6CD6DB022ABCA0DD00974035 /* GuardianDebug (Integration).entitlements */,
 				6CD6DAED2ABC730F00974035 /* Views */,
-				3D23ACF22AB2368400F55C5D /* Configuration.swift */,
 				3D23ACD92AB22C9200F55C5D /* GuardianApp.swift */,
 				3D23ACEB2AB233C300F55C5D /* API.swift */,
 				3D23ACDD2AB22C9500F55C5D /* Assets.xcassets */,
 				3D23ACDF2AB22C9500F55C5D /* Preview Content */,
+				BD64853A2AC5DDB200BC0B1B /* GuardianError.swift */,
 			);
 			path = Guardian;
 			sourceTree = "<group>";
@@ -484,6 +494,15 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		3DFF194D2AC954CF006111B2 /* PinInputField */ = {
+			isa = PBXGroup;
+			children = (
+				3DFF194E2AC954E8006111B2 /* PinInputField.swift */,
+				3DFF19502AC954FE006111B2 /* PinInput.swift */,
+			);
+			path = PinInputField;
+			sourceTree = "<group>";
+		};
 		6CB230C82A9D1354009FAE91 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -529,10 +548,12 @@
 		6CD6DAED2ABC730F00974035 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3DFF194D2AC954CF006111B2 /* PinInputField */,
 				3D23ACF62AB2612A00F55C5D /* Invitation.swift */,
 				3D23ACDB2AB22C9200F55C5D /* ContentView.swift */,
 				6CD6DAE72ABB4E8000974035 /* Guardian.swift */,
-				3D23ACF42AB2604F00F55C5D /* GuardianVerification.swift */,
+				BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */,
+				BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -621,6 +642,7 @@
 			packageProductDependencies = (
 				3D23ACE92AB233AE00F55C5D /* Moya */,
 				6CD6DAF82ABC9C0A00974035 /* BigInt */,
+				BD6485342AC49EA300BC0B1B /* raygun4apple */,
 			);
 			productName = Guardian;
 			productReference = 3D23ACD72AB22C9100F55C5D /* Guardian.app */;
@@ -821,21 +843,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */,
 				E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */,
+				BD6485332AC49AE200BC0B1B /* InfoBoard.swift in Sources */,
 				6CD6DAEA2ABB50A500974035 /* Login.swift in Sources */,
+				BD64853B2AC5DDB200BC0B1B /* GuardianError.swift in Sources */,
 				6CD6DAF02ABC785400974035 /* VerificationStatus.swift in Sources */,
 				3D23ACDC2AB22C9200F55C5D /* ContentView.swift in Sources */,
 				6CD6DAF12ABC9A2200974035 /* SignIn.swift in Sources */,
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
+				BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */,
 				6CD6DAE82ABB4E8000974035 /* Guardian.swift in Sources */,
 				6CD6DAEC2ABC6CBA00974035 /* UserCredentials.swift in Sources */,
 				6C2372852AC4BFCB0072E256 /* RetryView.swift in Sources */,
+				BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */,
 				6CD6DB062ABCD76E00974035 /* EncryptionKey.swift in Sources */,
 				3D23ACEF2AB2352800F55C5D /* SecureEnclaveKey.swift in Sources */,
-				3D23ACF52AB2604F00F55C5D /* GuardianVerification.swift in Sources */,
 				6CD6DAFF2ABC9D6000974035 /* CensoTheme.swift in Sources */,
+				3DFF19532AC95578006111B2 /* PinInput.swift in Sources */,
 				3D23ACEC2AB233C300F55C5D /* API.swift in Sources */,
-				3D23ACF32AB2368400F55C5D /* Configuration.swift in Sources */,
 				3D23ACF12AB2359400F55C5D /* Data+Hex.swift in Sources */,
 				6C23727F2AC4AA3F0072E256 /* Error.swift in Sources */,
 				6C2372892AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */,
@@ -846,6 +872,7 @@
 				3D23ACF02AB2358000F55C5D /* Base58.swift in Sources */,
 				3D23ACF72AB2612A00F55C5D /* Invitation.swift in Sources */,
 				6CD6DAEB2ABC6C6400974035 /* ValueWrappers.swift in Sources */,
+				3DFF19522AC95574006111B2 /* PinInputField.swift in Sources */,
 				3D23ACFC2AB269CF00F55C5D /* RemoteResult.swift in Sources */,
 				6CD6DAF32ABC9A6300974035 /* Session.swift in Sources */,
 				6C2372862AC4BFF80072E256 /* FacetecError.swift in Sources */,
@@ -2062,6 +2089,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
+		};
+		BD6485342AC49EA300BC0B1B /* raygun4apple */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
+			productName = raygun4apple;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
