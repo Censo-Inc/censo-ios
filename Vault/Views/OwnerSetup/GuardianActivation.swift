@@ -41,13 +41,14 @@ struct  GuardianActivation: View {
             switch (setupState) {
             case .loading:
                 ProgressView().onAppear { reloadUser() }
-            case .policySetup:
+            case .policySetup: // this should never be the case
                 PolicySetup(
                     session: session,
-                    onSuccess: {
-                        setupState = .guardianSetup
-                        reloadUser()
-                    })
+                    threshold: threshold,
+                    approvers: guardianProspects.map(\.label)
+                ) { _ in
+                    reloadUser()
+                }
             case .guardianSetup:
                 VStack {
                     HStack {

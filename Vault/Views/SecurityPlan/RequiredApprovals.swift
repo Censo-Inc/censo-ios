@@ -18,15 +18,19 @@ struct RequiredApprovals: View {
 
     @State private var threshold: Int
 
+    var session: Session
     @Binding var approvers: [String]
     @Binding var showingAddApprover: Bool
     var onEdit: (Int) -> Void
+    var onComplete: (API.OwnerState) -> Void
 
-    init(approvers: Binding<[String]>, showingAddApprover: Binding<Bool>, onEdit: @escaping (Int) -> Void) {
+    init(session: Session, approvers: Binding<[String]>, showingAddApprover: Binding<Bool>, onEdit: @escaping (Int) -> Void, onComplete: @escaping (API.OwnerState) -> Void) {
         self._threshold = State(initialValue: approvers.wrappedValue.count.recommendedThreshold)
         self._approvers = approvers
         self._showingAddApprover = showingAddApprover
         self.onEdit = onEdit
+        self.session = session
+        self.onComplete = onComplete
     }
 
     private var recommendedThreshold: Int {
@@ -80,10 +84,12 @@ struct RequiredApprovals: View {
 
             NavigationLink {
                 SecurityPlanReview(
+                    session: session,
                     approvers: $approvers,
                     threshold: $threshold,
                     showingAddApprover: $showingAddApprover,
-                    onEdit: onEdit
+                    onEdit: onEdit,
+                    onComplete: onComplete
                 )
             } label: {
                 Text("Next: Review")
@@ -118,9 +124,9 @@ struct RequiredApprovals: View {
 struct RequiredApprovals_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            RequiredApprovals(approvers: .constant(["Ben", "Jerry"]), showingAddApprover: .constant(false)) { _ in
+            RequiredApprovals(session: .sample, approvers: .constant(["Ben", "Jerry"]), showingAddApprover: .constant(false)) { _ in
                 
-            }
+            } onComplete: {_ in }
         }
     }
 }

@@ -17,9 +17,9 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     var verificationId: String
     var sessionToken: String
     var onBack: () -> Void
-    var onSuccess: (API.OwnerState) -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
+    var onSuccess: (API.OwnerState) -> Void
 
     typealias UIViewControllerType = UIViewController
 
@@ -35,7 +35,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     typealias Coordinator = FacetecUIKitWrapperCoordinator
 
     func makeCoordinator() -> Coordinator {
-        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onSuccess: onSuccess, onBack: onBack, onError: onError, onReadyToUploadResults: onReadyToUploadResults)
+        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onBack: onBack, onError: onError, onReadyToUploadResults: onReadyToUploadResults, onSuccess: onSuccess)
     }
 }
 
@@ -47,20 +47,20 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
     var session: Session
     var apiProvider: MoyaProvider<API>
     var verificationId: String
-    var onSuccess: (API.OwnerState) -> Void
     var onBack: () -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
+    var onSuccess: (API.OwnerState) -> Void
     var ownerState: API.OwnerState? = nil
 
-    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onSuccess: @escaping (API.OwnerState) -> Void, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback) {
+    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback, onSuccess: @escaping (API.OwnerState) -> Void) {
         self.session = session
         self.apiProvider = apiProvider
         self.verificationId = verificationId
-        self.onSuccess = onSuccess
         self.onBack = onBack
         self.onError = onError
         self.onReadyToUploadResults = onReadyToUploadResults
+        self.onSuccess = onSuccess
     }
 
     func processSessionWhileFaceTecSDKWaits(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) {

@@ -9,7 +9,6 @@ import Moya
 import FaceTecSDK
 import raygun4apple
 
-
 struct FacetecAuth: View {
     @Environment(\.apiProvider) var apiProvider
 
@@ -17,67 +16,72 @@ struct FacetecAuth: View {
 
     enum SetupStep {
         case idle
+        case loading
         case ready(API.InitBiometryVerificationApiResponse)
-        case error(Error)
+        case failure(Error)
     }
 
     var session: Session
-    var onSuccess: (API.OwnerState) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
+    var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
-        switch setupStep {
-        case .idle:
-            ProgressView {
-                Text("Preparing liveness detection")
-            }
-            .onAppear(perform: prepareBiometryVerification)
-        case .ready(let initBiometryResponse):
-            #if INTEGRATION
-            ProgressView {
-                Text("Skipping biometry...")
-            }
-            .onAppear {
-                apiProvider.decodableRequest(
-                    with: session,
-                    endpoint: onReadyToUploadResults(
-                        initBiometryResponse.id,
-                        API.FacetecBiometry(
-                            faceScan: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                            auditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                            lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
+        Group {
+            switch setupStep {
+            case .idle:
+                ProgressView()
+                    .onAppear(perform: prepareBiometryVerification)
+            case .loading:
+                ProgressView()
+            case .ready(let initBiometryResponse):
+#if INTEGRATION
+                ProgressView {
+                    Text("Skipping biometry...")
+                }
+                .onAppear {
+                    apiProvider.decodableRequest(
+                        with: session,
+                        endpoint: onReadyToUploadResults(
+                            initBiometryResponse.id,
+                            API.FacetecBiometry(
+                                faceScan: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                                auditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                                lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
+                            )
                         )
-                    )
-                ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                    switch result {
-                    case .success(let response):
-                        onSuccess(response.ownerState)
-                    case .failure(let error):
-                        setupStep = .error(error)
+                    ) { (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
+                        switch result {
+                        case .success(let response):
+                            onSuccess(response.ownerState)
+                        case .failure(let error):
+                            setupStep = .failure(error)
+                        }
                     }
                 }
+#else
+                FacetecUIKitWrapper(
+                    session: session,
+                    verificationId: initBiometryResponse.id,
+                    sessionToken: initBiometryResponse.sessionToken,
+                    onBack: {
+                        setupStep = .ready(initBiometryResponse)
+                    },
+                    onError: { error in
+                        setupStep = .failure(error)
+                    },
+                    onReadyToUploadResults: onReadyToUploadResults,
+                    onSuccess: onSuccess
+                )
+#endif
+            case .failure(let error):
+                RetryView(error: error, action: prepareBiometryVerification)
             }
-            #else
-            FacetecUIKitWrapper(
-                session: session,
-                verificationId: initBiometryResponse.id,
-                sessionToken: initBiometryResponse.sessionToken,
-                onBack: {
-                    setupStep = .ready(initBiometryResponse)
-                },
-                onSuccess: onSuccess,
-                onError: { error in
-                    setupStep = .error(error)
-                },
-                onReadyToUploadResults: onReadyToUploadResults
-            )
-            #endif
-        case .error(let error):
-            RetryView(error: error, action: { setupStep = .idle })
         }
     }
 
     private func prepareBiometryVerification() {
+        setupStep = .loading
+
         apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
@@ -91,11 +95,11 @@ struct FacetecAuth: View {
                     } else {
                         let error = FacetecError(rawStatus: FaceTec.sdk.getStatus().rawValue)
                         RaygunClient.sharedInstance().send(error: error, tags: ["FaceTec"], customData: nil)
-                        setupStep = .error(error)
+                        setupStep = .failure(error)
                     }
                 }
             case .failure(let error):
-                setupStep = .error(error)
+                setupStep = .failure(error)
             }
         }
     }
@@ -124,7 +128,7 @@ extension FaceTecSDKProtocol {
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecAuth(session: .sample, onSuccess: {_ in }, onReadyToUploadResults: {_,_ in .user})
+            FacetecAuth(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in }
         }
     }
 }

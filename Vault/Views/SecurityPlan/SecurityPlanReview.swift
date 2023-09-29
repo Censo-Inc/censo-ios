@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct SecurityPlanReview: View {
+    var session: Session
     @Binding var approvers: [String]
     @Binding var threshold: Int
     @Binding var showingAddApprover: Bool
     var onEdit: (Int) -> Void
+    var onComplete: (API.OwnerState) -> Void
 
     var body: some View {
         GeometryReader { geometry in
@@ -74,8 +76,8 @@ struct SecurityPlanReview: View {
                         }
                     }
 
-                    Button {
-
+                    NavigationLink {
+                        PolicySetup(session: session, threshold: threshold, approvers: approvers, onComplete: onComplete)
                     } label: {
                         Text("Confirm")
                     }
@@ -99,7 +101,9 @@ struct SecurityPlanReview: View {
 struct SecurityPlanReview_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SecurityPlanReview(approvers: .constant(["Jerry", "Elaine", "Kramer", "George"]), threshold: .constant(1), showingAddApprover: .constant(false)) { i in
+            SecurityPlanReview(session: .sample, approvers: .constant(["Jerry", "Elaine", "Kramer", "George"]), threshold: .constant(1), showingAddApprover: .constant(false)) { i in
+            } onComplete: { _ in
+
             }
         }
     }

@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ApproverSetupNonEmpty: View {
+    var session: Session
     @Binding var approvers: [String]
     @Binding var showingAddApprover: Bool
     var onEdit: (Int) -> Void
+    var onComplete: (API.OwnerState) -> Void
 
     var body: some View {
         Group {
@@ -38,9 +40,11 @@ struct ApproverSetupNonEmpty: View {
 
         NavigationLink {
             RequiredApprovals(
+                session: session,
                 approvers: $approvers,
                 showingAddApprover: $showingAddApprover,
-                onEdit: onEdit
+                onEdit: onEdit,
+                onComplete: onComplete
             )
         } label: {
             Text("Next: Required Approvals")

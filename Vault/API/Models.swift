@@ -59,14 +59,14 @@ extension API {
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
-    
+
     struct CreatePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
         var guardianShards: [GuardianShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
     }
-    
+
     struct CreatePolicyApiResponse: Decodable {
         var ownerState: OwnerState
         var scanResultBlob: String

@@ -8,6 +8,12 @@
 import Foundation
 import BigInt
 
+extension ParticipantId {
+    static func random() -> ParticipantId {
+        ParticipantId(bigInt: generateParticipantId())
+    }
+}
+
 func generateParticipantId() -> BigInt {
     return BigInt(generateRandomHex(lenght: 64), radix: 16)!
 }

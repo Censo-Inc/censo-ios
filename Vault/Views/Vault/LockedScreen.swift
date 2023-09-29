@@ -82,11 +82,11 @@ struct LockedScreen<Content: View>: View {
             case .unlockInProgress:
                 FacetecAuth(
                     session: session,
-                    onSuccess: { ownerState in
-                        updateLockState(ownerState: ownerState)
-                    },
                     onReadyToUploadResults: { biomentryVerificationId, biometryData in
                         return .unlock(API.UnlockApiRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData))
+                    }, 
+                    onSuccess: { ownerState in
+                        updateLockState(ownerState: ownerState)
                     }
                 )
             }

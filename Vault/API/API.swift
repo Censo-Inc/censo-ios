@@ -124,26 +124,20 @@ extension API: TargetType {
             #endif
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
-            
         case .setupPolicy(let request):
             return .requestJSONEncodable(request)
-
         case .confirmGuardian(let request):
             return .requestJSONEncodable(request)
-            
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
             )
-            
         case .inviteGuardian(let request):
             return .requestJSONEncodable(request)
-            
         case .unlock(let request):
             return .requestJSONEncodable(request)
         case .lock:
             return .requestPlain
-            
         case .storeSecret(let request):
             return .requestJSONEncodable(request)
         case .deleteSecret:

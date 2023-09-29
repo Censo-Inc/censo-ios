@@ -25,6 +25,9 @@ struct ApproversSetup: View {
         }
     }
 
+    var session: Session
+    var onComplete: (API.OwnerState) -> Void
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -36,12 +39,15 @@ struct ApproversSetup: View {
                     ApproverSetupEmpty(showingAddApprover: $showingAddApprover)
                 } else {
                     ApproverSetupNonEmpty(
+                        session: session,
                         approvers: approvers,
-                        showingAddApprover: $showingAddApprover
-                    ) { i in
-                        showingEditSheet = true
-                        editingIndex = i
-                    }
+                        showingAddApprover: $showingAddApprover,
+                        onEdit: { i in
+                            showingEditSheet = true
+                            editingIndex = i
+                        },
+                        onComplete: onComplete
+                    )
                 }
             }
             .multilineTextAlignment(.center)
@@ -113,7 +119,7 @@ private extension String {
 #if DEBUG
 struct ApproversSetup_Previews: PreviewProvider {
     static var previews: some View {
-        ApproversSetup()
+        ApproversSetup(session: .sample) { _ in }
     }
 }
 #endif
