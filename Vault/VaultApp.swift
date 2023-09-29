@@ -32,7 +32,15 @@ struct VaultApp: App {
     private func handlePushRegistration() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
-                if settings.authorizationStatus == .authorized {
+                if settings.authorizationStatus == .notDetermined {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
+                        if result {
+                            DispatchQueue.main.async {
+                                UIApplication.shared.registerForRemoteNotifications()
+                            }
+                        }
+                    }
+                } else if settings.authorizationStatus == .authorized {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             }
@@ -61,6 +69,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         if Configuration.raygunEnabled {
             raygunClient.enableCrashReporting()
         }
+        
+        UNUserNotificationCenter.current().delegate = self
 
         setupAppearance()
 
@@ -113,6 +123,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor.white
     }
 }
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound])
+
+        NotificationCenter.default.post(name: .userDidReceiveRemoteNotification, object: notification)
+    }
+}
+
 
 extension Notification.Name {
     static let userDidReceiveRemoteNotification = Notification.Name("userDidReceiveRemoteNotification")

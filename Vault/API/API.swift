@@ -111,10 +111,17 @@ extension API: TargetType {
         case .signIn(let credentials):
             return .requestJSONEncodable(credentials)
         case .registerPushToken(let token):
+            #if DEBUG
             return .requestJSONEncodable([
-                "token": token,
-                "deviceType": "Ios"
+                "deviceType": "IosDebug",
+                "token": token
             ])
+            #else
+            return .requestJSONEncodable([
+                "deviceType": "Ios",
+                "token": token
+            ])
+            #endif
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
             
