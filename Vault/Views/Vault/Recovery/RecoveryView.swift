@@ -64,11 +64,15 @@ struct RecoveryView: View {
                     .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
                     .padding(.bottom, 10)
                     
+                    let approvalsCount = thisDeviceRecovery
+                        .approvals
+                        .filter({ $0.approvalStatus == API.Recovery.ThisDevice.Approval.Status.approved })
+                        .count
                     
                     VStack {
                         ZStack {
                             HStack {
-                                Text("\(thisDeviceRecovery.shardsReceived)")
+                                Text("\(approvalsCount)")
                                     .font(.system(size: 48))
                                     .foregroundColor(.white)
                                     .padding(.vertical, 10)
@@ -174,7 +178,7 @@ struct RecoveryView: View {
     
     func cancelRecovery() {
         cancelationInProgress = true
-        apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery(guid: recovery.guid)) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
@@ -238,7 +242,7 @@ struct RecoveryView_Previews: PreviewProvider {
                     status: API.Recovery.Status.requested,
                     createdAt: Date(),
                     unlocksAt: Date(),
-                    shardsReceived: 0
+                    approvals: []
                 )),
                 onOwnerStateUpdated: { _ in }
             )
@@ -246,7 +250,7 @@ struct RecoveryView_Previews: PreviewProvider {
         
         LockedScreen(
             session,
-            6000,
+            600,
             onOwnerStateUpdated: { _ in },
             onUnlockedTimeOut: {}
         ) {

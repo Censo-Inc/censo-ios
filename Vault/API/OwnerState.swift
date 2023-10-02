@@ -143,7 +143,20 @@ extension API {
             var status: Status
             var createdAt: Date
             var unlocksAt: Date
-            var shardsReceived: Int
+            var approvals: [Approval]
+            
+            struct Approval : Codable {
+                var participantId: ParticipantId
+                var approvalStatus: Status
+                
+                enum Status : String, Codable {
+                    case initial = "Initial"
+                    case waitingForVerification = "WaitingForVerification"
+                    case waitingForApproval = "WaitingForApproval"
+                    case approved = "Approved"
+                    case rejected = "Rejected"
+                }
+            }
         }
         
         enum Status : String, Codable {
@@ -178,15 +191,6 @@ extension API {
             case .thisDevice(let thisDevice):
                 try container.encode("ThisDevice", forKey: .type)
                 try thisDevice.encode(to: encoder)
-            }
-        }
-        
-        var guid: String {
-            switch self {
-            case .anotherDevice(let anotherDevide):
-                return anotherDevide.guid
-            case .thisDevice(let thisDevice):
-                return thisDevice.guid
             }
         }
     }

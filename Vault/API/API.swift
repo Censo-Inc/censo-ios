@@ -34,7 +34,7 @@ struct API {
         case deleteSecret(guid: String)
         
         case requestRecovery(RequestRecoveryApiRequest)
-        case deleteRecovery(guid: String)
+        case deleteRecovery
     }
 
     struct ConfirmGuardianRequest: Codable {
@@ -79,8 +79,8 @@ extension API: TargetType {
             return "v1/vault/secrets/\(guid)"
         case .requestRecovery:
             return "v1/recovery"
-        case .deleteRecovery(let guid):
-            return "v1/recovery/\(guid)"
+        case .deleteRecovery:
+            return "v1/recovery"
         }
     }
 
