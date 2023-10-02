@@ -55,28 +55,54 @@ struct LockedScreen<Content: View>: View {
         VStack {
             switch (lockState) {
             case .locked:
-                Text("Vault is locked")
-                Button {
-                    lockState = .unlockInProgress
-                } label: {
-                    Text("Unlock").frame(maxWidth: .infinity)
+                VStack {
+                    VStack {
+                        Text("Vault is locked")
+                            .foregroundColor(.white)
+                        Button {
+                            lockState = .unlockInProgress
+                        } label: {
+                            Text("Unlock")
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 44)
+                        }
+                        .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                    }.padding()
                 }
-                .buttonStyle(FilledButtonStyle())
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .background(Color.Censo.darkBlue)
             case .unlocked(let locksAt):
-                content
-                Spacer()
-                LockCountDown(locksAt: locksAt, onTimeout: {
-                    self.lockState = .locked
-                    onUnlockedTimeOut()
-                })
-                Button {
-                    lock()
-                } label: {
-                    Text("Lock").frame(maxWidth: .infinity)
+                VStack {
+                    content
+                    Spacer()
+                    VStack {
+                        LockCountDown(locksAt: locksAt, onTimeout: {
+                            self.lockState = .locked
+                            onUnlockedTimeOut()
+                        })
+                        Button {
+                            lock()
+                        } label: {
+                            Text("Lock")
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 44)
+                                .foregroundColor(.white)
+                        }
+                        .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                    }.padding()
                 }
-                .buttonStyle(FilledButtonStyle())
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .background(Color.Censo.darkBlue)
             case .lockInProgress:
-                ProgressView()
+                VStack {
+                    ProgressView()
+                        .tint(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .background(Color.Censo.darkBlue)
             case .lockFailed(let error):
                 RetryView(error: error, action: { lock() })
             case .unlockInProgress:
@@ -125,9 +151,9 @@ struct LockCountDown: View {
     var onTimeout: () -> Void
     
     var body: some View {
-        VStack {
-            Text("Locks in \(secondsRemaining) seconds")
-        }
+        Text("Locks in \(secondsRemaining) seconds")
+            .font(Font.footnote)
+            .foregroundStyle(.white)
         .onAppear {
             secondsRemaining = UInt(locksAt.timeIntervalSinceNow)
         }
@@ -140,3 +166,36 @@ struct LockCountDown: View {
         }
     }
 }
+
+#if DEBUG
+struct LockedScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        let session = Session(
+            deviceKey: .sample,
+            userCredentials: UserCredentials(idToken: Data(), userIdentifier: "")
+        )
+    
+        LockedScreen(
+            session,
+            600,
+            onOwnerStateUpdated: { _ in },
+            onUnlockedTimeOut: {}
+        ) {
+            VStack {
+                Text("test")
+            }
+        }
+        
+        LockedScreen(
+            session,
+            nil,
+            onOwnerStateUpdated: { _ in },
+            onUnlockedTimeOut: {}
+        ) {
+            VStack {
+                Text("test")
+            }
+        }
+    }
+}
+#endif

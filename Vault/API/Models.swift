@@ -106,4 +106,16 @@ extension API {
     struct DeleteSecretApiResponse : Decodable {
         var ownerState: OwnerState
     }
+    
+    struct RequestRecoveryApiRequest : Encodable {
+        var vaultSecretIds: [String]
+    }
+    
+    struct RequestRecoveryApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct DeleteRecoveryApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
 }

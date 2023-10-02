@@ -127,6 +127,68 @@ extension API {
         var threshold: UInt
         var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
+        var recovery: Recovery?
+    }
+    
+    enum Recovery: Codable {
+        case anotherDevice(AnotherDevice)
+        case thisDevice(ThisDevice)
+        
+        struct AnotherDevice: Codable {
+            var guid: String
+        }
+        
+        struct ThisDevice : Codable {
+            var guid: String
+            var status: Status
+            var createdAt: Date
+            var unlocksAt: Date
+            var shardsReceived: Int
+        }
+        
+        enum Status : String, Codable {
+            case requested = "Requested"
+            case timelocked = "Timelocked"
+            case available = "Available"
+        }
+        
+        enum RecoveryCodingKeys: String, CodingKey {
+            case type
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: RecoveryCodingKeys.self)
+            let type = try container.decode(String.self, forKey: .type)
+            switch type {
+            case "AnotherDevice":
+                self = .anotherDevice(try AnotherDevice(from: decoder))
+            case "ThisDevice":
+                self = .thisDevice(try ThisDevice(from: decoder))
+            default:
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Recovery State")
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: RecoveryCodingKeys.self)
+            switch self {
+            case .anotherDevice(let anotherDevice):
+                try container.encode("AnotherDevice", forKey: .type)
+                try anotherDevice.encode(to: encoder)
+            case .thisDevice(let thisDevice):
+                try container.encode("ThisDevice", forKey: .type)
+                try thisDevice.encode(to: encoder)
+            }
+        }
+        
+        var guid: String {
+            switch self {
+            case .anotherDevice(let anotherDevide):
+                return anotherDevide.guid
+            case .thisDevice(let thisDevice):
+                return thisDevice.guid
+            }
+        }
     }
     
     enum OwnerState: Codable {
