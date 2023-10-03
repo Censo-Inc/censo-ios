@@ -137,7 +137,7 @@ class PinInput: UIControl {
     }
 
     override var intrinsicContentSize: CGSize {
-        CGSize(width: stackView.intrinsicContentSize.width, height: 77)
+        CGSize(width: stackView.intrinsicContentSize.width, height: 100)
     }
 
     override func layoutSubviews() {
