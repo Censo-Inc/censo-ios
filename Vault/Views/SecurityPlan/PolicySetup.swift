@@ -17,14 +17,19 @@ struct PolicySetup: View {
     var approvers: [String]
     var onComplete: (API.OwnerState) -> Void
 
-    private var guardians: [API.GuardianSetup] {
-        approvers.map { label in
+    private var guardians: Result<[API.GuardianSetup], Error> {
+        do {
+            return .success(try approvers.map { label in
                 .externalApprover(
                     API.GuardianSetup.ExternalApprover(
-                participantId: .random(),
-                label: label,
-                deviceEncryptedTotpSecret: .encryptedTotpSecret(deviceKey: session.deviceKey)
-            ))
+                        participantId: .random(),
+                        label: label,
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                    ))
+                }
+            )
+        } catch {
+            return .failure(error)
         }
     }
 
@@ -36,12 +41,17 @@ struct PolicySetup: View {
                 }
                 .navigationBarHidden(true)
             } else {
-                InitialIdentityVerification(
-                    threshold: threshold,
-                    guardians: guardians,
-                    session: session
-                ) { ownerState in
-                    newOwnerState = ownerState
+                switch guardians {
+                case .success(let guardians):
+                    InitialIdentityVerification(
+                        threshold: threshold,
+                        guardians: guardians,
+                        session: session
+                    ) { ownerState in
+                        newOwnerState = ownerState
+                    }
+                case .failure(let error):
+                    Text("Eror creating secret: \(error.localizedDescription)")
                 }
             }
         }

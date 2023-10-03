@@ -40,7 +40,6 @@ struct  OwnerVerification: View {
                 OwnerVerificationStatus(status: "Awaiting Code") {
                     RotatingTotpPinView(
                         session: session,
-                        currentDate: currentDate,
                         deviceEncryptedTotpSecret: phase.encryptedTotpSecret)
                 }
             case .recoveryConfirmation(let status):

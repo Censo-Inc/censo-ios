@@ -42,7 +42,7 @@ struct Guardian: View {
                 case .none:
                     AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
                 case .waitingForCode:
-                    SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .notSubmitted,
+                    SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .waitingForVerification,
                                        participantId: currentState!.participantId,
                                        onSuccess: {newState in guardianState = newState})
                 case .waitingForConfirmation(let waitingForConfirmation):

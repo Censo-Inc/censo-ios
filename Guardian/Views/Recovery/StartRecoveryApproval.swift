@@ -77,14 +77,18 @@ struct  StartRecoveryApproval: View {
     
     private func startOwnerVerification(participantId: ParticipantId) {
         inProgress = true
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .storeRecoveryTotpSecret(
-                participantId,
-                .encryptedTotpSecret(deviceKey: session.deviceKey)
-            )
-        ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
-            inProgress = false
+
+        do {
+            let encryptedTotpSecret = try Base64EncodedString.encryptedTotpSecret(deviceKey: session.deviceKey)
+
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .storeRecoveryTotpSecret(
+                    participantId,
+                    encryptedTotpSecret
+                )
+            ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
+                inProgress = false
                 switch result {
                 case .success:
                     onSuccess()
@@ -92,6 +96,9 @@ struct  StartRecoveryApproval: View {
                     showError(error)
                 }
             }
+        } catch {
+            showError(error)
+        }
     }
 }
 

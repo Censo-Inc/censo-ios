@@ -38,16 +38,12 @@ struct SubmitVerification: View {
                         }
                     }
                     .disabled(
-                        verificationStatus.isPending()
+                        //verificationStatus.isPending()
+                        true // this is always pending
                     )
 
                 if (currentError == nil) {
                     switch (verificationStatus) {
-                    case .rejected:
-                        Text("The code you entered is not correct.\nPlease try again.")
-                            .bold()
-                            .foregroundColor(Color.red)
-                            .multilineTextAlignment(.center)
                     case .waitingForVerification:
                         ProgressView(
                             label: {
@@ -63,8 +59,6 @@ struct SubmitVerification: View {
                                 }
                             }
                         }
-                    case .verified, .notSubmitted:
-                        EmptyView()
                     }
                 } else {
                     Text(currentError!.localizedDescription)
@@ -122,7 +116,7 @@ struct SubmitVerification: View {
 #if DEBUG
 #Preview {
     SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,
-                       verificationStatus: .notSubmitted, participantId: .sample, onSuccess: {_ in })
+                       verificationStatus: .waitingForVerification, participantId: .sample, onSuccess: {_ in })
 }
 
 #endif

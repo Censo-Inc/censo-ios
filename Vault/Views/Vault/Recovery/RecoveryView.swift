@@ -198,7 +198,7 @@ extension API.TrustedGuardian {
         .init(
             label: "Ben",
             participantId: ParticipantId(bigInt: generateParticipantId()),
-            attributes: API.GuardianStatus.Onboarded(
+            attributes: API.TrustedGuardian.Attributes(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
@@ -209,7 +209,7 @@ extension API.TrustedGuardian {
         .init(
             label: "Brendan",
             participantId: ParticipantId(bigInt: generateParticipantId()),
-            attributes: API.GuardianStatus.Onboarded(
+            attributes: API.TrustedGuardian.Attributes(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
@@ -220,7 +220,7 @@ extension API.TrustedGuardian {
         .init(
             label: "Ievgen",
             participantId: ParticipantId(bigInt: generateParticipantId()),
-            attributes: API.GuardianStatus.Onboarded(
+            attributes: API.TrustedGuardian.Attributes(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
@@ -231,7 +231,7 @@ extension API.TrustedGuardian {
         .init(
             label: "Ata",
             participantId: ParticipantId(bigInt: generateParticipantId()),
-            attributes: API.GuardianStatus.Onboarded(
+            attributes: API.TrustedGuardian.Attributes(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
@@ -242,7 +242,7 @@ extension API.TrustedGuardian {
         .init(
             label: "Sam",
             participantId: ParticipantId(bigInt: generateParticipantId()),
-            attributes: API.GuardianStatus.Onboarded(
+            attributes: API.TrustedGuardian.Attributes(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )

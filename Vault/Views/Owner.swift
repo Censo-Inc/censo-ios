@@ -25,11 +25,26 @@ struct Owner: View {
         case .success(let ownerState):
             switch ownerState {
             case .initial:
-                ApproversSetup(session: session) { newOwnerState in
-                    _ownerStateResource.replace(newOwnerState)
+                ApproversSetup(
+                    session: session,
+                    onComplete: replaceOwnerState
+                )
+            case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
+                OpenVault {
+                    ApproversActivated(
+                        session: session,
+                        guardianSetup: guardianSetup,
+                        onOwnerStateUpdate: replaceOwnerState
+                    )
                 }
-            case .guardianSetup:
-                GuardianActivation(session: session, onSuccess: reload)
+            case .guardianSetup(let guardianSetup):
+                OpenVault {
+                    ApproverActivation(
+                        session: session,
+                        guardianSetup: guardianSetup,
+                        onOwnerStateUpdate: replaceOwnerState
+                    )
+                }
             case .ready(let ready):
                 LockedScreen(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockedTimeOut: reload) {
                     VaultHomeScreen(
@@ -59,5 +74,17 @@ struct Owner: View {
             target: session.target(for: .user),
             adaptSuccess: { (user: API.User) in user.ownerState }
         )
+    }
+}
+
+extension Array where Element == API.ProspectGuardian {
+    var allConfirmed: Bool {
+        !contains { guardian in
+            if case .confirmed = guardian.status {
+                return false
+            } else {
+                return true
+            }
+        }
     }
 }

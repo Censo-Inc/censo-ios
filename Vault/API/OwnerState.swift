@@ -8,7 +8,7 @@
 import Foundation
 
 extension API {
-    struct ProspectGuardian: Codable {
+    struct ProspectGuardian: Codable, Equatable {
         var label: String
         var participantId: ParticipantId
         var status: GuardianStatus
@@ -17,29 +17,33 @@ extension API {
     struct TrustedGuardian: Codable {
         var label: String
         var participantId: ParticipantId
-        var attributes: GuardianStatus.Onboarded
+        var attributes: Attributes
+
+        struct Attributes: Codable {
+            var guardianEncryptedShard: Base64EncodedString
+            var onboardedAt: Date
+        }
     }
     
-    enum GuardianStatus: Codable {
+    enum GuardianStatus: Codable, Equatable {
         case initial(Initial)
         case declined
         case accepted(Accepted)
         case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
         case implicitlyOwner(ImplicitlyOwner)
-        case onboarded(Onboarded)
         
-        struct Initial: Codable {
+        struct Initial: Codable, Equatable {
             var invitationId: String
             var deviceEncryptedTotpSecret: Base64EncodedString
         }
 
-        struct Accepted: Codable {
+        struct Accepted: Codable, Equatable {
             var deviceEncryptedTotpSecret: Base64EncodedString
             var acceptedAt: Date
         }
         
-        struct VerificationSubmitted: Codable {
+        struct VerificationSubmitted: Codable, Equatable {
             var deviceEncryptedTotpSecret: Base64EncodedString
             var signature: Base64EncodedString
             var timeMillis: Int64
@@ -48,14 +52,14 @@ extension API {
             var submittedAt: Date
         }
         
-        struct Confirmed: Codable {
+        struct Confirmed: Codable, Equatable {
             var guardianKeySignature: Base64EncodedString
             var guardianPublicKey: Base58EncodedPublicKey
             var timeMillis: Int64
             var confirmedAt: Date
         }
-        
-        struct ImplicitlyOwner: Codable {
+
+        struct ImplicitlyOwner: Codable, Equatable {
             var guardianPublicKey: Base58EncodedPublicKey
             var confirmedAt: Date
         }
@@ -85,8 +89,6 @@ extension API {
                 self = .confirmed(try Confirmed(from: decoder))
             case "ImplicitlyOwner":
                 self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
-            case "Onboarded":
-                self = .onboarded(try Onboarded(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid GuardianStatus")
             }
@@ -111,9 +113,6 @@ extension API {
                 try status.encode(to: encoder)
             case .implicitlyOwner(let status):
                 try container.encode("ImplicitlyOwner", forKey: .type)
-                try status.encode(to: encoder)
-            case .onboarded(let status):
-                try container.encode("Onboarded", forKey: .type)
                 try status.encode(to: encoder)
             }
         }
@@ -212,9 +211,9 @@ extension API {
         case guardianSetup(GuardianSetup)
         case ready(Ready)
         
-        struct GuardianSetup: Codable {
+        struct GuardianSetup: Codable, Equatable {
             var guardians: [ProspectGuardian]
-            var threshold: Int?
+            var threshold: Int
             var unlockedForSeconds: UInt?
         }
         

@@ -24,7 +24,7 @@ extension String {
             for i in paddedStr.indices {
                 if indexIsEven {
                     let byteRange = i...paddedStr.index(after: i)
-                    guard let byte = UInt8(paddedStr[byteRange], radix: 16) else { return nil }
+                    guard let byte = UInt8(paddedStr[byteRange], radix: 16) else { return nil } // why would this happen?
                     newData.append(byte)
                 }
                 indexIsEven.toggle()

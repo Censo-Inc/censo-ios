@@ -365,11 +365,8 @@ extension String {
 }
 
 extension Base64EncodedString {
-    static func encryptedTotpSecret(deviceKey: DeviceKey) -> Base64EncodedString {
-        guard let secret = try? generateBase32().decodeBase32(),
-              let deviceEncryptedTotpSecret = try? deviceKey.encrypt(data: secret) else {
-            return Base64EncodedString(data: Data())
-        }
-        return deviceEncryptedTotpSecret
+    static func encryptedTotpSecret(deviceKey: DeviceKey) throws -> Base64EncodedString {
+        let secret = try generateBase32().decodeBase32()
+        return try deviceKey.encrypt(data: secret)
     }
 }
