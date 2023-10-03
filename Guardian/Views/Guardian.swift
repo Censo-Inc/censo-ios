@@ -22,11 +22,14 @@ struct Guardian: View {
     
     @RemoteResult<API.GuardianUser, API> private var user
 
+    @State var guardianState: API.GuardianState?
+
     var session: Session
     var onSuccess: () -> Void
 
     var body: some View {
         VStack {
+            
             switch user {
             case .idle:
                 ProgressView()
@@ -34,46 +37,16 @@ struct Guardian: View {
             case .loading:
                 ProgressView()
             case .success(let user):
-                switch user.guardianStates.forInvite(inviteCode)?.phase {
+                switch (guardianState ?? user.guardianStates.forInvite(inviteCode))?.phase {
                 case .none:
-                    VStack {
-                        
-                        List {
-                            Text("You have been invited to act a guardian")
-                                .frame(maxWidth: .infinity)
-                            Spacer(minLength: 2)
-                            Text("To complete the process, you should accept the invitation and connect with the inviter to be socially approved")
-                                .frame(maxWidth: .infinity)
-                        }.multilineTextAlignment(.center)
-                        
-                        HStack {
-                            Button {
-                                acceptInvitation()
-                            } label: {
-                                if (inProgress) {
-                                    ProgressView()
-                                } else {
-                                    Text("Accept")
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }
-                            .buttonStyle(FilledButtonStyle())
-                            
-                            
-                            Spacer()
-                            
-                            Button {
-                                confirmDecline = true
-                            } label: {
-                                Text("Decline")
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(FilledButtonStyle())
-                        }
-                    }
-                case .waitingForCode,
-                        .waitingForConfirmation:
-                    GuardianVerification(session: session, inviteCode: inviteCode, onSuccess: reload)
+                    AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
+                case .waitingForCode:
+                    SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .notSubmitted,
+                                       onSuccess: {newState in guardianState = newState})
+                case .waitingForConfirmation(let waitingForConfirmation):
+                    SubmitVerification(invitationId: inviteCode,
+                        session: session, verificationStatus: waitingForConfirmation.verificationStatus,
+                        onSuccess: {newState in guardianState = newState})
                 case .complete:
                     VStack {
                         List {
@@ -100,25 +73,15 @@ struct Guardian: View {
                 RetryView(error: error, action: reload)
             }
         }
-        .navigationBarTitle("Guardian Accept/Decline", displayMode: .inline)
-        .padding()
+        .multilineTextAlignment(.center)
+        .navigationTitle(Text("Become an Approver"))
+        .navigationBarTitleDisplayMode(.inline)
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel) {
                 dismiss()
             }
         } message: { error in
             Text(error.localizedDescription)
-        }
-        .alert("Warning", isPresented: $confirmDecline) {
-            Button("Decline and continue", role: .destructive) {
-                declineInvitation()
-            }
-
-            Button("OK", role: .cancel) {
-                confirmDecline = false
-            }
-        } message: {
-            Text("Are you sure you want to decline?")
         }
     }
 
@@ -131,31 +94,6 @@ struct Guardian: View {
         
         showingError = true
         currentError = error
-    }
-    
-    private func acceptInvitation() {
-        inProgress = true
-        apiProvider.request(with: session, endpoint: .acceptInvitation(inviteCode)) { result in
-            switch result {
-            case .success(_):
-                inProgress = false
-                reload()
-            case .failure(let error):
-                showError(error)
-            }
-        }
-    }
-    
-    private func declineInvitation() {
-        inProgress = true
-        apiProvider.request(with: session, endpoint: .declineInvitation(inviteCode)) { result in
-            switch result {
-            case .success(_):
-                dismiss()
-            case .failure(let error):
-                showError(error)
-            }
-        }
     }
 }
 
