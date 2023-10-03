@@ -27,7 +27,6 @@ struct  GuardianActivation: View {
     @State private var error: Error?
     @State private var allGuardiansConfirmed = false
     @State private var currentDate: Date = Date()
-    @State private var totpMap: [ParticipantId: Data] = [:]
     @State private var timerPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
@@ -88,10 +87,9 @@ struct  GuardianActivation: View {
                                             .clipShape(Circle())
                                             .padding()
                                             .frame(height: 60)
-                                    case .invited:
+                                    case .initial(let status):
                                         Spacer()
-                                        if let invitationId = guardian.invitationId,
-                                           let link = URL(string: "censo-guardian://invite/\(invitationId)") {
+                                        if let link = URL(string: "censo-guardian://invite/\(status.invitationId)") {
                                             ShareLink(item: link,
                                                       subject: Text("Censo Invitation Link for \(guardian.label)"),
                                                       message: Text("Censo Invitation Link for \(guardian.label)")
@@ -100,35 +98,16 @@ struct  GuardianActivation: View {
                                                 
                                             }
                                         }
-                                    case .accepted:
-                                        if let totpSecret = totpMap[guardian.participantId] {
-                                            Spacer()
-                                            Text(TotpUtils.getOTP(date: currentDate, secret: totpSecret)).bold()
-                                            Spacer()
-                                            
-                                            ZStack {
-                                                Circle()
-                                                .stroke(
-                                                    Color.gray.opacity(0.5),
-                                                    lineWidth: 5
-                                                )
-                                                .frame(width: 30, height: 30)
-                                                
-                                                Circle()
-                                                    .trim(from: 0, to: TotpUtils.getPercentDone(date: currentDate))
-                                                .stroke(
-                                                    Color.blue,
-                                                    style: StrokeStyle(
-                                                        lineWidth: 5,
-                                                        lineCap: .round
-                                                    )
-                                                )
-                                                .frame(width: 30, height: 30)
-                                                .rotationEffect(.degrees(-90))
-                                                
-                                                Text("\(TotpUtils.getRemainingSeconds(date: currentDate))")
-                                            }
-                                        }
+                                    case .accepted(let status):
+                                        RotatingTotpPinView(
+                                            session: session,
+                                            currentDate: currentDate,
+                                            deviceEncryptedTotpSecret: status.deviceEncryptedTotpSecret)
+                                    case .verificationSubmitted(let status):
+                                        RotatingTotpPinView(
+                                            session: session,
+                                            currentDate: currentDate,
+                                            deviceEncryptedTotpSecret: status.deviceEncryptedTotpSecret)
                                     default:
                                         Text("")
                                     }
@@ -218,7 +197,7 @@ struct  GuardianActivation: View {
     }
     
     
-    private func onOwnerStateUpdate(ownerState: API.OwnerState?, inviteIfNeeded: Bool) {
+    private func onOwnerStateUpdate(ownerState: API.OwnerState?) {
         if let ownerState = ownerState {
             switch(ownerState) {
             case .guardianSetup(let guardianSetup):
@@ -227,15 +206,6 @@ struct  GuardianActivation: View {
                 allGuardiansConfirmed = guardianSetup.guardians.count > 0 && guardianSetup.guardians.allSatisfy({isConfirmed(status: $0.status)})
                 for prospectGuardian in guardianSetup.guardians {
                     switch (prospectGuardian.status) {
-                    case .initial:
-                        inviteGuardian(participantId: prospectGuardian.participantId)
-                    case .accepted:
-                        if self.totpMap[prospectGuardian.participantId] == nil {
-                            if let deviceEncryptedTotpSecret = prospectGuardian.deviceEncryptedTotpSecret,
-                               let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
-                                self.totpMap[prospectGuardian.participantId] = totpSecret
-                            }
-                        }
                     case .verificationSubmitted(let verificationSubmitted):
                         if verificationSubmitted.verificationStatus == .waitingForVerification {
                             confirmGuardianship(participantId: prospectGuardian.participantId, status: verificationSubmitted)
@@ -250,30 +220,6 @@ struct  GuardianActivation: View {
         }
     }
 
-    private func inviteGuardian(participantId: ParticipantId) {
-        guard let secret = try? generateBase32().decodeBase32(),
-              let deviceEncryptedTotpSecret = try? session.deviceKey.encrypt(data: secret) else {
-            showError(PolicySetupError.cannotCreateTotpSecret)
-            return
-        }
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .inviteGuardian(
-                API.InviteGuardianApiRequest(
-                    participantId: participantId,
-                    deviceEncryptedTotpSecret: deviceEncryptedTotpSecret
-                )
-            )
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    onOwnerStateUpdate(ownerState: response.ownerState, inviteIfNeeded: false)
-                case .failure(let error):
-                    showError(error)
-                }
-            }
-    }
-
     private func rejectGuardianVerification(participantId: ParticipantId) {
         apiProvider.decodableRequest(
             with: session,
@@ -281,7 +227,7 @@ struct  GuardianActivation: View {
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
-                    onOwnerStateUpdate(ownerState: response.ownerState, inviteIfNeeded: false)
+                    onOwnerStateUpdate(ownerState: response.ownerState)
                 case .failure(let error):
                     showError(error)
                 }
@@ -317,7 +263,7 @@ struct  GuardianActivation: View {
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
-                    onOwnerStateUpdate(ownerState: response.ownerState, inviteIfNeeded: false)
+                    onOwnerStateUpdate(ownerState: response.ownerState)
                 case .failure(let error):
                     showError(error)
                 }
@@ -328,7 +274,7 @@ struct  GuardianActivation: View {
     }
     
     private func verifyGuardianSignature(participantId: ParticipantId, status: API.GuardianStatus.VerificationSubmitted) throws -> Bool {
-        guard let totpSecret = totpMap[participantId],
+        guard let totpSecret = try? session.deviceKey.decrypt(data: status.deviceEncryptedTotpSecret.data),
               let timeMillisBytes = String(status.timeMillis).data(using: .utf8),
               let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.guardianPublicKey) else {
             return false
@@ -368,7 +314,7 @@ struct  GuardianActivation: View {
         apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
-                onOwnerStateUpdate(ownerState: user.ownerState, inviteIfNeeded: true)
+                onOwnerStateUpdate(ownerState: user.ownerState)
                 if setupState == .loading {
                     setupState = .guardianSetup
                 }

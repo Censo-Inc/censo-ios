@@ -10,8 +10,6 @@ import Foundation
 extension API {
     struct ProspectGuardian: Codable {
         var label: String
-        var invitationId: String?
-        var deviceEncryptedTotpSecret: Base64EncodedString?
         var participantId: ParticipantId
         var status: GuardianStatus
     }
@@ -23,23 +21,25 @@ extension API {
     }
     
     enum GuardianStatus: Codable {
-        case initial
-        case invited(Invited)
+        case initial(Initial)
         case declined
         case accepted(Accepted)
         case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
         case onboarded(Onboarded)
         
-        struct Invited: Codable {
-            var invitedAt: Date
+        struct Initial: Codable {
+            var invitationId: String
+            var deviceEncryptedTotpSecret: Base64EncodedString
         }
 
         struct Accepted: Codable {
+            var deviceEncryptedTotpSecret: Base64EncodedString
             var acceptedAt: Date
         }
         
         struct VerificationSubmitted: Codable {
+            var deviceEncryptedTotpSecret: Base64EncodedString
             var signature: Base64EncodedString
             var timeMillis: Int64
             var guardianPublicKey: Base58EncodedPublicKey
@@ -68,9 +68,7 @@ extension API {
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "Initial":
-                self = .initial
-            case "Invited":
-                self = .invited(try Invited(from: decoder))
+                self = .initial(try Initial(from: decoder))
             case "Declined":
                 self = .declined
             case "Accepted":
@@ -89,10 +87,8 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: GuardianStatusCodingKeys.self)
             switch self {
-            case .initial:
+            case .initial(let status):
                 try container.encode("Initial", forKey: .type)
-            case .invited(let status):
-                try container.encode("Invited", forKey: .type)
                 try status.encode(to: encoder)
             case .declined:
                 try container.encode("Declined", forKey: .type)

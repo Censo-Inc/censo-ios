@@ -56,7 +56,7 @@ struct InitialIdentityVerification: View {
                     onSuccess(ownerState)
                 }
             } label: {
-
+                Text("Continue")
             }
             .padding()
             .buttonStyle(FilledButtonStyle())
@@ -76,13 +76,19 @@ struct IdentityVerification_Previews: PreviewProvider {
     }
 }
 
+extension Base64EncodedString {
+    static var sample: Self {
+        try! .init(value: "")
+    }
+}
+
 extension API.GuardianSetup {
     static var sample: Self {
-        .init(participantId: .random(), label: "Jerry")
+        .init(participantId: .random(), label: "Jerry", deviceEncryptedTotpSecret: .sample)
     }
 
     static var sample2: Self {
-        .init(participantId: .random(), label: "Kramer")
+        .init(participantId: .random(), label: "Kramer", deviceEncryptedTotpSecret: .sample)
     }
 }
 #endif

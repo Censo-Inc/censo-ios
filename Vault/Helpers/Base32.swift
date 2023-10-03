@@ -363,3 +363,13 @@ extension String {
         return try Base32.decode(string: self, padded: padded)
     }
 }
+
+extension Base64EncodedString {
+    static func encryptedTotpSecret(deviceKey: DeviceKey) -> Base64EncodedString {
+        guard let secret = try? generateBase32().decodeBase32(),
+              let deviceEncryptedTotpSecret = try? deviceKey.encrypt(data: secret) else {
+            return Base64EncodedString(data: Data())
+        }
+        return deviceEncryptedTotpSecret
+    }
+}

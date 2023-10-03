@@ -42,6 +42,7 @@ extension API {
     struct GuardianSetup: Encodable {
         var participantId: ParticipantId
         var label: String
+        var deviceEncryptedTotpSecret: Base64EncodedString
     }
     
     struct GuardianShard: Encodable {
@@ -76,11 +77,6 @@ extension API {
         var participantId: ParticipantId
         var keyConfirmationSignature: Base64EncodedString
         var keyConfirmationTimeMillis: UInt64
-    }
-    
-    struct InviteGuardianApiRequest: Encodable {
-        var participantId: ParticipantId
-        var deviceEncryptedTotpSecret: Base64EncodedString
     }
     
     struct UnlockApiRequest: Encodable {

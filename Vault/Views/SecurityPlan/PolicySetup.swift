@@ -21,7 +21,8 @@ struct PolicySetup: View {
         approvers.map { label in
             API.GuardianSetup(
                 participantId: .random(),
-                label: label
+                label: label,
+                deviceEncryptedTotpSecret: .encryptedTotpSecret(deviceKey: session.deviceKey)
             )
         }
     }

@@ -18,7 +18,6 @@ struct API {
         case signIn(UserCredentials)
         case registerPushToken(String)
 
-        case inviteGuardian(InviteGuardianApiRequest)
         case confirmGuardian(ConfirmGuardianApiRequest)
         case rejectGuardianVerification(ParticipantId)
 
@@ -57,8 +56,6 @@ extension API: TargetType {
             return "v1/policies"
         case .setupPolicy:
             return "v1/policy-setup"
-        case .inviteGuardian(let request):
-            return "v1/guardians/\(request.participantId.value)/invitation"
         case .confirmGuardian(let request):
             return "v1/guardians/\(request.participantId.value)/confirmation"
         case .rejectGuardianVerification(let id):
@@ -92,7 +89,6 @@ extension API: TargetType {
              .setupPolicy,
              .confirmGuardian,
              .rejectGuardianVerification,
-             .inviteGuardian,
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
@@ -114,12 +110,14 @@ extension API: TargetType {
             #if DEBUG
             return .requestJSONEncodable([
                 "deviceType": "IosDebug",
-                "token": token
+                "token": token,
+                "appIdentifier": Bundle.main.bundleIdentifier
             ])
             #else
             return .requestJSONEncodable([
                 "deviceType": "Ios",
-                "token": token
+                "token": token,
+                "appIdentifier": Bundle.main.bundleIdentifier
             ])
             #endif
         case .createPolicy(let request):
@@ -132,8 +130,6 @@ extension API: TargetType {
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
             )
-        case .inviteGuardian(let request):
-            return .requestJSONEncodable(request)
         case .unlock(let request):
             return .requestJSONEncodable(request)
         case .lock:
