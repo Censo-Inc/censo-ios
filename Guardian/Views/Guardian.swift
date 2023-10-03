@@ -39,14 +39,12 @@ struct Guardian: View {
             case .success(let user):
                 switch (guardianState ?? user.guardianStates.forInvite(inviteCode))?.phase {
                 case .none:
-                    AcceptInvitation(apiProvider: _apiProvider, dismiss: _dismiss, invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
+                    AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
                 case .waitingForCode:
-                    SubmitVerification(
-                        apiProvider: _apiProvider, invitationId: inviteCode, session: session, verificationStatus: .notSubmitted,
+                    SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .notSubmitted,
                                        onSuccess: {newState in guardianState = newState})
                 case .waitingForConfirmation(let waitingForConfirmation):
-                    SubmitVerification(
-                        apiProvider: _apiProvider, invitationId: inviteCode,
+                    SubmitVerification(invitationId: inviteCode,
                         session: session, verificationStatus: waitingForConfirmation.verificationStatus,
                         onSuccess: {newState in guardianState = newState})
                 case .complete:

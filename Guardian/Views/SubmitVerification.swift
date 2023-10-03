@@ -16,7 +16,6 @@ struct SubmitVerification: View {
 
     @State private var guardianKey: EncryptionKey?
 
-    @State private var inProgress = false
     @State private var currentError: Error?
 
     @State private var verificationCode: [Int] = []
@@ -93,7 +92,6 @@ struct SubmitVerification: View {
             showError(GuardianError.failedToCreateSignature)
             return
         }
-        inProgress = true
         currentError = nil
 
         apiProvider.decodableRequest(
@@ -116,29 +114,10 @@ struct SubmitVerification: View {
         }
     }
 
-    private func showError(_ error: Error) {
-        inProgress = false
-        
+    private func showError(_ error: Error) {       
         currentError = error
     }
 }
-
-class VerificationCode: ObservableObject {
-    init() {
-        digits = []
-    }
-
-    @Published var digits: [Character]
-
-    func count() -> Int {
-        digits.count
-    }
-
-    func setFromInput(input: String) {
-        digits = input.map { c in c }
-    }
-}
-
 
 struct VerificationCodeEntry: View {
     @Binding var pinInput: [Int]
