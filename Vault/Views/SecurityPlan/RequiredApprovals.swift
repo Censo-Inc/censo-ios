@@ -103,7 +103,7 @@ struct RequiredApprovals: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton(dismiss)
+                BackButton()
             }
         }
     }

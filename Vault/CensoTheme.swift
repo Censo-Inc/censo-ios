@@ -15,7 +15,6 @@ extension Color {
 
 
         static let backgroundBlue = Color("backgroundBlue")
-        static let backgroundLightBlue = Color("backgroundLightBlue")
 
         static let secondaryBackground = Color("secondaryBackground")
         static let green = Color("buttonGreen")

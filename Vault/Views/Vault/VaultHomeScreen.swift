@@ -56,7 +56,7 @@ struct VaultHomeScreen: View {
                                 .frame(height: 44)
                         }
                         .padding()
-                        .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                        .buttonStyle(BorderedButtonStyle(tint: .light))
                         
                         VStack {
                             Button {
@@ -65,7 +65,7 @@ struct VaultHomeScreen: View {
                                 Text("Recover Phrases")
                                     .frame(maxWidth: .infinity, alignment: .center)
                             }
-                            .buttonStyle(FilledButtonStyle(backgroundColor: .white, foregroundColor: Color.Censo.darkBlue))
+                            .buttonStyle(FilledButtonStyle(tint: .light))
                         }.padding()
                         
                         Spacer()

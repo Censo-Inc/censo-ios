@@ -34,7 +34,6 @@ struct RecoveryView: View {
             .background(Color.Censo.darkBlue)
         } else {
             VStack {
-                
                 switch (recovery) {
                 case .anotherDevice:
                     Spacer()
@@ -61,7 +60,7 @@ struct RecoveryView: View {
                             .padding(.vertical, 5)
                             .foregroundColor(.white)
                     }
-                    .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                    .buttonStyle(BorderedButtonStyle(tint: .light))
                     .padding(.bottom, 10)
                     
                     let approvalsCount = thisDeviceRecovery
@@ -97,23 +96,20 @@ struct RecoveryView: View {
                         }
                         .background {
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.Censo.backgroundLightBlue)
+                                .fill(.white.opacity(0.05))
                         }
                         
                         Text("required approvals reached to complete recovery")
                             .font(.system(size: 18))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
+                            .padding(.bottom, 20)
                         
-                        Spacer()
-                        
-                        Text("Tap the \(Image(systemName: "square.and.arrow.up")) icon next to each of your guardians to send them the recovery link")
+                        Text("Tap the \(Image(systemName: "square.and.arrow.up")) icon next to each of your approvers to send them the recovery link")
                             .font(.system(size: 16))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
                             .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        Spacer()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.horizontal)
@@ -152,7 +148,7 @@ struct RecoveryView: View {
                                 }
                             }
                             .frame(height: 64)
-                            .listRowBackground(Color.Censo.backgroundLightBlue)
+                            .listRowBackground(Color.white.opacity(0.05))
                             .listRowSeparatorTint(.white)
                         }
                     }

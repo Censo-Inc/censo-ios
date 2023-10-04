@@ -9,11 +9,7 @@ import Foundation
 import SwiftUI
 
 struct BackButton : View {
-    var dismiss: DismissAction
-    
-    init(_ dismiss: DismissAction) {
-        self.dismiss = dismiss
-    }
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         Button {

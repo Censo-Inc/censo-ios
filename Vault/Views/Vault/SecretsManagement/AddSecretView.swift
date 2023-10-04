@@ -60,7 +60,7 @@ struct AddSecretView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton(dismiss)
+                BackButton()
             }
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in

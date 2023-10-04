@@ -66,11 +66,10 @@ struct LockedScreen<Content: View>: View {
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 44)
                         }
-                        .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                        .buttonStyle(BorderedButtonStyle(tint: .light))
                     }.padding()
                 }
-                .frame(maxWidth: .infinity)
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Censo.darkBlue)
             case .unlocked(let locksAt):
                 VStack {
@@ -89,19 +88,17 @@ struct LockedScreen<Content: View>: View {
                                 .frame(height: 44)
                                 .foregroundColor(.white)
                         }
-                        .buttonStyle(BorderedButtonStyle(foregroundColor: .white))
+                        .buttonStyle(BorderedButtonStyle(tint: .light))
                     }.padding()
                 }
-                .frame(maxWidth: .infinity)
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Censo.darkBlue)
             case .lockInProgress:
                 VStack {
                     ProgressView()
                         .tint(.white)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.Censo.darkBlue)
             case .lockFailed(let error):
                 RetryView(error: error, action: { lock() })
