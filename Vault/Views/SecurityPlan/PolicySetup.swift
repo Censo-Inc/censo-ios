@@ -19,11 +19,12 @@ struct PolicySetup: View {
 
     private var guardians: [API.GuardianSetup] {
         approvers.map { label in
-            API.GuardianSetup(
+                .externalApprover(
+                    API.GuardianSetup.ExternalApprover(
                 participantId: .random(),
                 label: label,
                 deviceEncryptedTotpSecret: .encryptedTotpSecret(deviceKey: session.deviceKey)
-            )
+            ))
         }
     }
 

@@ -26,6 +26,7 @@ extension API {
         case accepted(Accepted)
         case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
+        case implicitlyOwner(ImplicitlyOwner)
         case onboarded(Onboarded)
         
         struct Initial: Codable {
@@ -54,6 +55,11 @@ extension API {
             var confirmedAt: Date
         }
         
+        struct ImplicitlyOwner: Codable {
+            var guardianPublicKey: Base58EncodedPublicKey
+            var confirmedAt: Date
+        }
+
         struct Onboarded: Codable {
             var guardianEncryptedShard: Base64EncodedString
             var onboardedAt: Date
@@ -77,6 +83,8 @@ extension API {
                 self = .verificationSubmitted(try VerificationSubmitted(from: decoder))
             case "Confirmed":
                 self = .confirmed(try Confirmed(from: decoder))
+            case "ImplicitlyOwner":
+                self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
             case "Onboarded":
                 self = .onboarded(try Onboarded(from: decoder))
             default:
@@ -100,6 +108,9 @@ extension API {
                 try status.encode(to: encoder)
             case .confirmed(let status):
                 try container.encode("Confirmed", forKey: .type)
+                try status.encode(to: encoder)
+            case .implicitlyOwner(let status):
+                try container.encode("ImplicitlyOwner", forKey: .type)
                 try status.encode(to: encoder)
             case .onboarded(let status):
                 try container.encode("Onboarded", forKey: .type)

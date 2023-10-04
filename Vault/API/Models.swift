@@ -39,21 +39,61 @@ extension API {
         var scanResultBlob: String
     }
     
-    struct GuardianSetup: Encodable {
-        var participantId: ParticipantId
-        var label: String
-        var deviceEncryptedTotpSecret: Base64EncodedString
+    enum GuardianSetup: Encodable, Decodable {
+        case implicitlyOwner(ImplicitlyOwner)
+        case externalApprover(ExternalApprover)
+
+        struct ImplicitlyOwner: Encodable, Decodable {
+            var participantId: ParticipantId
+            var label: String
+            var guadianPublicKey: Base58EncodedPublicKey
+        }
+
+        struct ExternalApprover: Encodable, Decodable {
+            var participantId: ParticipantId
+            var label: String
+            var deviceEncryptedTotpSecret: Base64EncodedString
+        }
+
+        enum GuardianSetupCodingKeys: String, CodingKey {
+            case type
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: GuardianSetupCodingKeys.self)
+            let type = try container.decode(String.self, forKey: .type)
+            switch type {
+            case "ImplicitlyOwner":
+                self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
+            case "ExternalApprover":
+                self = .externalApprover(try ExternalApprover(from: decoder))
+            default:
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Guardian Setup")
+            }
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: GuardianSetupCodingKeys.self)
+            switch self {
+            case .implicitlyOwner(let implicitlyOwner):
+                try container.encode("ImplicitlyOwner", forKey: .type)
+                try implicitlyOwner.encode(to: encoder)
+            case .externalApprover(let externalApprover):
+                try container.encode("ExternalApprover", forKey: .type)
+                try externalApprover.encode(to: encoder)
+            }
+        }
     }
-    
+
     struct GuardianShard: Encodable {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
     }
-    
+
     struct OwnerStateResponse: Decodable {
         var ownerState: OwnerState
     }
-    
+
     struct SetupPolicyApiRequest: Encodable {
         var threshold: Int
         var guardians: [GuardianSetup]

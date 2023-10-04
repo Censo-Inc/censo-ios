@@ -84,11 +84,11 @@ extension Base64EncodedString {
 
 extension API.GuardianSetup {
     static var sample: Self {
-        .init(participantId: .random(), label: "Jerry", deviceEncryptedTotpSecret: .sample)
+        .externalApprover(ExternalApprover(participantId: .random(), label: "Jerry", deviceEncryptedTotpSecret: .sample))
     }
 
     static var sample2: Self {
-        .init(participantId: .random(), label: "Kramer", deviceEncryptedTotpSecret: .sample)
+        .externalApprover(ExternalApprover(participantId: .random(), label: "Kramer", deviceEncryptedTotpSecret: .sample))
     }
 }
 #endif
