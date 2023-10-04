@@ -32,9 +32,9 @@ struct Owner: View {
                 GuardianActivation(session: session, onSuccess: reload)
             case .ready(let ready):
                 LockedScreen(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockedTimeOut: reload) {
-                    SecretsListView(
+                    VaultHomeScreen(
                         session: session,
-                        unlockedForSeconds: ready.unlockedForSeconds,
+                        policy: ready.policy,
                         vault: ready.vault,
                         onOwnerStateUpdated: replaceOwnerState
                     )

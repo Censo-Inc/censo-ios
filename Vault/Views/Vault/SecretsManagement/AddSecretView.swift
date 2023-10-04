@@ -12,11 +12,11 @@ import CryptoKit
 
 struct AddSecretView: View {
     @Environment(\.apiProvider) var apiProvider
+    @Environment(\.dismiss) var dismiss
     
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
     var onSuccess: (API.OwnerState) -> Void
-    var onCancel: () -> Void
     
     @State private var secretLabel: String = ""
     @State private var secret: String = ""
@@ -25,54 +25,48 @@ struct AddSecretView: View {
     @State private var error: Error?
     
     var body: some View {
-        Section(header: Text("Add Secret").bold().foregroundColor(Color.black)) {
-            Form {
-                TextField("Enter Label", text: $secretLabel)
-                    .font(.title3)
-                
-                TextField("Enter Secret", text: $secret)
-                    .font(.title3)
-                
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button {
-                            storeSecret()
-                        } label: {
-                            if inProgress {
-                                ProgressView()
-                            } else {
-                                Text("Add")
-                            }
+        Form {
+            TextField("Enter Label", text: $secretLabel)
+                .font(.title3)
+            
+            TextField("Enter Phrase", text: $secret)
+                .font(.title3)
+            
+            VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        storeSecret()
+                    } label: {
+                        if inProgress {
+                            ProgressView()
+                        } else {
+                            Text("Add")
                         }
-                        .buttonStyle(FilledButtonStyle())
-                        .disabled(
-                            inProgress ||
-                            secretLabel.trimmingCharacters(in: .whitespaces).isEmpty ||
-                            secret.trimmingCharacters(in: .whitespaces).isEmpty
-                        )
-                        
-                        Spacer()
                     }
+                    .buttonStyle(FilledButtonStyle())
+                    .disabled(
+                        inProgress ||
+                        secretLabel.trimmingCharacters(in: .whitespaces).isEmpty ||
+                        secret.trimmingCharacters(in: .whitespaces).isEmpty
+                    )
                     
-                    HStack {
-                        Spacer()
-                        
-                        Button("Cancel", role: .cancel) {
-                            onCancel()
-                        }
-                        .padding()
-                        .buttonStyle(BorderlessButtonStyle())
-                        
-                        Spacer()
-                    }
+                    Spacer()
                 }
+            }
+        }
+        .navigationTitle(Text("Add Phrase"))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
             }
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { } label: { Text("OK") }
         } message: { error in
-            Text("Failed to store secret.\n\(error.localizedDescription)")
+            Text("Failed to store phrase.\n\(error.localizedDescription)")
         }
     }
     
@@ -93,6 +87,7 @@ struct AddSecretView: View {
                 switch result {
                 case .success(let payload):
                     onSuccess(payload.ownerState)
+                    dismiss()
                 case .failure(let error):
                     showError(error)
                 }
