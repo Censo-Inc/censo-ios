@@ -13,55 +13,61 @@ struct InitialIdentityVerification: View {
     var session: Session
     var onSuccess: (API.OwnerState) -> Void
 
-    var body: some View {
-        VStack {
-            Text("Establish your identity")
-                .font(.title.bold())
-                .padding()
+    @State private var showingBiometry = false
 
-            InfoBoard {
-                Text("""
+    var body: some View {
+        if showingBiometry {
+            FacetecAuth(session: session) { verificationId, facetecBiometry in
+                    .setupPolicy(
+                        API.SetupPolicyApiRequest(
+                            threshold: threshold,
+                            guardians: guardians,
+                            biometryVerificationId: verificationId,
+                            biometryData: facetecBiometry
+                        )
+                    )
+            } onSuccess: {
+                onSuccess($0)
+            }
+        } else {
+            VStack {
+                Text("Establish your identity")
+                    .font(.title.bold())
+                    .padding()
+
+                InfoBoard {
+                    Text("""
                     Access to your seed phrases always requires your approval which is obtained using an encrypted 3d face scan to confirm your identity.
 
                      This scan is not associated with any personally identifiable information and it provides a reliable way to securely control access to your seed phrases
                     """
-                )
-                .font(.callout)
-            }
-
-            Spacer()
-
-
-            Button {
-
-            } label: {
-                Text("How does this work?")
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .frame(height: 44)
-            }
-            .padding(.horizontal)
-            .buttonStyle(BorderedButtonStyle())
-
-            NavigationLink {
-                FacetecAuth(session: session) { verificationId, facetecBiometry in
-                        .setupPolicy(
-                            API.SetupPolicyApiRequest(
-                                threshold: threshold,
-                                guardians: guardians,
-                                biometryVerificationId: verificationId,
-                                biometryData: facetecBiometry
-                            )
-                        )
-                } onSuccess: { ownerState in
-                    onSuccess(ownerState)
+                    )
+                    .font(.callout)
                 }
-            } label: {
-                Text("Continue")
+
+                Spacer()
+
+
+                Button {
+
+                } label: {
+                    Text("How does this work?")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
+                }
+                .padding(.horizontal)
+                .buttonStyle(BorderedButtonStyle())
+
+                Button {
+                    showingBiometry = true
+                } label: {
+                    Text("Continue")
+                }
+                .padding()
+                .buttonStyle(FilledButtonStyle())
             }
-            .padding()
-            .buttonStyle(FilledButtonStyle())
+            .multilineTextAlignment(.center)
         }
-        .multilineTextAlignment(.center)
     }
 }
 
