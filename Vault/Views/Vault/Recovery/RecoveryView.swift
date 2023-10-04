@@ -188,49 +188,57 @@ struct RecoveryView: View {
 }
 
 #if DEBUG
+extension API.TrustedGuardian {
+    static var sample: Self {
+        .init(
+            label: "Ben",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            attributes: API.GuardianStatus.Onboarded(
+                guardianEncryptedShard: Base64EncodedString(data: Data()),
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample2: Self {
+        .init(
+            label: "A.L.",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            attributes: API.GuardianStatus.Onboarded(
+                guardianEncryptedShard: Base64EncodedString(data: Data()),
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample3: Self {
+        .init(
+            label: "Carlitos",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            attributes: API.GuardianStatus.Onboarded(
+                guardianEncryptedShard: Base64EncodedString(data: Data()),
+                onboardedAt: Date()
+            )
+        )
+    }
+}
+
 struct RecoveryView_Previews: PreviewProvider {
     static var previews: some View {
-        let session = Session(
-            deviceKey: .sample,
-            userCredentials: UserCredentials(idToken: Data(), userIdentifier: "")
-        )
-        
         let guardians = [
-            API.TrustedGuardian(
-                label: "Ben",
-                participantId: ParticipantId(bigInt: generateParticipantId()),
-                attributes: API.GuardianStatus.Onboarded(
-                    guardianEncryptedShard: Base64EncodedString(data: Data()),
-                    onboardedAt: Date()
-                )
-            ),
-            API.TrustedGuardian(
-                label: "A.L.",
-                participantId: ParticipantId(bigInt: generateParticipantId()),
-                attributes: API.GuardianStatus.Onboarded(
-                    guardianEncryptedShard: Base64EncodedString(data: Data()),
-                    onboardedAt: Date()
-                )
-            ),
-            API.TrustedGuardian(
-                label: "Carlitos",
-                participantId: ParticipantId(bigInt: generateParticipantId()),
-                attributes: API.GuardianStatus.Onboarded(
-                    guardianEncryptedShard: Base64EncodedString(data: Data()),
-                    onboardedAt: Date()
-                )
-            ),
+            API.TrustedGuardian.sample,
+            API.TrustedGuardian.sample2,
+            API.TrustedGuardian.sample3
         ]
         
-        
         LockedScreen(
-            session,
+            Session.sample,
             600,
             onOwnerStateUpdated: { _ in },
             onUnlockedTimeOut: {}
         ) {
             RecoveryView(
-                session: session,
+                session: .sample,
                 threshold: 2,
                 guardians: guardians,
                 recovery: .thisDevice(API.Recovery.ThisDevice(
@@ -245,13 +253,13 @@ struct RecoveryView_Previews: PreviewProvider {
         }
         
         LockedScreen(
-            session,
+            Session.sample,
             600,
             onOwnerStateUpdated: { _ in },
             onUnlockedTimeOut: {}
         ) {
             RecoveryView(
-                session: session,
+                session: .sample,
                 threshold: 2,
                 guardians: guardians,
                 recovery: .anotherDevice(API.Recovery.AnotherDevice(guid: "recovery1")),

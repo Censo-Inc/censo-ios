@@ -113,14 +113,9 @@ struct VaultHomeScreen: View {
 }
 
 #if DEBUG
-struct VaultHomeScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        let session = Session(
-            deviceKey: .sample,
-            userCredentials: UserCredentials(idToken: Data(), userIdentifier: "")
-        )
-        
-        let policy = API.Policy(
+extension API.Policy {
+    static var sample: Self {
+        .init(
             createdAt: Date(),
             guardians: [],
             threshold: 2,
@@ -128,22 +123,30 @@ struct VaultHomeScreen_Previews: PreviewProvider {
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
             recovery: nil
         )
-        
-        let vault = API.Vault(
+    }
+}
+
+extension API.Vault {
+    static var sample: Self {
+        .init(
             secrets: [],
             publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
-        
+    }
+}
+
+struct VaultHomeScreen_Previews: PreviewProvider {
+    static var previews: some View {
         LockedScreen(
-            session,
+            Session.sample,
             600,
             onOwnerStateUpdated: { _ in },
             onUnlockedTimeOut: {}
         ) {
             VaultHomeScreen(
-                session: session,
-                policy: policy,
-                vault: vault,
+                session: .sample,
+                policy: .sample,
+                vault: .sample,
                 onOwnerStateUpdated: { _ in }
             )
         }
