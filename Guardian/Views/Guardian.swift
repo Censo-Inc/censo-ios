@@ -63,7 +63,9 @@ struct Guardian: View {
                         Button {
                             onSuccess()
                         } label: {
-                            Text("OK").frame(maxWidth: .infinity)
+                            Text("OK")
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .frame(height: 44)
                         }
                         .buttonStyle(FilledButtonStyle())
                     }

@@ -48,6 +48,8 @@ struct ApproverSetupNonEmpty: View {
             )
         } label: {
             Text("Next: Required Approvals")
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .frame(height: 44)
         }
         .padding()
         .buttonStyle(FilledButtonStyle())

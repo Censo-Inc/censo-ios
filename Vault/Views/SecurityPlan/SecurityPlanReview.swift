@@ -80,6 +80,8 @@ struct SecurityPlanReview: View {
                         PolicySetup(session: session, threshold: threshold, approvers: approvers, onComplete: onComplete)
                     } label: {
                         Text("Confirm")
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                            .frame(height: 44)
                     }
                     .padding()
                     .buttonStyle(FilledButtonStyle())

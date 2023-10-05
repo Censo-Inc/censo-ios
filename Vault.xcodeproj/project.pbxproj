@@ -147,6 +147,13 @@
 		E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */; };
 		E45A14562AC4309F00EDBC10 /* LockedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* LockedScreen.swift */; };
 		E45A14582AC46F4C00EDBC10 /* AddSecretView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */; };
+		E4716FD42ACDD71C00BC2AA7 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
+		E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF194E2AC954E8006111B2 /* PinInputField.swift */; };
+		E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF19502AC954FE006111B2 /* PinInput.swift */; };
+		E4716FD82ACEB9A400BC2AA7 /* VerificationCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */; };
+		E4716FD92ACEB9C800BC2AA7 /* VerificationCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */; };
+		E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */; };
+		E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 /* End PBXBuildFile section */
 
@@ -287,6 +294,9 @@
 		E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsListView.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* LockedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedScreen.swift; sourceTree = "<group>"; };
 		E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSecretView.swift; sourceTree = "<group>"; };
+		E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeEntry.swift; sourceTree = "<group>"; };
+		E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryExpirationCountDown.swift; sourceTree = "<group>"; };
+		E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryApproverRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -601,6 +611,7 @@
 				BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */,
 				BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */,
 				6C0AF96D2ACD90A5009A9B54 /* ApproverRouting.swift */,
+				E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -628,6 +639,8 @@
 			isa = PBXGroup;
 			children = (
 				E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */,
+				E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */,
+				E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */,
 			);
 			path = Recovery;
 			sourceTree = "<group>";
@@ -841,6 +854,8 @@
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				3DFF192E2AC6C7DC006111B2 /* OpenVault.swift in Sources */,
 				3DFF19282AC6A62C006111B2 /* IdentityVerification.swift in Sources */,
+				E4716FD92ACEB9C800BC2AA7 /* VerificationCodeEntry.swift in Sources */,
+				E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				E45A14582AC46F4C00EDBC10 /* AddSecretView.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */,
@@ -865,6 +880,7 @@
 				3DE0B9782ABA2ECD0001F3A3 /* Login.swift in Sources */,
 				6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */,
 				6CD6DAEF2ABC77ED00974035 /* VerificationStatus.swift in Sources */,
+				E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */,
 				6C2372842AC4BF260072E256 /* FacetecError.swift in Sources */,
 				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
 				6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */,
@@ -877,6 +893,7 @@
 				3D8214702AC2A0F700AC2598 /* RequiredApprovals.swift in Sources */,
 				3D8214762AC342AF00AC2598 /* ApproversList.swift in Sources */,
 				3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */,
+				E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */,
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
 				3DE0B9812ABA5F0C0001F3A3 /* Owner.swift in Sources */,
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
@@ -893,6 +910,7 @@
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				3D8214742AC3414F00AC2598 /* ThresholdSlider.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
+				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
@@ -913,6 +931,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4716FD42ACDD71C00BC2AA7 /* ButtonStyleTint.swift in Sources */,
 				BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */,
 				6C0AF95B2ACC5BCE009A9B54 /* GuardianHome.swift in Sources */,
 				6C0AF9672ACC7240009A9B54 /* TempKeyStorage.swift in Sources */,
@@ -922,6 +941,7 @@
 				6C50638B2ACDA90C00F50A33 /* ButtonStyleTint.swift in Sources */,
 				6CD6DAEA2ABB50A500974035 /* Login.swift in Sources */,
 				BD64853B2AC5DDB200BC0B1B /* GuardianError.swift in Sources */,
+				E4716FD82ACEB9A400BC2AA7 /* VerificationCodeEntry.swift in Sources */,
 				6CD6DAF02ABC785400974035 /* VerificationStatus.swift in Sources */,
 				3D23ACDC2AB22C9200F55C5D /* ContentView.swift in Sources */,
 				6CD6DAF12ABC9A2200974035 /* SignIn.swift in Sources */,

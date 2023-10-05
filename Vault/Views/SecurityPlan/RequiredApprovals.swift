@@ -93,6 +93,8 @@ struct RequiredApprovals: View {
                 )
             } label: {
                 Text("Next: Review")
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .frame(height: 44)
             }
             .padding()
             .buttonStyle(FilledButtonStyle())

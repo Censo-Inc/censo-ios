@@ -62,6 +62,8 @@ struct InitialIdentityVerification: View {
                     showingBiometry = true
                 } label: {
                     Text("Continue")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
                 .padding()
                 .buttonStyle(FilledButtonStyle())

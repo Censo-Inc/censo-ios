@@ -23,6 +23,7 @@ struct RetryView: View {
             Button(action: action) {
                 Text("Retry")
                     .frame(width: 100)
+                    .frame(height: 44)
             }
             .buttonStyle(FilledButtonStyle())
 

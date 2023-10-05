@@ -119,16 +119,6 @@ struct SubmitVerification: View {
     }
 }
 
-struct VerificationCodeEntry: View {
-    @Binding var pinInput: [Int]
-    
-    var body: some View {
-        PinInputField(value: $pinInput, length: 6)
-            .padding()
-    }
-}
-
-
 #if DEBUG
 #Preview {
     SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,

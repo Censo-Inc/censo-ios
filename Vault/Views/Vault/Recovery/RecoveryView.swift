@@ -21,6 +21,9 @@ struct RecoveryView: View {
     @State private var cancelationInProgress = false
     @State private var showingError = false
     @State private var error: Error?
+    @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
+    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
         if (cancelationInProgress) {
@@ -50,6 +53,13 @@ struct RecoveryView: View {
                         .font(.system(size: 36))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.bottom, 5)
+                    
+                    RecoveryExpirationCountDown(
+                        expiresAt: thisDeviceRecovery.expiresAt,
+                        onTimeout: cancelRecovery
+                    )
+                    .padding(.bottom, 10)
                     
                     Button {
                         cancelRecovery()
@@ -116,40 +126,15 @@ struct RecoveryView: View {
                     
                     List {
                         ForEach(guardians, id:\.participantId) { guardian in
-                            HStack(alignment: .center, spacing: 5) {
-                                VStack(spacing: 5) {
-                                    HStack(spacing: 0) {
-                                        Text("Status: ")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color.Censo.lightGray)
-                                        Text("Pending")
-                                            .font(.system(size: 16).bold())
-                                            .foregroundColor(Color.Censo.lightGray)
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text(guardian.label)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .font(.system(size: 24).bold())
-                                        .foregroundColor(.white)
-                                }
-                                
-                                Spacer()
-                                
-                                if let link = URL(string: "censo-guardian://recovery/\(guardian.participantId.value)") {
-                                    ShareLink(item: link,
-                                              subject: Text("Censo Recovery Link for \(guardian.label)"),
-                                              message: Text("Censo Recovery Link for \(guardian.label)")
-                                    ){
-                                        Image(systemName: "square.and.arrow.up.circle.fill")
-                                            .symbolRenderingMode(.palette)
-                                            .foregroundStyle(.black, .white)
-                                            .font(.system(size: 28))
-                                    }
-                                }
+                            if let approval = thisDeviceRecovery.approvals.first(where: { $0.participantId == guardian.participantId }) {
+                                RecoveryApproverRow(
+                                    session: session,
+                                    guardian: guardian,
+                                    approval: approval,
+                                    reloadUser: reloadUser,
+                                    onOwnerStateUpdated: onOwnerStateUpdated
+                                )
                             }
-                            .frame(height: 64)
-                            .listRowBackground(Color.white.opacity(0.05))
-                            .listRowSeparatorTint(.white)
                         }
                     }
                     .background(Color.Censo.darkBlue)
@@ -161,6 +146,15 @@ struct RecoveryView: View {
             .frame(maxWidth: .infinity)
             .frame(maxHeight: .infinity)
             .background(Color.Censo.darkBlue)
+            .onReceive(remoteNotificationPublisher) { _ in
+                reloadUser()
+            }
+            .onReceive(refreshStatePublisher) { _ in
+                reloadUser()
+            }
+            .onDisappear() {
+                refreshStatePublisher.upstream.connect().cancel()
+            }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button {
                     showingError = false
@@ -172,7 +166,7 @@ struct RecoveryView: View {
         }
     }
     
-    func cancelRecovery() {
+    private func cancelRecovery() {
         cancelationInProgress = true
         apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
             switch result {
@@ -183,6 +177,17 @@ struct RecoveryView: View {
                 self.error = error
             }
             self.cancelationInProgress = false
+        }
+    }
+    
+    private func reloadUser() {
+        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
+            switch result {
+            case .success(let user):
+                onOwnerStateUpdated(user.ownerState)
+            default:
+                break
+            }
         }
     }
 }
@@ -202,7 +207,7 @@ extension API.TrustedGuardian {
     
     static var sample2: Self {
         .init(
-            label: "A.L.",
+            label: "Brendan",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.GuardianStatus.Onboarded(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
@@ -213,7 +218,29 @@ extension API.TrustedGuardian {
     
     static var sample3: Self {
         .init(
-            label: "Carlitos",
+            label: "Ievgen",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            attributes: API.GuardianStatus.Onboarded(
+                guardianEncryptedShard: Base64EncodedString(data: Data()),
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample4: Self {
+        .init(
+            label: "Ata",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            attributes: API.GuardianStatus.Onboarded(
+                guardianEncryptedShard: Base64EncodedString(data: Data()),
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample5: Self {
+        .init(
+            label: "Sam",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.GuardianStatus.Onboarded(
                 guardianEncryptedShard: Base64EncodedString(data: Data()),
@@ -228,8 +255,12 @@ struct RecoveryView_Previews: PreviewProvider {
         let guardians = [
             API.TrustedGuardian.sample,
             API.TrustedGuardian.sample2,
-            API.TrustedGuardian.sample3
+            API.TrustedGuardian.sample3,
+            API.TrustedGuardian.sample4,
+            API.TrustedGuardian.sample5
         ]
+        let today = Date()
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
         
         LockedScreen(
             Session.sample,
@@ -244,9 +275,31 @@ struct RecoveryView_Previews: PreviewProvider {
                 recovery: .thisDevice(API.Recovery.ThisDevice(
                     guid: "recovery1",
                     status: API.Recovery.Status.requested,
-                    createdAt: Date(),
-                    unlocksAt: Date(),
-                    approvals: []
+                    createdAt: today,
+                    unlocksAt: tomorrow!,
+                    expiresAt: tomorrow!,
+                    approvals: [
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[0].participantId,
+                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.initial
+                        ),
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[1].participantId,
+                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.waitingForVerification
+                        ),
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[2].participantId,
+                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.waitingForApproval
+                        ),
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[3].participantId,
+                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.approved
+                        ),
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[4].participantId,
+                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.rejected
+                        )
+                    ]
                 )),
                 onOwnerStateUpdated: { _ in }
             )

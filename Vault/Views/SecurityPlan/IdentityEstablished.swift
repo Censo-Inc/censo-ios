@@ -33,6 +33,8 @@ struct IdentityEstablished: View {
                     action()
                 } label: {
                     Text("Next: Activate Approvers")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
                 .buttonStyle(FilledButtonStyle())
                 .padding()

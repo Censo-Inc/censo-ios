@@ -154,6 +154,7 @@ extension API {
             var status: Status
             var createdAt: Date
             var unlocksAt: Date
+            var expiresAt: Date
             var approvals: [Approval]
             
             struct Approval : Codable {

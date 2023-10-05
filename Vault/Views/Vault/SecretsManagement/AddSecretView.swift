@@ -42,6 +42,8 @@ struct AddSecretView: View {
                             ProgressView()
                         } else {
                             Text("Add")
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .frame(height: 44)
                         }
                     }
                     .buttonStyle(FilledButtonStyle())

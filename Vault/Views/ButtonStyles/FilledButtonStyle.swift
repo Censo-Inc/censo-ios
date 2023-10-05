@@ -23,8 +23,6 @@ struct FilledButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 18))
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .frame(height: 55)
                 .font(Font.body.bold())
                 .foregroundColor(isEnabled ? tint.foregroundColor : tint.foregroundColor.opacity(0.35))
                 .background(isEnabled ? (configuration.isPressed ? tint.backgroundColor.opacity(0.7) : tint.backgroundColor) : tint.backgroundColor.opacity(0.5))
