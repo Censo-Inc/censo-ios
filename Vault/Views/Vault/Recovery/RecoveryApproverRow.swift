@@ -60,6 +60,9 @@ struct RecoveryApproverRow : View {
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.Censo.green)
                     .font(.system(size: 28))
+                    .onAppear {
+                        showEnterCodeModal = false
+                    }
             }
         }
         .frame(height: 64)
