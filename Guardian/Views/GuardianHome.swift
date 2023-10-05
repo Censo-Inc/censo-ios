@@ -7,9 +7,17 @@
 
 import SwiftUI
 
-struct Invitation: View {
-    @Binding var inviteCode: String
-    var onValidateCode: () -> Void
+enum  GuardianRoute {
+    case initial
+    case onboard
+    case recovery
+    case unknown
+}
+
+
+struct GuardianHome: View {
+    @Binding var identifier: String
+    var onValidateIdentifier: (GuardianRoute) -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,25 +28,32 @@ struct Invitation: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(50)
 
-            Text("Please enter your invite code")
+            Text("Please enter your identifier")
                 .font(.title)
 
-            TextField("Type here", text: $inviteCode)
+            TextField("Type here", text: $identifier)
                 .font(.title2)
 
             Spacer()
 
             HStack {
                 Button {
-                    onValidateCode()
+                    onValidateIdentifier(.recovery)
                 } label: {
-                    Text("Proceed")
+                    Text("Recover")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(FilledButtonStyle())
+                Button {
+                    onValidateIdentifier(.onboard)
+                } label: {
+                    Text("Onboard")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(FilledButtonStyle())
             }
             .buttonStyle(.borderedProminent)
-            .disabled(inviteCode.isEmpty)
+            .disabled(identifier.isEmpty)
         }
         .padding()
     }
@@ -47,7 +62,7 @@ struct Invitation: View {
 #if DEBUG
 struct Invitation_Previews: PreviewProvider {
     static var previews: some View {
-        Invitation(inviteCode: .constant(""), onValidateCode: {})
+        GuardianHome(identifier: .constant(""), onValidateIdentifier: {_ in})
     }
 }
 #endif

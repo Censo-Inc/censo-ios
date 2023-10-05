@@ -23,12 +23,19 @@ struct API {
         case declineInvitation(InvitationId)
         case acceptInvitation(InvitationId)
         case submitVerification(InvitationId, SubmitGuardianVerificationApiRequest)
+        
+        case storeRecoveryTotpSecret(ParticipantId, Base64EncodedString)
+        case approveOwnerVerification(ParticipantId, Base64EncodedString)
+        case rejectOwnerVerification(ParticipantId)
     }
     
     enum GuardianPhase: Codable {
         case waitingForCode(WaitingForCode)
         case waitingForConfirmation(WaitingForConfirmation)
         case complete
+        case recoveryRequested(RecoveryRequested)
+        case recoveryVerification(RecoveryVerification)
+        case recoveryConfirmation(RecoveryConfirmation)
         
         struct WaitingForConfirmation: Codable {
             var invitationId: String
@@ -37,6 +44,27 @@ struct API {
         
         struct WaitingForCode: Codable {
             var invitationId: String
+        }
+        
+        struct RecoveryRequested: Codable {
+            var createdAt: Date
+            var recoveryPublicKey: Base58EncodedPublicKey
+        }
+        
+        struct RecoveryVerification: Codable {
+            var createdAt: Date
+            var recoveryPublicKey: Base58EncodedPublicKey
+            var encryptedTotpSecret: Base64EncodedString
+        }
+        
+        struct RecoveryConfirmation: Codable {
+            var createdAt: Date
+            var recoveryPublicKey: Base58EncodedPublicKey
+            var encryptedTotpSecret: Base64EncodedString
+            var ownerKeySignature: Base64EncodedString
+            var ownerKeySignatureTimeMillis: UInt64
+            var ownerPublicKey: Base58EncodedPublicKey
+            var guardianEncryptedShard: Base64EncodedString
         }
         
         enum GuardianPhaseCodingKeys: String, CodingKey {
@@ -53,6 +81,12 @@ struct API {
                 self = .waitingForConfirmation(try WaitingForConfirmation(from: decoder))
             case "Complete":
                 self = .complete
+            case "RecoveryRequested":
+                self = .recoveryRequested(try RecoveryRequested(from: decoder))
+            case "RecoveryVerification":
+                self = .recoveryVerification(try RecoveryVerification(from: decoder))
+            case "RecoveryConfirmation":
+                self = .recoveryConfirmation(try RecoveryConfirmation(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid GuardianStatus")
             }
@@ -69,6 +103,15 @@ struct API {
                 try phase.encode(to: encoder)
             case .complete:
                 try container.encode("Complete", forKey: .type)
+            case .recoveryRequested(let phase):
+                try container.encode("RecoveryRequested", forKey: .type)
+                try phase.encode(to: encoder)
+            case .recoveryVerification(let phase):
+                try container.encode("RecoveryVerification", forKey: .type)
+                try phase.encode(to: encoder)
+            case .recoveryConfirmation(let phase):
+                try container.encode("RecoveryConfirmation", forKey: .type)
+                try phase.encode(to: encoder)
             }
         }
     }
@@ -95,6 +138,10 @@ struct GuardianState: Codable {
     struct SubmitGuardianVerificationApiResponse: Codable {
         var guardianState: GuardianState
     }
+    
+    struct OwnerVerificationApiResponse: Codable {
+        var guardianStates: [GuardianState]
+    }
 }
 
 extension API: TargetType {
@@ -116,6 +163,12 @@ extension API: TargetType {
             return "v1/guardianship-invitations/\(id)/verification"
         case .registerPushToken:
             return "v1/notification-tokens"
+        case .storeRecoveryTotpSecret(let id, _):
+            return "v1/recovery/\(id.value)/totp"
+        case .approveOwnerVerification(let id, _):
+            return "v1/recovery/\(id.value)/approval"
+        case .rejectOwnerVerification(let id):
+            return "v1/recovery/\(id.value)/rejection"
         }
     }
 
@@ -125,7 +178,10 @@ extension API: TargetType {
              .declineInvitation,
              .acceptInvitation,
              .submitVerification,
-             .registerPushToken:
+             .registerPushToken,
+             .storeRecoveryTotpSecret,
+             .approveOwnerVerification,
+             .rejectOwnerVerification:
             return .post
         case .user:
             return .get
@@ -136,7 +192,8 @@ extension API: TargetType {
         switch endpoint {
         case .user,
              .declineInvitation,
-             .acceptInvitation:
+             .acceptInvitation,
+             .rejectOwnerVerification:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable(credentials)
@@ -146,6 +203,14 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "token": token,
                 "deviceType": "Ios"
+            ])
+        case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):
+            return .requestJSONEncodable([
+                "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
+            ])
+        case .approveOwnerVerification(_, let encryptedShard):
+            return .requestJSONEncodable([
+                "encryptedShard": encryptedShard
             ])
         }
     }
@@ -213,5 +278,9 @@ extension Array where Element == API.GuardianState {
             }
         }
         return nil
+    }
+    
+    func forParticipantId(_ participantId: ParticipantId) -> API.GuardianState? {
+        return self.first(where: {$0.participantId == participantId})
     }
 }

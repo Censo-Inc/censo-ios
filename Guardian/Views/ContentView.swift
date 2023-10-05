@@ -11,19 +11,23 @@ import Moya
 struct ContentView: View {
     @Environment(\.apiProvider) var apiProvider
 
-    @State private var inviteCode: String = ""
+    @State private var identifier: String = ""
+    @State private var route: GuardianRoute = .initial
+    @State private var participantId: ParticipantId = .random()
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var attemptingURL: URL?
     @State private var isPresented = false
-
+    
     var body: some View {
         NavigationStack {
-            Invitation(inviteCode: $inviteCode, onValidateCode: checkInviteCode)
+            GuardianHome(identifier: $identifier, onValidateIdentifier: checkIdentifier)
                 .navigationDestination(isPresented: $isPresented, destination: {
                     Authentication { session in
-                        Guardian(
-                            inviteCode: $inviteCode,
+                        ApproverRouting(
+                            inviteCode: $identifier,
+                            participantId: $participantId,
+                            route: $route,
                             session: session,
                             onSuccess: {
                                 isPresented = false
@@ -44,12 +48,13 @@ struct ContentView: View {
     private func openURL(_ url: URL) {
         guard url.pathComponents.count > 1,
               let action = url.host,
-            action == "invite" else {
+              ["invite", "recovery"].contains(action) else {
+            self.route = .unknown
             return
         }
-
-        self.inviteCode = url.pathComponents[1]
-        checkInviteCode()
+        
+        self.identifier = url.pathComponents[1]
+        checkIdentifier(route: action == "invite" ? .onboard : .recovery)
     }
 
     private func showError(_ error: Error) {
@@ -57,15 +62,25 @@ struct ContentView: View {
         self.showingError = true
     }
     
-    private func checkInviteCode() {
-        if (self.inviteCode.starts(with: "invitation_")) {
-            self.isPresented = true
-        } else {
-            self.isPresented = false
-            self.showingError = true
-            self.currentError = CensoError.invalidInvitationCode
+    private func checkIdentifier(route: GuardianRoute) {
+        self.route = route
+        switch route {
+        case .onboard:
+            if self.identifier.starts(with: "invitation_") {
+                self.isPresented = true
+            } else {
+                showError(CensoError.invalidIdentifier)
+            }
+        case .recovery:
+            if let participantId = try? ParticipantId(value: self.identifier) {
+                self.participantId = participantId
+                self.isPresented = true
+            } else {
+                showError(CensoError.invalidIdentifier)
+            }
+        default:
+            showError(CensoError.invalidIdentifier)
         }
-        
     }
 
 }

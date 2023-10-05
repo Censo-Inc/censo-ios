@@ -12,8 +12,11 @@ enum CensoError: Swift.Error {
     case unexpected(Int)
     case unauthorized
     case underMaintenance
-    case invalidInvitationCode
+    case invalidIdentifier
     case failedToCreateSignature
+    case cannotCreateTotpSecret
+    case failedToRecoverPrivateKey
+    case failedToRecoverShard
 }
 
 extension CensoError: LocalizedError {
@@ -27,10 +30,16 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Censo is currently under maintenance, please try again in a few minutes.", comment: "Under maintenance")
         case .unauthorized:
             return NSLocalizedString("Unauthorized access", comment: "Unauthorized access")
-        case .invalidInvitationCode:
-            return NSLocalizedString("The invitation code is not valid.", comment: "Invalid Invitation Code")
+        case .invalidIdentifier:
+            return NSLocalizedString("The identifier is not valid.", comment: "Invalid Identifier")
         case .failedToCreateSignature:
             return NSLocalizedString("Failed to create verification signature", comment: "Verification Signature failed")
+        case .cannotCreateTotpSecret:
+            return NSLocalizedString("Cannot create rotating pin code", comment: "Pin code creation failed")
+        case .failedToRecoverPrivateKey:
+            return NSLocalizedString("Cannot recover your key", comment: "Key recovery failed")
+        case .failedToRecoverShard:
+            return NSLocalizedString("Cannot recover owner shard", comment: "shard recovery failed")
 
         }
     }

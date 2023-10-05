@@ -43,3 +43,10 @@ struct TotpUtils {
         return Double(remainder) / period
     }
 }
+
+extension String {
+    
+    func addDashToTotpCode() -> String {
+        return self.dropLast(self.count / 2) + "-" + self.dropFirst(self.count / 2)
+    }
+}

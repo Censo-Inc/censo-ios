@@ -13,8 +13,8 @@ struct SubmitVerification: View {
     var invitationId: InvitationId
     var session: Session
     var verificationStatus: VerificationStatus
+    var participantId: ParticipantId
 
-    @State private var guardianKey: EncryptionKey?
 
     @State private var currentError: Error?
 
@@ -34,7 +34,7 @@ struct SubmitVerification: View {
                 VerificationCodeEntry(pinInput: $verificationCode)
                     .onChange(of: verificationCode) { _ in
                         if (verificationCode.count == 6) {
-                            submitVerificaton(code: String(verificationCode.map { digit in Character(UnicodeScalar(digit)!) }))
+                            submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
                         }
                     }
                     .disabled(
@@ -81,17 +81,17 @@ struct SubmitVerification: View {
     }
     
     private func submitVerificaton(code: String) {
-        if guardianKey == nil {
-            guardianKey = try? EncryptionKey.generateRandomKey()
-        }
+        
         let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-        guard let codeBytes = code.data(using: .utf8),
+        guard let guardianKey = try? participantId.generateGuardianKey(),
+              let codeBytes = code.data(using: .utf8),
               let timeMillisData = String(timeMillis).data(using: .utf8),
-              let guardianPublicKey = try? guardianKey?.publicExternalRepresentation(),
-              let signature = try? guardianKey?.signature(for: codeBytes + timeMillisData) else {
+              let guardianPublicKey = try? guardianKey.publicExternalRepresentation(),
+              let signature = try? guardianKey.signature(for: codeBytes + timeMillisData) else {
             showError(GuardianError.failedToCreateSignature)
             return
         }
+        
         currentError = nil
 
         apiProvider.decodableRequest(
@@ -132,7 +132,7 @@ struct VerificationCodeEntry: View {
 #if DEBUG
 #Preview {
     SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,
-                       verificationStatus: .notSubmitted, onSuccess: {_ in })
+                       verificationStatus: .notSubmitted, participantId: .sample, onSuccess: {_ in })
 }
 
 #endif

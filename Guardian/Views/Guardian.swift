@@ -18,7 +18,7 @@ struct Guardian: View {
     @State private var showingError = false
     @State private var currentError: Error?
     
-    @Binding var inviteCode: String
+    var inviteCode: String
     
     @RemoteResult<API.GuardianUser, API> private var user
 
@@ -37,15 +37,18 @@ struct Guardian: View {
             case .loading:
                 ProgressView()
             case .success(let user):
-                switch (guardianState ?? user.guardianStates.forInvite(inviteCode))?.phase {
+                let currentState = guardianState ?? user.guardianStates.forInvite(inviteCode)
+                switch currentState?.phase {
                 case .none:
                     AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
                 case .waitingForCode:
                     SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .notSubmitted,
+                                       participantId: currentState!.participantId,
                                        onSuccess: {newState in guardianState = newState})
                 case .waitingForConfirmation(let waitingForConfirmation):
                     SubmitVerification(invitationId: inviteCode,
                         session: session, verificationStatus: waitingForConfirmation.verificationStatus,
+                        participantId: currentState!.participantId,
                         onSuccess: {newState in guardianState = newState})
                 case .complete:
                     VStack {
@@ -64,6 +67,8 @@ struct Guardian: View {
                         }
                         .buttonStyle(FilledButtonStyle())
                     }
+                default:
+                    EmptyView()
                 }
             case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
                 SignIn(session: session, onSuccess: reload) {

@@ -17,38 +17,31 @@ struct RotatingTotpPinView: View {
         if let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
             HStack {
                 Spacer()
-                Text(TotpUtils.getOTP(date: currentDate, secret: totpSecret)).bold()
+                Text(TotpUtils.getOTP(date: currentDate, secret: totpSecret).addDashToTotpCode()).bold()
                 Spacer()
                 
                 ZStack {
                     Circle()
-                        .stroke(
-                            Color.gray.opacity(0.5),
-                            lineWidth: 5
-                        )
+                        .fill(Color.Censo.lightGray)
                         .frame(width: 30, height: 30)
                     
-                    Circle()
-                        .trim(from: 0, to: TotpUtils.getPercentDone(date: currentDate))
-                        .stroke(
-                            Color.blue,
-                            style: StrokeStyle(
-                                lineWidth: 5,
-                                lineCap: .round
+                    ForEach(0...30, id: \.self) { num in
+                        Circle()
+                            .trim(from: 0, to: TotpUtils.getPercentDone(date: currentDate))
+                            .stroke(
+                                Color.white,
+                                style: StrokeStyle(
+                                    lineWidth: 1,
+                                    lineCap: .round
+                                )
                             )
-                        )
-                        .frame(width: 30, height: 30)
-                        .rotationEffect(.degrees(-90))
-                    
-                    Text("\(TotpUtils.getRemainingSeconds(date: currentDate))")
+                            .frame(width: 30-CGFloat(num), height: 30-CGFloat(num))
+                            .rotationEffect(.degrees(-90))
+                    }
                 }
             }
-        } else {
-            EmptyView()
         }
     }
 }
 
-//#Preview {
-//    RotatingTotpPinView(session:)
-//}
+
