@@ -75,7 +75,7 @@ struct RecoveryView: View {
                     
                     let approvalsCount = thisDeviceRecovery
                         .approvals
-                        .filter({ $0.approvalStatus == API.Recovery.ThisDevice.Approval.Status.approved })
+                        .filter({ $0.status == API.Recovery.ThisDevice.Approval.Status.approved })
                         .count
                     
                     VStack {
@@ -281,23 +281,23 @@ struct RecoveryView_Previews: PreviewProvider {
                     approvals: [
                         API.Recovery.ThisDevice.Approval(
                             participantId: guardians[0].participantId,
-                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.initial
+                            status: API.Recovery.ThisDevice.Approval.Status.initial
                         ),
                         API.Recovery.ThisDevice.Approval(
                             participantId: guardians[1].participantId,
-                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.waitingForVerification
+                            status: API.Recovery.ThisDevice.Approval.Status.waitingForVerification
                         ),
                         API.Recovery.ThisDevice.Approval(
                             participantId: guardians[2].participantId,
-                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.waitingForApproval
+                            status: API.Recovery.ThisDevice.Approval.Status.waitingForApproval
                         ),
                         API.Recovery.ThisDevice.Approval(
                             participantId: guardians[3].participantId,
-                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.approved
+                            status: API.Recovery.ThisDevice.Approval.Status.approved
                         ),
                         API.Recovery.ThisDevice.Approval(
                             participantId: guardians[4].participantId,
-                            approvalStatus: API.Recovery.ThisDevice.Approval.Status.rejected
+                            status: API.Recovery.ThisDevice.Approval.Status.rejected
                         )
                     ]
                 )),

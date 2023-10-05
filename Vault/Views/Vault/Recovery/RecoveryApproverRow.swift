@@ -25,7 +25,7 @@ struct RecoveryApproverRow : View {
                     Text("Status: ")
                         .font(.system(size: 16))
                         .foregroundColor(Color.Censo.lightGray)
-                    ApprovalStatus(status: approval.approvalStatus)
+                    ApprovalStatus(status: approval.status)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text(guardian.label)
@@ -36,7 +36,7 @@ struct RecoveryApproverRow : View {
             
             Spacer()
             
-            if approval.approvalStatus == .initial {
+            if approval.status == .initial {
                 if let link = URL(string: "censo-guardian://recovery/\(guardian.participantId.value)") {
                     ShareLink(item: link,
                               subject: Text("Censo Recovery Link for \(guardian.label)"),
@@ -48,14 +48,14 @@ struct RecoveryApproverRow : View {
                             .font(.system(size: 28))
                     }
                 }
-            } else if approval.approvalStatus == .waitingForVerification || approval.approvalStatus == .rejected {
+            } else if approval.status == .waitingForVerification || approval.status == .rejected {
                 Button {
                     showEnterCodeModal = true
                 } label: {
                     Text("Enter Code")
                 }
                 .buttonStyle(FilledButtonStyle(tint: .light))
-            } else if approval.approvalStatus == .approved {
+            } else if approval.status == .approved {
                 Image(systemName: "checkmark.circle.fill")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.Censo.green)
@@ -73,7 +73,7 @@ struct RecoveryApproverRow : View {
                 session: session,
                 approverLabel: guardian.label,
                 participantId: guardian.participantId,
-                approvalStatus: approval.approvalStatus,
+                approvalStatus: approval.status,
                 reloadUser: reloadUser,
                 onOwnerStateUpdated: onOwnerStateUpdated
             )

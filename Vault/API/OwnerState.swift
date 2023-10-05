@@ -159,7 +159,7 @@ extension API {
             
             struct Approval : Codable {
                 var participantId: ParticipantId
-                var approvalStatus: Status
+                var status: Status
                 
                 enum Status : String, Codable {
                     case initial = "Initial"
