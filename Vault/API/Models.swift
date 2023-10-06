@@ -158,4 +158,14 @@ extension API {
     struct DeleteRecoveryApiResponse : Decodable {
         var ownerState: OwnerState
     }
+    
+    struct SubmitRecoveryTotpVerificationApiRequest : Encodable {
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
+        var ownerDevicePublicKey: Base58EncodedPublicKey
+    }
+    
+    struct SubmitRecoveryTotpVerificationApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
 }

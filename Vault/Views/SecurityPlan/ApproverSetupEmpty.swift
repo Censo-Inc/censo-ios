@@ -32,6 +32,8 @@ struct ApproverSetupEmpty: View {
             showingAddApprover = true
         } label: {
             Text("Select First Approver")
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .frame(height: 44)
         }
         .padding()
         .buttonStyle(FilledButtonStyle())

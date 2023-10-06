@@ -34,8 +34,11 @@ struct AcceptInvitation: View {
             } label: {
                 if (inProgress) {
                     ProgressView()
+                        .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
                     Text("Get Started")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
             }
             .padding()

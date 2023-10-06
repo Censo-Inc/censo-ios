@@ -41,14 +41,16 @@ struct GuardianHome: View {
                     onValidateIdentifier(.recovery)
                 } label: {
                     Text("Recover")
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
                 .buttonStyle(FilledButtonStyle())
                 Button {
                     onValidateIdentifier(.onboard)
                 } label: {
                     Text("Onboard")
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
                 .buttonStyle(FilledButtonStyle())
             }

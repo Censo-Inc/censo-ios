@@ -154,11 +154,12 @@ extension API {
             var status: Status
             var createdAt: Date
             var unlocksAt: Date
+            var expiresAt: Date
             var approvals: [Approval]
             
             struct Approval : Codable {
                 var participantId: ParticipantId
-                var approvalStatus: Status
+                var status: Status
                 
                 enum Status : String, Codable {
                     case initial = "Initial"

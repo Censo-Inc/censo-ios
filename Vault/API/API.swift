@@ -35,12 +35,7 @@ struct API {
         
         case requestRecovery(RequestRecoveryApiRequest)
         case deleteRecovery
-    }
-
-    struct ConfirmGuardianRequest: Codable {
-        var participantId: ParticipantId
-        var keyConfirmationSignature: String
-        var keyConfirmationTimeMillis: Int64
+        case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
     }
 }
 
@@ -81,6 +76,8 @@ extension API: TargetType {
             return "v1/recovery"
         case .deleteRecovery:
             return "v1/recovery"
+        case .submitRecoveryTotpVerification(let participantId, _):
+            return "v1/recovery/\(participantId.value)/totp-verification"
         }
     }
 
@@ -101,7 +98,8 @@ extension API: TargetType {
              .unlock,
              .lock,
              .storeSecret,
-             .requestRecovery:
+             .requestRecovery,
+             .submitRecoveryTotpVerification:
             return .post
         }
     }
@@ -151,6 +149,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .deleteRecovery:
             return .requestPlain
+        case .submitRecoveryTotpVerification(_, let payload):
+            return .requestJSONEncodable(payload)
         }
     }
 

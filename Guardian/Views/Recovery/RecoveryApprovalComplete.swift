@@ -29,6 +29,8 @@ struct RecoveryApprovalComplete: View {
                 onSuccess()
             } label: {
                 Text("Continue")
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .frame(height: 44)
             }
             .padding()
             .buttonStyle(FilledButtonStyle())

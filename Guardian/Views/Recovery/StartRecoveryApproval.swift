@@ -53,6 +53,8 @@ struct  StartRecoveryApproval: View {
                     ProgressView()
                 } else {
                     Text("Continue")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .frame(height: 44)
                 }
             }
             .padding()

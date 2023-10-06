@@ -125,7 +125,8 @@ struct  GuardianActivation: View {
                             ProgressView()
                         } else {
                             Text("Continue")
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .frame(height: 44)
                         }
                     }
                     .disabled(!allGuardiansConfirmed || guardianProspects.isEmpty || threshold == 0 || inProgress)

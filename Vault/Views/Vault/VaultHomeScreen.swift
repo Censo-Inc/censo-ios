@@ -64,6 +64,7 @@ struct VaultHomeScreen: View {
                             } label: {
                                 Text("Recover Phrases")
                                     .frame(maxWidth: .infinity, alignment: .center)
+                                    .frame(height: 44)
                             }
                             .buttonStyle(FilledButtonStyle(tint: .light))
                         }.padding()
