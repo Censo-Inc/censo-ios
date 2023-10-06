@@ -20,29 +20,30 @@ struct ContentView: View {
     @State private var isPresented = false
     
     var body: some View {
-        NavigationStack {
-            GuardianHome(identifier: $identifier, onValidateIdentifier: checkIdentifier)
-                .navigationDestination(isPresented: $isPresented, destination: {
-                    Authentication { session in
-                        ApproverRouting(
-                            inviteCode: $identifier,
-                            participantId: $participantId,
-                            route: $route,
-                            session: session,
-                            onSuccess: {
-                                isPresented = false
-                            }
-                        )
-                    }
-                })
+        EnsureICloud {
+            NavigationStack {
+                GuardianHome(identifier: $identifier, onValidateIdentifier: checkIdentifier)
+                    .navigationDestination(isPresented: $isPresented, destination: {
+                        Authentication { session in
+                            ApproverRouting(
+                                inviteCode: $identifier,
+                                participantId: $participantId,
+                                route: $route,
+                                session: session,
+                                onSuccess: {
+                                    isPresented = false
+                                }
+                            )
+                        }
+                    })
+            }
+            .onOpenURL(perform: openURL)
+            .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
+                Button("OK", role: .cancel, action: {})
+            } message: { error in
+                Text(error.localizedDescription)
+            }
         }
-        .onOpenURL(perform: openURL)
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel, action: {})
-        } message: { error in
-            Text(error.localizedDescription)
-        }
-
     }
 
     private func openURL(_ url: URL) {
