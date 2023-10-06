@@ -84,7 +84,7 @@ struct SubmitVerification: View {
     private func submitVerificaton(code: String) {
         
         let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-        guard let guardianKey = try? guardianState.participantId.generateGuardianKey(),
+        guard let guardianKey = participantId.privateKey,
               let codeBytes = code.data(using: .utf8),
               let timeMillisData = String(timeMillis).data(using: .utf8),
               let guardianPublicKey = try? guardianKey.publicExternalRepresentation(),
