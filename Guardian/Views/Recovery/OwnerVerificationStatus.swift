@@ -12,7 +12,7 @@ struct OwnerVerificationStatus<Content>: View where Content : View {
     @ViewBuilder var content: () -> Content
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Status: \(status)")
@@ -20,16 +20,23 @@ struct OwnerVerificationStatus<Content>: View where Content : View {
                         .foregroundColor(.Censo.lightGray)
                     Text("Owner").bold()
                 }
-                Spacer()
                 
                 content()
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 2)
             .padding(.vertical, 5)
             
             Divider()
-                .padding(.leading, 20)
+                .padding(.leading, 2)
         }
+        .padding()
+        .frame(height: 75)
+        .frame(maxWidth: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.Censo.darkBlue, lineWidth: 1)
+        }
+        .padding(.horizontal)
     }
 }
 

@@ -31,18 +31,22 @@ struct API {
     
     enum GuardianPhase: Codable {
         case waitingForCode(WaitingForCode)
-        case waitingForConfirmation(WaitingForConfirmation)
+        case waitingForVerification(WaitingForVerification)
+        case verificationRejected(VerificationRejected)
         case complete
         case recoveryRequested(RecoveryRequested)
         case recoveryVerification(RecoveryVerification)
         case recoveryConfirmation(RecoveryConfirmation)
         
-        struct WaitingForConfirmation: Codable {
+        struct WaitingForVerification: Codable {
             var invitationId: String
-            var verificationStatus: VerificationStatus
         }
         
         struct WaitingForCode: Codable {
+            var invitationId: String
+        }
+        
+        struct VerificationRejected: Codable {
             var invitationId: String
         }
         
@@ -77,8 +81,10 @@ struct API {
             switch type {
             case "WaitingForCode":
                 self = .waitingForCode(try WaitingForCode(from: decoder))
-            case "WaitingForConfirmation":
-                self = .waitingForConfirmation(try WaitingForConfirmation(from: decoder))
+            case "WaitingForVerification":
+                self = .waitingForVerification(try WaitingForVerification(from: decoder))
+            case "VerificationRejected":
+                self = .verificationRejected(try VerificationRejected(from: decoder))
             case "Complete":
                 self = .complete
             case "RecoveryRequested":
@@ -98,8 +104,11 @@ struct API {
             case .waitingForCode(let phase):
                 try container.encode("WaitingForCode", forKey: .type)
                 try phase.encode(to: encoder)
-            case .waitingForConfirmation(let phase):
-                try container.encode("WaitingForConfirmation", forKey: .type)
+            case .waitingForVerification(let phase):
+                try container.encode("WaitingForVerification", forKey: .type)
+                try phase.encode(to: encoder)
+            case .verificationRejected(let phase):
+                try container.encode("VerificationRejected", forKey: .type)
                 try phase.encode(to: encoder)
             case .complete:
                 try container.encode("Complete", forKey: .type)
@@ -267,7 +276,11 @@ extension Array where Element == API.GuardianState {
                 if state.invitationId == invitationId {
                     return guardianState
                 }
-            case .waitingForConfirmation(let state):
+            case .waitingForVerification(let state):
+                if state.invitationId == invitationId {
+                    return guardianState
+                }
+            case .verificationRejected(let state):
                 if state.invitationId == invitationId {
                     return guardianState
                 }

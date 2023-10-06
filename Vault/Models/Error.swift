@@ -18,6 +18,7 @@ enum CensoError: Swift.Error {
     case cannotCreateTotpSecret
     case failedToRecoverPrivateKey
     case failedToRecoverShard
+    case verificationFailed
 }
 
 extension CensoError: LocalizedError {
@@ -43,6 +44,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Cannot recover your key", comment: "Key recovery failed")
         case .failedToRecoverShard:
             return NSLocalizedString("Cannot recover owner shard", comment: "shard recovery failed")
+        case .verificationFailed:
+            return NSLocalizedString("The code you entered is not correct.\nPlease try again", comment: "Verification failed")
 
         }
     }

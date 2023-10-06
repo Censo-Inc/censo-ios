@@ -12,8 +12,7 @@ struct SubmitVerification: View {
     @Environment(\.apiProvider) var apiProvider
     var invitationId: InvitationId
     var session: Session
-    var verificationStatus: VerificationStatus
-    var participantId: ParticipantId
+    var guardianState: API.GuardianState
 
 
     @State private var currentError: Error?
@@ -38,12 +37,11 @@ struct SubmitVerification: View {
                         }
                     }
                     .disabled(
-                        //verificationStatus.isPending()
-                        true // this is always pending
+                        !guardianState.phase.isWaitingForVerification
                     )
 
                 if (currentError == nil) {
-                    switch (verificationStatus) {
+                    switch guardianState.phase {
                     case .waitingForVerification:
                         ProgressView(
                             label: {
@@ -59,6 +57,15 @@ struct SubmitVerification: View {
                                 }
                             }
                         }
+                        
+                    case .verificationRejected:
+                        Text(CensoError.verificationFailed.localizedDescription)
+                            .bold()
+                            .foregroundColor(Color.red)
+                            .multilineTextAlignment(.center)
+                        
+                    default:
+                        EmptyView()
                     }
                 } else {
                     Text(currentError!.localizedDescription)
@@ -77,12 +84,12 @@ struct SubmitVerification: View {
     private func submitVerificaton(code: String) {
         
         let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-        guard let guardianKey = try? participantId.generateGuardianKey(),
+        guard let guardianKey = try? guardianState.participantId.generateGuardianKey(),
               let codeBytes = code.data(using: .utf8),
               let timeMillisData = String(timeMillis).data(using: .utf8),
               let guardianPublicKey = try? guardianKey.publicExternalRepresentation(),
               let signature = try? guardianKey.signature(for: codeBytes + timeMillisData) else {
-            showError(GuardianError.failedToCreateSignature)
+            showError(CensoError.failedToCreateSignature)
             return
         }
         
@@ -116,7 +123,54 @@ struct SubmitVerification: View {
 #if DEBUG
 #Preview {
     SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,
-                       verificationStatus: .waitingForVerification, participantId: .sample, onSuccess: {_ in })
+                       guardianState: .sampleWaitingForCode,
+                       onSuccess: {_ in })
+}
+
+extension API.GuardianState {
+    static var sampleWaitingForVerification: Self {
+        .init(
+            participantId: .random(),
+            phase: .waitingForVerification(
+                API.GuardianPhase.WaitingForVerification(
+                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
+                )
+            )
+        )
+    }
+    
+    static var sampleVerificationRejected: Self {
+        .init(
+            participantId: .random(),
+            phase: .verificationRejected(
+                API.GuardianPhase.VerificationRejected(
+                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
+                )
+            )
+        )
+    }
+    
+    static var sampleWaitingForCode: Self {
+        .init(
+            participantId: .random(),
+            phase: .waitingForCode(
+                API.GuardianPhase.WaitingForCode(
+                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
+                )
+            )
+        )
+    }
 }
 
 #endif
+
+extension API.GuardianPhase {
+    var isWaitingForVerification: Bool {
+        switch self {
+        case .waitingForVerification:
+            return true
+        default:
+            return false
+        }
+    }
+}

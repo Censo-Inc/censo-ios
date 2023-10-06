@@ -48,7 +48,6 @@ extension API {
             var signature: Base64EncodedString
             var timeMillis: Int64
             var guardianPublicKey: Base58EncodedPublicKey
-            var verificationStatus: VerificationStatus
             var submittedAt: Date
         }
         

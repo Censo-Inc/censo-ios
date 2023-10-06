@@ -82,14 +82,11 @@ struct ApproverActivationRow: View {
                 RotatingTotpPinView(session: session, deviceEncryptedTotpSecret: accepted.deviceEncryptedTotpSecret
                 )
             case .verificationSubmitted(let verificationSubmitted):
-                switch verificationSubmitted.verificationStatus {
-                case .waitingForVerification:
-                    ProgressView()
-                        .padding(4)
-                        .onAppear {
-                            confirmGuardianship(status: verificationSubmitted)
-                        }
-                }
+                ProgressView()
+                    .padding(4)
+                    .onAppear {
+                        confirmGuardianship(status: verificationSubmitted)
+                    }
             case .confirmed:
                 Image(systemName: "checkmark.circle.fill")
                     .resizable()

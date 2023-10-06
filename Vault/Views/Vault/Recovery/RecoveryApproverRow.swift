@@ -155,7 +155,7 @@ struct RecoveryApproverRow : View {
                             reloadUser()
                         }
                     case .rejected:
-                        Text("The code you entered is not correct.\nPlease try again.")
+                        Text(CensoError.verificationFailed.localizedDescription)
                             .bold()
                             .foregroundColor(Color.red)
                             .multilineTextAlignment(.center)

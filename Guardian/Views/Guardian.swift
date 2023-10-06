@@ -41,15 +41,15 @@ struct Guardian: View {
                 switch currentState?.phase {
                 case .none:
                     AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
-                case .waitingForCode:
-                    SubmitVerification(invitationId: inviteCode, session: session, verificationStatus: .waitingForVerification,
-                                       participantId: currentState!.participantId,
-                                       onSuccess: {newState in guardianState = newState})
-                case .waitingForConfirmation(let waitingForConfirmation):
-                    SubmitVerification(invitationId: inviteCode,
-                        session: session, verificationStatus: waitingForConfirmation.verificationStatus,
-                        participantId: currentState!.participantId,
-                        onSuccess: {newState in guardianState = newState})
+                case .waitingForCode,
+                     .waitingForVerification,
+                    . verificationRejected:
+                    SubmitVerification(
+                        invitationId: inviteCode, 
+                        session: session,
+                        guardianState: currentState!,
+                        onSuccess: {newState in guardianState = newState}
+                    )
                 case .complete:
                     VStack {
                         List {
@@ -93,6 +93,7 @@ struct Guardian: View {
     }
 
     private func reload() {
+        guardianState = nil
         _user.reload(with: apiProvider, target: session.target(for: .user))
     }
     
@@ -104,12 +105,3 @@ struct Guardian: View {
     }
 }
 
-
-
-#if DEBUG
-//struct GuardianView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
-#endif
