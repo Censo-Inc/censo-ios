@@ -32,9 +32,19 @@ struct ErrorResponsePlugin: Moya.PluginType {
     }
                             
     private func parseValidationError(response: Response) -> MoyaError {
-        MoyaError.underlying(
+        let validationError = (try? JSONDecoder().decode(API.ResponseErrors.self, from: response.data))?.errors.first
+        if let scanResultBlob = validationError?.scanResultBlob {
+            return MoyaError.underlying(
+                CensoError.biometricValidation(
+                    message: validationError?.message ?? "Biometric Validation Error",
+                    scanResultBlob: scanResultBlob
+                ),
+                response
+            )
+        }
+        return MoyaError.underlying(
             CensoError.validation(
-                (try? JSONDecoder().decode(API.ResponseErrors.self, from: response.data))?.errors.first?.message ?? "Validation Error"
+                validationError?.message ?? "Validation Error"
             ),
             response
         )

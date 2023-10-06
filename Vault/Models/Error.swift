@@ -9,6 +9,7 @@ import Foundation
 
 enum CensoError: Swift.Error {
     case validation(String)
+    case biometricValidation(message: String, scanResultBlob: String)
     case unexpected(Int)
     case unauthorized
     case underMaintenance
@@ -24,6 +25,8 @@ extension CensoError: LocalizedError {
         switch self {
         case .validation(let errorMessage):
             return NSLocalizedString(errorMessage, comment: "Validation Error")
+        case .biometricValidation(let errorMessage, _):
+            return NSLocalizedString(errorMessage, comment: "Biometric Validation Error")
         case .unexpected(let statusCode):
             return NSLocalizedString("Unexpected Error \(statusCode)", comment: "Unexpected Error")
         case .underMaintenance:
@@ -49,6 +52,7 @@ extension API {
     struct ResponseError: Decodable {
         var reason: String
         var message: String
+        var scanResultBlob: String?
     }
     
     struct ResponseErrors: Decodable {

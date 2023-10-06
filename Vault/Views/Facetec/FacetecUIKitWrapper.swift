@@ -97,9 +97,10 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
                 // In v9.2.0+, simply pass in scanResultBlob to the proceedToNextStep function to advance the User flow.
                 // scanResultBlob is a proprietary, encrypted blob that controls the logic for what happens next for the User.
                 faceScanResultCallback.onFaceScanGoToNextStep(scanResultBlob: response.scanResultBlob)
+            case .failure(.underlying(CensoError.biometricValidation(_, let scanResultBlob), _)):
+                faceScanResultCallback.onFaceScanGoToNextStep(scanResultBlob: scanResultBlob)
             case .failure(let error):
                 self?.onError(error)
-
                 faceScanResultCallback.onFaceScanResultCancel()
             }
         }

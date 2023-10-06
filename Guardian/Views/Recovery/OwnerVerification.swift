@@ -17,9 +17,6 @@ struct  OwnerVerification: View {
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
-    @State private var currentDate: Date = Date()
-    
-    @State private var timerPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var session: Session
     var guardianState: API.GuardianState
@@ -62,13 +59,7 @@ struct  OwnerVerification: View {
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { } label: { Text("OK") }
         } message: { error in
-            Text("error.localizedDescription")
-        }
-        .onReceive(timerPublisher) { _ in
-            currentDate = Date()
-        }
-        .onDisappear() {
-            timerPublisher.upstream.connect().cancel()
+            Text(error.localizedDescription)
         }
     }
     
