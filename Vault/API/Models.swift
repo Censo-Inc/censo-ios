@@ -108,7 +108,7 @@ extension API {
         var masterEncryptionPublicKey: Base58EncodedPublicKey
     }
 
-    struct CreatePolicyApiResponse: Decodable {
+    struct CreatePolicyApiResponse: BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
     }
@@ -124,7 +124,7 @@ extension API {
         var biometryData: FacetecBiometry
     }
     
-    struct UnlockApiResponse: Decodable {
+    struct UnlockApiResponse: BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
     }
@@ -167,5 +167,21 @@ extension API {
     
     struct SubmitRecoveryTotpVerificationApiResponse : Decodable {
         var ownerState: OwnerState
+    }
+    
+    struct RetrieveRecoveryShardsApiRequest: Encodable {
+        var biometryVerificationId: String
+        var biometryData: FacetecBiometry
+    }
+    
+    struct RetrieveRecoveryShardsApiResponse : BiometryVerificationResponse {
+        var ownerState: OwnerState
+        var encryptedShards: [EncryptedShard]
+        var scanResultBlob: String
+        
+        struct EncryptedShard : Decodable {
+            var participantId: ParticipantId
+            var encryptedShard: Base64EncodedString
+        }
     }
 }

@@ -17,7 +17,7 @@ struct InitialIdentityVerification: View {
 
     var body: some View {
         if showingBiometry {
-            FacetecAuth(session: session) { verificationId, facetecBiometry in
+            FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
                     .setupPolicy(
                         API.SetupPolicyApiRequest(
                             threshold: threshold,
@@ -26,8 +26,8 @@ struct InitialIdentityVerification: View {
                             biometryData: facetecBiometry
                         )
                     )
-            } onSuccess: {
-                onSuccess($0)
+            } onSuccess: { response in
+                onSuccess(response.ownerState)
             }
         } else {
             VStack {

@@ -154,6 +154,7 @@ extension API {
             var unlocksAt: Date
             var expiresAt: Date
             var approvals: [Approval]
+            var vaultSecretIds: [String]
             
             struct Approval : Codable {
                 var participantId: ParticipantId
