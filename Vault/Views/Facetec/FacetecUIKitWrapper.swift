@@ -10,7 +10,11 @@ import FaceTecSDK
 
 typealias ResultsReadyCallback = (String, API.FacetecBiometry) -> API.Endpoint
 
-struct FacetecUIKitWrapper: UIViewControllerRepresentable {
+protocol BiometryVerificationResponse : Decodable {
+    var scanResultBlob: String {get set}
+}
+
+struct FacetecUIKitWrapper<ResponseType: BiometryVerificationResponse>: UIViewControllerRepresentable {
     @Environment(\.apiProvider) var apiProvider
 
     var session: Session
@@ -19,7 +23,7 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
     var onBack: () -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: (ResponseType) -> Void
 
     typealias UIViewControllerType = UIViewController
 
@@ -32,10 +36,18 @@ struct FacetecUIKitWrapper: UIViewControllerRepresentable {
         // Update the UIKit view controller if needed
     }
 
-    typealias Coordinator = FacetecUIKitWrapperCoordinator
+    typealias Coordinator = FacetecUIKitWrapperCoordinator<ResponseType>
 
     func makeCoordinator() -> Coordinator {
-        FacetecUIKitWrapperCoordinator(session: session, apiProvider: apiProvider, verificationId: verificationId, onBack: onBack, onError: onError, onReadyToUploadResults: onReadyToUploadResults, onSuccess: onSuccess)
+        FacetecUIKitWrapperCoordinator(
+            session: session,
+            apiProvider: apiProvider,
+            verificationId: verificationId,
+            onBack: onBack,
+            onError: onError,
+            onReadyToUploadResults: onReadyToUploadResults,
+            onSuccess: onSuccess
+        )
     }
 }
 
@@ -43,17 +55,17 @@ struct FaceTecSessionError: Error {
     var status: FaceTecSessionStatus
 }
 
-class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate {
+class FacetecUIKitWrapperCoordinator<ResponseType: BiometryVerificationResponse>: NSObject, FaceTecFaceScanProcessorDelegate {
     var session: Session
     var apiProvider: MoyaProvider<API>
     var verificationId: String
     var onBack: () -> Void
     var onError: (Error) -> Void
     var onReadyToUploadResults: ResultsReadyCallback
-    var onSuccess: (API.OwnerState) -> Void
-    var ownerState: API.OwnerState? = nil
+    var onSuccess: (ResponseType) -> Void
+    var response: ResponseType? = nil
 
-    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback, onSuccess: @escaping (API.OwnerState) -> Void) {
+    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback, onSuccess: @escaping (ResponseType) -> Void) {
         self.session = session
         self.apiProvider = apiProvider
         self.verificationId = verificationId
@@ -88,12 +100,12 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
                     lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
                 )
            )
-        ) { [weak self] (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
+        ) { [weak self] (result: Result<ResponseType, MoyaError>) in
             switch result {
             case .success(let response):
                 FaceTecCustomization.setOverrideResultScreenSuccessMessage("Authenticated")
 
-                self?.ownerState = response.ownerState
+                self?.response = response
                 // In v9.2.0+, simply pass in scanResultBlob to the proceedToNextStep function to advance the User flow.
                 // scanResultBlob is a proprietary, encrypted blob that controls the logic for what happens next for the User.
                 faceScanResultCallback.onFaceScanGoToNextStep(scanResultBlob: response.scanResultBlob)
@@ -110,8 +122,8 @@ class FacetecUIKitWrapperCoordinator: NSObject, FaceTecFaceScanProcessorDelegate
      This method will be called exactly once after the Session has completed and when using the Session constructor with a FaceTecFaceScanProcessor.
      */
     func onFaceTecSDKCompletelyDone() {
-        if (ownerState != nil) {
-            onSuccess(ownerState!)
+        if (self.response != nil) {
+            onSuccess(self.response!)
         }
     }
 }

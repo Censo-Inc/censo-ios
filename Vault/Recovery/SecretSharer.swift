@@ -81,7 +81,7 @@ struct SecretSharerUtils {
         return result
     }
 
-    static func recoverSecret(shares: [Point], order: BigInt) -> BigInt {
+    static func recoverSecret(shares: [Point], order: BigInt = ORDER) -> BigInt {
         var van = vandermonde(participants: shares.map { $0.x }, threshold: shares.count, order: order)
         var (lu, p) = decomposeLUP(matrix: van, order: order)
         var inverse = invertLUP(lu: lu, p: p, order: order)

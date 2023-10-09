@@ -9,7 +9,7 @@ import Moya
 import FaceTecSDK
 import raygun4apple
 
-struct FacetecAuth: View {
+struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     @Environment(\.apiProvider) var apiProvider
 
     @State private var setupStep: SetupStep = .idle
@@ -23,7 +23,7 @@ struct FacetecAuth: View {
 
     var session: Session
     var onReadyToUploadResults: ResultsReadyCallback
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: (ResponseType) -> Void
 
     var body: some View {
         Group {
@@ -49,10 +49,10 @@ struct FacetecAuth: View {
                                 lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
                             )
                         )
-                    ) { (result: Result<API.ConfirmBiometryVerificationApiResponse, MoyaError>) in
+                    ) { (result: Result<ResponseType, MoyaError>) in
                         switch result {
                         case .success(let response):
-                            onSuccess(response.ownerState)
+                            onSuccess(response)
                         case .failure(let error):
                             setupStep = .failure(error)
                         }
@@ -128,7 +128,7 @@ extension FaceTecSDKProtocol {
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            FacetecAuth(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in }
+            FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in }
         }
     }
 }

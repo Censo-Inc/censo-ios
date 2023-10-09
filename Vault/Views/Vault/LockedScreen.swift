@@ -103,13 +103,13 @@ struct LockedScreen<Content: View>: View {
             case .lockFailed(let error):
                 RetryView(error: error, action: { lock() })
             case .unlockInProgress:
-                FacetecAuth(
+                FacetecAuth<API.UnlockApiResponse>(
                     session: session,
                     onReadyToUploadResults: { biomentryVerificationId, biometryData in
                         return .unlock(API.UnlockApiRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData))
                     }, 
-                    onSuccess: { ownerState in
-                        updateLockState(ownerState: ownerState)
+                    onSuccess: { response in
+                        updateLockState(ownerState: response.ownerState)
                     }
                 )
             }

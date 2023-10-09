@@ -36,6 +36,7 @@ struct API {
         case requestRecovery(RequestRecoveryApiRequest)
         case deleteRecovery
         case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
+        case retrieveRecoveredShards(RetrieveRecoveryShardsApiRequest)
     }
 }
 
@@ -78,6 +79,8 @@ extension API: TargetType {
             return "v1/recovery"
         case .submitRecoveryTotpVerification(let participantId, _):
             return "v1/recovery/\(participantId.value)/totp-verification"
+        case .retrieveRecoveredShards:
+            return "v1/recovery/retrieval"
         }
     }
 
@@ -99,7 +102,8 @@ extension API: TargetType {
              .lock,
              .storeSecret,
              .requestRecovery,
-             .submitRecoveryTotpVerification:
+             .submitRecoveryTotpVerification,
+             .retrieveRecoveredShards:
             return .post
         }
     }
@@ -151,6 +155,8 @@ extension API: TargetType {
             return .requestPlain
         case .submitRecoveryTotpVerification(_, let payload):
             return .requestJSONEncodable(payload)
+        case .retrieveRecoveredShards(let request):
+            return .requestJSONEncodable(request)
         }
     }
 

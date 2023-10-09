@@ -15,6 +15,8 @@ struct RecoveryView: View {
     var session: Session
     var threshold: UInt
     var guardians: [API.TrustedGuardian]
+    var encryptedSecrets: [API.VaultSecret]
+    var encryptedMasterKey: Base64EncodedString
     var recovery: API.Recovery
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
@@ -26,142 +28,185 @@ struct RecoveryView: View {
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
-        if (cancelationInProgress) {
-            VStack {
-                ProgressView("Canceling recovery")
-                    .foregroundColor(.white)
-                    .tint(.white)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(maxHeight: .infinity)
-            .background(Color.Censo.darkBlue)
-        } else {
-            VStack {
-                switch (recovery) {
-                case .anotherDevice:
-                    Spacer()
-                    
-                    Text("Recovery Initiated On Another Device")
-                        .font(.system(size: 24))
+        NavigationStack {
+            if (cancelationInProgress) {
+                VStack {
+                    ProgressView("Canceling recovery")
                         .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                    
-                    Spacer()
-                case .thisDevice(let thisDeviceRecovery):
-                    Text("Recovery Initiated")
-                        .font(.system(size: 36))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.bottom, 5)
-                    
-                    RecoveryExpirationCountDown(
-                        expiresAt: thisDeviceRecovery.expiresAt,
-                        onTimeout: cancelRecovery
-                    )
-                    .padding(.bottom, 10)
-                    
-                    Button {
-                        cancelRecovery()
-                    } label: {
-                        Text("Cancel Recovery")
-                            .font(.system(size: 18))
-                            .padding(.horizontal, 30)
-                            .padding(.vertical, 5)
+                        .tint(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .background(Color.Censo.darkBlue)
+            } else {
+                VStack {
+                    switch (recovery) {
+                    case .anotherDevice:
+                        Spacer()
+                        
+                        Text("Recovery Initiated On Another Device")
+                            .font(.system(size: 24))
                             .foregroundColor(.white)
-                    }
-                    .buttonStyle(BorderedButtonStyle(tint: .light))
-                    .padding(.bottom, 10)
-                    
-                    let approvalsCount = thisDeviceRecovery
-                        .approvals
-                        .filter({ $0.status == API.Recovery.ThisDevice.Approval.Status.approved })
-                        .count
-                    
-                    VStack {
-                        ZStack {
-                            HStack {
-                                Text("\(approvalsCount)")
-                                    .font(.system(size: 48))
-                                    .foregroundColor(.white)
-                                    .padding(.vertical, 10)
-                                    .padding(.leading, 30)
-                                
-                                VStack {
-                                    Spacer()
-                                    Text("of")
-                                        .font(.system(size: 26))
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        
+                        Spacer()
+                    case .thisDevice(let thisDeviceRecovery):
+                        Text("Recovery Initiated")
+                            .font(.system(size: 36))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.bottom, 5)
+                        
+                        RecoveryExpirationCountDown(
+                            expiresAt: thisDeviceRecovery.expiresAt,
+                            onTimeout: cancelRecovery
+                        )
+                        .padding(.bottom, 10)
+                        
+                        Button {
+                            cancelRecovery()
+                        } label: {
+                            Text("Cancel Recovery")
+                                .font(.system(size: 18))
+                                .padding(.horizontal, 30)
+                                .padding(.vertical, 5)
+                                .foregroundColor(.white)
+                        }
+                        .buttonStyle(BorderedButtonStyle(tint: .light))
+                        .padding(.bottom, 10)
+                        
+                        let approvalsCount = thisDeviceRecovery
+                            .approvals
+                            .filter({ $0.status == API.Recovery.ThisDevice.Approval.Status.approved })
+                            .count
+                        
+                        VStack {
+                            ZStack {
+                                HStack {
+                                    Text("\(approvalsCount)")
+                                        .font(.system(size: 48))
                                         .foregroundColor(.white)
                                         .padding(.vertical, 10)
-                                        .padding(.horizontal, 10)
+                                        .padding(.leading, 30)
+                                    
+                                    VStack {
+                                        Spacer()
+                                        Text("of")
+                                            .font(.system(size: 26))
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 10)
+                                    }
+                                    
+                                    Text("\(threshold)")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(.white)
+                                        .padding(.vertical, 10)
+                                        .padding(.trailing, 30)
                                 }
-                                
-                                Text("\(threshold)")
-                                    .font(.system(size: 48))
-                                    .foregroundColor(.white)
-                                    .padding(.vertical, 10)
-                                    .padding(.trailing, 30)
+                                .frame(height: 62)
                             }
-                            .frame(height: 62)
+                            .background {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.white.opacity(0.05))
+                            }
+                            
+                            Text("required approvals reached to complete recovery")
+                                .font(.system(size: 18))
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.center)
                         }
-                        .background {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(.white.opacity(0.05))
-                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.horizontal)
                         
-                        Text("required approvals reached to complete recovery")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .padding(.bottom, 20)
-                        
-                        Text("Tap the \(Image(systemName: "square.and.arrow.up")) icon next to each of your approvers to send them the recovery link")
-                            .font(.system(size: 16))
-                            .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.horizontal)
-                    
-                    List {
-                        ForEach(guardians, id:\.participantId) { guardian in
-                            if let approval = thisDeviceRecovery.approvals.first(where: { $0.participantId == guardian.participantId }) {
-                                RecoveryApproverRow(
+                        if thisDeviceRecovery.status == .requested {
+                            Text("Tap the \(Image(systemName: "square.and.arrow.up")) icon next to each of your approvers to send them the recovery link")
+                                .font(.system(size: 16))
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.top, 20)
+                            
+                            List {
+                                ForEach(guardians, id:\.participantId) { guardian in
+                                    if let approval = thisDeviceRecovery.approvals.first(where: { $0.participantId == guardian.participantId }) {
+                                        RecoveryApproverRow(
+                                            session: session,
+                                            guardian: guardian,
+                                            approval: approval,
+                                            reloadUser: reloadUser,
+                                            onOwnerStateUpdated: onOwnerStateUpdated
+                                        )
+                                    }
+                                }
+                            }
+                            .background(Color.Censo.darkBlue)
+                            .scrollContentBackground(.hidden)
+                        } else {
+                            Spacer()
+                            
+                            let isTimelocked = thisDeviceRecovery.status == .timelocked
+                            
+                            NavigationLink {
+                                RecoveredSecretsView(
                                     session: session,
-                                    guardian: guardian,
-                                    approval: approval,
-                                    reloadUser: reloadUser,
-                                    onOwnerStateUpdated: onOwnerStateUpdated
+                                    requestedSecrets: encryptedSecrets.filter {
+                                        thisDeviceRecovery.vaultSecretIds.contains($0.guid)
+                                    },
+                                    encryptedMasterKey: encryptedMasterKey,
+                                    deleteRecovery: cancelRecovery
                                 )
+                            } label: {
+                                Text("Access Seed Phrases")
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .frame(height: 44)
+                                    .foregroundColor(Color.Censo.darkBlue)
+                            }
+                            .padding(.horizontal)
+                            .buttonStyle(FilledButtonStyle(tint: .light))
+                            .disabled(isTimelocked)
+                            
+                            var formatter: DateComponentsFormatter {
+                                let formatter = DateComponentsFormatter()
+                                formatter.unitsStyle = .full
+                                formatter.zeroFormattingBehavior = .dropLeading
+                                formatter.allowedUnits = [.day, .hour, .minute]
+                                return formatter
+                            }
+                            let unlocksIn = thisDeviceRecovery.unlocksAt.timeIntervalSinceNow
+                            
+                            if isTimelocked {
+                                let formattedTime = unlocksIn >= 120 ? formatter.string(from: unlocksIn) : "under 2 minutes"
+                                Text(formattedTime != nil ? "Available in \(formattedTime!)" : "")
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.white)
                             }
                         }
+                        
+                        Spacer()
                     }
-                    .background(Color.Censo.darkBlue)
-                    .scrollContentBackground(.hidden)
-                    
-                    Spacer()
                 }
-            }
-            .frame(maxWidth: .infinity)
-            .frame(maxHeight: .infinity)
-            .background(Color.Censo.darkBlue)
-            .onReceive(remoteNotificationPublisher) { _ in
-                reloadUser()
-            }
-            .onReceive(refreshStatePublisher) { _ in
-                reloadUser()
-            }
-            .onDisappear() {
-                refreshStatePublisher.upstream.connect().cancel()
-            }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button {
-                    showingError = false
-                    error = nil
-                } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: .infinity)
+                .background(Color.Censo.darkBlue)
+                .onReceive(remoteNotificationPublisher) { _ in
+                    reloadUser()
+                }
+                .onReceive(refreshStatePublisher) { _ in
+                    reloadUser()
+                }
+                .onDisappear() {
+                    refreshStatePublisher.upstream.connect().cancel()
+                }
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button {
+                        showingError = false
+                        error = nil
+                    } label: { Text("OK") }
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
             }
         }
     }
@@ -260,6 +305,7 @@ struct RecoveryView_Previews: PreviewProvider {
             API.TrustedGuardian.sample5
         ]
         let today = Date()
+        let in2Minutes30seconds = Calendar.current.date(byAdding: .second, value: 120, to: today)
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
         
         LockedScreen(
@@ -272,6 +318,8 @@ struct RecoveryView_Previews: PreviewProvider {
                 session: .sample,
                 threshold: 2,
                 guardians: guardians,
+                encryptedSecrets: [],
+                encryptedMasterKey: Base64EncodedString(data: Data()),
                 recovery: .thisDevice(API.Recovery.ThisDevice(
                     guid: "recovery1",
                     status: API.Recovery.Status.requested,
@@ -299,7 +347,8 @@ struct RecoveryView_Previews: PreviewProvider {
                             participantId: guardians[4].participantId,
                             status: API.Recovery.ThisDevice.Approval.Status.rejected
                         )
-                    ]
+                    ],
+                    vaultSecretIds: []
                 )),
                 onOwnerStateUpdated: { _ in }
             )
@@ -315,6 +364,42 @@ struct RecoveryView_Previews: PreviewProvider {
                 session: .sample,
                 threshold: 2,
                 guardians: guardians,
+                encryptedSecrets: [],
+                encryptedMasterKey: Base64EncodedString(data: Data()),
+                recovery: .thisDevice(API.Recovery.ThisDevice(
+                    guid: "recovery1",
+                    status: API.Recovery.Status.timelocked,
+                    createdAt: today,
+                    unlocksAt: in2Minutes30seconds!,
+                    expiresAt: tomorrow!,
+                    approvals: [
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[0].participantId,
+                            status: API.Recovery.ThisDevice.Approval.Status.approved
+                        ),
+                        API.Recovery.ThisDevice.Approval(
+                            participantId: guardians[1].participantId,
+                            status: API.Recovery.ThisDevice.Approval.Status.approved
+                        ),
+                    ],
+                    vaultSecretIds: []
+                )),
+                onOwnerStateUpdated: { _ in }
+            )
+        }
+        
+        LockedScreen(
+            Session.sample,
+            600,
+            onOwnerStateUpdated: { _ in },
+            onUnlockedTimeOut: {}
+        ) {
+            RecoveryView(
+                session: .sample,
+                threshold: 2,
+                guardians: guardians,
+                encryptedSecrets: [],
+                encryptedMasterKey: Base64EncodedString(data: Data()),
                 recovery: .anotherDevice(API.Recovery.AnotherDevice(guid: "recovery1")),
                 onOwnerStateUpdated: { _ in }
             )

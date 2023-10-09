@@ -88,6 +88,8 @@ struct VaultHomeScreen: View {
                     session: session,
                     threshold: policy.threshold,
                     guardians: policy.guardians,
+                    encryptedSecrets: vault.secrets,
+                    encryptedMasterKey: policy.encryptedMasterKey,
                     recovery: policy.recovery!,
                     onOwnerStateUpdated: onOwnerStateUpdated
                 )
