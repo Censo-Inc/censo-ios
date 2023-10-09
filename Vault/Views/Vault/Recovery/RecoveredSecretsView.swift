@@ -8,11 +8,12 @@
 import Foundation
 import SwiftUI
 import Moya
-import BigInt
+import raygun4apple
 
 struct RecoveredSecretsView: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
+    @Environment(\.scenePhase) var scenePhase
     
     var session: Session
     var requestedSecrets: [API.VaultSecret]
@@ -37,42 +38,31 @@ struct RecoveredSecretsView: View {
         VStack {
             switch (status) {
             case .retrievingShards:
-                FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
-                    session: session,
-                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                        return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
-                            biometryVerificationId: biomentryVerificationId,
-                            biometryData: biometryData
-                        ))
-                    },
-                    onSuccess: { response in
-                        do {
-                            let points = try response.encryptedShards.map {
-                                let decryptedShard = try session.deviceKey.decrypt(data: $0.encryptedShard.data)
-                                return Point(
-                                    x: $0.participantId.bigInt,
-                                    y: BigInt(sign: .plus, magnitude: BigUInt(decryptedShard))
-                                    
-                                )
+                VStack {
+                    FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
+                        session: session,
+                        onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                            return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
+                                biometryVerificationId: biomentryVerificationId,
+                                biometryData: biometryData
+                            ))
+                        },
+                        onSuccess: { response in
+                            do {
+                                self.status = .showingSecrets(secrets: try recoverSecrets(response.encryptedShards))
+                            } catch {
+                                RaygunClient.sharedInstance().send(error: error, tags: ["Recovery"], customData: nil)
+                                self.error = CensoError.failedToDecryptSecrets
+                                self.showingError = true
                             }
-                            
-                            let intermediateKey = try EncryptionKey.generateFromPrivateKeyRaw(data: String(SecretSharerUtils.recoverSecret(shares: points), radix: 16).hexData()!)
-                            let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: encryptedMasterKey))
-                            self.status = .showingSecrets(
-                                secrets: try requestedSecrets.map {
-                                    RecoveredSecret(
-                                        label: $0.label,
-                                        secret: String(decoding: try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase), as: UTF8.self)
-                                    )
-                                }
-                            )
-                        } catch {
-                            print("Failed to decrypt secrets: \(error)")
-                            self.error = CensoError.failedToDecryptSecrets
-                            self.showingError = true
                         }
+                    )
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        BackButton()
                     }
-                )
+                }
             case .showingSecrets(let secrets):
                 List {
                     ForEach(secrets, id:\.label) { recoveredSecret in
@@ -86,16 +76,28 @@ struct RecoveredSecretsView: View {
                         }
                     }
                 }
+                
+                Button {
+                    dismissAndDeleteRecovery()
+                } label: {
+                    Text("Done Viewing")
+                        .font(.system(size: 18))
+                        .padding(.horizontal, 30)
+                        .padding(.vertical, 5)
+                        .foregroundColor(.white)
+                }
+                .buttonStyle(FilledButtonStyle(tint: .dark))
+                .padding(.top, 20)
+                .padding(.bottom, 10)
+                
+                Text("Accessing phrases again will require another recovery")
+                    .padding(.bottom, 20)
             }
         }
+        .background(Color.white)
         .navigationTitle(Text("Your seed phrases"))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
-            }
-        }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
                 dismiss()
@@ -103,9 +105,40 @@ struct RecoveredSecretsView: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .onDisappear {
-            deleteRecovery()
+        .onChange(of: scenePhase) { phase in
+            // dismiss the view if if app goes to background or user switches to another app
+            // this will allow them to access secrets without recovery, but will require a biometry
+            if phase == .inactive || phase == .background {
+                dismiss()
+            }
         }
+    }
+    
+    private func recoverSecrets(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) throws -> [RecoveredSecret] {
+        let points = try encryptedShards.map {
+            let decryptedShard = try session.deviceKey.decrypt(data: $0.encryptedShard.data)
+            return Point(
+                x: $0.participantId.bigInt,
+                y: decryptedShard.toPositiveBigInt()
+            )
+        }
+        
+        let intermediateKey = try EncryptionKey.generateFromPrivateKeyRaw(
+            data: SecretSharerUtils.recoverSecret(shares: points).magnitude.serialize().padded(toByteCount: 32)
+        )
+        let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: encryptedMasterKey))
+        
+        return try requestedSecrets.map {
+            RecoveredSecret(
+                label: $0.label,
+                secret: String(decoding: try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase), as: UTF8.self)
+            )
+        }
+    }
+    
+    private func dismissAndDeleteRecovery() {
+        dismiss()
+        deleteRecovery()
     }
 }
 

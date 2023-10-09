@@ -177,7 +177,7 @@ struct RecoveryView: View {
                             let unlocksIn = thisDeviceRecovery.unlocksAt.timeIntervalSinceNow
                             
                             if isTimelocked {
-                                let formattedTime = unlocksIn >= 120 ? formatter.string(from: unlocksIn) : "a few minutes"
+                                let formattedTime = unlocksIn >= 120 ? formatter.string(from: unlocksIn) : "under 2 minutes"
                                 Text(formattedTime != nil ? "Available in \(formattedTime!)" : "")
                                     .font(.system(size: 16))
                                     .foregroundStyle(.white)
