@@ -141,6 +141,8 @@
 		BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = BD6485342AC49EA300BC0B1B /* raygun4apple */; };
 		BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */; };
+		BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */; };
+		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		E4025C992AC6C8B5008FE3B8 /* VaultHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */; };
 		E4025C9B2AC6E019008FE3B8 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
 		E4025C9F2AC70184008FE3B8 /* RecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */; };
@@ -291,6 +293,8 @@
 		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
 		BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitation.swift; sourceTree = "<group>"; };
 		BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitVerification.swift; sourceTree = "<group>"; };
+		BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
+		BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultHomeScreen.swift; sourceTree = "<group>"; };
 		E4025C9A2AC6E019008FE3B8 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryView.swift; sourceTree = "<group>"; };
@@ -406,6 +410,7 @@
 		3D0C1E992A83B3CA00AB3A48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BDFE3C092AD5DB1D000C76D4 /* Welcome */,
 				E45A14542AC42E8200EDBC10 /* Vault */,
 				6CD6DAFA2ABC9C8500974035 /* Facetec */,
 				3D0C1E9B2A83B40E00AB3A48 /* ButtonStyles */,
@@ -442,6 +447,7 @@
 				3D0C1E892A83A8C400AB3A48 /* FilledButtonStyle.swift */,
 				3D8214662AC22D6E00AC2598 /* BorderedButtonStyle.swift */,
 				E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */,
+				BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */,
 			);
 			path = ButtonStyles;
 			sourceTree = "<group>";
@@ -632,6 +638,14 @@
 				3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */,
 			);
 			path = Facetec;
+			sourceTree = "<group>";
+		};
+		BDFE3C092AD5DB1D000C76D4 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */,
+			);
+			path = Welcome;
 			sourceTree = "<group>";
 		};
 		E4025C9C2AC6E223008FE3B8 /* SecretsManagement */ = {
@@ -877,6 +891,7 @@
 				3D8214722AC33F9700AC2598 /* SecurityPlanReview.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
+				BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */,
 				3D0C1EA52A83BDB000AB3A48 /* NewPhrase.swift in Sources */,
@@ -910,6 +925,7 @@
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */,
+				BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */,
 				E45A14562AC4309F00EDBC10 /* LockedScreen.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
