@@ -25,10 +25,7 @@ struct Owner: View {
         case .success(let ownerState):
             switch ownerState {
             case .initial:
-                ApproversSetup(
-                    session: session,
-                    onComplete: replaceOwnerState
-                )
+                Welcome(session: session)
             case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
                 OpenVault {
                     ApproversActivated(

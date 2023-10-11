@@ -20,13 +20,21 @@ struct Login: View {
 
     var body: some View {
         VStack {
-            Image("LogoColor")
+            Spacer()
+            Image("Logo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding(60)
+                .frame(width: 124)
 
-            Spacer()
-
+            Image("CensoText")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 208)
+            
+            Text("sensible crypto security")
+                .font(.system(size: 24, weight: .semibold))
+                .padding()
+            
             SignInWithAppleButton(.signIn) { request in
                 request.requestedScopes = []
             } onCompletion: { result in
@@ -48,8 +56,55 @@ struct Login: View {
                 }
             }
             .signInWithAppleButtonStyle(.black)
-            .frame(height: 44)
+            .frame(maxWidth: 322, maxHeight: 64)
+            .cornerRadius(100.0)
             .padding()
+            HStack {
+                Image(systemName: "info.circle")
+                Text("Why Apple ID?")
+                    .font(.system(size: 18, weight: .medium))
+            }
+            Spacer()
+            VStack {
+                HStack(alignment: .top) {
+                    VStack {
+                        Image("EyeSlash")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        Text("No personal info required, ever.")
+                            .font(.system(size: 14))
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    VStack {
+                        Image("Safe")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        Text("Multiple layers of authentication.")
+                            .font(.system(size: 14))
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                Divider()
+                    .padding()
+                HStack {
+                    Link(destination: URL(string: "https://censo.co/terms/")!, label: {
+                        Text("Terms")
+                            .padding()
+                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                            .tint(.black)
+                            .frame(width: .infinity)
+                    })
+                    Link(destination: URL(string: "https://censo.co/privacy/")!, label: {
+                        Text("Privacy")
+                            .padding()
+                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                            .tint(.black)
+                            .frame(width: .infinity)
+                    })
+                }
+            }.frame(height: 180)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button(role: .cancel, action: {}) {
