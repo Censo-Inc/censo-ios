@@ -32,7 +32,7 @@ struct Login: View {
                 .frame(width: 208)
             
             Text("sensible crypto security")
-                .font(.system(size: 24))
+                .font(.system(size: 24, weight: .semibold))
                 .padding()
             
             SignInWithAppleButton(.signIn) { request in
@@ -62,26 +62,25 @@ struct Login: View {
             HStack {
                 Image(systemName: "info.circle")
                 Text("Why Apple ID?")
+                    .font(.system(size: 18, weight: .medium))
             }
             Spacer()
             VStack {
                 HStack(alignment: .top) {
                     VStack {
-                        Image(systemName: "eye.slash")
+                        Image("EyeSlash")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 25)
-                        Text("No personal info required, ever")
+                        Text("No personal info required, ever.")
                             .font(.system(size: 14))
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)
                     VStack {
-                        Image(systemName: "lock.circle")
+                        Image("Safe")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 25)
-                        Text("Multiple layers of authentication")
+                        Text("Multiple layers of authentication.")
                             .font(.system(size: 14))
                             .multilineTextAlignment(.center)
                     }

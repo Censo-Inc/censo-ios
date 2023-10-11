@@ -18,22 +18,22 @@ struct Welcome: View {
         NavigationStack {
             Spacer()
             VStack(alignment: .leading) {
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 66)
-                Text("welcome to censo")
-                    .font(.system(size: 24))
+                Text("Welcome to Censo")
+                    .font(.system(size: 24, weight: .semibold))
                     .padding()
-                Text("We built Censo to be a secure way to safeguard your seed phrases.\n\nComplete setup in 2 steps:")
-                    .font(.system(size: 18))
+                Text("We built Censo to be a secure way to safeguard your seed phrases with multiple levels of security:")
+                    .font(.system(size: 18, weight: .medium))
                     .padding()
                 
                 VStack(alignment: .leading) {
+                    SetupStep(image: Image("Apple"), heading: "Authenticate privately", content: "Censo does not store your info.", completionText: "Authenticated")
                     SetupStep(
-                        logoName: "faceid", heading: "Scan your face", content: "Fortify your Censo account with a live, industry-leading face scan.")
+                        image: Image("FaceScan"), heading: "Scan your face", content: "Fortify your Censo account with an encrypted, 3rd-party-verified scan.")
                     SetupStep(
-                        logoName: "rectangle.and.pencil.and.ellipsis", heading: "Enter your seed phrase", content: "Add your seed phrase; Censo will shard & encrypt it for your eyes only")
+                        image: Image("PhraseEntry"), heading: "Enter your seed phrase", content: "Add your seed phrase; Censo will encrypt it for your eyes only.")
+                    Divider()
+                    SetupStep(image: Image("TwoPeople"), heading: "Optional: Add approvers", content: "To improve security, choose people to approve access.")
+                    Divider()
                 }
                 .padding()
                 
@@ -66,34 +66,44 @@ struct Welcome: View {
 }
 
 struct SetupStep: View {
-    var logoName: String
+    var image: Image
     var heading: String
     var content: String
+    var completionText: String?
     var body: some View {
         HStack(alignment: .center) {
             ZStack {
                 Rectangle()
                     .fill(.gray)
                     .opacity(0.3)
-                    .frame(width: 64, height: 64)
                     .cornerRadius(18)
-                Image(systemName: logoName)
-                    .resizable()
-                    .frame(width: 36, height: 36)
-            }
+                image
+            }.frame(width: 64, height: 64)
             VStack(alignment: .leading) {
                 Text(heading)
                     .font(.system(size: 18))
                     .fontWeight(.bold)
                     .padding(.horizontal)
+                    .padding(.vertical, -1)
                 Text(content)
                     .font(.system(size: 14))
                     .padding(.leading)
                     .padding(.top, 1)
+                switch (completionText) {
+                case .some(let text):
+                    Text("✓ " + text)
+                        .font(.system(size: 14))
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                        .padding(.leading)
+                        .padding(.top, 1)
+                case .none:
+                    EmptyView()
+                }
             }
             .frame(maxHeight: .infinity)
         }
-        .padding(.vertical)
+        .padding(.vertical, 4)
     }
 }
 
