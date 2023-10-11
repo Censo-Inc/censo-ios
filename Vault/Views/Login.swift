@@ -103,13 +103,6 @@ struct Login: View {
                             .tint(.black)
                             .frame(width: .infinity)
                     })
-                    Link(destination: URL(string: "https://censo.co/support/")!, label: {
-                        Text("Support")
-                            .padding()
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            .tint(.black)
-                            .frame(width: .infinity)
-                    })
                 }
             }.frame(height: 180)
         }
