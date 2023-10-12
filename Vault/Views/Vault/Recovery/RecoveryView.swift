@@ -308,102 +308,81 @@ struct RecoveryView_Previews: PreviewProvider {
         let in2Minutes30seconds = Calendar.current.date(byAdding: .second, value: 120, to: today)
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)
         
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            RecoveryView(
-                session: .sample,
-                threshold: 2,
-                guardians: guardians,
-                encryptedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                recovery: .thisDevice(API.Recovery.ThisDevice(
-                    guid: "recovery1",
-                    status: API.Recovery.Status.requested,
-                    createdAt: today,
-                    unlocksAt: tomorrow!,
-                    expiresAt: tomorrow!,
-                    approvals: [
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[0].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.initial
-                        ),
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[1].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.waitingForVerification
-                        ),
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[2].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.waitingForApproval
-                        ),
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[3].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.approved
-                        ),
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[4].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.rejected
-                        )
-                    ],
-                    vaultSecretIds: []
-                )),
-                onOwnerStateUpdated: { _ in }
-            )
-        }
+        RecoveryView(
+            session: .sample,
+            threshold: 2,
+            guardians: guardians,
+            encryptedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            recovery: .thisDevice(API.Recovery.ThisDevice(
+                guid: "recovery1",
+                status: API.Recovery.Status.requested,
+                createdAt: today,
+                unlocksAt: tomorrow!,
+                expiresAt: tomorrow!,
+                approvals: [
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[0].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.initial
+                    ),
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[1].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.waitingForVerification
+                    ),
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[2].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.waitingForApproval
+                    ),
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[3].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.approved
+                    ),
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[4].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.rejected
+                    )
+                ],
+                vaultSecretIds: []
+            )),
+            onOwnerStateUpdated: { _ in }
+        )
         
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            RecoveryView(
-                session: .sample,
-                threshold: 2,
-                guardians: guardians,
-                encryptedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                recovery: .thisDevice(API.Recovery.ThisDevice(
-                    guid: "recovery1",
-                    status: API.Recovery.Status.timelocked,
-                    createdAt: today,
-                    unlocksAt: in2Minutes30seconds!,
-                    expiresAt: tomorrow!,
-                    approvals: [
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[0].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.approved
-                        ),
-                        API.Recovery.ThisDevice.Approval(
-                            participantId: guardians[1].participantId,
-                            status: API.Recovery.ThisDevice.Approval.Status.approved
-                        ),
-                    ],
-                    vaultSecretIds: []
-                )),
-                onOwnerStateUpdated: { _ in }
-            )
-        }
+        RecoveryView(
+            session: .sample,
+            threshold: 2,
+            guardians: guardians,
+            encryptedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            recovery: .thisDevice(API.Recovery.ThisDevice(
+                guid: "recovery1",
+                status: API.Recovery.Status.timelocked,
+                createdAt: today,
+                unlocksAt: in2Minutes30seconds!,
+                expiresAt: tomorrow!,
+                approvals: [
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[0].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.approved
+                    ),
+                    API.Recovery.ThisDevice.Approval(
+                        participantId: guardians[1].participantId,
+                        status: API.Recovery.ThisDevice.Approval.Status.approved
+                    ),
+                ],
+                vaultSecretIds: []
+            )),
+            onOwnerStateUpdated: { _ in }
+        )
         
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            RecoveryView(
-                session: .sample,
-                threshold: 2,
-                guardians: guardians,
-                encryptedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                recovery: .anotherDevice(API.Recovery.AnotherDevice(guid: "recovery1")),
-                onOwnerStateUpdated: { _ in }
-            )
-        }
+        RecoveryView(
+            session: .sample,
+            threshold: 2,
+            guardians: guardians,
+            encryptedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            recovery: .anotherDevice(API.Recovery.AnotherDevice(guid: "recovery1")),
+            onOwnerStateUpdated: { _ in }
+        )
     }
 }
 #endif

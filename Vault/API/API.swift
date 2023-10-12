@@ -28,6 +28,7 @@ struct API {
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
         
         case unlock(UnlockApiRequest)
+        case prologUnlock
         case lock
         
         case storeSecret(StoreSecretApiRequest)
@@ -67,6 +68,8 @@ extension API: TargetType {
             return "v1/biometry-verifications/\(verificationId)/biometry"
         case .unlock:
             return "v1/unlock"
+        case .prologUnlock:
+            return "v1/unlock-prolongation"
         case .lock:
             return "v1/lock"
         case .storeSecret:
@@ -99,6 +102,7 @@ extension API: TargetType {
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
+             .prologUnlock,
              .lock,
              .storeSecret,
              .requestRecovery,
@@ -142,6 +146,8 @@ extension API: TargetType {
             )
         case .unlock(let request):
             return .requestJSONEncodable(request)
+        case .prologUnlock:
+            return .requestPlain
         case .lock:
             return .requestPlain
         case .storeSecret(let request):

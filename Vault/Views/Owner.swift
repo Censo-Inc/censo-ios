@@ -23,30 +23,34 @@ struct Owner: View {
         case .loading:
             ProgressView()
         case .success(let ownerState):
+            let ownerStateBinding = Binding<API.OwnerState>(
+                get: { ownerState },
+                set: { replaceOwnerState(newOwnerState: $0) }
+            )
             switch ownerState {
             case .initial:
                 Welcome(
                     session: session,
                     onComplete: replaceOwnerState
                 )
-            case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
-                OpenVault {
-                    ApproversActivated(
-                        session: session,
-                        guardianSetup: guardianSetup,
-                        onOwnerStateUpdate: replaceOwnerState
-                    )
-                }
             case .guardianSetup(let guardianSetup):
-                OpenVault {
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     ApproverActivation(
                         session: session,
                         guardianSetup: guardianSetup,
                         onOwnerStateUpdate: replaceOwnerState
                     )
                 }
+            case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                    ApproversActivated(
+                        session: session,
+                        guardianSetup: guardianSetup,
+                        onOwnerStateUpdate: replaceOwnerState
+                    )
+                }
             case .ready(let ready):
-                LockedScreen(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockedTimeOut: reload) {
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     VaultHomeScreen(
                         session: session,
                         policy: ready.policy,
@@ -69,6 +73,7 @@ struct Owner: View {
     }
     
     private func reload() {
+        print("reload")
         _ownerStateResource.reload(
             with: apiProvider,
             target: session.target(for: .user),

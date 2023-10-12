@@ -140,19 +140,12 @@ extension API.Vault {
 
 struct VaultHomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            VaultHomeScreen(
-                session: .sample,
-                policy: .sample,
-                vault: .sample,
-                onOwnerStateUpdated: { _ in }
-            )
-        }
+        VaultHomeScreen(
+            session: .sample,
+            policy: .sample,
+            vault: .sample,
+            onOwnerStateUpdated: { _ in }
+        )
     }
 }
 #endif

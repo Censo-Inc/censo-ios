@@ -255,5 +255,15 @@ extension API {
                 try ready.encode(to: encoder)
             }
         }
+        
+        var remainingUnlockedDuration: TimeInterval? {
+          get {
+              switch (self) {
+              case .initial: return nil
+              case .guardianSetup(let guardianSetup): return guardianSetup.unlockedForSeconds.map({ Double($0 )})
+              case .ready(let ready): return ready.unlockedForSeconds.map({ Double($0 )})
+              }
+          }
+        }
     }
 }
