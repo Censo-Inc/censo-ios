@@ -148,7 +148,6 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .deleteSecret:
             return .requestPlain
-            
         case .requestRecovery(let request):
             return .requestJSONEncodable(request)
         case .deleteRecovery:
@@ -167,7 +166,7 @@ extension API: TargetType {
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
             "X-Censo-App-Version": Bundle.main.shortVersionString,
-            "X-Censo-App-Identifer": Bundle.main.bundleIdentifier ?? "Unknown"
+            "X-Censo-App-Identifier": Bundle.main.bundleIdentifier ?? "Unknown"
         ]
     }
 }

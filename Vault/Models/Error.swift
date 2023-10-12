@@ -20,6 +20,8 @@ enum CensoError: Swift.Error {
     case failedToRecoverShard
     case verificationFailed
     case failedToDecryptSecrets
+    case failedToCreateApproverKey
+    case failedToRetrieveApproverKey
 }
 
 extension CensoError: LocalizedError {
@@ -49,6 +51,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("The code you entered is not correct.\nPlease try again", comment: "Verification failed")
         case .failedToDecryptSecrets:
             return NSLocalizedString("Cannot decrypt phrases", comment: "phrase decryption failed")
+        case .failedToCreateApproverKey:
+            return NSLocalizedString("Failed to generate and store your approver key", comment: "key storage")
+        case .failedToRetrieveApproverKey:
+            return NSLocalizedString("Failed to retrieve your approver key", comment: "key retrieval")
         }
     }
 }

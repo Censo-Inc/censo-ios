@@ -116,7 +116,10 @@ struct RecoveredSecretsView: View {
     
     private func recoverSecrets(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) throws -> [RecoveredSecret] {
         let points = try encryptedShards.map {
-            let decryptedShard = try session.deviceKey.decrypt(data: $0.encryptedShard.data)
+            
+            let decryptedShard = $0.isOwnerShard 
+                ? try decryptWithOwnerApproverKey($0)
+                : try session.deviceKey.decrypt(data: $0.encryptedShard.data)
             return Point(
                 x: $0.participantId.bigInt,
                 y: decryptedShard.toPositiveBigInt()
@@ -134,6 +137,13 @@ struct RecoveredSecretsView: View {
                 secret: String(decoding: try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase), as: UTF8.self)
             )
         }
+    }
+    
+    private func decryptWithOwnerApproverKey(_ encryptedShard: API.RetrieveRecoveryShardsApiResponse.EncryptedShard) throws -> Data {
+        guard let ownerApproverKey = encryptedShard.participantId.privateKey else {
+            throw CensoError.failedToRetrieveApproverKey
+        }
+        return try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)
     }
     
     private func dismissAndDeleteRecovery() {

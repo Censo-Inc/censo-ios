@@ -10,10 +10,9 @@ import SwiftUI
 struct Welcome: View {
     @Environment(\.apiProvider) var apiProvider
 
-    @RemoteResult<API.OwnerState, API> private var ownerStateResource
-
     var session: Session
-
+    var onComplete: (API.OwnerState) -> Void
+    
     var body: some View {
         NavigationStack {
             Spacer()
@@ -38,9 +37,9 @@ struct Welcome: View {
                 .padding()
                 
                 NavigationLink {
-                    ApproversSetup(
+                    InitialPlanSetup(
                         session: session,
-                        onComplete: replaceOwnerState
+                        onComplete: onComplete
                     )
                 } label: {
                     Text("Get started")
@@ -57,11 +56,6 @@ struct Welcome: View {
             }
             .padding()
         }
-    }
-    
-    
-    private func replaceOwnerState(newOwnerState: API.OwnerState) {
-        _ownerStateResource.replace(newOwnerState)
     }
 }
 
@@ -108,5 +102,5 @@ struct SetupStep: View {
 }
 
 #Preview {
-    Welcome(session: .sample)
+    Welcome(session: .sample, onComplete: {_ in })
 }

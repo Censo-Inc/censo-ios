@@ -46,7 +46,7 @@ extension API {
         struct ImplicitlyOwner: Encodable, Decodable {
             var participantId: ParticipantId
             var label: String
-            var guadianPublicKey: Base58EncodedPublicKey
+            var guardianPublicKey: Base58EncodedPublicKey
         }
 
         struct ExternalApprover: Encodable, Decodable {
@@ -182,6 +182,7 @@ extension API {
         struct EncryptedShard : Decodable {
             var participantId: ParticipantId
             var encryptedShard: Base64EncodedString
+            var isOwnerShard: Bool
         }
     }
 }

@@ -15,11 +15,11 @@ struct BackButton : View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "chevron.left")
+            Image(systemName: "xmark")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .font(.body.bold())
         }
     }
