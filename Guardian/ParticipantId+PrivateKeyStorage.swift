@@ -6,14 +6,18 @@
 //
 
 import Foundation
+import CryptoKit
 
 extension ParticipantId {
     func persistEncodedPrivateKey(encodedPrivateKey: String) {
         NSUbiquitousKeyValueStore.default.set(encodedPrivateKey, forKey: self.value)
     }
     
-    var privateKey: EncryptionKey? {
-        guard let x963KeyData = NSUbiquitousKeyValueStore.default.string(forKey: self.value)?.hexData(),
+    func privateKey(userIdentifier: String) -> EncryptionKey? {
+        let symmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
+
+        guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value)?.hexData(),
+              let x963KeyData = symmetricDecryption(ciphertext: encryptedKey, key: symmetricKey),
               let encryptionKey = try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData) else {
             return nil
         }
@@ -21,6 +25,9 @@ extension ParticipantId {
     }
 }
 
-func generateEncodedPrivateKey() -> String? {
-    return try? EncryptionKey.generateRandomKey().privateKeyX963().toHexString()
+func generateEncryptedPrivateKey(userIdentifier: String) -> String? {
+    return try? symmetricEncryption(
+        message: EncryptionKey.generateRandomKey().privateKeyX963(),
+        key: SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
+    ).toHexString()
 }

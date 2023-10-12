@@ -73,7 +73,7 @@ struct  OwnerVerification: View {
     private func confirmOrRejectOwner(participantId: ParticipantId, status: API.GuardianPhase.RecoveryConfirmation) {
         
         if (try? verifyOwnerSignature(participantId: participantId, status: status)) ?? false {
-            guard let guardianPrivateKey = participantId.privateKey,
+            guard let guardianPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
                   let guardianPublicKey = try? guardianPrivateKey.publicExternalRepresentation(),
                   guardianPublicKey == status.recoveryPublicKey else {
                 showError(CensoError.failedToRecoverPrivateKey)

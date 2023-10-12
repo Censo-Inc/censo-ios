@@ -92,7 +92,7 @@
 		6C0AF96C2ACCA908009A9B54 /* OwnerVerificationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF96B2ACCA908009A9B54 /* OwnerVerificationStatus.swift */; };
 		6C0AF96E2ACD90A5009A9B54 /* ApproverRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF96D2ACD90A5009A9B54 /* ApproverRouting.swift */; };
 		6C2092F62AD5F1FE0062AB71 /* InitialPlanSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2092F52AD5F1FE0062AB71 /* InitialPlanSetup.swift */; };
-		6C2092F72AD5F5BB0062AB71 /* TempKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF9662ACC7240009A9B54 /* TempKeyStorage.swift */; };
+		6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF9662ACC7240009A9B54 /* ParticipantId+PrivateKeyStorage.swift */; };
 		6C23727D2AC4A3600072E256 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C23727C2AC4A3600072E256 /* Error.swift */; };
 		6C23727F2AC4AA3F0072E256 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C23727C2AC4A3600072E256 /* Error.swift */; };
 		6C2372842AC4BF260072E256 /* FacetecError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2372832AC4BF260072E256 /* FacetecError.swift */; };
@@ -143,10 +143,14 @@
 		BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = BD6485342AC49EA300BC0B1B /* raygun4apple */; };
 		BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */; };
-		BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */; };
-		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		BDFE3C042AD05DC5000C76D4 /* EnsureICloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C032AD05DC5000C76D4 /* EnsureICloud.swift */; };
 		BDFE3C082AD08CF9000C76D4 /* EnsureICloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C032AD05DC5000C76D4 /* EnsureICloud.swift */; };
+		BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */; };
+		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
+		BDFE3C0F2AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */; };
+		BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */; };
+		BDFE3C132AD871C3000C76D4 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */; };
+		BDFE3C142AD872A2000C76D4 /* EncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */; };
 		E4025C992AC6C8B5008FE3B8 /* VaultHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */; };
 		E4025C9B2AC6E019008FE3B8 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
 		E4025C9F2AC70184008FE3B8 /* RecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */; };
@@ -298,11 +302,13 @@
 		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
 		BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitation.swift; sourceTree = "<group>"; };
 		BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitVerification.swift; sourceTree = "<group>"; };
-		BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
-		BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		BDFE3C032AD05DC5000C76D4 /* EnsureICloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnsureICloud.swift; sourceTree = "<group>"; };
 		BDFE3C062AD06177000C76D4 /* Vault.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Vault.entitlements; sourceTree = "<group>"; };
 		BDFE3C072AD06A46000C76D4 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
+		BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
+		BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
+		BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricEncryption.swift; sourceTree = "<group>"; };
+		BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionTests.swift; sourceTree = "<group>"; };
 		E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultHomeScreen.swift; sourceTree = "<group>"; };
 		E4025C9A2AC6E019008FE3B8 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryView.swift; sourceTree = "<group>"; };
@@ -594,6 +600,7 @@
 				6C65753B2AB3502E00E1D737 /* Base32.swift */,
 				6C65753D2AB388D700E1D737 /* TotpUtils.swift */,
 				E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */,
+				BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -622,6 +629,7 @@
 				6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */,
 				6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */,
 				6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */,
+				BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */,
 			);
 			path = VaultTests;
 			sourceTree = "<group>";
@@ -953,9 +961,10 @@
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				3D8214742AC3414F00AC2598 /* ThresholdSlider.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
-				6C2092F72AD5F5BB0062AB71 /* TempKeyStorage.swift in Sources */,
+				6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
+				BDFE3C0F2AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3DD3F5C62AD03BBE0059FEFA /* ApproverActivationRow.swift in Sources */,
@@ -991,6 +1000,7 @@
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
 				6C0AF9652ACC6722009A9B54 /* Base32.swift in Sources */,
 				BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */,
+				BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
 				6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */,
 				6C0AF96A2ACC93FE009A9B54 /* RotatingTotpPinView.swift in Sources */,
 				6CD6DAE82ABB4E8000974035 /* Guardian.swift in Sources */,
@@ -1034,9 +1044,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BDFE3C142AD872A2000C76D4 /* EncryptionTests.swift in Sources */,
 				6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */,
 				6CC60F982AA7D77E001A4454 /* EncryptionKeyTests.swift in Sources */,
 				6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */,
+				BDFE3C132AD871C3000C76D4 /* SymmetricEncryption.swift in Sources */,
 				6CFB21AC2AB8856800F06BA3 /* ValueWrapperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1623,7 +1635,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				API_BASE_URL = "https://staging.censo.dev";
+				API_BASE_URL = "http://192.168.1.4:9000";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

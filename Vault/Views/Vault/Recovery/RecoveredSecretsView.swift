@@ -140,7 +140,7 @@ struct RecoveredSecretsView: View {
     }
     
     private func decryptWithOwnerApproverKey(_ encryptedShard: API.RetrieveRecoveryShardsApiResponse.EncryptedShard) throws -> Data {
-        guard let ownerApproverKey = encryptedShard.participantId.privateKey else {
+        guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier) else {
             throw CensoError.failedToRetrieveApproverKey
         }
         return try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)

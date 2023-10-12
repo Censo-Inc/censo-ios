@@ -50,7 +50,7 @@ struct AcceptInvitation: View {
     private func acceptInvitation() {
         inProgress = true
         // (try to) create a private key for this guardianship
-        let encodedPrivateKey = generateEncodedPrivateKey()
+        let encodedPrivateKey = generateEncryptedPrivateKey(userIdentifier: session.userCredentials.userIdentifier)
         if (encodedPrivateKey == nil) {
             showError(CensoError.keyGenerationFailed)
         } else {
