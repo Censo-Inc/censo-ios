@@ -155,42 +155,28 @@ struct RecoveredSecretsView: View {
 #if DEBUG
 struct RecoveredSecretsView_Previews: PreviewProvider {
     static var previews: some View {
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            RecoveredSecretsView(
-                session: .sample,
-                requestedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                deleteRecovery: {},
-                status: RecoveredSecretsView.Status.showingSecrets(
-                    secrets: [
-                        RecoveredSecretsView.RecoveredSecret(label: "Secret 1", secret: "Secret Phrase 1"),
-                        RecoveredSecretsView.RecoveredSecret(label: "Secret 2", secret: "Secret Phrase 2"),
-                    ]
-                )
+        RecoveredSecretsView(
+            session: .sample,
+            requestedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            deleteRecovery: {},
+            status: RecoveredSecretsView.Status.showingSecrets(
+                secrets: [
+                    RecoveredSecretsView.RecoveredSecret(label: "Secret 1", secret: "Secret Phrase 1"),
+                    RecoveredSecretsView.RecoveredSecret(label: "Secret 2", secret: "Secret Phrase 2"),
+                ]
             )
-        }
+        )
         
-        LockedScreen(
-            Session.sample,
-            600,
-            onOwnerStateUpdated: { _ in },
-            onUnlockedTimeOut: {}
-        ) {
-            RecoveredSecretsView(
-                session: .sample,
-                requestedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                deleteRecovery: {},
-                status: RecoveredSecretsView.Status.retrievingShards,
-                showingError: true,
-                error: CensoError.failedToDecryptSecrets
-            )
-        }
+        RecoveredSecretsView(
+            session: .sample,
+            requestedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            deleteRecovery: {},
+            status: RecoveredSecretsView.Status.retrievingShards,
+            showingError: true,
+            error: CensoError.failedToDecryptSecrets
+        )
     }
 }
 #endif

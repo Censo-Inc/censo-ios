@@ -129,6 +129,10 @@ extension API {
         var scanResultBlob: String
     }
     
+    struct ProlongUnlockApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
     struct LockApiResponse: Decodable {
         var ownerState: OwnerState
     }

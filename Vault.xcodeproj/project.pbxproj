@@ -150,7 +150,7 @@
 		E4025C9F2AC70184008FE3B8 /* RecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */; };
 		E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
 		E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */; };
-		E45A14562AC4309F00EDBC10 /* LockedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* LockedScreen.swift */; };
+		E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */; };
 		E45A14582AC46F4C00EDBC10 /* AddSecretView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */; };
 		E4716FD42ACDD71C00BC2AA7 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
 		E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF194E2AC954E8006111B2 /* PinInputField.swift */; };
@@ -303,7 +303,7 @@
 		E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryView.swift; sourceTree = "<group>"; };
 		E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyleTint.swift; sourceTree = "<group>"; };
 		E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsListView.swift; sourceTree = "<group>"; };
-		E45A14552AC4309F00EDBC10 /* LockedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedScreen.swift; sourceTree = "<group>"; };
+		E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometryGatedScreen.swift; sourceTree = "<group>"; };
 		E45A14572AC46F4C00EDBC10 /* AddSecretView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSecretView.swift; sourceTree = "<group>"; };
 		E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeEntry.swift; sourceTree = "<group>"; };
 		E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryExpirationCountDown.swift; sourceTree = "<group>"; };
@@ -677,7 +677,7 @@
 			children = (
 				E4025C9C2AC6E223008FE3B8 /* SecretsManagement */,
 				E4025C9D2AC70157008FE3B8 /* Recovery */,
-				E45A14552AC4309F00EDBC10 /* LockedScreen.swift */,
+				E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */,
 				E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */,
 			);
 			path = Vault;
@@ -931,7 +931,7 @@
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */,
 				BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */,
-				E45A14562AC4309F00EDBC10 /* LockedScreen.swift in Sources */,
+				E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
 				3DD3F5C92AD03C1F0059FEFA /* PieSegment.swift in Sources */,

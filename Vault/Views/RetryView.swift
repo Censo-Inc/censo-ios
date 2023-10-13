@@ -25,7 +25,7 @@ struct RetryView: View {
                     .frame(width: 100)
                     .frame(height: 44)
             }
-            .buttonStyle(FilledButtonStyle())
+            .buttonStyle(RoundedButtonStyle(tint: .dark))
 
             Spacer()
         }

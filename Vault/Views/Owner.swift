@@ -23,30 +23,34 @@ struct Owner: View {
         case .loading:
             ProgressView()
         case .success(let ownerState):
+            let ownerStateBinding = Binding<API.OwnerState>(
+                get: { ownerState },
+                set: { replaceOwnerState(newOwnerState: $0) }
+            )
             switch ownerState {
             case .initial:
                 Welcome(
                     session: session,
                     onComplete: replaceOwnerState
                 )
-            case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
-                OpenVault {
-                    ApproversActivated(
-                        session: session,
-                        guardianSetup: guardianSetup,
-                        onOwnerStateUpdate: replaceOwnerState
-                    )
-                }
             case .guardianSetup(let guardianSetup):
-                OpenVault {
-                    ApproverActivation(
-                        session: session,
-                        guardianSetup: guardianSetup,
-                        onOwnerStateUpdate: replaceOwnerState
-                    )
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                    if !guardianSetup.guardians.allConfirmed {
+                        ApproverActivation(
+                            session: session,
+                            guardianSetup: guardianSetup,
+                            onOwnerStateUpdate: replaceOwnerState
+                        )
+                    } else {
+                        ApproversActivated(
+                            session: session,
+                            guardianSetup: guardianSetup,
+                            onOwnerStateUpdate: replaceOwnerState
+                        )
+                    }
                 }
             case .ready(let ready):
-                LockedScreen(session, ready.unlockedForSeconds, onOwnerStateUpdated: replaceOwnerState, onUnlockedTimeOut: reload) {
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     VaultHomeScreen(
                         session: session,
                         policy: ready.policy,
