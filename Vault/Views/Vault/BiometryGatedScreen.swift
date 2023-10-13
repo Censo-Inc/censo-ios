@@ -78,8 +78,10 @@ private struct UnlockedContentWrapper<Content: View>: View {
     @ViewBuilder var content: () -> Content
     
     @State private var timeRemaining: TimeInterval = 0
-    @State private var alertDismissed = false
-    @State private var prolongUnlockFailed = false
+    private let timeRemainingWhenProlongationPossible: TimeInterval = 180
+    
+    @State private var prolongationPromptDismissed = false
+    @State private var prolongationFailed = false
     
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -93,8 +95,12 @@ private struct UnlockedContentWrapper<Content: View>: View {
     }
     
     var body: some View {
-        let showAlert = Binding<Bool>(
-            get: { timeRemaining > 0 && timeRemaining <= 180 && !alertDismissed },
+        let showProlongationPrompt = Binding<Bool>(
+            get: {
+                timeRemaining > 0
+                && timeRemaining <= timeRemainingWhenProlongationPossible
+                && !prolongationPromptDismissed
+            },
             set: { _ in }
         )
         
@@ -108,35 +114,38 @@ private struct UnlockedContentWrapper<Content: View>: View {
             } else {
                 timeRemaining = locksAt.timeIntervalSinceNow
             }
+            if (prolongationPromptDismissed && timeRemaining > timeRemainingWhenProlongationPossible) {
+                prolongationPromptDismissed = false
+            }
         }
-        .alert("Extend session?", isPresented: showAlert, presenting: timeRemaining) { _ in
+        .alert("Extend session?", isPresented: showProlongationPrompt, presenting: timeRemaining) { _ in
             VStack {
                 Button("Extend") {
-                    alertDismissed = true
+                    prolongationPromptDismissed = true
                     prolongUnlock()
                 }
                 Button("Cancel", role: .cancel) {
-                    alertDismissed = true
+                    prolongationPromptDismissed = true
                 }
             }
         } message: { timeRemaining in
             let formattedTime = timeRemaining > 60 ? timeFormatter.string(from: timeRemaining)?.lowercased() ?? "a few minutes" : "under a minute"
             Text("For security, your session will expire in \(formattedTime)")
         }
-        .alert("Failed to extend session", isPresented: $prolongUnlockFailed) {
+        .alert("Failed to extend session", isPresented: $prolongationFailed) {
             Button("OK") {
-                prolongUnlockFailed = false
+                prolongationFailed = false
             }
         }
     }
     
     private func prolongUnlock() {
-        apiProvider.decodableRequest(with: session, endpoint: .prologUnlock) { (result: Result<API.ProlongUnlockApiResponse, MoyaError>) in
+        apiProvider.decodableRequest(with: session, endpoint: .prolongUnlock) { (result: Result<API.ProlongUnlockApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 ownerState = response.ownerState
             case .failure:
-                prolongUnlockFailed = true
+                prolongationFailed = true
             }
         }
     }

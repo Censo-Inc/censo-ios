@@ -35,19 +35,19 @@ struct Owner: View {
                 )
             case .guardianSetup(let guardianSetup):
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                    ApproverActivation(
-                        session: session,
-                        guardianSetup: guardianSetup,
-                        onOwnerStateUpdate: replaceOwnerState
-                    )
-                }
-            case .guardianSetup(let guardianSetup) where guardianSetup.guardians.allConfirmed:
-                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                    ApproversActivated(
-                        session: session,
-                        guardianSetup: guardianSetup,
-                        onOwnerStateUpdate: replaceOwnerState
-                    )
+                    if !guardianSetup.guardians.allConfirmed {
+                        ApproverActivation(
+                            session: session,
+                            guardianSetup: guardianSetup,
+                            onOwnerStateUpdate: replaceOwnerState
+                        )
+                    } else {
+                        ApproversActivated(
+                            session: session,
+                            guardianSetup: guardianSetup,
+                            onOwnerStateUpdate: replaceOwnerState
+                        )
+                    }
                 }
             case .ready(let ready):
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
@@ -73,7 +73,6 @@ struct Owner: View {
     }
     
     private func reload() {
-        print("reload")
         _ownerStateResource.reload(
             with: apiProvider,
             target: session.target(for: .user),
