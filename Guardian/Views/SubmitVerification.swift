@@ -78,27 +78,13 @@ struct SubmitVerification: View {
                 .frame(height: 200, alignment: .topLeading)
             
              Spacer()
-        }.onAppear {
-            // this should normally have been done when the AcceptInvitation API
-            // call completed, but in case the user exited the app before the
-            // response to that was received, we'll do it again here
-            if (guardianState.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier) == nil) {
-                let encodedPrivateKey = generateEncryptedPrivateKey(userIdentifier: session.userCredentials.userIdentifier)
-                if (encodedPrivateKey == nil) {
-                    showError(CensoError.keyGenerationFailed)
-                } else {
-                    guardianState.participantId.persistEncodedPrivateKey(
-                        encodedPrivateKey: encodedPrivateKey!
-                    )
-                }
-            }
         }
     }
     
     private func submitVerificaton(code: String) {
         
         let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-        guard let guardianKey = guardianState.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
+        guard let guardianKey = try? session.approverKey(participantId: guardianState.participantId),
               let codeBytes = code.data(using: .utf8),
               let timeMillisData = String(timeMillis).data(using: .utf8),
               let guardianPublicKey = try? guardianKey.publicExternalRepresentation(),

@@ -132,16 +132,9 @@ struct InitialPlanSetup: View {
         }
         .onAppear {
             do {
-                let userIdentifier = session.userCredentials.userIdentifier
-                let existingKey = participantId.privateKey(userIdentifier: userIdentifier)
-                if (existingKey == nil) {
-                    participantId.persistEncodedPrivateKey(encodedPrivateKey: generateEncryptedPrivateKey(userIdentifier: userIdentifier)!)
-                    guardianPublicKey = try participantId.privateKey(userIdentifier: userIdentifier)?.publicExternalRepresentation()
-                } else {
-                    guardianPublicKey = try existingKey?.publicExternalRepresentation()
-                }
+                guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
             } catch {
-                showError(CensoError.failedToCreateApproverKey)
+                showError(error)
             }
         }
     }

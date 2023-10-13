@@ -13,10 +13,10 @@ final class EncryptionTests: XCTestCase {
         let message = "Hello, World!"
         let encryptionKey = SymmetricKey(data: SHA256.hash(data: "user-identifier".data(using: .utf8)!))
 
-        let encryptedData = symmetricEncryption(message: message.data(using: .utf8)!, key: encryptionKey)
+        let encryptedData = try! encryptionKey.encrypt(message: message.data(using: .utf8)!)
         print("Encrypted Data: \(encryptedData.base64EncodedString())")
 
-        let decryptedData = symmetricDecryption(ciphertext: encryptedData, key: encryptionKey)
+        let decryptedData = try? encryptionKey.decrypt(ciphertext: encryptedData)
         XCTAssertNotNil(decryptedData)
         let decryptedMessage = String(data: decryptedData!, encoding: .utf8)
         XCTAssertNotNil(decryptedMessage)

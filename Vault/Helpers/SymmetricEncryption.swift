@@ -8,27 +8,34 @@
 import CryptoKit
 import Foundation
 
-
-private func randomData(count: Int) -> Data {
-    return Data((0..<count).map { _ in UInt8.random(in: .min ... .max) })
-}
-
-func symmetricEncryption(message: Data, key: SymmetricKey) -> Data {
-    do {
-        let nonce = try AES.GCM.Nonce(data: randomData(count: 12))
-        let sealedBox = try AES.GCM.seal(message, using: key, nonce: nonce)
-        return sealedBox.combined!
-    } catch {
-        fatalError("Encryption failed: \(error.localizedDescription)")
+extension SymmetricKey {
+    
+    private func randomData(count: Int) -> Data {
+        return Data((0..<count).map { _ in UInt8.random(in: .min ... .max) })
     }
-}
+    
+    func encrypt(message: Data) throws -> Data {
+        do {
+            let nonce = try AES.GCM.Nonce(data: randomData(count: 12))
+            let sealedBox = try AES.GCM.seal(message, using: self, nonce: nonce)
+            return sealedBox.combined!
+        } catch {
+            throw EncryptionError.encryptionFailed(message: error.localizedDescription)
+        }
+    }
+    
+    func decrypt(ciphertext: Data) throws -> Data? {
+        do {
+            let sealedBox = try AES.GCM.SealedBox(combined: ciphertext)
+            let decrypted = try AES.GCM.open(sealedBox, using: self)
+            return Data(decrypted)
+        } catch {
+            throw EncryptionError.decryptionFailed(message: error.localizedDescription)
+        }
+    }
 
-func symmetricDecryption(ciphertext: Data, key: SymmetricKey) -> Data? {
-    do {
-        let sealedBox = try AES.GCM.SealedBox(combined: ciphertext)
-        let decrypted = try AES.GCM.open(sealedBox, using: key)
-        return Data(decrypted)
-    } catch {
-        fatalError("Decryption failed: \(error.localizedDescription)")
+    enum EncryptionError: Error {
+        case encryptionFailed(message: String)
+        case decryptionFailed(message: String)
     }
 }

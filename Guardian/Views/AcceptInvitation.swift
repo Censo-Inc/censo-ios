@@ -49,20 +49,14 @@ struct AcceptInvitation: View {
     
     private func acceptInvitation() {
         inProgress = true
-        // (try to) create a private key for this guardianship
-        let encodedPrivateKey = generateEncryptedPrivateKey(userIdentifier: session.userCredentials.userIdentifier)
-        if (encodedPrivateKey == nil) {
-            showError(CensoError.keyGenerationFailed)
-        } else {
-            apiProvider.decodableRequest(with: session, endpoint: .acceptInvitation(invitationId)) { (result: Result<API.AcceptInvitationApiResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    inProgress = false
-                    response.guardianState.participantId.persistEncodedPrivateKey(encodedPrivateKey: encodedPrivateKey!)
-                    onSuccess(response.guardianState)
-                case .failure(let error):
-                    showError(error)
-                }
+        apiProvider.decodableRequest(with: session, endpoint: .acceptInvitation(invitationId)) { (result: Result<API.AcceptInvitationApiResponse, MoyaError>) in
+            switch result {
+            case .success(let response):
+                inProgress = false
+
+                onSuccess(response.guardianState)
+            case .failure(let error):
+                showError(error)
             }
         }
     }

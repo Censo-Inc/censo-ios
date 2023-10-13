@@ -17,7 +17,7 @@ extension ParticipantId {
         let symmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
 
         guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value)?.hexData(),
-              let x963KeyData = symmetricDecryption(ciphertext: encryptedKey, key: symmetricKey),
+              let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKey),
               let encryptionKey = try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData) else {
             return nil
         }
@@ -25,9 +25,13 @@ extension ParticipantId {
     }
 }
 
-func generateEncryptedPrivateKey(userIdentifier: String) -> String? {
-    return try? symmetricEncryption(
-        message: EncryptionKey.generateRandomKey().privateKeyX963(),
-        key: SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
-    ).toHexString()
+func generatePrivateKey() throws -> Data {
+    return try EncryptionKey.generateRandomKey().privateKeyX963()
 }
+
+func encryptPrivateKey(privateKey: Data, userIdentifier: String) -> String? {
+    return try? SymmetricKey(
+        data: SHA256.hash(data: userIdentifier.data(using: .utf8)!)
+    ).encrypt(message: privateKey).toHexString()
+}
+
