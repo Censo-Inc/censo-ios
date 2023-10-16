@@ -53,6 +53,7 @@ struct AcceptInvitation: View {
             switch result {
             case .success(let response):
                 inProgress = false
+
                 onSuccess(response.guardianState)
             case .failure(let error):
                 showError(error)

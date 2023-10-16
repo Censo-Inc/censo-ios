@@ -132,9 +132,9 @@ struct InitialPlanSetup: View {
         }
         .onAppear {
             do {
-                guardianPublicKey = try participantId.generateGuardianKey().publicExternalRepresentation()
+                guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
             } catch {
-                showError(CensoError.failedToCreateApproverKey)
+                showError(error)
             }
         }
     }
