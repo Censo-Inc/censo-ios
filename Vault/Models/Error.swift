@@ -22,7 +22,6 @@ enum CensoError: Swift.Error {
     case failedToDecryptSecrets
     case failedToCreateApproverKey
     case failedToRetrieveApproverKey
-    case keyGenerationFailed
 }
 
 extension CensoError: LocalizedError {
@@ -56,8 +55,6 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Failed to generate and store your approver key", comment: "key storage")
         case .failedToRetrieveApproverKey:
             return NSLocalizedString("Failed to retrieve your approver key", comment: "key retrieval")
-        case .keyGenerationFailed:
-            return NSLocalizedString("Unable to generate key.\nPlease try again", comment: "Key Generation failed")
         }
     }
 }
