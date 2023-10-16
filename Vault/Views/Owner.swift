@@ -33,6 +33,13 @@ struct Owner: View {
                     session: session,
                     onComplete: replaceOwnerState
                 )
+            case .ready(let ready) where ready.vault.secrets.isEmpty:
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                    FirstPhrase(
+                        ownerState: ready, session: session,
+                        onComplete: replaceOwnerState
+                    )
+                }
             case .guardianSetup(let guardianSetup):
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     if !guardianSetup.guardians.allConfirmed {
