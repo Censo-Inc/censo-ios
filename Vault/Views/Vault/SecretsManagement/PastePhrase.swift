@@ -24,63 +24,62 @@ struct PastePhrase: View {
     @State private var error: Error?
 
     var body: some View {
-        NavigationStack {
-            
-            VStack(alignment: .leading) {
-                Text("Paste your phrase")
-                    .font(.system(size: 24, weight: .semibold))
-                TextField(text: $phrase) {
-                    Text("cable solution media ...")
-                }
-                .textInputAutocapitalization(.never)
-                .padding()
-                
-                Text("Add a nickname")
-                    .font(.system(size: 24, weight: .semibold))
-                
-                Text("Give your seed phrase a nickname of your choice so you can identify it in the future.")
-                    .font(.system(size: 14))
-                    .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("This will be secured by your face scan and not shared with anyone.")
-                    .font(.system(size: 14))
-                    .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
-                    .fixedSize(horizontal: false, vertical: true)
-                TextField(text: $nickname) {
-                    Text("Enter a nickname...")
-                }
-                .textFieldStyle(.roundedBorder)
-                .padding()
-                
-                Button {
-                    storeSecret()
-                } label: {
-                    Text("Save")
-                        .padding()
-                }
-                .disabled(
-                    inProgress ||
-                    phrase.trimmingCharacters(in: .whitespaces).isEmpty ||
-                    nickname.trimmingCharacters(in: .whitespaces).isEmpty
-                )
-                .buttonStyle(RoundedButtonStyle())
-                .padding()
+        
+        VStack(alignment: .leading) {
+            Text("Paste your phrase")
+                .font(.system(size: 24, weight: .semibold))
+            TextField(text: $phrase) {
+                Text("cable solution media ...")
             }
+            .textInputAutocapitalization(.never)
             .padding()
-            .navigationTitle(Text("Paste Seed Phrase"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    BackButton()
-                }
+            
+            Text("Add a nickname")
+                .font(.system(size: 24, weight: .semibold))
+            
+            Text("Give your seed phrase a nickname of your choice so you can identify it in the future.")
+                .font(.system(size: 14))
+                .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+                .fixedSize(horizontal: false, vertical: true)
+            Text("This will be secured by your face scan and not shared with anyone.")
+                .font(.system(size: 14))
+                .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+                .fixedSize(horizontal: false, vertical: true)
+            TextField(text: $nickname) {
+                Text("Enter a nickname...")
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button { } label: { Text("OK") }
-            } message: { error in
-                Text("Failed to store phrase.\n\(error.localizedDescription)")
+            .textFieldStyle(.roundedBorder)
+            .padding()
+            
+            Button {
+                storeSecret()
+            } label: {
+                Text("Save")
+                    .padding()
+            }
+            .disabled(
+                inProgress ||
+                phrase.trimmingCharacters(in: .whitespaces).isEmpty ||
+                nickname.trimmingCharacters(in: .whitespaces).isEmpty
+            )
+            .buttonStyle(RoundedButtonStyle())
+            .padding()
+        }
+        .padding()
+        .navigationTitle(Text("Paste Seed Phrase"))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
             }
         }
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button { } label: { Text("OK") }
+        } message: { error in
+            Text("Failed to store phrase.\n\(error.localizedDescription)")
+        }
+    
     }
     
     private func storeSecret() {
