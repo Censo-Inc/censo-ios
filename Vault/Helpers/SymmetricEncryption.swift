@@ -20,7 +20,7 @@ extension SymmetricKey {
             let sealedBox = try AES.GCM.seal(message, using: self, nonce: nonce)
             return sealedBox.combined!
         } catch {
-            throw EncryptionError.encryptionFailed(message: error.localizedDescription)
+            throw error
         }
     }
     
@@ -30,12 +30,8 @@ extension SymmetricKey {
             let decrypted = try AES.GCM.open(sealedBox, using: self)
             return Data(decrypted)
         } catch {
-            throw EncryptionError.decryptionFailed(message: error.localizedDescription)
+            throw error
         }
     }
 
-    enum EncryptionError: Error {
-        case encryptionFailed(message: String)
-        case decryptionFailed(message: String)
-    }
 }
