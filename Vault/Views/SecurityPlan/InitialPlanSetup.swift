@@ -156,8 +156,10 @@ struct InitialPlanSetup: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationView {
         InitialPlanSetup(session: .sample, onComplete: {_ in})
     }
 }
+#endif

@@ -70,7 +70,8 @@ struct FirstPhrase: View {
     }
 }
 
-
+#if DEBUG
 #Preview {
     FirstPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample), session: .sample, onComplete: {_ in })
 }
+#endif

@@ -101,6 +101,8 @@ struct SetupStep: View {
     }
 }
 
+#if DEBUG
 #Preview {
     Welcome(session: .sample, onComplete: {_ in })
 }
+#endif

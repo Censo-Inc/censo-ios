@@ -144,6 +144,8 @@ struct PastePhrase: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PastePhrase(onComplete: {_ in}, session: .sample, ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample))
 }
+#endif
