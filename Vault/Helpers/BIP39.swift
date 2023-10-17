@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-enum BIP39Validation: Equatable {
+enum BIP39Error: Error, Equatable {
     case invalidWords(wordsByIndex: [Int: String])
     case tooShort
     case tooLong
@@ -16,8 +16,8 @@ enum BIP39Validation: Equatable {
     case invalidChecksum
 }
 
-extension BIP39Validation {
-    public var message: String {
+extension BIP39Error: CustomStringConvertible {
+    public var description: String {
         switch (self) {
         case .tooShort:
             return "Phrase must be at least 12 words long"
@@ -33,34 +33,38 @@ extension BIP39Validation {
     }
 }
 
-struct BIP39Validator {
-    var wordlist: [String]
-    init() {
-        if let path = Bundle.main.path(forResource: "bip39", ofType: "json") {
-            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
-            wordlist = try! JSONSerialization.jsonObject(with: data, options: []) as! [String]
-        } else {
-            wordlist = []
+fileprivate let wordlist: [String] = {
+    if let path = Bundle.main.path(forResource: "bip39", ofType: "json") {
+        let data = try? Data(contentsOf: URL(fileURLWithPath: path))
+        switch (data) {
+        case .none:
+            return []
+        case .some(let data):
+            return (try? JSONSerialization.jsonObject(with: data, options: []) as? [String]) ?? []
         }
+    } else {
+        return []
     }
+}()
 
+struct BIP39Validator {
     // Returns a byte with the MSB bits set
     private func getUpperMask(bits: UInt8) -> UInt8 {
        return (UInt8(UInt16(1 << bits) - 1)) << (8 - bits);
     }
 
-    func validateSeedPhrase(phrase: String) -> BIP39Validation? {
+    func validateSeedPhrase(phrase: String) throws {
         let normalizedPhrase = phrase.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let words = normalizedPhrase.split(separator: " ")
 
         if (words.count < 12) {
-            return .tooShort
+            throw BIP39Error.tooShort
         }
         if (words.count > 24) {
-            return .tooLong
+            throw BIP39Error.tooLong
         }
         if (!words.count.isMultiple(of: 3)) {
-            return .badLength
+            throw BIP39Error.badLength
         }
 
         // 1-of-2048 is 11 bits
@@ -80,7 +84,7 @@ struct BIP39Validator {
             }
         }
         if (!invalidWords.isEmpty) {
-            return .invalidWords(wordsByIndex: invalidWords)
+            throw BIP39Error.invalidWords(wordsByIndex: invalidWords)
         }
 
         // the layout of binaryPhrase is the entropy bits first followed by the checksum bits
@@ -91,10 +95,8 @@ struct BIP39Validator {
         let expectedChecksum = Data(SHA256.hash(data: entropyBinary ?? Data())).bytes.first! & getUpperMask(bits: UInt8(checksumBits))
 
         // Compare the calculated checksum with the expected checksum
-        if (checksumBinary == expectedChecksum) {
-            return nil
-        } else {
-            return .invalidChecksum
+        if (checksumBinary != expectedChecksum) {
+            throw BIP39Error.invalidChecksum
         }
     }
 }

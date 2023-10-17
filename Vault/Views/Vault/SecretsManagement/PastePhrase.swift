@@ -23,7 +23,7 @@ struct PastePhrase: View {
     @State private var showingError = false
     @State private var error: Error?
     @FocusState private var isPhraseFocused: Bool
-    @State private var phraseValidationError: BIP39Validation?
+    @State private var phraseValidationError: BIP39Error?
     let bip39Validator = BIP39Validator()
 
     var body: some View {
@@ -41,13 +41,17 @@ struct PastePhrase: View {
                     if (isFocused) {
                         phraseValidationError = nil
                     } else {
-                        phraseValidationError = bip39Validator.validateSeedPhrase(phrase: phrase)
+                        do {
+                            try bip39Validator.validateSeedPhrase(phrase: phrase)
+                        } catch let error as BIP39Error {
+                            phraseValidationError = error
+                        } catch {}
                     }
                 }
                 .textInputAutocapitalization(.never)
 
                 if (phraseValidationError != nil) {
-                    Text(phraseValidationError!.message).foregroundStyle(Color.red)
+                    Text(phraseValidationError!.description).foregroundStyle(Color.red)
                         .font(.system(size: 14, weight: .semibold))
                 } else {
                     Spacer()
