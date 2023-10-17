@@ -12,6 +12,7 @@ struct Owner: View {
     @Environment(\.apiProvider) var apiProvider
 
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
+    @State private var showApproversIntro = false
 
     var session: Session
 
@@ -37,7 +38,10 @@ struct Owner: View {
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     FirstPhrase(
                         ownerState: ready, session: session,
-                        onComplete: replaceOwnerState
+                        onComplete: { ownerState in
+                            showApproversIntro = true
+                            replaceOwnerState(newOwnerState: ownerState)
+                        }
                     )
                 }
             case .guardianSetup(let guardianSetup):
@@ -58,12 +62,23 @@ struct Owner: View {
                 }
             case .ready(let ready):
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                    VaultHomeScreen(
-                        session: session,
-                        policy: ready.policy,
-                        vault: ready.vault,
-                        onOwnerStateUpdated: replaceOwnerState
-                    )
+                    if showApproversIntro {
+                       ApproversIntro(
+                            ownerState: ownerStateBinding,
+                            onSkipped: {
+                                showApproversIntro = false
+                            }
+                        )
+                    } else {
+                        VaultHomeScreen(
+                            session: session,
+                            policy: ready.policy,
+                            vault: ready.vault,
+                            onOwnerStateUpdated: { _ in
+                                reload()
+                            }
+                        )
+                    }
                 }
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:

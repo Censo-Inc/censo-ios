@@ -20,6 +20,8 @@ struct VaultHomeScreen: View {
     @State private var recoveryRequestInProgress = false
     @State private var showingError = false
     @State private var error: Error?
+    @State private var resetRequested = false
+    @State private var resetInProgress = false
     
     var body: some View {
         if (recoveryRequestInProgress) {
@@ -30,7 +32,7 @@ struct VaultHomeScreen: View {
             }
             .frame(maxWidth: .infinity)
             .frame(maxHeight: .infinity)
-            .background(Color.Censo.darkBlue)
+            .background(Color.white)
         } else {
             if (policy.recovery == nil) {
                 NavigationStack {
@@ -39,7 +41,7 @@ struct VaultHomeScreen: View {
                         
                         Text("Your seed phrases are protected")
                             .font(.title2)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .frame(maxWidth: .infinity, alignment: .center)
                         
                         Spacer()
@@ -51,29 +53,76 @@ struct VaultHomeScreen: View {
                                 onOwnerStateUpdated: onOwnerStateUpdated
                             )
                         } label: {
-                            Text("Edit Seed Phrases")
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .frame(height: 44)
+                            HStack {
+                                Spacer()
+                                Image("PhraseEntry")
+                                    .frame(width: 36, height: 36)
+                                    .colorInvert()
+                                Text("Add seed phrases").padding()
+                                Spacer()
+                            }
                         }
                         .padding()
-                        .buttonStyle(BorderedButtonStyle(tint: .light))
+                        .buttonStyle(RoundedButtonStyle())
+                        .disabled(resetInProgress)
                         
                         VStack {
                             Button {
                                 requestRecovery()
                             } label: {
-                                Text("Recover Phrases")
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .frame(height: 44)
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "key")
+                                        .frame(width: 36, height: 36)
+                                    Text("Access phrases").padding()
+                                    Spacer()
+                                }
                             }
-                            .buttonStyle(FilledButtonStyle(tint: .light))
+                            .buttonStyle(RoundedButtonStyle())
+                            .disabled(resetInProgress)
+                        }.padding()
+                        
+                        
+                        if (policy.guardians.count <= 1) {
+                            VStack {
+                                Button {
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        Image("TwoPeopleWhite")
+                                            .frame(width: 36, height: 36)
+                                        Text("Invite approvers").padding()
+                                        Spacer()
+                                    }
+                                }
+                                .buttonStyle(RoundedButtonStyle())
+                                .disabled(resetInProgress)
+                            }.padding()
+                        }
+                        
+                        VStack {
+                            Button {
+                                resetRequested = true
+                            } label: {
+                                if resetInProgress {
+                                    ProgressView()
+                                } else {
+                                    HStack {
+                                        Spacer()
+                                        Image(systemName: "arrow.circlepath")
+                                            .frame(width: 36, height: 36)
+                                        Text("Reset User Data").padding()
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            .buttonStyle(RoundedButtonStyle())
                         }.padding()
                         
                         Spacer()
                     }
                     .frame(maxWidth: .infinity)
                     .frame(maxHeight: .infinity)
-                    .background(Color.Censo.darkBlue)
                     .alert("Error", isPresented: $showingError, presenting: error) { _ in
                         Button {
                             showingError = false
@@ -81,6 +130,15 @@ struct VaultHomeScreen: View {
                         } label: { Text("OK") }
                     } message: { error in
                         Text(error.localizedDescription)
+                    }
+                    .alert("Reset User", isPresented: $resetRequested) {
+                        Button {
+                            deleteUser()
+                        } label: { Text("Confirm") }
+                        Button {
+                        } label: { Text("Cancel") }
+                    } message: {
+                        Text("You are about to delete your user and associated data. This action cannot be reversed. \nAre you sure?")
                     }
                 }
             } else {
@@ -111,6 +169,20 @@ struct VaultHomeScreen: View {
                 self.error = error
             }
             self.recoveryRequestInProgress = false
+        }
+    }
+    
+    private func deleteUser() {
+        resetInProgress = true
+        apiProvider.request(with: session, endpoint: .deleteUser) { result in
+            resetInProgress = false
+            switch result {
+            case .success:
+                onOwnerStateUpdated(.initial)
+            case .failure(let error):
+                self.showingError = true
+                self.error = error
+            }
         }
     }
 }

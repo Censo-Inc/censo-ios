@@ -15,6 +15,7 @@ struct API {
 
     enum Endpoint {
         case user
+        case deleteUser
         case signIn(UserCredentials)
         case registerPushToken(String)
 
@@ -50,7 +51,8 @@ extension API: TargetType {
         switch endpoint {
         case .signIn:
             return "v1/sign-in"
-        case .user:
+        case .user,
+             .deleteUser:
             return "v1/user"
         case .createPolicy:
             return "v1/policies"
@@ -91,7 +93,7 @@ extension API: TargetType {
         switch endpoint {
         case .user:
             return .get
-        case .deleteSecret, .deleteRecovery:
+        case .deleteUser, .deleteSecret, .deleteRecovery:
             return .delete
         case .signIn,
              .registerPushToken,
@@ -115,6 +117,7 @@ extension API: TargetType {
     var task: Moya.Task {
         switch endpoint {
         case .user,
+             .deleteUser,
              .initBiometryVerification,
              .rejectGuardianVerification:
             return .requestPlain
