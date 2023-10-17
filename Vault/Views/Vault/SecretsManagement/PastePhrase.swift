@@ -22,16 +22,42 @@ struct PastePhrase: View {
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
+    @FocusState private var isPhraseFocused: Bool
+    @State private var phraseValidationError: BIP39Error?
+    let bip39Validator = BIP39Validator()
 
     var body: some View {
         
         VStack(alignment: .leading) {
             Text("Paste your phrase")
                 .font(.system(size: 24, weight: .semibold))
-            TextField(text: $phrase) {
-                Text("cable solution media ...")
+            VStack {
+                TextField(text: $phrase) {
+                    Text("cable solution media ...")
+                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($isPhraseFocused)
+                .onChange(of: isPhraseFocused) { isFocused in
+                    if (isFocused) {
+                        phraseValidationError = nil
+                    } else {
+                        do {
+                            try bip39Validator.validateSeedPhrase(phrase: phrase)
+                        } catch let error as BIP39Error {
+                            phraseValidationError = error
+                        } catch {}
+                    }
+                }
+                .textInputAutocapitalization(.never)
+
+                if (phraseValidationError != nil) {
+                    Text(phraseValidationError!.description).foregroundStyle(Color.red)
+                        .font(.system(size: 14, weight: .semibold))
+                } else {
+                    Spacer()
+                }
             }
-            .textInputAutocapitalization(.never)
+            .frame(height: 57)
             .padding()
             
             Text("Add a nickname")
@@ -59,6 +85,7 @@ struct PastePhrase: View {
             }
             .disabled(
                 inProgress ||
+                phraseValidationError != nil ||
                 phrase.trimmingCharacters(in: .whitespaces).isEmpty ||
                 nickname.trimmingCharacters(in: .whitespaces).isEmpty
             )
