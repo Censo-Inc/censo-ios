@@ -65,7 +65,6 @@ struct InitialPlanSetup: View {
                             .bold()
                         Text("Scan your face")
                             .font(.system(size: 24))
-                            //.padding(.bottom, 1)
                             .bold()
                     }
                     .padding()

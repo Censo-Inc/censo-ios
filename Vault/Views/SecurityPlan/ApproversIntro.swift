@@ -15,24 +15,26 @@ struct ApproversIntro: View {
         VStack(alignment: .leading) {
             
             Spacer()
-            VStack(alignment: .leading) {
-                Text("Step 3")
-                    .font(.system(size: 18))
-                    .padding(.bottom, 1)
-                    .bold()
-                Text("Invite trusted approvers")
-                    .font(.system(size: 24))
-                    .bold()
-            }
-            .padding()
+            Text("Optional: Increase security")
+                .font(.system(size: 18))
+                .padding([.bottom], 1)
+                .padding([.leading, .trailing], 32)
+                .bold()
+            Text("Invite trusted approvers")
+                .font(.system(size: 24))
+                .bold()
+                .padding([.leading, .trailing], 32)
+                .padding([.bottom], 12)
+        
+            Text("Invite up to two trusted approvers for an additional layer of security")
+                .font(.system(size: 14))
+                .padding([.bottom], 1)
+                .padding([.leading, .trailing], 32)
             
-            VStack(alignment: .leading) {
-                Text("Invite trusted approvers for an additional layer of security. They help you keep the key but can never unlock the door.")
-                    .font(.system(size: 14))
-                    .padding(.bottom, 1)
-                
-            }
-            .padding()
+            Text("You can use either your primary or your backup approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
+                .font(.system(size: 14))
+                .padding([.leading, .trailing], 32)
+                .padding([.bottom], 12)
             
             
             Button {
@@ -54,16 +56,9 @@ struct ApproversIntro: View {
             Button {
                 onSkipped()
             } label: {
-                HStack {
-                    Spacer()
-                    Text("Skip this step")
-                    Image("SkipForward")
-                        .resizable()
-                        .frame(width: 36, height: 36)
-                    Spacer()
-                }
+                Text("Skip this step")
             }
-            .buttonStyle(RoundedButtonStyle(tint: .gray95))
+            .buttonStyle(RoundedButtonStyle())
             .padding()
             .frame(maxWidth: .infinity)
             

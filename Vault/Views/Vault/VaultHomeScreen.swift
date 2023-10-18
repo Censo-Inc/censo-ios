@@ -109,7 +109,7 @@ struct VaultHomeScreen: View {
                                 } else {
                                     HStack {
                                         Spacer()
-                                        Image(systemName: "arrow.circlepath")
+                                        Image("arrow.circlepath")
                                             .frame(width: 36, height: 36)
                                         Text("Reset User Data").padding()
                                         Spacer()
