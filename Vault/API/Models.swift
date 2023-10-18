@@ -124,6 +124,7 @@ extension API {
         var guardianShards: [GuardianShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var signatureByPreviousIntermediateKey: Base64EncodedString
     }
     
     struct ReplacePolicyApiResponse: BiometryVerificationResponse {

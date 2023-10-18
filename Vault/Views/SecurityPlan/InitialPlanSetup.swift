@@ -19,28 +19,34 @@ struct InitialPlanSetup: View {
     @State private var showingError = false
     @State private var error: Error?
 
-    @State private var showingBiometry = false
-    @State private var guardianPublicKey: Base58EncodedPublicKey?
-    @State private var policySetupHelper: PolicySetupHelper?
+    struct CreatePolicyParams {
+        var guardianPublicKey: Base58EncodedPublicKey
+        var intermediatePublicKey: Base58EncodedPublicKey
+        var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var encryptedMasterPrivateKey: Base64EncodedString
+        var encryptedShard: Base64EncodedString
+    }
+    
+    @State private var createPolicyParams: CreatePolicyParams?
 
     var body: some View {
         VStack {
-            if showingBiometry {
+            if let createPolicyParams {
                 FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
                         .createPolicy(
                             API.CreatePolicyApiRequest(
-                                intermediatePublicKey: policySetupHelper!.intermediatePublicKey,
-                                encryptedMasterPrivateKey: policySetupHelper!.encryptedMasterPrivateKey,
-                                masterEncryptionPublicKey: policySetupHelper!.masterEncryptionPublicKey,
+                                intermediatePublicKey: createPolicyParams.intermediatePublicKey,
+                                encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
+                                masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
                                 participantId: participantId,
-                                encryptedShard: policySetupHelper!.guardians[0].encryptedShard,
-                                guardianPublicKey: guardianPublicKey!,
+                                encryptedShard: createPolicyParams.encryptedShard,
+                                guardianPublicKey: createPolicyParams.guardianPublicKey,
                                 biometryVerificationId: verificationId,
                                 biometryData: facetecBiometry
                             )
                         )
                 } onSuccess: { response in
-                    showingBiometry = false
+                    onComplete(response.ownerState)
                 }
             } else {
                 Spacer(minLength: 20)
@@ -77,7 +83,7 @@ struct InitialPlanSetup: View {
                     
                     
                     Button {
-                        showingBiometry = true
+                        startPolicyCreation()
                     } label: {
                         HStack {
                             Spacer()
@@ -91,7 +97,6 @@ struct InitialPlanSetup: View {
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .disabled(guardianPublicKey == nil)
                     
                     HStack {
                         Image(systemName: "info.circle")
@@ -111,33 +116,43 @@ struct InitialPlanSetup: View {
             }
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button { 
-                showingBiometry = false
+            Button {
+                showingError = false
+                error = nil
+                createPolicyParams = nil
             } label: {
                 Text("OK")
             }
         } message: { error in
             Text("There was an error submitting your info.\n\(error.localizedDescription)")
         }
-        .onAppear {
-            do {
-                guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
-                policySetupHelper = try PolicySetupHelper(
-                    threshold: 1,
-                    guardians: [(
-                        participantId,
-                        guardianPublicKey!
-                    )]
-                )
-            } catch {
-                showError(error)
-            }
-        }
     }
     
     private func showError(_ error: Error) {
         self.error = error
         self.showingError = true
+    }
+    
+    private func startPolicyCreation() {
+        do {
+            let guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
+            let policySetupHelper = try PolicySetupHelper(
+                threshold: 1,
+                guardians: [(
+                    participantId,
+                    guardianPublicKey
+                )]
+            )
+            createPolicyParams = CreatePolicyParams(
+                guardianPublicKey: guardianPublicKey,
+                intermediatePublicKey: policySetupHelper.intermediatePublicKey,
+                masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey,
+                encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
+                encryptedShard: policySetupHelper.guardians[0].encryptedShard
+            )
+        } catch {
+            showError(error)
+        }
     }
 }
 

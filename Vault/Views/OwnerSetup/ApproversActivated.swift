@@ -76,28 +76,36 @@ struct ApproversActivated: View {
         let guardianProspects = guardianSetup.guardians
 
         var policySetupHelper: PolicySetupHelper
+        var signatureByPreviousIntermediateKey: Base64EncodedString
         do {
             policySetupHelper = try PolicySetupHelper(
                 threshold: guardianSetup.threshold,
                 guardians: guardianProspects.map({($0.participantId, try getGuardianPublicKey(status: $0.status))})
             )
+            signatureByPreviousIntermediateKey = try Base64EncodedString(value: "")
         } catch {
             showError(error)
             return
         }
-        return apiProvider.decodableRequest(with: session, endpoint: .replacePolicy(
+        return apiProvider.decodableRequest(
+            with: session,
+            endpoint: .replacePolicy(
                 API.ReplacePolicyApiRequest(
                     intermediatePublicKey: policySetupHelper.intermediatePublicKey,
                     guardianShards: policySetupHelper.guardians,
                     encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
-                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey))) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                        switch result {
-                        case .success(let response):
-                            onOwnerStateUpdate(response.ownerState)
-                        case .failure(let error):
-                            showError(error)
-                        }
-                    }
+                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey,
+                    signatureByPreviousIntermediateKey: signatureByPreviousIntermediateKey
+                )
+            )
+        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            switch result {
+            case .success(let response):
+                onOwnerStateUpdate(response.ownerState)
+            case .failure(let error):
+                showError(error)
+            }
+        }
     }
 
     private func getGuardianPublicKey(status: API.GuardianStatus) throws -> Base58EncodedPublicKey {
