@@ -23,7 +23,7 @@ struct ApproverRouting: View {
                 onSuccess: onSuccess
             )
         case .onboard:
-            Guardian(
+            Onboarding(
                 inviteCode: inviteCode,
                 session: session,
                 onSuccess: onSuccess

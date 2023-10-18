@@ -9,20 +9,22 @@ import SwiftUI
 
 struct RoundedButtonStyle: ButtonStyle {
     var tint = ButtonStyleTint.dark
+    var maxWidth: CGFloat = 322
     
     func makeBody(configuration: ButtonStyle.Configuration) -> some View {
-        RoundedButton(configuration: configuration, tint: tint)
+        RoundedButton(configuration: configuration, tint: tint, maxWidth: maxWidth)
     }
 
     struct RoundedButton: View {
         let configuration: ButtonStyle.Configuration
         var tint: ButtonStyleTint
+        var maxWidth: CGFloat
         
         @Environment(\.isEnabled) private var isEnabled: Bool
 
         var body: some View {
             configuration.label
-                .frame(maxWidth: 322, maxHeight: 64)
+                .frame(maxWidth: maxWidth, maxHeight: 64)
                 .font(.system(size: 24, weight: .medium))
                 .foregroundColor(isEnabled ? tint.foregroundColor : tint.foregroundColor.opacity(0.35))
                 .background(isEnabled ? (configuration.isPressed ? tint.backgroundColor.opacity(0.7) : tint.backgroundColor) : tint.backgroundColor.opacity(0.5))

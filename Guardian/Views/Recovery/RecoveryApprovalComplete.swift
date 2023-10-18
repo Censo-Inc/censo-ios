@@ -14,26 +14,9 @@ struct RecoveryApprovalComplete: View {
     var body: some View {
         NavigationStack {
             
-            Text("Recovery Completed")
+            Text("Access Approved!")
                             .font(.title.bold())
                             .padding()
-            
-            InfoBoard {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-            }
-            .padding()
-            
-            Spacer()
-            
-            Button {
-                onSuccess()
-            } label: {
-                Text("Continue")
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .frame(height: 44)
-            }
-            .padding()
-            .buttonStyle(FilledButtonStyle())
         }
         .multilineTextAlignment(.center)
     }

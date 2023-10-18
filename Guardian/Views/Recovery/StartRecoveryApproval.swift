@@ -25,26 +25,10 @@ struct  StartRecoveryApproval: View {
     var body: some View {
         VStack {
             
-            Text("Start Recovery")
-            .font(.title.bold())
-            .padding()
+            Text("Seed phrase owner has requested access approval")
+                .font(.headline)
+                .padding()
             
-            InfoBoard {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-            }
-            .padding()
-            
-            Spacer()
-            
-            Button {
-                
-            } label: {
-                Text("How does this work?")
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .frame(height: 44)
-            }
-            .padding(.horizontal)
-            .buttonStyle(BorderedButtonStyle())
             
             Button {
                 startOwnerVerification(participantId: guardianState.participantId)
@@ -58,8 +42,9 @@ struct  StartRecoveryApproval: View {
                 }
             }
             .padding()
-            .buttonStyle(FilledButtonStyle())
+            .buttonStyle(RoundedButtonStyle(maxWidth: 160))
         }
+        .multilineTextAlignment(.center)
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { } label: { Text("OK") }
         } message: { error in

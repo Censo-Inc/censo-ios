@@ -56,6 +56,7 @@ struct RecoveryApproval: View {
                     )
                 case .complete:
                     RecoveryApprovalComplete(onSuccess: onSuccess)
+                        .navigationBarHidden(true) 
                         .onAppear {
                             refreshStatePublisher.upstream.connect().cancel()
                         }
@@ -70,7 +71,15 @@ struct RecoveryApproval: View {
                 RetryView(error: error, action: reload)
             }
         }
-        .navigationBarTitle("Recovery Approval", displayMode: .inline)
+        .multilineTextAlignment(.center)
+        .navigationTitle(Text(""))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
+            }
+        }
         .padding()
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel) {

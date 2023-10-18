@@ -24,61 +24,72 @@ struct SubmitVerification: View {
     let waitingForVerification = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        NavigationStack {
-            Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit")
-                .font(.title)
+        VStack {
+            Text("Become an approver")
+                .font(.system(size: 24, weight: .bold))
                 .padding()
-            Spacer()
-            VStack {
-                VerificationCodeEntry(pinInput: $verificationCode)
+            
+            switch guardianState.phase {
+            case .waitingForVerification:
+                ProgressView(
+                    label: {
+                        Text("Waiting for owner to verify the code.")
+                    }
+                ).onReceive(waitingForVerification) { firedDate in
+                    apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
+                        switch(result) {
+                        case .success(let user):
+                            onSuccess(user.guardianStates.forInvite(invitationId))
+                        case .failure:
+                            break
+                        }
+                    }
+                }
+            case .waitingForCode:
+                Text("Enter the 6-digit code from the seed phrase owner")
+                    .font(.system(size: 18, weight: .medium))
+                    .padding()
+                
+                VStack {
+                    VerificationCodeEntry(pinInput: $verificationCode)
                     .onChange(of: verificationCode) { _ in
                         if (verificationCode.count == 6) {
                             submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
                         }
                     }
-                    .disabled(
-                        !guardianState.phase.isWaitingForVerification
-                    )
-
-                if (currentError == nil) {
-                    switch guardianState.phase {
-                    case .waitingForVerification:
-                        ProgressView(
-                            label: {
-                                Text("Waiting for owner to verify the code.")
-                            }
-                        ).onReceive(waitingForVerification) { firedDate in
-                            apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
-                                switch(result) {
-                                case .success(let user):
-                                    onSuccess(user.guardianStates.forInvite(invitationId))
-                                case .failure:
-                                    break
-                                }
-                            }
-                        }
-                        
-                    case .verificationRejected:
-                        Text(CensoError.verificationFailed.localizedDescription)
-                            .bold()
-                            .foregroundColor(Color.red)
-                            .multilineTextAlignment(.center)
-                        
-                    default:
-                        EmptyView()
-                    }
-                } else {
-                    Text(currentError!.localizedDescription)
-                        .bold()
-                        .foregroundColor(Color.red)
-                        .multilineTextAlignment(.center)
                 }
                 
+            case .verificationRejected:
+                Text("Code not approved. Please send new verification code")
+                    .font(.system(size: 18, weight: .medium))
+                    .padding()
+                
+                VStack {
+                    VerificationCodeEntry(pinInput: $verificationCode)
+                    .onChange(of: verificationCode) { _ in
+                        if (verificationCode.count == 6) {
+                            submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
+                        }
+                    }
+                }
+                
+                Text(CensoError.verificationFailed.localizedDescription)
+                    .bold()
+                    .foregroundColor(Color.red)
+                    .multilineTextAlignment(.center)
+                
+            default:
+                EmptyView()
             }
-                .frame(height: 200, alignment: .topLeading)
-            
-             Spacer()
+
+            if (currentError != nil) {
+                Text(currentError!.localizedDescription)
+                    .bold()
+                    .foregroundColor(Color.red)
+                    .multilineTextAlignment(.center)
+            }
         }
+        .multilineTextAlignment(.center)
     }
     
     private func submitVerificaton(code: String) {

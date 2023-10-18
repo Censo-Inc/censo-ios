@@ -23,26 +23,26 @@ struct  OwnerVerification: View {
     var onSuccess: () -> Void
     
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             
-            InfoBoard {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-            }
-            .padding()
-            
-            Spacer()
+            Text("Tell seed phrase owner this 6-digit code to approve their access")
+                .font(.headline)
+                .padding()
             
             switch (guardianState.phase) {
             case .recoveryVerification(let phase):
-                OwnerVerificationStatus(status: "Awaiting Code") {
-                    RotatingTotpPinView(
-                        session: session,
-                        deviceEncryptedTotpSecret: phase.encryptedTotpSecret)
-                }
+                RotatingTotpPinView(
+                    session: session,
+                    deviceEncryptedTotpSecret: phase.encryptedTotpSecret
+                )
+                .frame(width: .infinity, height: 64)
             case .recoveryConfirmation(let status):
-                OwnerVerificationStatus(status: "Code Submitted") {
-                    ProgressView()
-                }.onAppear {
+                RotatingTotpPinView(
+                    session: session,
+                    deviceEncryptedTotpSecret: status.encryptedTotpSecret
+                )
+                .frame(width: .infinity, height: 64)
+                .onAppear {
                     confirmOrRejectOwner(
                         participantId: guardianState.participantId,
                         status: status
@@ -51,11 +51,8 @@ struct  OwnerVerification: View {
             default:
                 EmptyView()
             }
-            
-            Spacer()
-                
-                
         }
+        .multilineTextAlignment(.center)
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { } label: { Text("OK") }
         } message: { error in

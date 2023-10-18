@@ -17,7 +17,7 @@ class PinInput: UIControl {
             label.adjustsFontSizeToFitWidth = true
             label.textAlignment = .center
             label.text = " "
-            label.textColor = .blue
+            label.textColor = .black
             return label
         }()
 

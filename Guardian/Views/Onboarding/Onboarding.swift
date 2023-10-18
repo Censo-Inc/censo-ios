@@ -8,7 +8,7 @@
 import SwiftUI
 import Moya
 
-struct Guardian: View {
+struct Onboarding: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
 
@@ -28,7 +28,7 @@ struct Guardian: View {
     var onSuccess: () -> Void
 
     var body: some View {
-        VStack {
+        NavigationStack {
             
             switch user {
             case .idle:
@@ -51,24 +51,7 @@ struct Guardian: View {
                         onSuccess: {newState in guardianState = newState}
                     )
                 case .complete:
-                    VStack {
-                        List {
-                            Text("Congratulations!!")
-                                .frame(maxWidth: .infinity)
-                            Text("You have completed onboarding.")
-                                .frame(maxWidth: .infinity)
-                            Text("You may close the app now.")
-                                .frame(maxWidth: .infinity)
-                        }.multilineTextAlignment(.center)
-                        Button {
-                            onSuccess()
-                        } label: {
-                            Text("OK")
-                                .frame(maxWidth: .infinity, minHeight: 44)
-                                .frame(height: 44)
-                        }
-                        .buttonStyle(FilledButtonStyle())
-                    }
+                    Onboarded().navigationBarHidden(true) 
                 default:
                     EmptyView()
                 }
@@ -81,8 +64,14 @@ struct Guardian: View {
             }
         }
         .multilineTextAlignment(.center)
-        .navigationTitle(Text("Become an Approver"))
+        .navigationTitle(Text(""))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
+            }
+        }
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel) {
                 dismiss()

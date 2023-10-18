@@ -11,7 +11,7 @@ struct PinInputField: UIViewRepresentable {
     @Binding var value: [Int]
 
     var length: Int
-    var foregroundColor: Color = .Censo.darkBlue
+    var foregroundColor: Color = .black
     var unfocusedColor: Color = .gray.opacity(0.5)
 
     func makeUIView(context: Context) -> PinInput {

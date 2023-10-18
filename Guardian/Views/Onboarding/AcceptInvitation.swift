@@ -17,17 +17,17 @@ struct AcceptInvitation: View {
     @State private var inProgress = false
     @State private var showingError = false
     @State private var currentError: Error?
+    @State private var showCancelAlert = false
     var session: Session
 
     var onSuccess: (API.GuardianState?) -> Void
 
     var body: some View {
-        NavigationStack {
-            InfoBoard {
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-            }
-            .padding()
-            Spacer()
+        VStack {
+            
+            Text("You have been invited to become an approver!")
+                .padding()
+                .font(.headline)
             
             Button {
                 acceptInvitation()
@@ -36,14 +36,43 @@ struct AcceptInvitation: View {
                     ProgressView()
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
-                    Text("Get Started")
+                    Text("Accept Invitation")
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .frame(height: 44)
                 }
             }
             .padding()
-            .buttonStyle(FilledButtonStyle())
+            .buttonStyle(RoundedButtonStyle(maxWidth: 244))
             .disabled(inProgress)
+            
+            Button {
+               showCancelAlert = true
+            } label: {
+                Text("Close")
+            }
+            .padding()
+        }
+        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
+            Button { } label: { Text("OK") }
+        } message: { error in
+            Text(error.localizedDescription)
+        }
+        .alert("", isPresented: $showCancelAlert) {
+            Button("Yes", role: .cancel) {
+                dismiss()
+            }
+            Button("No") {}
+        } message: {
+            Text("Do you really want to cancel?")
+        }
+        .multilineTextAlignment(.center)
+        .navigationTitle(Text(""))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
+            }
         }
     }
     
@@ -72,9 +101,11 @@ struct AcceptInvitation: View {
 
 #if DEBUG
 #Preview {
-    AcceptInvitation(
-        invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g",
-        session: .sample, onSuccess: {_ in })
+    NavigationView {
+        AcceptInvitation(
+            invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g",
+            session: .sample, onSuccess: {_ in })
+    }
 }
 
 extension Session {

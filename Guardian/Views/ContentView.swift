@@ -20,11 +20,12 @@ struct ContentView: View {
     @State private var isPresented = false
     
     var body: some View {
-        EnsureICloud {
-            NavigationStack {
-                GuardianHome(identifier: $identifier, onValidateIdentifier: checkIdentifier)
-                    .navigationDestination(isPresented: $isPresented, destination: {
-                        Authentication { session in
+        NavigationStack {
+            Authentication { session in
+                GuardianHome()
+                    .navigationDestination(
+                        isPresented: $isPresented,
+                        destination: {
                             ApproverRouting(
                                 inviteCode: $identifier,
                                 participantId: $participantId,
@@ -35,7 +36,7 @@ struct ContentView: View {
                                 }
                             )
                         }
-                    })
+                    )
             }
             .onOpenURL(perform: openURL)
             .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
