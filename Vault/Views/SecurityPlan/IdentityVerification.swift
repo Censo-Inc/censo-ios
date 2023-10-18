@@ -6,29 +6,22 @@
 //
 
 import SwiftUI
+import Moya
 
 struct InitialIdentityVerification: View {
+    @Environment(\.apiProvider) var apiProvider
     var threshold: Int
     var guardians: [API.GuardianSetup]
     var session: Session
     var onSuccess: (API.OwnerState) -> Void
 
-    @State private var showingBiometry = false
+    @State private var inProgress = false
+    @State private var showingError = false
+    @State private var error: Error?
 
     var body: some View {
-        if showingBiometry {
-            FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
-                    .setupPolicy(
-                        API.SetupPolicyApiRequest(
-                            threshold: threshold,
-                            guardians: guardians,
-                            biometryVerificationId: verificationId,
-                            biometryData: facetecBiometry
-                        )
-                    )
-            } onSuccess: { response in
-                onSuccess(response.ownerState)
-            }
+        if inProgress {
+            ProgressView()
         } else {
             VStack {
                 Text("Establish your identity")
@@ -47,9 +40,7 @@ struct InitialIdentityVerification: View {
 
                 Spacer()
 
-
                 Button {
-
                 } label: {
                     Text("How does this work?")
                         .frame(maxWidth: .infinity, minHeight: 44)
@@ -59,7 +50,7 @@ struct InitialIdentityVerification: View {
                 .buttonStyle(BorderedButtonStyle())
 
                 Button {
-                    showingBiometry = true
+                    setupPolicy()
                 } label: {
                     Text("Continue")
                         .frame(maxWidth: .infinity, minHeight: 44)
@@ -69,6 +60,39 @@ struct InitialIdentityVerification: View {
                 .buttonStyle(FilledButtonStyle())
             }
             .multilineTextAlignment(.center)
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button {
+                    showingError = false
+                    error = nil
+                } label: {
+                    Text("OK")
+                }
+            } message: { error in
+                Text("There was an error submitting your info.\n\(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func showError(_ error: Error) {
+        inProgress = false
+
+        self.error = error
+        self.showingError = true
+    }
+    
+    private func setupPolicy() {
+        self.inProgress = true
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .setupPolicy(API.SetupPolicyApiRequest( threshold: threshold, guardians: guardians))
+        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            switch result {
+            case .success(let response):
+                onSuccess(response.ownerState)
+                self.inProgress = false
+            case .failure(let error):
+                showError(error)
+            }
         }
     }
 }

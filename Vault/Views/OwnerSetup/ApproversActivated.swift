@@ -85,8 +85,8 @@ struct ApproversActivated: View {
             showError(error)
             return
         }
-        return apiProvider.decodableRequest(with: session, endpoint: .createPolicy(
-                API.CreatePolicyApiRequest(
+        return apiProvider.decodableRequest(with: session, endpoint: .replacePolicy(
+                API.ReplacePolicyApiRequest(
                     intermediatePublicKey: policySetupHelper.intermediatePublicKey,
                     guardianShards: policySetupHelper.guardians,
                     encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,

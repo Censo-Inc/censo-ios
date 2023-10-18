@@ -9,7 +9,6 @@ import SwiftUI
 import Moya
 
 struct InitialPlanSetup: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
     var session: Session
@@ -17,41 +16,32 @@ struct InitialPlanSetup: View {
     
     var participantId: ParticipantId = .random()
     
-    @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
 
     @State private var showingBiometry = false
-    @State private var creatingPolicy = false
     @State private var guardianPublicKey: Base58EncodedPublicKey?
+    @State private var policySetupHelper: PolicySetupHelper?
 
     var body: some View {
         VStack {
             if showingBiometry {
                 FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
-                        .setupPolicy(
-                            API.SetupPolicyApiRequest(
-                                threshold: 1,
-                                guardians: [
-                                    .implicitlyOwner(
-                                        API.GuardianSetup.ImplicitlyOwner(
-                                            participantId: participantId,
-                                            label: "Me",
-                                            guardianPublicKey: guardianPublicKey!
-                                        )
-                                    )
-                                ],
+                        .createPolicy(
+                            API.CreatePolicyApiRequest(
+                                intermediatePublicKey: policySetupHelper!.intermediatePublicKey,
+                                encryptedMasterPrivateKey: policySetupHelper!.encryptedMasterPrivateKey,
+                                masterEncryptionPublicKey: policySetupHelper!.masterEncryptionPublicKey,
+                                participantId: participantId,
+                                encryptedShard: policySetupHelper!.guardians[0].encryptedShard,
+                                guardianPublicKey: guardianPublicKey!,
                                 biometryVerificationId: verificationId,
                                 biometryData: facetecBiometry
                             )
                         )
                 } onSuccess: { response in
                     showingBiometry = false
-                    creatingPolicy = true
-                    createPolicy()
                 }
-            } else if creatingPolicy {
-                ProgressView("Creating Policy")
             } else {
                 Spacer(minLength: 20)
                 Image("LargeFaceScan")
@@ -123,7 +113,6 @@ struct InitialPlanSetup: View {
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { 
                 showingBiometry = false
-                creatingPolicy = false
             } label: {
                 Text("OK")
             }
@@ -133,6 +122,13 @@ struct InitialPlanSetup: View {
         .onAppear {
             do {
                 guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
+                policySetupHelper = try PolicySetupHelper(
+                    threshold: 1,
+                    guardians: [(
+                        participantId,
+                        guardianPublicKey!
+                    )]
+                )
             } catch {
                 showError(error)
             }
@@ -140,40 +136,8 @@ struct InitialPlanSetup: View {
     }
     
     private func showError(_ error: Error) {
-        inProgress = false
-
         self.error = error
         self.showingError = true
-    }
-    
-    private func createPolicy() {
-
-        var policySetupHelper: PolicySetupHelper
-        do {
-            policySetupHelper = try PolicySetupHelper(
-                threshold: 1,
-                guardians: [(
-                    participantId,
-                    guardianPublicKey!
-                )]
-            )
-        } catch {
-            showError(error)
-            return
-        }
-        return apiProvider.decodableRequest(with: session, endpoint: .createPolicy(
-                API.CreatePolicyApiRequest(
-                    intermediatePublicKey: policySetupHelper.intermediatePublicKey,
-                    guardianShards: policySetupHelper.guardians,
-                    encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
-                    masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey))) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                        switch result {
-                        case .success(let response):
-                            onComplete(response.ownerState)
-                        case .failure(let error):
-                            showError(error)
-                        }
-                    }
     }
 }
 
