@@ -10,10 +10,8 @@ import Moya
 
 struct ContentView: View {
     var body: some View {
-        EnsureICloud {
-            Authentication { session in
-                Owner(session: session)
-            }
+        Authentication { session in
+            Owner(session: session)
         }
     }
 }
