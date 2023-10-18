@@ -94,21 +94,40 @@ extension API {
         var ownerState: OwnerState
     }
 
-    struct SetupPolicyApiRequest: Encodable {
-        var threshold: Int
-        var guardians: [GuardianSetup]
+    struct CreatePolicyApiRequest: Encodable {
+        var intermediatePublicKey: Base58EncodedPublicKey
+        var encryptedMasterPrivateKey: Base64EncodedString
+        var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var participantId: ParticipantId
+        var encryptedShard: Base64EncodedString
+        var guardianPublicKey: Base58EncodedPublicKey
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
 
-    struct CreatePolicyApiRequest: Encodable {
+    struct CreatePolicyApiResponse: BiometryVerificationResponse {
+        var ownerState: OwnerState
+        var scanResultBlob: String
+    }
+    
+    struct SetupPolicyApiRequest: Encodable {
+        var threshold: Int
+        var guardians: [GuardianSetup]
+    }
+    
+    struct SetupPolicyApiResponse {
+        var ownerState: OwnerState
+    }
+
+    struct ReplacePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
         var guardianShards: [GuardianShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var signatureByPreviousIntermediateKey: Base64EncodedString
     }
-
-    struct CreatePolicyApiResponse: BiometryVerificationResponse {
+    
+    struct ReplacePolicyApiResponse: BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
     }

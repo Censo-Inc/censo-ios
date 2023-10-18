@@ -24,6 +24,7 @@ struct API {
 
         case createPolicy(CreatePolicyApiRequest)
         case setupPolicy(SetupPolicyApiRequest)
+        case replacePolicy(ReplacePolicyApiRequest)
 
         case initBiometryVerification
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
@@ -55,9 +56,11 @@ extension API: TargetType {
              .deleteUser:
             return "v1/user"
         case .createPolicy:
-            return "v1/policies"
+            return "v1/policy"
         case .setupPolicy:
             return "v1/policy-setup"
+        case .replacePolicy:
+            return "v1/policy"
         case .confirmGuardian(let request):
             return "v1/guardians/\(request.participantId.value)/confirmation"
         case .rejectGuardianVerification(let id):
@@ -111,6 +114,8 @@ extension API: TargetType {
              .submitRecoveryTotpVerification,
              .retrieveRecoveredShards:
             return .post
+        case .replacePolicy:
+            return .put
         }
     }
 
@@ -140,6 +145,8 @@ extension API: TargetType {
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
         case .setupPolicy(let request):
+            return .requestJSONEncodable(request)
+        case .replacePolicy(let request):
             return .requestJSONEncodable(request)
         case .confirmGuardian(let request):
             return .requestJSONEncodable(request)
