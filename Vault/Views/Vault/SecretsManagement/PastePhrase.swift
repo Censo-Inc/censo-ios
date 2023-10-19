@@ -45,112 +45,117 @@ struct PastePhrase: View {
 
     @State private var phraseValidation: PhraseValidity = .notChecked
 
-    let bip39Validator = BIP39Validator()
-
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text("Paste your phrase")
-                    .font(.system(size: 24, weight: .semibold))
-                    .padding(.vertical)
-                switch (phraseValidation) {
-                case .notChecked, .invalid:
-                    TextField("cable solution media ...", text: $phrase, axis: .vertical)
-                        .lineLimit(6, reservesSpace: true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .focused($isPhraseFocused)
-                        .onChange(of: isPhraseFocused) { isFocused in
-                            if (isFocused) {
-                                phraseValidation = .notChecked
-                            }
-                        }
-                        .onChange(of: phrase) { newPhrase in
-                            validatePhrase()
-                        }
-                        .textInputAutocapitalization(.never)
-                        .padding()
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text("Paste your phrase")
+                        .font(.system(size: 24, weight: .semibold))
+                        .padding(.vertical)
                     switch (phraseValidation) {
-                    case .notChecked:
-                        EmptyView()
+                    case .notChecked, .invalid:
+                        TextField("cable solution media ...", text: $phrase, axis: .vertical)
+                            .lineLimit(6, reservesSpace: true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .focused($isPhraseFocused)
+                            .onChange(of: isPhraseFocused) { isFocused in
+                                if (isFocused) {
+                                    phraseValidation = .notChecked
+                                }
+                            }
+                            .onChange(of: phrase) { newPhrase in
+                                validatePhrase()
+                            }
+                            .textInputAutocapitalization(.never)
+                            .padding()
+                        switch (phraseValidation) {
+                        case .notChecked:
+                            EmptyView()
+                        case .valid:
+                            EmptyView()
+                        case .invalid(let reason):
+                            VStack(alignment: .center) {
+                                Text(reason.description)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundStyle(Color.red)
+                                    .font(.system(size: 14, weight: .semibold))
+                            }
+                            .frame(maxWidth: .infinity)
+
+                        }
                     case .valid:
-                        EmptyView()
-                    case .invalid(let reason):
                         VStack(alignment: .center) {
-                            Text(reason.description)
-                                .multilineTextAlignment(.center)
-                                .foregroundStyle(Color.red)
+                            let phraseValidMessage = "✓ Phrase \"\(phrasePrefix())...\" is valid"
+                            Text(phraseValidMessage)
+                                .foregroundStyle(Color.green)
                                 .font(.system(size: 14, weight: .semibold))
                         }
                         .frame(maxWidth: .infinity)
+                        Spacer()
 
+                        Text("Add a nickname")
+                            .font(.system(size: 24, weight: .semibold))
+                            .padding(.vertical)
+
+
+                        Text("Give your seed phrase a nickname of your choice so you can identify it in the future.")
+                            .font(.system(size: 14))
+                            .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("This will be secured by your face scan and not shared with anyone.")
+                            .font(.system(size: 14))
+                            .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
+                            .fixedSize(horizontal: false, vertical: true)
+                        TextField(text: $nickname) {
+                            Text("Enter a nickname...")
+                        }
+                        .focused($isNicknameFocused)
+                        .textFieldStyle(.roundedBorder)
+                        .padding()
+                        .onAppear {
+                            isNicknameFocused = true
+                        }
+
+                        Button {
+                            storeSecret()
+                        } label: {
+                            Text("Save")
+                                .padding()
+                        }
+                        .disabled(
+                            inProgress ||
+                            !phraseValidation.isValid() ||
+                            nickname.trimmingCharacters(in: .whitespaces).isEmpty
+                        )
+                        .buttonStyle(RoundedButtonStyle())
+                        .padding()
                     }
-                case .valid:
-                    VStack(alignment: .center) {
-                        let phraseValidMessage = "✓ Phrase \"\(phrasePrefix())...\" is valid"
-                        Text(phraseValidMessage)
-                            .foregroundStyle(Color.green)
-                            .font(.system(size: 14, weight: .semibold))
-                    }
-                    .frame(maxWidth: .infinity)
-                    Spacer()
-                    
-                    Text("Add a nickname")
-                        .font(.system(size: 24, weight: .semibold))
-                        .padding(.vertical)
-                    
-                    
-                    Text("Give your seed phrase a nickname of your choice so you can identify it in the future.")
-                        .font(.system(size: 14))
-                        .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text("This will be secured by your face scan and not shared with anyone.")
-                        .font(.system(size: 14))
-                        .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
-                        .fixedSize(horizontal: false, vertical: true)
-                    TextField(text: $nickname) {
-                        Text("Enter a nickname...")
-                    }
-                    .focused($isNicknameFocused)
-                    .textFieldStyle(.roundedBorder)
-                    .padding()
-                    .onAppear {
-                      isNicknameFocused = true
-                    }
-                    
-                    Button {
-                        storeSecret()
-                    } label: {
-                        Text("Save")
-                            .padding()
-                    }
-                    .disabled(
-                        inProgress ||
-                        !phraseValidation.isValid() ||
-                        nickname.trimmingCharacters(in: .whitespaces).isEmpty
-                    )
-                    .buttonStyle(RoundedButtonStyle())
-                    .padding()
                 }
-            }
-            .padding()
-            .navigationTitle(Text("Paste Seed Phrase"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    BackButton()
+                .padding()
+                .navigationTitle(Text("Paste Seed Phrase"))
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden(true)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.black)
+                        }
+                    }
                 }
-            }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button { } label: { Text("OK") }
-            } message: { error in
-                Text("Failed to store phrase.\n\(error.localizedDescription)")
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button { } label: { Text("OK") }
+                } message: { error in
+                    Text("Failed to store phrase.\n\(error.localizedDescription)")
+                }
             }
         }
     }
 
     private func validatePhrase() {
-        let result = bip39Validator.validateSeedPhrase(phrase: phrase)
+        let result = BIP39.validateSeedPhrase(phrase: phrase)
         switch (result) {
         case .none:
             phraseValidation = .valid

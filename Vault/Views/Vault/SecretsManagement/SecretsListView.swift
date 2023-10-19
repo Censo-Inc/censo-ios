@@ -22,7 +22,8 @@ struct SecretsListView: View {
     @State private var secretsGuidsBeingDeleted: Set<String> = []
     @State private var showingError = false
     @State private var error: Error?
-    
+    @State private var showingAddPhrase = false
+
     var body: some View {
         VStack {
             List {
@@ -67,12 +68,8 @@ struct SecretsListView: View {
                 
             }
             
-            NavigationLink {
-                AddSecretView(
-                    session: session,
-                    publicMasterEncryptionKey: vault.publicMasterEncryptionKey,
-                    onSuccess: onOwnerStateUpdated
-                )
+            Button {
+                showingAddPhrase = true
             } label: {
                 HStack {
                     Spacer()
@@ -94,6 +91,16 @@ struct SecretsListView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButton()
             }
+        }
+        .sheet(isPresented: $showingAddPhrase) {
+            SeedEntry(
+                session: session,
+                publicMasterEncryptionKey: vault.publicMasterEncryptionKey,
+                onSuccess: { newState in
+                    showingAddPhrase = false
+                    onOwnerStateUpdated(newState)
+                }
+            )
         }
     }
     

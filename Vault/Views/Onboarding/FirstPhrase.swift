@@ -9,13 +9,17 @@ import SwiftUI
 
 struct FirstPhrase: View {
     @Environment(\.apiProvider) var apiProvider
+
+    @State private var showingAddPhrase = false
+    @State private var showingPastePhrase = false
+
     var ownerState: API.OwnerState.Ready
     var session: Session
     var onComplete: (API.OwnerState) -> Void
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 20) {
                 Spacer()
                 Text("Step 2")
                     .font(.system(size: 18, weight: .semibold))
@@ -30,35 +34,31 @@ struct FirstPhrase: View {
                     .font(.system(size: 14))
                     .padding()
 
-                NavigationLink {
-
+                Button {
+                    showingAddPhrase = true
                 } label: {
-                    HStack {
+                    HStack(spacing: 20) {
                         Image("PhraseEntry").colorInvert()
-                            .padding(2)
                         Text("Enter seed phrase")
-                            .font(.system(size: 24, weight: .medium))
-                            .padding(2)
+                            .font(.title2)
                     }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
 
-                NavigationLink {
-                    PastePhrase(onComplete: onComplete, session: session, ownerState: ownerState)
+                Button {
+                    showingPastePhrase = true
                 } label: {
-                    HStack {
+                    HStack(spacing: 20) {
                         Image("ClipboardText")
-                            .padding(2)
                         Text("Paste seed phrase")
-                            .font(.system(size: 24, weight: .medium))
-                            .padding(2)
+                            .font(.title2)
                     }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
                 
                 HStack {
                     Image(systemName: "info.circle")
@@ -68,6 +68,20 @@ struct FirstPhrase: View {
             }
             .padding()
         }
+        .sheet(isPresented: $showingAddPhrase, content: {
+            SeedEntry(
+                session: session,
+                publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                onSuccess: onComplete
+            )
+        })
+        .sheet(isPresented: $showingPastePhrase, content: {
+            PastePhrase(
+                onComplete: onComplete,
+                session: session,
+                ownerState: ownerState
+            )
+        })
     }
 }
 

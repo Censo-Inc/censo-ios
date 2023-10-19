@@ -24,11 +24,10 @@ struct RoundedButtonStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
-                .frame(maxWidth: maxWidth, maxHeight: 64)
-                .font(.system(size: 24, weight: .medium))
+                .padding()
                 .foregroundColor(isEnabled ? tint.foregroundColor : tint.foregroundColor.opacity(0.35))
                 .background(isEnabled ? (configuration.isPressed ? tint.backgroundColor.opacity(0.7) : tint.backgroundColor) : tint.backgroundColor.opacity(0.5))
-                .cornerRadius(100.0)
+                .clipShape(Capsule())
         }
     }
 }

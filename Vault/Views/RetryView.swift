@@ -18,12 +18,11 @@ struct RetryView: View {
 
             Text(error.message)
                 .multilineTextAlignment(.center)
-                .padding()
+                .padding(.horizontal)
 
             Button(action: action) {
                 Text("Retry")
-                    .frame(width: 100)
-                    .frame(height: 44)
+                    .frame(minWidth: 100)
             }
             .buttonStyle(RoundedButtonStyle(tint: .dark))
 

@@ -15,7 +15,7 @@ struct BackButton : View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "xmark")
+            Image(systemName: "chevron.left")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)

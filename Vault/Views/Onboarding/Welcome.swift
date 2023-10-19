@@ -43,10 +43,11 @@ struct Welcome: View {
                     )
                 } label: {
                     Text("Get started")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
-                .frame(maxWidth: .infinity)
                 
                 HStack {
                     Image(systemName: "info.circle")
