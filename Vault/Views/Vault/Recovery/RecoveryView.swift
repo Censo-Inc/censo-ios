@@ -244,7 +244,6 @@ extension API.TrustedGuardian {
             label: "Ben",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.TrustedGuardian.Attributes(
-                guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
         )
@@ -255,7 +254,6 @@ extension API.TrustedGuardian {
             label: "Brendan",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.TrustedGuardian.Attributes(
-                guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
         )
@@ -266,7 +264,6 @@ extension API.TrustedGuardian {
             label: "Ievgen",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.TrustedGuardian.Attributes(
-                guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
         )
@@ -277,7 +274,6 @@ extension API.TrustedGuardian {
             label: "Ata",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.TrustedGuardian.Attributes(
-                guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
         )
@@ -288,7 +284,6 @@ extension API.TrustedGuardian {
             label: "Sam",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             attributes: API.TrustedGuardian.Attributes(
-                guardianEncryptedShard: Base64EncodedString(data: Data()),
                 onboardedAt: Date()
             )
         )

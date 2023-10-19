@@ -81,7 +81,7 @@ struct ApproversIntro: View {
 
 #Preview {
     NavigationView {
-        @State var ownerState1 = API.OwnerState.guardianSetup(.init(guardians: [], threshold: 1, unlockedForSeconds: 180))
+        @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: 600))
         ApproversIntro(ownerState: $ownerState1, onSkipped: { })
     }
 }

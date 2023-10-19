@@ -44,22 +44,6 @@ struct Owner: View {
                         }
                     )
                 }
-            case .guardianSetup(let guardianSetup):
-                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                    if !guardianSetup.guardians.allConfirmed {
-                        ApproverActivation(
-                            session: session,
-                            guardianSetup: guardianSetup,
-                            onOwnerStateUpdate: replaceOwnerState
-                        )
-                    } else {
-                        ApproversActivated(
-                            session: session,
-                            guardianSetup: guardianSetup,
-                            onOwnerStateUpdate: replaceOwnerState
-                        )
-                    }
-                }
             case .ready(let ready):
                 BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
                     if showApproversIntro {

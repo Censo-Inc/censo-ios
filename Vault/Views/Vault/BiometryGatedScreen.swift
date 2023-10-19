@@ -156,7 +156,7 @@ struct BiometryGatedScreen_Previews: PreviewProvider {
     static var previews: some View {
         let session = Session.sample
         
-        @State var ownerState1 = API.OwnerState.guardianSetup(.init(guardians: [], threshold: 1, unlockedForSeconds: 180))
+        @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: 600))
         BiometryGatedScreen(
             session: session,
             ownerState: $ownerState1,
@@ -176,7 +176,7 @@ struct BiometryGatedScreen_Previews: PreviewProvider {
             )
         }
         
-        @State var ownerState2 = API.OwnerState.guardianSetup(.init(guardians: [], threshold: 1, unlockedForSeconds: nil))
+        @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil))
         BiometryGatedScreen(
             session: session,
             ownerState: $ownerState2,

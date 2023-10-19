@@ -15,6 +15,7 @@ struct VaultHomeScreen: View {
     var session: Session
     var policy: API.Policy
     var vault: API.Vault
+    var recovery: API.Recovery?
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var recoveryRequestInProgress = false
@@ -34,7 +35,7 @@ struct VaultHomeScreen: View {
             .frame(maxHeight: .infinity)
             .background(Color.white)
         } else {
-            if (policy.recovery == nil) {
+            if (recovery == nil) {
                 NavigationStack {
                     VStack {
                         Spacer()
@@ -148,7 +149,7 @@ struct VaultHomeScreen: View {
                     guardians: policy.guardians,
                     encryptedSecrets: vault.secrets,
                     encryptedMasterKey: policy.encryptedMasterKey,
-                    recovery: policy.recovery!,
+                    recovery: recovery!,
                     onOwnerStateUpdated: onOwnerStateUpdated
                 )
             }
@@ -195,8 +196,7 @@ extension API.Policy {
             guardians: [],
             threshold: 2,
             encryptedMasterKey: Base64EncodedString(data: Data()),
-            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
-            recovery: nil
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
 }
@@ -216,6 +216,7 @@ struct VaultHomeScreen_Previews: PreviewProvider {
             session: .sample,
             policy: .sample,
             vault: .sample,
+            recovery: nil,
             onOwnerStateUpdated: { _ in }
         )
     }
