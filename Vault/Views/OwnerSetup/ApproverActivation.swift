@@ -60,12 +60,7 @@ struct ApproverActivation: View {
         apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
-                switch user.ownerState {
-                case .guardianSetup(let guardianSetup) where guardianSetup == self.guardianSetup:
-                    break
-                default:
-                    onOwnerStateUpdate(user.ownerState)
-                }
+                onOwnerStateUpdate(user.ownerState)
             default:
                 break
             }

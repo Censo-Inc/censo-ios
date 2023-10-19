@@ -20,7 +20,6 @@ extension API {
         var attributes: Attributes
 
         struct Attributes: Codable {
-            var guardianEncryptedShard: Base64EncodedString
             var onboardedAt: Date
         }
     }
@@ -64,7 +63,6 @@ extension API {
         }
 
         struct Onboarded: Codable {
-            var guardianEncryptedShard: Base64EncodedString
             var onboardedAt: Date
         }
         
@@ -136,7 +134,6 @@ extension API {
         var threshold: UInt
         var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
-        var recovery: Recovery?
     }
     
     enum Recovery: Codable {
@@ -208,7 +205,6 @@ extension API {
     
     enum OwnerState: Codable {
         case initial
-        case guardianSetup(GuardianSetup)
         case ready(Ready)
         
         struct GuardianSetup: Codable, Equatable {
@@ -221,6 +217,8 @@ extension API {
             var policy: Policy
             var vault: Vault
             var unlockedForSeconds: UInt?
+            var guardianSetup: GuardianSetup?
+            var recovery: Recovery?
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {
@@ -233,8 +231,6 @@ extension API {
             switch type {
             case "Initial":
                 self = .initial
-            case "GuardianSetup":
-                self = .guardianSetup(try GuardianSetup(from: decoder))
             case "Ready":
                 self = .ready(try Ready(from: decoder))
             default:
@@ -247,9 +243,6 @@ extension API {
             switch self {
             case .initial:
                 try container.encode("Initial", forKey: .type)
-            case .guardianSetup(let guardianSetup):
-                try container.encode("GuardianSetup", forKey: .type)
-                try guardianSetup.encode(to: encoder)
             case .ready(let ready):
                 try container.encode("Ready", forKey: .type)
                 try ready.encode(to: encoder)
@@ -260,7 +253,6 @@ extension API {
           get {
               switch (self) {
               case .initial: return nil
-              case .guardianSetup(let guardianSetup): return guardianSetup.unlockedForSeconds.map({ Double($0 )})
               case .ready(let ready): return ready.unlockedForSeconds.map({ Double($0 )})
               }
           }
