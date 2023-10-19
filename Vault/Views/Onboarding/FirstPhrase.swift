@@ -49,7 +49,8 @@ struct FirstPhrase: View {
                     PastePhrase(onComplete: onComplete, session: session, ownerState: ownerState)
                 } label: {
                     HStack {
-                        Image("ClipboardText")                            .padding(2)
+                        Image("ClipboardText")
+                            .padding(2)
                         Text("Paste seed phrase")
                             .font(.system(size: 24, weight: .medium))
                             .padding(2)
