@@ -33,7 +33,7 @@ extension API {
         case implicitlyOwner(ImplicitlyOwner)
         
         struct Initial: Codable, Equatable {
-            var invitationId: String
+            var invitationId: InvitationId
             var deviceEncryptedTotpSecret: Base64EncodedString
         }
 

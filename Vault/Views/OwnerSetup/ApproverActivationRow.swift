@@ -57,20 +57,16 @@ struct ApproverActivationRow: View {
 
             switch prospectGuardian.status {
             case .initial(let initial):
-                if let link = URL(string: "censo-guardian://invite/\(initial.invitationId)") {
-                    ShareLink(
-                        item: link,
-                        subject: Text("Censo Invitation Link for \(prospectGuardian.label)"),
-                        message: Text("Censo Invitation Link for \(prospectGuardian.label)")
-                    ) {
-                        Image(systemName: "square.and.arrow.up.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(4)
-                            .foregroundColor(.Censo.darkBlue)
-                    }
-                } else {
-                    Text("Error") // Should capture this at the time of encoding
+                ShareLink(
+                    item: initial.invitationId.url,
+                    subject: Text("Censo Invitation Link for \(prospectGuardian.label)"),
+                    message: Text("Censo Invitation Link for \(prospectGuardian.label)")
+                ) {
+                    Image(systemName: "square.and.arrow.up.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(4)
+                        .foregroundColor(.Censo.darkBlue)
                 }
             case .declined:
                 Image(systemName: "xmark.circle.fill")

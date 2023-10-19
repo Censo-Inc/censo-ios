@@ -104,6 +104,7 @@
 		6C5307722ADF0EE500E20F1E /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
 		6C5307742ADF170E00E20F1E /* Onboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5307732ADF170E00E20F1E /* Onboarded.swift */; };
 		6C5307762AE0111A00E20F1E /* VerificationCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */; };
+		6C5307792AE1847100E20F1E /* InvitationId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5307782AE1847100E20F1E /* InvitationId.swift */; };
 		6C65753C2AB3502E00E1D737 /* Base32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753B2AB3502E00E1D737 /* Base32.swift */; };
 		6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
 		6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */; };
@@ -286,6 +287,7 @@
 		6C2372832AC4BF260072E256 /* FacetecError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecError.swift; sourceTree = "<group>"; };
 		6C2372872AC5A4D50072E256 /* ErrorResponsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponsePlugin.swift; sourceTree = "<group>"; };
 		6C5307732ADF170E00E20F1E /* Onboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarded.swift; sourceTree = "<group>"; };
+		6C5307782AE1847100E20F1E /* InvitationId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationId.swift; sourceTree = "<group>"; };
 		6C65753B2AB3502E00E1D737 /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
 		6C65753D2AB388D700E1D737 /* TotpUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotpUtils.swift; sourceTree = "<group>"; };
 		6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrappers.swift; sourceTree = "<group>"; };
@@ -488,6 +490,7 @@
 				6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */,
 				3DE0B9822ABA5F4A0001F3A3 /* Session.swift */,
 				6C23727C2AC4A3600072E256 /* Error.swift */,
+				6C5307782AE1847100E20F1E /* InvitationId.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -992,6 +995,7 @@
 				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
 				BDFE3C0F2AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
+				6C5307792AE1847100E20F1E /* InvitationId.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3DD3F5C62AD03BBE0059FEFA /* ApproverActivationRow.swift in Sources */,
