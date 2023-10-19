@@ -1727,7 +1727,7 @@
 		3DD9C3742A8BCF2400F1E497 /* Debug (Staging) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_BASE_URL = "http://staging.censo.dev";
+				API_BASE_URL = "https://staging.censo.dev";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Vault/VaultDebug (Staging).entitlements";

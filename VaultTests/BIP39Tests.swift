@@ -8,41 +8,39 @@
 import XCTest
 
 final class BIP39Tests: XCTestCase {
-    private func tryValidation(phrase: String, expectedError: BIP39Error) {
+    private func tryValidation(phrase: String, expectedError: BIP39InvalidReason) {
         let validator = BIP39Validator()
-        XCTAssertThrowsError(try validator.validateSeedPhrase(phrase: phrase)) { error in
-            XCTAssertEqual(error as! BIP39Error, expectedError)
-        }
+        XCTAssertEqual(validator.validateSeedPhrase(phrase: phrase), expectedError)
     }
 
     func testTooShort() {
-        tryValidation(phrase: "wrong", expectedError: BIP39Error.tooShort)
+        tryValidation(phrase: "wrong", expectedError: BIP39InvalidReason.tooShort)
     }
 
     func testTooLong() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39Error.tooLong)
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.tooLong)
     }
 
     func testBadLength() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39Error.badLength)
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.badLength)
     }
 
     func testInvalidWords() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wronger wrongest", expectedError: BIP39Error.invalidWords(wordsByIndex: [10: "wronger", 11: "wrongest"]))
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wronger wrongest", expectedError: BIP39InvalidReason.invalidWords(wordsByIndex: [10: "wronger", 11: "wrongest"]))
     }
 
     func testBadChecksum() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39Error.invalidChecksum)
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.invalidChecksum)
     }
 
     func testTrimsWhitespace() {
         let validator = BIP39Validator()
-        XCTAssertNoThrow(try validator.validateSeedPhrase(phrase:"   lizard size puppy joke venue census need net produce age all proof opinion promote setup flight tortoise multiply blanket problem defy arrest switch also   "))
+        XCTAssertNil(validator.validateSeedPhrase(phrase:"   lizard size puppy joke venue census need net produce age all proof opinion promote setup flight tortoise multiply blanket problem defy arrest switch also   "))
     }
 
-    func handlesMultipleSpaces() {
+    func testHandlesMultipleSpaces() {
         let validator = BIP39Validator()
-        XCTAssertNoThrow(try validator.validateSeedPhrase(phrase:"lizard   size  puppy  joke venue census need net produce age all proof opinion promote setup flight tortoise multiply   blanket problem defy arrest switch also"))
+        XCTAssertNil(validator.validateSeedPhrase(phrase:"lizard   size  puppy  joke venue census need net produce age\nall proof opinion promote setup flight tortoise multiply   blanket problem defy arrest switch also"))
     }
 
     func testValid() {
@@ -156,7 +154,7 @@ final class BIP39Tests: XCTestCase {
             "link rescue thunder service access kitchen original rotate tunnel have erode seed wage merge march nature hold build purity dial evidence topic planet between",
         ]
         cases.forEach { phrase in
-            try! validator.validateSeedPhrase(phrase: phrase)
+            XCTAssertNil(validator.validateSeedPhrase(phrase: phrase))
         }
     }
 }
