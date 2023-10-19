@@ -55,7 +55,7 @@ extension Error {
         case MoyaError.underlying(let error, _):
             return error.localizedDescription
         case let facetecError as FacetecError:
-            return "Facetec failed with status \(facetecError.rawStatus)";
+            return facetecError.statusMessage
         default:
             return "Something went wrong"
         }

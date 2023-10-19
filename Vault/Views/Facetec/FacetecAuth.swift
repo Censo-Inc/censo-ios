@@ -74,7 +74,12 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                 )
 #endif
             case .failure(let error):
-                RetryView(error: error, action: prepareBiometryVerification)
+                switch (error) {
+                case is FaceTecSessionError:
+                    RetryView(error: FacetecError(status: (error as! FaceTecSessionError).status), action: prepareBiometryVerification)
+                default:
+                    RetryView(error: error, action: prepareBiometryVerification)
+                }
             }
         }
     }
@@ -93,9 +98,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     if success {
                         setupStep = .ready(response)
                     } else {
-                        let error = FacetecError(rawStatus: FaceTec.sdk.getStatus().rawValue)
-                        RaygunClient.sharedInstance().send(error: error, tags: ["FaceTec"], customData: nil)
-                        setupStep = .failure(error)
+                        setupStep = .failure(FacetecError("Facetec failed with status \(FaceTec.sdk.getStatus().rawValue)"))
                     }
                 }
             case .failure(let error):
