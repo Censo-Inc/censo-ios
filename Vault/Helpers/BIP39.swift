@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-enum BIP39Error: Error, Equatable {
+enum BIP39InvalidReason: Equatable {
     case invalidWords(wordsByIndex: [Int: String])
     case tooShort
     case tooLong
@@ -16,7 +16,7 @@ enum BIP39Error: Error, Equatable {
     case invalidChecksum
 }
 
-extension BIP39Error: CustomStringConvertible {
+extension BIP39InvalidReason: CustomStringConvertible {
     public var description: String {
         switch (self) {
         case .tooShort:
@@ -53,18 +53,28 @@ struct BIP39Validator {
        return (UInt8(UInt16(1 << bits) - 1)) << (8 - bits);
     }
 
-    func validateSeedPhrase(phrase: String) throws {
+    private func splitToWords(phrase: String) -> [String] {
+        var words = [String]()
+
+        phrase.enumerateSubstrings(in: phrase.startIndex..<phrase.endIndex, options: .byWords) { (substring, _, _, _) -> () in
+            words.append(substring!)
+        }
+
+        return words
+    }
+
+    func validateSeedPhrase(phrase: String) -> BIP39InvalidReason? {
         let normalizedPhrase = phrase.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        let words = normalizedPhrase.split(separator: " ")
+        let words = splitToWords(phrase: normalizedPhrase)
 
         if (words.count < 12) {
-            throw BIP39Error.tooShort
+            return BIP39InvalidReason.tooShort
         }
         if (words.count > 24) {
-            throw BIP39Error.tooLong
+            return BIP39InvalidReason.tooLong
         }
         if (!words.count.isMultiple(of: 3)) {
-            throw BIP39Error.badLength
+            return BIP39InvalidReason.badLength
         }
 
         // 1-of-2048 is 11 bits
@@ -84,7 +94,7 @@ struct BIP39Validator {
             }
         }
         if (!invalidWords.isEmpty) {
-            throw BIP39Error.invalidWords(wordsByIndex: invalidWords)
+            return BIP39InvalidReason.invalidWords(wordsByIndex: invalidWords)
         }
 
         // the layout of binaryPhrase is the entropy bits first followed by the checksum bits
@@ -96,8 +106,10 @@ struct BIP39Validator {
 
         // Compare the calculated checksum with the expected checksum
         if (checksumBinary != expectedChecksum) {
-            throw BIP39Error.invalidChecksum
+            return BIP39InvalidReason.invalidChecksum
         }
+
+        return nil
     }
 }
 

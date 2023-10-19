@@ -12,8 +12,7 @@ import Moya
 enum PhraseValidity {
     case notChecked
     case valid
-    case invalid(BIP39Error)
-    case unknown
+    case invalid(BIP39InvalidReason)
 }
 
 extension PhraseValidity {
@@ -55,9 +54,10 @@ struct PastePhrase: View {
                     .font(.system(size: 24, weight: .semibold))
                     .padding(.vertical)
                 switch (phraseValidation) {
-                case .notChecked, .unknown, .invalid:
+                case .notChecked, .invalid:
                     TextField("cable solution media ...", text: $phrase, axis: .vertical)
-                        .lineLimit(6, reservesSpace: true)                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .lineLimit(6, reservesSpace: true)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .focused($isPhraseFocused)
                         .onChange(of: isPhraseFocused) { isFocused in
                             if (isFocused) {
@@ -72,13 +72,12 @@ struct PastePhrase: View {
                     switch (phraseValidation) {
                     case .notChecked:
                         EmptyView()
-                    case .unknown:
-                        Text("Validity could not be established")
                     case .valid:
                         EmptyView()
                     case .invalid(let reason):
                         VStack(alignment: .center) {
-                            Text(reason.description).foregroundStyle(Color.red)
+                            Text(reason.description)
+                                .foregroundStyle(Color.red)
                                 .font(.system(size: 14, weight: .semibold))
                         }
                         .frame(maxWidth: .infinity)
@@ -87,7 +86,8 @@ struct PastePhrase: View {
                 case .valid:
                     VStack(alignment: .center) {
                         let phraseValidMessage = "✓ Phrase \"\(phrasePrefix())...\" is valid"
-                        Text(phraseValidMessage).foregroundStyle(Color.green)
+                        Text(phraseValidMessage)
+                            .foregroundStyle(Color.green)
                             .font(.system(size: 14, weight: .semibold))
                     }
                     .frame(maxWidth: .infinity)
@@ -149,14 +149,13 @@ struct PastePhrase: View {
     }
 
     private func validatePhrase() {
-        do {
-            try bip39Validator.validateSeedPhrase(phrase: phrase)
+        let result = bip39Validator.validateSeedPhrase(phrase: phrase)
+        switch (result) {
+        case .none:
             phraseValidation = .valid
             isPhraseFocused = false
-        } catch let error as BIP39Error {
+        case .some(let error):
             phraseValidation = .invalid(error)
-        } catch {
-            phraseValidation = .unknown
         }
     }
 
