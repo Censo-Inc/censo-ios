@@ -77,6 +77,7 @@ struct PastePhrase: View {
                     case .invalid(let reason):
                         VStack(alignment: .center) {
                             Text(reason.description)
+                                .multilineTextAlignment(.center)
                                 .foregroundStyle(Color.red)
                                 .font(.system(size: 14, weight: .semibold))
                         }
