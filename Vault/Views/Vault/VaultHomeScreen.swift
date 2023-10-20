@@ -27,7 +27,7 @@ struct VaultHomeScreen: View {
     var body: some View {
         if (recoveryRequestInProgress) {
             VStack {
-                ProgressView("Requesting recovery")
+                ProgressView("Requesting access to seed phrases...")
                     .foregroundColor(.white)
                     .tint(.white)
             }
