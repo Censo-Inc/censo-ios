@@ -149,7 +149,7 @@ struct RecoveryApproverRow : View {
                     case .waitingForApproval:
                         ProgressView(
                             label: {
-                                Text("Waiting for approver to verify the code.")
+                                Text("Waiting for approver to verify the code...")
                             }
                         ).onReceive(waitingForApproval) { _ in
                             reloadUser()

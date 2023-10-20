@@ -31,7 +31,7 @@ struct RecoveryView: View {
         NavigationStack {
             if (cancelationInProgress) {
                 VStack {
-                    ProgressView("Canceling recovery")
+                    ProgressView("Canceling access request...")
                         .foregroundColor(.white)
                         .tint(.white)
                 }

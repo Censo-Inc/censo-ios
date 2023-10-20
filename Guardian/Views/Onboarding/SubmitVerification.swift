@@ -33,7 +33,7 @@ struct SubmitVerification: View {
             case .waitingForVerification:
                 ProgressView(
                     label: {
-                        Text("Waiting for owner to verify the code.")
+                        Text("Waiting for the code to be verified...")
                     }
                 ).onReceive(waitingForVerification) { firedDate in
                     apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
