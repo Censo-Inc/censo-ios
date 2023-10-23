@@ -14,15 +14,15 @@ final class BIP39Tests: XCTestCase {
     }
 
     func testTooShort() {
-        tryValidation(phrase: "wrong", expectedError: BIP39InvalidReason.tooShort)
+        tryValidation(phrase: "wrong", expectedError: BIP39InvalidReason.tooShort(wordCount: 1))
     }
 
     func testTooLong() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.tooLong)
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.tooLong(wordCount: 25))
     }
 
     func testBadLength() {
-        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.badLength)
+        tryValidation(phrase: "wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong wrong", expectedError: BIP39InvalidReason.badLength(wordCount: 13))
     }
 
     func testInvalidWords() {

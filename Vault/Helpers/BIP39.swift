@@ -10,25 +10,73 @@ import CryptoKit
 
 enum BIP39InvalidReason: Equatable {
     case invalidWords(wordsByIndex: [Int: String])
-    case tooShort
-    case tooLong
-    case badLength
+    case tooShort(wordCount: Int)
+    case tooLong(wordCount: Int)
+    case badLength(wordCount: Int)
     case invalidChecksum
 }
 
-extension BIP39InvalidReason: CustomStringConvertible {
+extension BIP39InvalidReason {
+    
+    private func phraseLength(count: Int) -> String {
+        return "You entered a seed phrase that was \(count) \(count == 1 ? "word" : "words") long."
+    }
+    
     public var description: String {
         switch (self) {
-        case .tooShort:
-            return "Phrase must be at least 12 words long"
-        case .tooLong:
-            return "Phrase must be no more than 24 words long"
-        case .badLength:
-            return "Phrase must have 12, 15, 18, 21, or 24 words"
+        case .tooShort(let count):
+            return """
+\(phraseLength(count: count))
+
+Seed phrases are typically 12 or 24 words long.
+
+Please check your seed phrase and try again.
+"""
+        case .tooLong(let count):
+            return """
+\(phraseLength(count: count))
+
+Seed phrases are typically 12 or 24 words long.
+
+Please check your seed phrase and try again.
+"""
+        case .badLength(let count):
+            return """
+\(phraseLength(count: count))
+
+Seed phrases must be either 12, 15, 18, 21, or 24 words long.
+
+Please check your seed phrase and try again.
+"""
         case .invalidChecksum:
-            return "Phrase is not valid"
+            return """
+The seed phrase you entered is not valid.
+
+Please check your seed phrase and try again.
+"""
         case .invalidWords(let wordsByIndex):
-            return "Phrase contains invalid words: \(wordsByIndex.values.joined(separator: ", "))"
+            return """
+The seed phrase you entered contains words which are not valid:
+
+\(wordsByIndex.values.joined(separator: ", "))
+
+Please check your seed phrase and try again.
+"""
+        }
+    }
+    
+    public var title: String {
+        switch (self) {
+        case .tooShort:
+            return "Seed phrase too short"
+        case .tooLong:
+            return "Seed phrase too long"
+        case .badLength:
+            return "Incorrect number of words"
+        case .invalidChecksum:
+            return "Invalid seed phrase"
+        case .invalidWords:
+            return "Invalid words"
         }
     }
 }
@@ -68,13 +116,13 @@ struct BIP39Validator {
         let words = splitToWords(phrase: normalizedPhrase)
 
         if (words.count < 12) {
-            return BIP39InvalidReason.tooShort
+            return BIP39InvalidReason.tooShort(wordCount: words.count)
         }
         if (words.count > 24) {
-            return BIP39InvalidReason.tooLong
+            return BIP39InvalidReason.tooLong(wordCount: words.count)
         }
         if (!words.count.isMultiple(of: 3)) {
-            return BIP39InvalidReason.badLength
+            return BIP39InvalidReason.badLength(wordCount: words.count)
         }
 
         // 1-of-2048 is 11 bits
