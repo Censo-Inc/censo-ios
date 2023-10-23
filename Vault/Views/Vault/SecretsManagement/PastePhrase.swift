@@ -33,7 +33,7 @@ struct PastePhrase: View {
     var onComplete: (API.OwnerState) -> Void
 
     var session: Session
-    @State var phrase: String = ""
+    @State var phrase: String = "media squirrel pass doll leg across modify candy dash glass amused scorpion"
     @State var nickname: String = ""
 
     var ownerState: API.OwnerState.Ready
@@ -120,7 +120,7 @@ struct PastePhrase: View {
                             storeSecret()
                         } label: {
                             Text("Save")
-                                .padding()
+                                .frame(maxWidth: .infinity)
                         }
                         .disabled(
                             inProgress ||
@@ -132,6 +132,7 @@ struct PastePhrase: View {
                     }
                 }
                 .padding()
+                .frame(maxWidth: .infinity)
                 .navigationTitle(Text("Paste Seed Phrase"))
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarBackButtonHidden(true)
@@ -176,7 +177,8 @@ struct PastePhrase: View {
     private func storeSecret() {
         do {
             inProgress = true
-            let secretData = phrase.trimmingCharacters(in: .whitespaces).data(using: .utf8)!
+            let secretData = try BIP39.phraseToBinaryEntropy(phrase: phrase)
+
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: ownerState.vault.publicMasterEncryptionKey)
                 .encrypt(data: secretData)

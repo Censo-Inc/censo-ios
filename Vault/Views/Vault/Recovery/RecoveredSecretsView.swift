@@ -132,9 +132,11 @@ struct RecoveredSecretsView: View {
         let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: encryptedMasterKey))
         
         return try requestedSecrets.map {
-            RecoveredSecret(
+            let decryptedSecret = try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase)
+            let decodedWords = try BIP39.binaryEntropyToWords(binaryEntropy: decryptedSecret)
+            return RecoveredSecret(
                 label: $0.label,
-                secret: String(decoding: try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase), as: UTF8.self)
+                secret: decodedWords.joined(separator: " ")
             )
         }
     }

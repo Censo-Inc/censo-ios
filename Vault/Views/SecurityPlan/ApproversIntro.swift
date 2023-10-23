@@ -57,6 +57,7 @@ struct ApproversIntro: View {
                 onSkipped()
             } label: {
                 Text("Skip this step")
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
             .padding()
