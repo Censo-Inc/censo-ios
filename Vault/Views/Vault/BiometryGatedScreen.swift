@@ -48,21 +48,11 @@ struct BiometryGatedScreen<Content: View>: View {
                             }
                         )
                     } else {
-                        VStack {
-                            VStack {
-                                Text("Vault is locked")
-                                Button {
-                                    showFacetec = true
-                                } label: {
-                                    Text("Unlock")
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 44)
-                                }
-                                .buttonStyle(RoundedButtonStyle(tint: .dark))
-                            }.padding()
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(.white)
+                        LockScreen(
+                            onReadyToStartFaceScan: {
+                                showFacetec = true
+                            }
+                        )
                     }
                 }
             default:

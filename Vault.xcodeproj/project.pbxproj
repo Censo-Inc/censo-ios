@@ -99,6 +99,7 @@
 		6C2372892AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2372872AC5A4D50072E256 /* ErrorResponsePlugin.swift */; };
 		6C2392A82AE2F1EF00987A91 /* ApproversIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392A72AE2F1EF00987A91 /* ApproversIntro.swift */; };
 		6C2392AA2AE2F20300987A91 /* InitialPlanSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392A92AE2F20300987A91 /* InitialPlanSetup.swift */; };
+		6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392AB2AE3009A00987A91 /* LockScreen.swift */; };
 		6C50638B2ACDA90C00F50A33 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
 		6C5307712ADF0A9000E20F1E /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		6C5307722ADF0EE500E20F1E /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
@@ -287,6 +288,7 @@
 		6C2372872AC5A4D50072E256 /* ErrorResponsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponsePlugin.swift; sourceTree = "<group>"; };
 		6C2392A72AE2F1EF00987A91 /* ApproversIntro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApproversIntro.swift; sourceTree = "<group>"; };
 		6C2392A92AE2F20300987A91 /* InitialPlanSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialPlanSetup.swift; sourceTree = "<group>"; };
+		6C2392AB2AE3009A00987A91 /* LockScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreen.swift; sourceTree = "<group>"; };
 		6C5307732ADF170E00E20F1E /* Onboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarded.swift; sourceTree = "<group>"; };
 		6C5307782AE1847100E20F1E /* InvitationId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationId.swift; sourceTree = "<group>"; };
 		6C65753B2AB3502E00E1D737 /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
@@ -725,6 +727,7 @@
 				E4025C9D2AC70157008FE3B8 /* Recovery */,
 				E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */,
 				E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */,
+				6C2392AB2AE3009A00987A91 /* LockScreen.swift */,
 			);
 			path = Vault;
 			sourceTree = "<group>";
@@ -932,6 +935,7 @@
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				E45A14582AC46F4C00EDBC10 /* AddSecretView.swift in Sources */,
 				6C2392AA2AE2F20300987A91 /* InitialPlanSetup.swift in Sources */,
+				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
 				3D3796A52A8F255F00913581 /* Models.swift in Sources */,
