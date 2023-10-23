@@ -21,47 +21,52 @@ struct BiometryGatedScreen<Content: View>: View {
     
     var body: some View {
         VStack {
-            if let remainingUnlockedDuration = ownerState.remainingUnlockedDuration {
-                UnlockedContentWrapper(
-                    session: session,
-                    locksAt: Date.now.addingTimeInterval(remainingUnlockedDuration),
-                    ownerState: $ownerState,
-                    onExpired: onUnlockExpired,
-                    content: content
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.white)
-                .onAppear {
-                    showFacetec = false
-                }
-            } else {
-                if showFacetec {
-                    FacetecAuth<API.UnlockApiResponse>(
+            switch ownerState {
+            case .ready(let ready):
+                if let unlockedDuration = ready.unlockedForSeconds {
+                    UnlockedContentWrapper(
                         session: session,
-                        onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                            return .unlock(API.UnlockApiRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData))
-                        },
-                        onSuccess: { response in
-                            ownerState = response.ownerState
-                        }
+                        locksAt: unlockedDuration.locksAt,
+                        ownerState: $ownerState,
+                        onExpired: onUnlockExpired,
+                        content: content
                     )
-                } else {
-                    VStack {
-                        VStack {
-                            Text("Vault is locked")
-                            Button {
-                                showFacetec = true
-                            } label: {
-                                Text("Unlock")
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 44)
-                            }
-                            .buttonStyle(RoundedButtonStyle(tint: .dark))
-                        }.padding()
-                    }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.white)
+                    .onAppear {
+                        showFacetec = false
+                    }
+                } else {
+                    if showFacetec {
+                        FacetecAuth<API.UnlockApiResponse>(
+                            session: session,
+                            onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                                return .unlock(API.UnlockApiRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData))
+                            },
+                            onSuccess: { response in
+                                ownerState = response.ownerState
+                            }
+                        )
+                    } else {
+                        VStack {
+                            VStack {
+                                Text("Vault is locked")
+                                Button {
+                                    showFacetec = true
+                                } label: {
+                                    Text("Unlock")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 44)
+                                }
+                                .buttonStyle(RoundedButtonStyle(tint: .dark))
+                            }.padding()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(.white)
+                    }
                 }
+            default:
+                content()
             }
         }
     }
@@ -156,7 +161,7 @@ struct BiometryGatedScreen_Previews: PreviewProvider {
     static var previews: some View {
         let session = Session.sample
         
-        @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: 600))
+        @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: try! UnlockedDuration(value: 600)))
         BiometryGatedScreen(
             session: session,
             ownerState: $ownerState1,
@@ -180,6 +185,17 @@ struct BiometryGatedScreen_Previews: PreviewProvider {
         BiometryGatedScreen(
             session: session,
             ownerState: $ownerState2,
+            onUnlockExpired: {}
+        ) {
+            VStack {
+                Text("test")
+            }
+        }
+        
+        @State var ownerState3 = API.OwnerState.initial
+        BiometryGatedScreen(
+            session: session,
+            ownerState: $ownerState3,
             onUnlockExpired: {}
         ) {
             VStack {

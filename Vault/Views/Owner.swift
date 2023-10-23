@@ -28,14 +28,16 @@ struct Owner: View {
                 get: { ownerState },
                 set: { replaceOwnerState(newOwnerState: $0) }
             )
-            switch ownerState {
-            case .initial:
-                Welcome(
-                    session: session,
-                    onComplete: replaceOwnerState
-                )
-            case .ready(let ready) where ready.vault.secrets.isEmpty:
-                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+            BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                switch ownerState {
+                case .initial:
+                    Welcome(
+                        session: session,
+                        onComplete: {ownerState in
+                            replaceOwnerState(newOwnerState: ownerState)
+                        }
+                    )
+                case .ready(let ready) where ready.vault.secrets.isEmpty:
                     FirstPhrase(
                         ownerState: ready, session: session,
                         onComplete: { ownerState in
@@ -43,11 +45,9 @@ struct Owner: View {
                             replaceOwnerState(newOwnerState: ownerState)
                         }
                     )
-                }
-            case .ready(let ready):
-                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                case .ready(let ready):
                     if showApproversIntro {
-                       ApproversIntro(
+                        ApproversIntro(
                             ownerState: ownerStateBinding,
                             onSkipped: {
                                 showApproversIntro = false

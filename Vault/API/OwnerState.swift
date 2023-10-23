@@ -216,7 +216,7 @@ extension API {
         struct Ready: Codable {
             var policy: Policy
             var vault: Vault
-            var unlockedForSeconds: UInt?
+            var unlockedForSeconds: UnlockedDuration?
             var guardianSetup: GuardianSetup?
             var recovery: Recovery?
         }
@@ -249,13 +249,5 @@ extension API {
             }
         }
         
-        var remainingUnlockedDuration: TimeInterval? {
-          get {
-              switch (self) {
-              case .initial: return nil
-              case .ready(let ready): return ready.unlockedForSeconds.map({ Double($0 )})
-              }
-          }
-        }
     }
 }
