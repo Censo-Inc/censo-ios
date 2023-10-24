@@ -32,7 +32,7 @@ struct WordEntry: View {
                     onSubmit(word)
                 }
 
-                let filteredList = BIP39.wordlist.filter {
+                let filteredList = BIP39.wordlists[.english]!.filter {
                     $0.starts(with: word.lowercased())
                 }
 

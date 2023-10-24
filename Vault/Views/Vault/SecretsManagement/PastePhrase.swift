@@ -177,7 +177,7 @@ struct PastePhrase: View {
     private func storeSecret() {
         do {
             inProgress = true
-            let secretData = try BIP39.phraseToBinaryEntropy(phrase: phrase)
+            let secretData = try BIP39.phraseToBinaryData(phrase: phrase)
 
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: ownerState.vault.publicMasterEncryptionKey)
