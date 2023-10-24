@@ -90,6 +90,7 @@ struct InitialPlanSetup: View {
                                 .resizable()
                                 .frame(width: 36, height: 36)
                             Text("Begin face scan")
+                                .font(.system(size: 24, weight: .semibold))
                             Spacer()
                         }
                     }

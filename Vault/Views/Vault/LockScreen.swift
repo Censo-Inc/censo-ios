@@ -37,6 +37,7 @@ struct LockScreen: View {
                         .resizable()
                         .frame(width: 36, height: 36)
                     Text("Face scan to unlock")
+                        .font(.system(size: 24, weight: .semibold))
                     Spacer()
                 }
             }

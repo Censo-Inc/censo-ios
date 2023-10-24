@@ -9,16 +9,14 @@ import SwiftUI
 
 struct RoundedButtonStyle: ButtonStyle {
     var tint = ButtonStyleTint.dark
-    var maxWidth: CGFloat = 322
     
     func makeBody(configuration: ButtonStyle.Configuration) -> some View {
-        RoundedButton(configuration: configuration, tint: tint, maxWidth: maxWidth)
+        RoundedButton(configuration: configuration, tint: tint)
     }
 
     struct RoundedButton: View {
         let configuration: ButtonStyle.Configuration
         var tint: ButtonStyleTint
-        var maxWidth: CGFloat
         
         @Environment(\.isEnabled) private var isEnabled: Bool
 

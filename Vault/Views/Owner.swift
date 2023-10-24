@@ -58,6 +58,7 @@ struct Owner: View {
                             session: session,
                             policy: ready.policy,
                             vault: ready.vault,
+                            recovery: ready.recovery,
                             onOwnerStateUpdated: { _ in
                                 reload()
                             }

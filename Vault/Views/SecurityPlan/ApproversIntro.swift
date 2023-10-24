@@ -46,6 +46,7 @@ struct ApproversIntro: View {
                         .resizable()
                         .frame(width: 36, height: 36)
                     Text("Invite approvers")
+                        .font(.system(size: 24, weight: .semibold))
                     Spacer()
                 }
             }
@@ -57,6 +58,7 @@ struct ApproversIntro: View {
                 onSkipped()
             } label: {
                 Text("Skip this step")
+                    .font(.system(size: 24, weight: .semibold))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
