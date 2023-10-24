@@ -49,6 +49,8 @@
 		3D3E64D42AE6B76A0000C56C /* SeedEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3E64CE2AE6B76A0000C56C /* SeedEntry.swift */; };
 		3D3E64D52AE6B76A0000C56C /* SaveSeedPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3E64CF2AE6B76A0000C56C /* SaveSeedPhrase.swift */; };
 		3D3E64D62AE6B76A0000C56C /* WordEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3E64D02AE6B76A0000C56C /* WordEntry.swift */; };
+		3D3E64D72AE74B690000C56C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D0C1E7B2A83A79600AB3A48 /* Assets.xcassets */; };
+		3D8214652AC2282B00AC2598 /* ApproversSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214642AC2282B00AC2598 /* ApproversSetup.swift */; };
 		3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214662AC22D6E00AC2598 /* BorderedButtonStyle.swift */; };
 		3D82146A2AC28C4000AC2598 /* InfoBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214692AC28C4000AC2598 /* InfoBoard.swift */; };
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
@@ -968,6 +970,7 @@
 			files = (
 				6C021BDC2ABDC529005A68FD /* Theme.xcassets in Resources */,
 				3D23ACE12AB22C9500F55C5D /* Preview Assets.xcassets in Resources */,
+				3D3E64D72AE74B690000C56C /* Assets.xcassets in Resources */,
 				3D23ACDE2AB22C9500F55C5D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1466,7 +1469,7 @@
 		3D23ACE22AB22C9500F55C5D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1499,7 +1502,7 @@
 		3D23ACE32AB22C9500F55C5D /* Debug (Staging) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Guardian/GuardianDebug (Staging).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1532,7 +1535,7 @@
 		3D23ACE42AB22C9500F55C5D /* Debug (Integration) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Guardian/GuardianDebug (Integration).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1565,7 +1568,7 @@
 		3D23ACE52AB22C9500F55C5D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1598,7 +1601,7 @@
 		3D23ACE62AB22C9500F55C5D /* Release (Staging) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1631,7 +1634,7 @@
 		3D23ACE72AB22C9500F55C5D /* Release (Integration) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
