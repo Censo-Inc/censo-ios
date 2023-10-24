@@ -39,29 +39,30 @@ struct Owner: View {
                     )
                 case .ready(let ready) where ready.vault.secrets.isEmpty:
                     FirstPhrase(
-                        ownerState: ready, session: session,
+                        ownerState: ready, 
+                        session: session,
                         onComplete: { ownerState in
                             showApproversIntro = true
                             replaceOwnerState(newOwnerState: ownerState)
                         }
                     )
                 case .ready(let ready):
-                    if showApproversIntro {
-                        ApproversIntro(
-                            ownerState: ownerStateBinding,
-                            onSkipped: {
-                                showApproversIntro = false
-                            }
-                        )
-                    } else {
-                        VaultHomeScreen(
-                            session: session,
-                            ownerState: ready,
-                            onOwnerStateUpdated: { _ in
-                                reload()
-                            }
-                        )
-                    }
+                    VaultHomeScreen(
+                        session: session,
+                        ownerState: ready,
+                        onOwnerStateUpdated: { _ in
+                            reload()
+                        }
+                    )
+                    .sheet(isPresented: $showApproversIntro, content: {
+                        NavigationView {
+                            InitialApproversSetup(
+                                session: session,
+                                ownerState: ready,
+                                onOwnerStateUpdated: replaceOwnerState
+                            )
+                        }
+                    })
                 }
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
@@ -97,3 +98,35 @@ extension Array where Element == API.ProspectGuardian {
         }
     }
 }
+
+#if DEBUG
+extension Base64EncodedString {
+    static var sample: Self {
+        try! .init(value: "")
+    }
+}
+
+extension Session {
+    static var sample: Self {
+        .init(deviceKey: .sample, userCredentials: .sample)
+    }
+}
+
+extension UserCredentials {
+    static var sample: Self {
+        .init(idToken: Data(), userIdentifier: "userIdentifier")
+    }
+}
+
+extension API.PolicySetup {
+    static var sample: Self {
+        .init(guardians: [.sample], threshold: 2)
+    }
+}
+
+extension API.ProspectGuardian {
+    static var sample: Self {
+        .init(invitationId: try! InvitationId(value: ""), label: "Jerry", participantId: .random(), status: .declined)
+    }
+}
+#endif

@@ -17,12 +17,10 @@ enum PolicySetupError: Error {
 }
 
 struct PolicySetupHelper {
-    var shards: [Point]
     var masterEncryptionPublicKey: Base58EncodedPublicKey
     var encryptedMasterPrivateKey: Base64EncodedString
     var intermediatePublicKey: Base58EncodedPublicKey
     var guardians: [API.GuardianShard] = []
-
 
     init(
         threshold: Int,
@@ -33,24 +31,33 @@ struct PolicySetupHelper {
         let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
         intermediatePublicKey = try intermediateEncryptionKey.publicExternalRepresentation()
         encryptedMasterPrivateKey = try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw())
-        let sharer = try SecretSharer(
-            secret: BigInt(intermediateEncryptionKey.privateKeyRaw().toHexString(), radix: 16)!,
+        self.guardians = try generateShards(
+            intermediateEncryptionKey: intermediateEncryptionKey,
             threshold: threshold,
-            participants: guardians.map({$0.0.bigInt})
+            guardians: guardians
         )
-        self.shards = sharer.shards
-        self.guardians = try guardians.map({
-            API.GuardianShard(
-                participantId: $0.0,
-                encryptedShard: try getEncryptedShard(participantId: $0.0.bigInt, guardianPublicKey: $0.1)
-            )
-        })
     }
-    
-    private func getEncryptedShard(participantId: BigInt, guardianPublicKey: Base58EncodedPublicKey) throws -> Base64EncodedString {
-        guard let shard = self.shards.first(where: {$0.x == participantId}) else {
+}
+
+func generateShards(
+    intermediateEncryptionKey: EncryptionKey,
+    threshold: Int,
+    guardians: [(ParticipantId, Base58EncodedPublicKey)]
+) throws -> [API.GuardianShard] {
+    let sharer = try SecretSharer(
+        secret: BigInt(intermediateEncryptionKey.privateKeyRaw().toHexString(), radix: 16)!,
+        threshold: threshold,
+        participants: guardians.map({$0.0.bigInt})
+    )
+    return try guardians.map({ (guardianParticipantId, guardianPublicKey) in
+        guard let shard = sharer.shards.first(where: {$0.x == guardianParticipantId.bigInt}) else {
             throw PolicySetupError.badParticipantId
         }
-        return try EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: guardianPublicKey).encrypt(data: shard.y.magnitude.serialize())
-    }
+        return API.GuardianShard(
+            participantId: guardianParticipantId,
+            encryptedShard: try EncryptionKey
+                .generateFromPublicExternalRepresentation(base58PublicKey: guardianPublicKey)
+                .encrypt(data: shard.y.magnitude.serialize())
+        )
+    })
 }

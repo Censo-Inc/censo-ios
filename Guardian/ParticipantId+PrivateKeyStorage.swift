@@ -13,6 +13,10 @@ extension ParticipantId {
         NSUbiquitousKeyValueStore.default.set(encodedPrivateKey, forKey: self.value)
     }
     
+    func deleteEncodedPrivateKey() {
+        NSUbiquitousKeyValueStore.default.removeObject(forKey: self.value)
+    }
+    
     func privateKey(userIdentifier: String) -> EncryptionKey? {
         let symmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
 

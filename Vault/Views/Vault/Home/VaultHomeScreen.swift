@@ -17,12 +17,22 @@ struct VaultHomeScreen: View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     //var onUserReset: () -> Void
     
+    enum TabName {
+        case home
+        case phrases
+        case approvers
+        case settings
+    }
+    
+    @State private var selectedTab = TabName.home
+                    
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             HomeView(
                 session: session,
                 ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated
+                onOwnerStateUpdated: onOwnerStateUpdated,
+                parentTabViewSelectedTab: $selectedTab
             )
             .tabItem {
                 VStack {
@@ -30,6 +40,7 @@ struct VaultHomeScreen: View {
                     Image("SimpleHomeGray").renderingMode(.template)
                 }
             }
+            .tag(TabName.home)
             
             PhrasesView(
                 session: session,
@@ -42,8 +53,12 @@ struct VaultHomeScreen: View {
                     Image("LockSimpleGray").renderingMode(.template)
                 }
             }
+            .tag(TabName.phrases)
             
             ApproversView(
+                session: session,
+                ownerState: ownerState,
+                onOwnerStateUpdated: onOwnerStateUpdated
             )
             .tabItem {
                 VStack {
@@ -51,6 +66,7 @@ struct VaultHomeScreen: View {
                     Image("TwoUsersGray").renderingMode(.template)
                 }
             }
+            .tag(TabName.approvers)
             
             SettingsView(
                 session: session,
@@ -62,6 +78,7 @@ struct VaultHomeScreen: View {
                     Image("SettingsGray").renderingMode(.template)
                 }
             }
+            .tag(TabName.settings)
         }
         .accentColor(.black)
     }
@@ -105,7 +122,11 @@ struct VaultHomeScreen_Previews: PreviewProvider {
     static var previews: some View {
         VaultHomeScreen(
             session: .sample,
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+            ownerState: API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample,
+                recovery: nil
+            ),
             onOwnerStateUpdated: { _ in }
         )
     }

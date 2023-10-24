@@ -15,21 +15,33 @@ struct RotatingTotpPinView: View {
     @State private var timerPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var percentDone: Double = 0
     @State private var secondsRemaining: Int = 0
-
+    
+    private func detectColor() -> Color {
+        switch (secondsRemaining) {
+        case 0...20:
+            return Color.Censo.countdownRed
+        case 21...40:
+            return Color.Censo.countdownYellow
+        default:
+            return Color.Censo.countdownGreen
+        }
+    }
+    
     var body: some View {
         if let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
             let pin = TotpUtils.getOTP(date: Date(), secret: totpSecret)
+            let color = detectColor()
 
             HStack {
                 Text(pin.splittingCharacters(by: " "))
                     .font(.system(size: 28, weight: .semibold))
                     .foregroundColor(.black)
-                    .padding()
+                    .padding(.horizontal)
                 
                 ZStack {
                     Circle()
                         .stroke(
-                            Color.Censo.countdownColor.opacity(0.2),
+                            color.opacity(0.2),
                             lineWidth: 5
                         )
                         .frame(width: 36, height: 36)
@@ -37,7 +49,7 @@ struct RotatingTotpPinView: View {
                     Circle()
                         .trim(from: 0, to: percentDone)
                         .stroke(
-                            Color.Censo.countdownColor,
+                            color,
                             style: StrokeStyle(
                                 lineWidth: 5,
                                 lineCap: .round
@@ -48,7 +60,7 @@ struct RotatingTotpPinView: View {
 
                     Text("\(secondsRemaining)")
                         .font(.system(size: 18, weight: .regular))
-                        .foregroundColor(.Censo.countdownColor)
+                        .foregroundColor(color)
                 }
             }
             .onReceive(timerPublisher) { _ in
@@ -72,3 +84,4 @@ extension String {
         return returnString
     }
 }
+

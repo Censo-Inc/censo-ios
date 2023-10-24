@@ -135,7 +135,7 @@ struct InitialPlanSetup: View {
     
     private func startPolicyCreation() {
         do {
-            let guardianPublicKey = try session.approverKey(participantId: participantId).publicExternalRepresentation()
+            let guardianPublicKey = try session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation()
             let policySetupHelper = try PolicySetupHelper(
                 threshold: 1,
                 guardians: [(
