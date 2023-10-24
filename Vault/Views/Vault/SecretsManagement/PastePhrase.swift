@@ -33,7 +33,7 @@ struct PastePhrase: View {
     var onComplete: (API.OwnerState) -> Void
 
     var session: Session
-    @State var phrase: String = "media squirrel pass doll leg across modify candy dash glass amused scorpion"
+    @State var phrase: String = ""
     @State var nickname: String = ""
 
     var ownerState: API.OwnerState.Ready
