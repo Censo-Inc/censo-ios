@@ -133,7 +133,7 @@ struct RecoveredSecretsView: View {
         
         return try requestedSecrets.map {
             let decryptedSecret = try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase)
-            let decodedWords = try BIP39.binaryEntropyToWords(binaryEntropy: decryptedSecret)
+            let decodedWords = try BIP39.binaryDataToWords(binaryData: decryptedSecret)
             return RecoveredSecret(
                 label: $0.label,
                 secret: decodedWords.joined(separator: " ")

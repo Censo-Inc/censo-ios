@@ -49,12 +49,12 @@ final class BIP39Tests: XCTestCase {
     func testBinaryEntropyRoundTrip() {
         cases.forEach { phrase in
             XCTAssertEqual(
-                try! BIP39.binaryEntropyToWords(binaryEntropy: try! BIP39.phraseToBinaryEntropy(phrase: phrase)).joined(separator: " "),
+                try! BIP39.binaryDataToWords(binaryData: try! BIP39.phraseToBinaryData(phrase: phrase)).joined(separator: " "),
                 phrase
             )
         }
     }
-    
+
     let cases = [
         "media squirrel pass doll leg across modify candy dash glass amused scorpion",
         "fantasy rain also faith churn acquire wolf salad switch skirt donate shield energy cart possible",
