@@ -20,8 +20,8 @@ struct ContentView: View {
     @State private var isPresented = false
     
     var body: some View {
-        NavigationStack {
-            Authentication { session in
+        Authentication { session in
+            NavigationStack {
                 GuardianHome()
                     .navigationDestination(
                         isPresented: $isPresented,
