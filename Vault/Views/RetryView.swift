@@ -53,10 +53,8 @@ extension Error {
             return "Unable to retrieve data from your keychain"
         case MoyaError.underlying(let error, _):
             return error.localizedDescription
-        case let facetecError as FacetecError:
-            return facetecError.statusMessage
         default:
-            return "Something went wrong"
+            return self.appSpecificMessage
         }
     }
 }

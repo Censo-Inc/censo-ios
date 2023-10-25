@@ -42,7 +42,7 @@ struct  StartRecoveryApproval: View {
                 }
             }
             .padding()
-            .buttonStyle(RoundedButtonStyle(maxWidth: 160))
+            .buttonStyle(RoundedButtonStyle())
         }
         .multilineTextAlignment(.center)
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
