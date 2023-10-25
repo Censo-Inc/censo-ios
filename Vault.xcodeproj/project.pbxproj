@@ -109,6 +109,7 @@
 		6C2392B12AE6CB4500987A91 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392B02AE6CB4500987A91 /* SettingsView.swift */; };
 		6C2392B32AE6CDB200987A91 /* PhrasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392B22AE6CDB200987A91 /* PhrasesView.swift */; };
 		6C2392B52AE6D14100987A91 /* ApproversView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2392B42AE6D14100987A91 /* ApproversView.swift */; };
+		6C4A053D2AE8335800484F6A /* AdditionalPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4A053C2AE8335800484F6A /* AdditionalPhrase.swift */; };
 		6C50638B2ACDA90C00F50A33 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
 		6C5307712ADF0A9000E20F1E /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		6C5307722ADF0EE500E20F1E /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
@@ -351,6 +352,7 @@
 		6C2392B02AE6CB4500987A91 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6C2392B22AE6CDB200987A91 /* PhrasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhrasesView.swift; sourceTree = "<group>"; };
 		6C2392B42AE6D14100987A91 /* ApproversView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversView.swift; sourceTree = "<group>"; };
+		6C4A053C2AE8335800484F6A /* AdditionalPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalPhrase.swift; sourceTree = "<group>"; };
 		6C5307732ADF170E00E20F1E /* Onboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarded.swift; sourceTree = "<group>"; };
 		6C5307782AE1847100E20F1E /* InvitationId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationId.swift; sourceTree = "<group>"; };
 		6C65753B2AB3502E00E1D737 /* Base32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
@@ -793,6 +795,7 @@
 				3D3E64CB2AE6B7690000C56C /* SeedVerification.swift */,
 				3D3E64CD2AE6B7690000C56C /* Word.swift */,
 				3D3E64D02AE6B76A0000C56C /* WordEntry.swift */,
+				6C4A053C2AE8335800484F6A /* AdditionalPhrase.swift */,
 			);
 			path = SecretsManagement;
 			sourceTree = "<group>";
@@ -1078,6 +1081,7 @@
 				E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,
 				BD8BC98E2ADD89F400DA979C /* FirstPhrase.swift in Sources */,
+				6C4A053D2AE8335800484F6A /* AdditionalPhrase.swift in Sources */,
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
 				6C2392A82AE2F1EF00987A91 /* ApproversIntro.swift in Sources */,
 				3DD3F5C92AD03C1F0059FEFA /* PieSegment.swift in Sources */,

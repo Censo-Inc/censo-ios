@@ -12,75 +12,170 @@ struct PhrasesView: View {
     
     @Environment(\.apiProvider) var apiProvider
     
-    
     var session: Session
-    var policy: API.Policy
-    var vault: API.Vault
-    var recovery: API.Recovery?
+    var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var recoveryRequestInProgress = false
     @State private var showingError = false
     @State private var error: Error?
+    @State private var showingEditSheet = false
+    @State private var editingIndex: Int?
+    @State private var secretsGuidsBeingDeleted: Set<String> = []
+    @State private var showingDeleteConfirmation = false
+    @State private var showingAddPhrase = false
+    
     
     var body: some View {
         VStack {
-            VStack {
-                if recovery == nil {
-                    if (recoveryRequestInProgress) {
-                        VStack {
-                            ProgressView("Requesting access to seed phrases...")
-                                .foregroundColor(.white)
-                                .tint(.white)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(maxHeight: .infinity)
-                        .background(Color.white)
-                    } else {
-                        VStack {
-                            Spacer()
+            if let recovery = ownerState.recovery {
+                RecoveryView(
+                    session: session,
+                    threshold: ownerState.policy.threshold,
+                    guardians: ownerState.policy.guardians,
+                    encryptedSecrets: ownerState.vault.secrets,
+                    encryptedMasterKey: ownerState.policy.encryptedMasterKey,
+                    recovery: recovery,
+                    onOwnerStateUpdated: onOwnerStateUpdated
+                )
+            } else {
+                if (recoveryRequestInProgress) {
+                    VStack {
+                        ProgressView("Requesting access to seed phrases...")
+                            .foregroundColor(.white)
+                            .tint(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .background(Color.white)
+                } else {
+                    NavigationView {
+                        phraseHomeView()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func phraseHomeView() -> some View {
+        VStack {
+            HStack {
+                Button {
+                    showingAddPhrase = true
+                } label: {
+                    Text("Add")
+                        .font(.system(size: 18, weight: .semibold))
+                        .frame(maxWidth: 188, maxHeight: 64)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                
+                Spacer()
+                
+                Button {
+                    requestRecovery()
+                } label: {
+                    HStack {
+                        Image("LockLaminated")
+                            .resizable()
+                            .colorInvert()
+                            .frame(width: 27, height: 24)
+                        Text("Access")
+                            .font(.system(size: 18, weight: .semibold))
+                        
+                    }
+                    .frame(maxWidth: 188, maxHeight: 64)
+                }
+                .buttonStyle(RoundedButtonStyle())
+            }
+            .frame(maxWidth: .infinity, maxHeight: 64)
+            .padding()
+            
+            Divider().frame(maxWidth: .infinity)
+            
+            GeometryReader { geometry in
+                ScrollView {
+                    ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
+                        VStack(alignment: .leading) {
                             Button {
-                                requestRecovery()
+                                showingEditSheet = true
+                                editingIndex = i
                             } label: {
                                 HStack {
                                     Spacer()
-                                    Image(systemName: "key")
-                                        .frame(width: 36, height: 36)
-                                    Text("Access phrases")
-                                        .font(.system(size: 24, weight: .semibold))
-                                        .padding()
-                                    Spacer()
+                                    Image("Pencil").padding([.trailing], 4)
                                 }
                             }
-                            .buttonStyle(RoundedButtonStyle())
-                            .frame(maxWidth: .infinity)
-                            .padding()
+                            Text(ownerState.vault.secrets[i].label)
+                                .font(.system(size: 18, weight: .medium))
+                                .multilineTextAlignment(.leading)
+                                .padding([.bottom, .leading])
+                                .padding([.trailing], 30)
                         }
+                        .multilineTextAlignment(.leading)
+                        .frame(minWidth: 300, minHeight: 107, maxHeight: 107)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(style: StrokeStyle(lineWidth: 1))
+                                .foregroundColor(.Censo.lightGray)
+                        )
                         .padding()
-                        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                            Button {
-                                showingError = false
-                                error = nil
-                            } label: { Text("OK") }
-                        } message: { error in
-                            Text(error.localizedDescription)
-                        }
                     }
-                } else {
-                    RecoveryView(
-                        session: session,
-                        threshold: policy.threshold,
-                        guardians: policy.guardians,
-                        encryptedSecrets: vault.secrets,
-                        encryptedMasterKey: policy.encryptedMasterKey,
-                        recovery: recovery!,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
                 }
             }
-            Divider()
-            .padding([.bottom], 4)
-            .frame(maxHeight: .infinity, alignment: .bottom)
+        }
+        .navigationTitle(Text("Seed Phrases"))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .padding()
+        .sheet(isPresented: $showingAddPhrase, content: {
+            AdditionalPhrase(
+                ownerState: ownerState,
+                session: session,
+                onComplete: onOwnerStateUpdated
+            )
+        })
+        .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
+            
+            Button(role: .destructive) {
+                showingEditSheet = false
+                showingDeleteConfirmation = true
+            } label: {
+                Text("Delete")
+            }
+        } message: { i in
+            Text(ownerState.vault.secrets[i].label)
+        }
+        .confirmationDialog(
+            Text("Are you sure?"),
+            isPresented: $showingDeleteConfirmation,
+            presenting: editingIndex
+        ) { i in
+            Button("Yes", role: .destructive) {
+                deleteSecret(ownerState.vault.secrets[i])
+            }
+        } message: { i in
+            Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
+        }
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button {
+                showingError = false
+                error = nil
+            } label: { Text("OK") }
+        } message: { error in
+            Text(error.localizedDescription)
+        }
+    }
+    
+    func deleteSecret(_ secret: API.VaultSecret) {
+        secretsGuidsBeingDeleted.insert(secret.guid)
+        apiProvider.decodableRequest(with: session, endpoint: .deleteSecret(guid: secret.guid)) { (result: Result<API.DeleteSecretApiResponse, MoyaError>) in
+            switch result {
+            case .success(let payload):
+                onOwnerStateUpdated(payload.ownerState)
+            case .failure(let error):
+                showError(error)
+            }
+            secretsGuidsBeingDeleted.remove(secret.guid)
         }
     }
     
@@ -88,7 +183,7 @@ struct PhrasesView: View {
         recoveryRequestInProgress = true
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(vaultSecretIds: vault.secrets.map({ $0.guid })))
+            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(vaultSecretIds: ownerState.vault.secrets.map({ $0.guid })))
         ) { (result: Result<API.RequestRecoveryApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
@@ -100,15 +195,18 @@ struct PhrasesView: View {
             self.recoveryRequestInProgress = false
         }
     }
+    
+    private func showError(_ error: Error) {
+        self.error = error
+        self.showingError = true
+    }
 }
 
 #if DEBUG
 #Preview {
     PhrasesView(
         session: .sample,
-        policy: .sample,
-        vault: .sample,
-        recovery: nil,
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
         onOwnerStateUpdated: { _ in }
     )
 }

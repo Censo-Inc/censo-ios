@@ -10,11 +10,15 @@ import SwiftUI
 struct HomeView: View {
     
     var session: Session
-    var policy: API.Policy
-    var vault: API.Vault
+    var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
+    @State private var showingAddPhrase = false
+    
     var body: some View {
+        let vault = ownerState.vault
+        let policy = ownerState.policy
+        
         VStack {
             VStack {
                 Spacer()
@@ -36,12 +40,8 @@ struct HomeView: View {
                         .foregroundColor(.Censo.lightGray)
                 )
                 
-                NavigationLink {
-                    SecretsListView(
-                        session: session,
-                        vault: vault,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
+                Button {
+                    showingAddPhrase = true
                 } label: {
                     Text("Add seed phrase")
                         .foregroundColor(.black)
@@ -91,6 +91,13 @@ struct HomeView: View {
             .padding([.bottom], 4)
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
+        .sheet(isPresented: $showingAddPhrase, content: {
+            AdditionalPhrase(
+                ownerState: ownerState,
+                session: session,
+                onComplete: onOwnerStateUpdated
+            )
+        })
     }
 }
 
@@ -101,11 +108,12 @@ extension Array where Element == API.TrustedGuardian {
 }
 
 #if DEBUG
+
 #Preview {
     HomeView(
         session: .sample,
-        policy: .sample,
-        vault: .sample,
-        onOwnerStateUpdated: { _ in })
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+        onOwnerStateUpdated: { _ in }
+    )
 }
 #endif

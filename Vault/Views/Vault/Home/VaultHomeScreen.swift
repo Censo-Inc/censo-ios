@@ -13,17 +13,15 @@ import Moya
 struct VaultHomeScreen: View {
     
     var session: Session
-    var policy: API.Policy
-    var vault: API.Vault
-    var recovery: API.Recovery?
+    var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
+    //var onUserReset: () -> Void
     
     var body: some View {
         TabView {
             HomeView(
                 session: session,
-                policy: policy,
-                vault: vault,
+                ownerState: ownerState,
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
             .tabItem {
@@ -35,9 +33,7 @@ struct VaultHomeScreen: View {
             
             PhrasesView(
                 session: session,
-                policy: policy,
-                vault: vault,
-                recovery: recovery,
+                ownerState: ownerState,
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
             .tabItem {
@@ -87,7 +83,7 @@ extension API.Policy {
 extension API.Vault {
     static var sample: Self {
         .init(
-            secrets: [.sample],
+            secrets: [.sample, .sample2, .sample3],
             publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
@@ -95,7 +91,13 @@ extension API.Vault {
 
 extension API.VaultSecret {
     static var sample: Self {
-        .init(guid: "", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Test", createdAt: Date())
+        .init(guid: "guid1", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", createdAt: Date())
+    }
+    static var sample2: Self {
+        .init(guid: "guid2", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Robin Hood", createdAt: Date())
+    }
+    static var sample3: Self {
+        .init(guid: "guid3", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", createdAt: Date())
     }
 }
 
@@ -103,9 +105,7 @@ struct VaultHomeScreen_Previews: PreviewProvider {
     static var previews: some View {
         VaultHomeScreen(
             session: .sample,
-            policy: .sample,
-            vault: .sample,
-            recovery: nil,
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
             onOwnerStateUpdated: { _ in }
         )
     }

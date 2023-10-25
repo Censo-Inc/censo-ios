@@ -56,9 +56,7 @@ struct Owner: View {
                     } else {
                         VaultHomeScreen(
                             session: session,
-                            policy: ready.policy,
-                            vault: ready.vault,
-                            recovery: ready.recovery,
+                            ownerState: ready,
                             onOwnerStateUpdated: { _ in
                                 reload()
                             }
