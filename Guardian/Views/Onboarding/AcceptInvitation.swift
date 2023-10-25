@@ -42,7 +42,7 @@ struct AcceptInvitation: View {
                 }
             }
             .padding()
-            .buttonStyle(RoundedButtonStyle(maxWidth: 244))
+            .buttonStyle(RoundedButtonStyle())
             .disabled(inProgress)
             
             Button {
