@@ -15,7 +15,7 @@ struct EncryptionKey {
         self.secKey = secKey
     }
     
-    public func publicExternalRepresentation() throws -> Base58EncodedPublicKey {
+    public func publicKeyData() throws -> Data {
         guard let publicKey = SecKeyCopyPublicKey(secKey) else {
             throw SecKeyError.invalidKey
         }
@@ -25,8 +25,12 @@ struct EncryptionKey {
         guard data != nil else {
             throw error!.takeRetainedValue() as Error
         }
-
-        return try Base58EncodedPublicKey(data: data!)
+        
+        return data!
+    }
+    
+    public func publicExternalRepresentation() throws -> Base58EncodedPublicKey {
+        return try Base58EncodedPublicKey(data: try publicKeyData())
     }
     
     public func privateKeyX963() throws -> Data {

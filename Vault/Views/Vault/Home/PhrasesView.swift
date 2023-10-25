@@ -29,15 +29,21 @@ struct PhrasesView: View {
     var body: some View {
         VStack {
             if let recovery = ownerState.recovery {
-                RecoveryView(
-                    session: session,
-                    threshold: ownerState.policy.threshold,
-                    guardians: ownerState.policy.guardians,
-                    encryptedSecrets: ownerState.vault.secrets,
-                    encryptedMasterKey: ownerState.policy.encryptedMasterKey,
-                    recovery: recovery,
-                    onOwnerStateUpdated: onOwnerStateUpdated
-                )
+                if recovery.noSecretsRequested {
+                    NavigationView {
+                        phraseHomeView()
+                    }
+                } else {
+                    RecoveryView(
+                        session: session,
+                        threshold: ownerState.policy.threshold,
+                        guardians: ownerState.policy.guardians,
+                        encryptedSecrets: ownerState.vault.secrets,
+                        encryptedMasterKey: ownerState.policy.encryptedMasterKey,
+                        recovery: recovery,
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                }
             } else {
                 if (recoveryRequestInProgress) {
                     VStack {

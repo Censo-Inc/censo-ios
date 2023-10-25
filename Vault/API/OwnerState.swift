@@ -9,14 +9,48 @@ import Foundation
 
 extension API {
     struct ProspectGuardian: Codable, Equatable {
+        var invitationId: InvitationId?
         var label: String
         var participantId: ParticipantId
         var status: GuardianStatus
+        
+        var isConfirmed: Bool {
+            get {
+                switch (status) {
+                case .confirmed: return true
+                default: return false
+                }
+            }
+        }
+        
+        var publicKey: Base58EncodedPublicKey? {
+            get {
+                switch (status) {
+                case .confirmed(let confirmed): return confirmed.guardianPublicKey
+                case .implicitlyOwner(let implicitlyOwner): return implicitlyOwner.guardianPublicKey
+                default: return nil
+                }
+            }
+        }
+        
+        var deviceEncryptedTotpSecret: Base64EncodedString? {
+            get {
+                switch (status) {
+                case .accepted(let accepted):
+                    return accepted.deviceEncryptedTotpSecret
+                case .verificationSubmitted(let verificationSubmitted):
+                    return verificationSubmitted.deviceEncryptedTotpSecret
+                case .initial, .confirmed, .declined, .implicitlyOwner:
+                    return nil
+                }
+            }
+        }
     }
 
     struct TrustedGuardian: Codable {
         var label: String
         var participantId: ParticipantId
+        var isOwner: Bool
         var attributes: Attributes
 
         struct Attributes: Codable {
@@ -33,7 +67,6 @@ extension API {
         case implicitlyOwner(ImplicitlyOwner)
         
         struct Initial: Codable, Equatable {
-            var invitationId: InvitationId
             var deviceEncryptedTotpSecret: Base64EncodedString
         }
 
@@ -134,6 +167,10 @@ extension API {
         var threshold: UInt
         var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
+        
+        var externalApproversCount: Int {
+            return guardians.count - 1
+        }
     }
     
     enum Recovery: Codable {
@@ -163,6 +200,15 @@ extension API {
                     case waitingForApproval = "WaitingForApproval"
                     case approved = "Approved"
                     case rejected = "Rejected"
+                }
+            }
+        }
+        
+        var noSecretsRequested: Bool {
+            get {
+                switch (self) {
+                case .thisDevice(let thisDevice): return thisDevice.vaultSecretIds.isEmpty
+                default: return false
                 }
             }
         }
@@ -203,22 +249,39 @@ extension API {
         }
     }
     
+    struct PolicySetup: Codable, Equatable {
+        var guardians: [ProspectGuardian]
+        var threshold: Int
+        
+        var primaryApprover: ProspectGuardian? {
+            get {
+                return guardians.count > 1 ? guardians[1] : nil
+            }
+        }
+        
+        var backupApprover: ProspectGuardian? {
+            get {
+                return guardians.count > 2 ? guardians[2] : nil
+            }
+        }
+    }
+        
     enum OwnerState: Codable {
         case initial
         case ready(Ready)
-        
-        struct GuardianSetup: Codable, Equatable {
-            var guardians: [ProspectGuardian]
-            var threshold: Int
-            var unlockedForSeconds: UInt?
-        }
         
         struct Ready: Codable {
             var policy: Policy
             var vault: Vault
             var unlockedForSeconds: UnlockedDuration?
-            var guardianSetup: GuardianSetup?
+            var guardianSetup: PolicySetup?
             var recovery: Recovery?
+            
+            var policySetup: PolicySetup? {
+                get {
+                    return guardianSetup
+                }
+            }
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {

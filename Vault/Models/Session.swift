@@ -13,7 +13,7 @@ struct Session {
 }
 
 extension Session {
-    func approverKey(participantId: ParticipantId) throws -> EncryptionKey {
+    func getOrCreateApproverKey(participantId: ParticipantId) throws -> EncryptionKey {
         let userIdentifier = self.userCredentials.userIdentifier
         let existingKey = participantId.privateKey(userIdentifier: userIdentifier)
         if (existingKey == nil) {
@@ -26,5 +26,9 @@ extension Session {
         } else {
             return existingKey!
         }
+    }
+    
+    func deleteApproverKey(participantId: ParticipantId) {
+        participantId.deleteEncodedPrivateKey()
     }
 }

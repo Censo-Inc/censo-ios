@@ -14,6 +14,7 @@ struct HomeView: View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingAddPhrase = false
+    @Binding var parentTabViewSelectedTab: VaultHomeScreen.TabName
     
     var body: some View {
         let vault = ownerState.vault
@@ -54,12 +55,12 @@ struct HomeView: View {
                 Divider().padding([.top, .bottom], 10)
                 
                 VStack {
-                    Text("\(policy.guardians.externalApproverCount)")
+                    Text("\(policy.externalApproversCount)")
                         .font(.system(size: 100, weight: .semibold))
                         .foregroundColor(.black)
                         .frame(alignment: .center)
                     
-                    Text("approver\(policy.guardians.externalApproverCount != 1 ? "s" : "")")
+                    Text("approver\(policy.externalApproversCount != 1 ? "s" : "")")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(.black)
                         .frame(alignment: .center)
@@ -67,13 +68,13 @@ struct HomeView: View {
                 .frame(minWidth: 322, minHeight: 247)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.guardians.externalApproverCount == 0 ? [3] : []))
+                        .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.externalApproversCount == 0 ? [3] : []))
                         .foregroundColor(.Censo.lightGray)
                 )
                 
-                if policy.guardians.externalApproverCount == 0 {
-                    NavigationLink {
-                        
+                if policy.externalApproversCount == 0 {
+                    Button {
+                        self.parentTabViewSelectedTab = VaultHomeScreen.TabName.approvers
                     } label: {
                         Text("Add approvers")
                             .foregroundColor(.black)
@@ -82,7 +83,6 @@ struct HomeView: View {
                     }
                     .padding([.top], 10)
                     .buttonStyle(RoundedButtonStyle(tint: .gray95))
-                    
                 }
             }.frame(maxWidth: 322)
             
@@ -101,19 +101,20 @@ struct HomeView: View {
     }
 }
 
-extension Array where Element == API.TrustedGuardian {
-    var externalApproverCount: Int {
-      return self.count - 1
-  }
-}
-
 #if DEBUG
 
 #Preview {
-    HomeView(
-        session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
-        onOwnerStateUpdated: { _ in }
-    )
+    VStack {
+        @State var selectedTab = VaultHomeScreen.TabName.home
+        HomeView(
+            session: .sample,
+            ownerState: API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample
+            ),
+            onOwnerStateUpdated: { _ in },
+            parentTabViewSelectedTab: $selectedTab
+        )
+    }
 }
 #endif

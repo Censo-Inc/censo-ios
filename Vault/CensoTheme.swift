@@ -28,6 +28,9 @@ extension Color {
         static let darkBlue = Color("darkBlue")
         
         static let gray95 = Color(red: 242/255, green: 242/255, blue: 242/255)
-        static let countdownColor = Color(red: 230/255, green: 109/255, blue: 87/255)
+        
+        static let countdownGreen = Color(red: 0/255, green: 216/255, blue: 144/255)
+        static let countdownYellow = Color(red: 255/255, green: 191/255, blue: 0/255)
+        static let countdownRed = Color(red: 230/255, green: 109/255, blue: 87/255)
     }
 }

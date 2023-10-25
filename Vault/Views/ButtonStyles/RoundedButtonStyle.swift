@@ -13,13 +13,13 @@ struct RoundedButtonStyle: ButtonStyle {
     func makeBody(configuration: ButtonStyle.Configuration) -> some View {
         RoundedButton(configuration: configuration, tint: tint)
     }
-
+    
     struct RoundedButton: View {
         let configuration: ButtonStyle.Configuration
         var tint: ButtonStyleTint
         
         @Environment(\.isEnabled) private var isEnabled: Bool
-
+        
         var body: some View {
             configuration.label
                 .padding()
