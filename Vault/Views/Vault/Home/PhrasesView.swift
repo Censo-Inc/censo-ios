@@ -29,7 +29,7 @@ struct PhrasesView: View {
     var body: some View {
         VStack {
             if let recovery = ownerState.recovery {
-                if recovery.noSecretsRequested {
+                if ownerState.policy.guardians.allSatisfy({ $0.isOwner }) {
                     NavigationView {
                         phraseHomeView()
                     }
@@ -189,7 +189,7 @@ struct PhrasesView: View {
         recoveryRequestInProgress = true
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(vaultSecretIds: ownerState.vault.secrets.map({ $0.guid })))
+            endpoint: .requestRecovery
         ) { (result: Result<API.RequestRecoveryApiResponse, MoyaError>) in
             switch result {
             case .success(let response):

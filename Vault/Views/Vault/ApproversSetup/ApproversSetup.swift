@@ -138,7 +138,7 @@ struct ApproversSetup: View {
     private func requestRecovery(onSuccess: @escaping () -> Void) {
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(vaultSecretIds: []))
+            endpoint: .requestRecovery
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
             switch result {
             case .success(let success):

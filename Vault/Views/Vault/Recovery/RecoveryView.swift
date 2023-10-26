@@ -151,9 +151,7 @@ struct RecoveryView: View {
                             NavigationLink {
                                 RecoveredSecretsView(
                                     session: session,
-                                    requestedSecrets: encryptedSecrets.filter {
-                                        thisDeviceRecovery.vaultSecretIds.contains($0.guid)
-                                    },
+                                    requestedSecrets: encryptedSecrets,
                                     encryptedMasterKey: encryptedMasterKey,
                                     deleteRecovery: cancelRecovery
                                 )
@@ -341,8 +339,7 @@ struct RecoveryView_Previews: PreviewProvider {
                         participantId: guardians[4].participantId,
                         status: API.Recovery.ThisDevice.Approval.Status.rejected
                     )
-                ],
-                vaultSecretIds: []
+                ]
             )),
             onOwnerStateUpdated: { _ in }
         )
@@ -368,8 +365,7 @@ struct RecoveryView_Previews: PreviewProvider {
                         participantId: guardians[1].participantId,
                         status: API.Recovery.ThisDevice.Approval.Status.approved
                     ),
-                ],
-                vaultSecretIds: []
+                ]
             )),
             onOwnerStateUpdated: { _ in }
         )
