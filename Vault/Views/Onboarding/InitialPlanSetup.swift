@@ -135,20 +135,19 @@ struct InitialPlanSetup: View {
     
     private func startPolicyCreation() {
         do {
-            let guardianPublicKey = try session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation()
-            let policySetupHelper = try PolicySetupHelper(
-                threshold: 1,
-                guardians: [(
-                    participantId,
-                    guardianPublicKey
-                )]
-            )
+            let ownerApproverPublicKey = try session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation()
+            let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
+            let masterEncryptionKey = try EncryptionKey.generateRandomKey()
+            
             createPolicyParams = CreatePolicyParams(
-                guardianPublicKey: guardianPublicKey,
-                intermediatePublicKey: policySetupHelper.intermediatePublicKey,
-                masterEncryptionPublicKey: policySetupHelper.masterEncryptionPublicKey,
-                encryptedMasterPrivateKey: policySetupHelper.encryptedMasterPrivateKey,
-                encryptedShard: policySetupHelper.guardians[0].encryptedShard
+                guardianPublicKey: ownerApproverPublicKey,
+                intermediatePublicKey: try intermediateEncryptionKey.publicExternalRepresentation(),
+                masterEncryptionPublicKey: try masterEncryptionKey.publicExternalRepresentation(),
+                encryptedMasterPrivateKey: try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw()),
+                encryptedShard: try intermediateEncryptionKey.shard(
+                    threshold: 1,
+                    participants: [(participantId, ownerApproverPublicKey)]
+                ).first(where: { $0.participantId == participantId })!.encryptedShard
             )
         } catch {
             showError(error)

@@ -62,6 +62,17 @@ struct GetLiveWithApprover : View {
             .padding([.top], 24)
             .padding([.leading, .trailing], 32)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.black)
+                }
+            }
+        })
     }
 }
 

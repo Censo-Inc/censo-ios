@@ -181,29 +181,6 @@ struct ApproversSetup: View {
         })
     }
     
-    private func recoverIntermediateKey(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) throws -> EncryptionKey {
-        let points = try encryptedShards.map {
-            let decryptedShard = $0.isOwnerShard
-            ? try decryptWithOwnerApproverKey($0)
-            : try session.deviceKey.decrypt(data: $0.encryptedShard.data)
-            return Point(
-                x: $0.participantId.bigInt,
-                y: decryptedShard.toPositiveBigInt()
-            )
-        }
-        
-        return try EncryptionKey.generateFromPrivateKeyRaw(
-            data: SecretSharerUtils.recoverSecret(shares: points).magnitude.serialize().padded(toByteCount: 32)
-        )
-    }
-    
-    private func decryptWithOwnerApproverKey(_ encryptedShard: API.RetrieveRecoveryShardsApiResponse.EncryptedShard) throws -> Data {
-        guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier) else {
-            throw CensoError.failedToRetrieveApproverKey
-        }
-        return try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)
-    }
-    
     private func replacePolicy(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) {
         self.step = .replacingPolicy
         deleteRecoveryIfExists(onSuccess: {
@@ -212,17 +189,16 @@ struct ApproversSetup: View {
                 let ownerOldParticipantId = ownerState.policy.guardians.first!.participantId
         
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
-                let oldIntermediateKey = try recoverIntermediateKey(encryptedShards)
-                let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try oldIntermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
+                let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
+                let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 
                 apiProvider.decodableRequest(
                     with: session,
                     endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
                         intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
-                        guardianShards: try generateShards(
-                            intermediateEncryptionKey: newIntermediateKey,
+                        guardianShards: try newIntermediateKey.shard(
                             threshold: 2,
-                            guardians: policySetup.guardians.map({ approver in
+                            participants: policySetup.guardians.map({ approver in
                                 return (approver.participantId, approver.publicKey!)
                             })
                         ),
@@ -256,41 +232,9 @@ struct ApproversSetup: View {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                guardianSetup: API.PolicySetup(
-                    guardians: [
-                        API.ProspectGuardian(
-                            invitationId: try! InvitationId(value: ""),
-                            label: "Me",
-                            participantId: .random(),
-                            status: API.GuardianStatus.initial(.init(
-                                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-                            ))
-                        ),
-                        API.ProspectGuardian(
-                            invitationId: try! InvitationId(value: ""),
-                            label: "Neo",
-                            participantId: .random(),
-                            status: API.GuardianStatus.initial(.init(
-                                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-                            ))
-                        ),
-                        API.ProspectGuardian(
-                            invitationId: try! InvitationId(value: ""),
-                            label: "John Wick",
-                            participantId: .random(),
-                            status: API.GuardianStatus.confirmed(.init(
-                                guardianKeySignature: .sample,
-                                guardianPublicKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
-                                timeMillis: 123,
-                                confirmedAt: Date.now
-                            ))
-                        )
-                    ],
-                    threshold: 2
-                )
+                guardianSetup: policySetup
             ),
-            onOwnerStateUpdated: { _ in },
-            step: ApproversSetup.Step.requestingRecovery
+            onOwnerStateUpdated: { _ in }
         )
     }
 }

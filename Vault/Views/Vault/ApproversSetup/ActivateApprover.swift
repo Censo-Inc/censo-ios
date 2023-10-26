@@ -13,55 +13,59 @@ struct ActivateApprover : View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    private var session: Session
-    private var approver: API.ProspectGuardian
-    private var isPrimary: Bool
-    private var onComplete: () -> Void
-    private var onOwnerStateUpdated: (API.OwnerState) -> Void
+    var session: Session
+    var policySetup: API.PolicySetup
+    var approver: API.ProspectGuardian
+    var onComplete: () -> Void
+    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
-    @State private var showGetLive: Bool
+    enum Step {
+        case getLive
+        case activate
+        case rename
+    }
+    
+    @State private var step: Step = .getLive
     @State private var showingError = false
     @State private var error: Error?
-    
-    init(
-        session: Session,
-        approver: API.ProspectGuardian,
-        isPrimary: Bool,
-        onComplete: @escaping () -> Void,
-        onOwnerStateUpdated: @escaping (API.OwnerState) -> Void,
-        showGetLive: Bool = true
-    ) {
-        self.session = session
-        self.approver = approver
-        self.isPrimary = isPrimary
-        self.onComplete = onComplete
-        self.onOwnerStateUpdated = onOwnerStateUpdated
-        self._showGetLive = State(initialValue: showGetLive)
-    }
     
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
-        if showGetLive {
+        let isPrimary = approver == policySetup.primaryApprover
+        
+        switch(step) {
+        case .getLive:
             GetLiveWithApprover(
                 approverName: approver.label,
                 onContinue: {
-                    showGetLive = false
+                    step = .activate
                 }
             )
+        case .rename:
+            RenameApprover(
+                session: session,
+                policySetup: policySetup,
+                approver: approver,
+                onComplete: { ownerState in
+                    onOwnerStateUpdated(ownerState)
+                    step = .activate
+                }
+            )
+            .navigationTitle(Text("\(isPrimary ? "Primary" : "Backup") approver"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        dismiss()
+                        step = .activate
                     } label: {
-                        Image(systemName: "xmark")
+                        Image(systemName: "chevron.left")
                             .foregroundColor(.black)
                     }
                 }
             })
-        } else {
+        case .activate:
             ScrollView {
                 VStack(spacing: 10) {
                     Text("Activate \(isPrimary ? "primary": "backup") approver")
@@ -198,9 +202,22 @@ struct ActivateApprover : View {
                                 .font(.system(size: 14))
                                 .bold()
                             
-                            Text(approver.label)
-                                .font(.system(size: 24))
-                                .bold()
+                            HStack {
+                                Text(approver.label)
+                                    .font(.system(size: 24))
+                                    .bold()
+                                
+                                Spacer()
+                                
+                                Button {
+                                    step = .rename
+                                } label: {
+                                    Image("Pencil")
+                                        .resizable()
+                                        .frame(width: 32, height: 32)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
                             
                             switch approver.status {
                             case .declined:
@@ -225,8 +242,6 @@ struct ActivateApprover : View {
                                 Text("")
                             }
                         }
-                        
-                        Spacer()
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -253,7 +268,7 @@ struct ActivateApprover : View {
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        showGetLive = true
+                        step = .getLive
                     } label: {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
@@ -362,6 +377,38 @@ struct ActivateApprover : View {
 }
 
 #if DEBUG
+let policySetup = API.PolicySetup(
+    guardians: [
+        API.ProspectGuardian(
+            invitationId: try! InvitationId(value: ""),
+            label: "Me",
+            participantId: .random(),
+            status: API.GuardianStatus.initial(.init(
+                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
+            ))
+        ),
+        API.ProspectGuardian(
+            invitationId: try! InvitationId(value: ""),
+            label: "Neo",
+            participantId: .random(),
+            status: API.GuardianStatus.initial(.init(
+                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
+            ))
+        ),
+        API.ProspectGuardian(
+            invitationId: try! InvitationId(value: ""),
+            label: "John Wick",
+            participantId: .random(),
+            status: API.GuardianStatus.confirmed(.init(
+                guardianKeySignature: .sample,
+                guardianPublicKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
+                timeMillis: 123,
+                confirmedAt: Date.now
+            ))
+        )
+    ],
+    threshold: 2
+)
 
 #Preview("Activation Pending") {
     NavigationView {
@@ -369,19 +416,10 @@ struct ActivateApprover : View {
         
         ActivateApprover(
             session: session,
-            approver: API.ProspectGuardian(
-                invitationId: try! InvitationId(value: ""),
-                label: "Neo",
-                participantId: .random(),
-                status: API.GuardianStatus.accepted(.init(
-                    deviceEncryptedTotpSecret: try! Base64EncodedString.encryptedTotpSecret(deviceKey: session.deviceKey),
-                    acceptedAt: Date.now
-                ))
-            ),
-            isPrimary: true,
+            policySetup: policySetup,
+            approver: policySetup.guardians[1],
             onComplete: { },
-            onOwnerStateUpdated: { _ in },
-            showGetLive: false
+            onOwnerStateUpdated: { _ in }
         )
     }
 }
@@ -389,27 +427,13 @@ struct ActivateApprover : View {
 #Preview("Activation Confirmed") {
     NavigationView {
         let session = Session.sample
-        let participantId = ParticipantId.random()
-        
         ActivateApprover(
             session: session,
-            approver: API.ProspectGuardian(
-                invitationId: try! InvitationId(value: ""),
-                label: "Neo",
-                participantId: participantId,
-                status: API.GuardianStatus.confirmed(.init(
-                    guardianKeySignature: Base64EncodedString(data: Data()),
-                    guardianPublicKey: try! session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation(),
-                    timeMillis: 600,
-                    confirmedAt: Date.now
-                ))
-            ),
-            isPrimary: true,
+            policySetup: policySetup,
+            approver: policySetup.guardians[1],
             onComplete: { },
-            onOwnerStateUpdated: { _ in },
-            showGetLive: false
+            onOwnerStateUpdated: { _ in }
         )
     }
 }
-
 #endif

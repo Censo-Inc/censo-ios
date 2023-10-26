@@ -117,8 +117,7 @@
 		6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
 		6CC60F982AA7D77E001A4454 /* EncryptionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */; };
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
-		6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */; };
-		6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */; };
+		6CC60F9E2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9D2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift */; };
 		6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; };
 		6CD3B04A2AC3517100CE1C18 /* FaceTecSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CD6DAE82ABB4E8000974035 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD6DAE72ABB4E8000974035 /* Onboarding.swift */; };
@@ -174,7 +173,6 @@
 		BD50260F2AE6C5A700B727C4 /* CensoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */; };
 		BD5026102AE6C5B400B727C4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		BD5026112AE6C5DE00B727C4 /* MoyaProvider+Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */; };
-		BD5026122AE6C5E800B727C4 /* PolicySetupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */; };
 		BD5026132AE6C5ED00B727C4 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
 		BD5026142AE6C5F000B727C4 /* Data+BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */; };
 		BD5026152AE6C5FE00B727C4 /* SecretSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F662AA128E3001A4454 /* SecretSharer.swift */; };
@@ -210,6 +208,7 @@
 		E4716FD82ACEB9A400BC2AA7 /* VerificationCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */; };
 		E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */; };
 		E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */; };
+		E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073A2AEA7746009A06A1 /* RenameApprover.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		E4AB90B62AD0269500390AEF /* RecoveredSecretsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */; };
 		E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */; };
@@ -344,8 +343,7 @@
 		6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKey.swift; sourceTree = "<group>"; };
 		6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyTests.swift; sourceTree = "<group>"; };
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
-		6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelper.swift; sourceTree = "<group>"; };
-		6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicySetupHelperTests.swift; sourceTree = "<group>"; };
+		6CC60F9D2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyShardingAndRecoveryTests.swift; sourceTree = "<group>"; };
 		6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FaceTecSDK.xcframework; sourceTree = "<group>"; };
 		6CD6DAE72ABB4E8000974035 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		6CD6DB022ABCA0DD00974035 /* GuardianDebug (Integration).entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "GuardianDebug (Integration).entitlements"; sourceTree = "<group>"; };
@@ -376,6 +374,7 @@
 		E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeEntry.swift; sourceTree = "<group>"; };
 		E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryExpirationCountDown.swift; sourceTree = "<group>"; };
 		E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryApproverRow.swift; sourceTree = "<group>"; };
+		E472073A2AEA7746009A06A1 /* RenameApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameApprover.swift; sourceTree = "<group>"; };
 		E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveredSecretsView.swift; sourceTree = "<group>"; };
 		E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+BigInt.swift"; sourceTree = "<group>"; };
 		E4D3767E2AE82D7E005809F7 /* InitialApproversSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialApproversSetup.swift; sourceTree = "<group>"; };
@@ -653,7 +652,6 @@
 				6CB230C92A9D1373009FAE91 /* Data+Hex.swift */,
 				6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */,
 				6CC60F992AA7D8A5001A4454 /* Base58.swift */,
-				6CC60F9B2AA90287001A4454 /* PolicySetupHelper.swift */,
 				6C6575452AB4E85B00E1D737 /* String+Hex.swift */,
 				6C65753B2AB3502E00E1D737 /* Base32.swift */,
 				6C65753D2AB388D700E1D737 /* TotpUtils.swift */,
@@ -687,7 +685,7 @@
 			children = (
 				6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */,
 				6CC60F972AA7D77E001A4454 /* EncryptionKeyTests.swift */,
-				6CC60F9D2AA90BB0001A4454 /* PolicySetupHelperTests.swift */,
+				6CC60F9D2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift */,
 				6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */,
 				BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */,
 				BDC3FC5E2ADE1114008C126B /* BIP39Tests.swift */,
@@ -785,6 +783,7 @@
 				E4D376842AE83977005809F7 /* EnterApproverNickname.swift */,
 				E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */,
 				E4D376882AE839C6005809F7 /* ActivateApprover.swift */,
+				E472073A2AEA7746009A06A1 /* RenameApprover.swift */,
 				E4D3768A2AE839FD005809F7 /* ProposeToAddBackupApprover.swift */,
 				E4D3768C2AE83A24005809F7 /* SavedAndSharded.swift */,
 			);
@@ -1026,7 +1025,6 @@
 				E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */,
 				6C2372842AC4BF260072E256 /* FacetecError.swift in Sources */,
 				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
-				6CC60F9C2AA90287001A4454 /* PolicySetupHelper.swift in Sources */,
 				3D0C1E7A2A83A79400AB3A48 /* ContentView.swift in Sources */,
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
 				E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */,
@@ -1064,6 +1062,7 @@
 				3D0C1E782A83A79400AB3A48 /* VaultApp.swift in Sources */,
 				E463C5A12AE1359100AFDFBB /* ApproversSetup.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
+				E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */,
 				6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
@@ -1178,7 +1177,7 @@
 				BD5025F62AE6C3F600B727C4 /* OwnerState.swift in Sources */,
 				BD5025EE2AE6C36300B727C4 /* UserCredentials.swift in Sources */,
 				BD5025F02AE6C37C00B727C4 /* SecureEnclaveWrapper.swift in Sources */,
-				6CC60F9E2AA90BB0001A4454 /* PolicySetupHelperTests.swift in Sources */,
+				6CC60F9E2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift in Sources */,
 				BD5025F72AE6C40900B727C4 /* String+Hex.swift in Sources */,
 				BD5026052AE6C54B00B727C4 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				BD5026112AE6C5DE00B727C4 /* MoyaProvider+Decodable.swift in Sources */,
@@ -1188,7 +1187,6 @@
 				BD5026042AE6C54100B727C4 /* EncryptionKey.swift in Sources */,
 				BD5025FD2AE6C4E300B727C4 /* APIProvider.swift in Sources */,
 				BD5026102AE6C5B400B727C4 /* RoundedButtonStyle.swift in Sources */,
-				BD5026122AE6C5E800B727C4 /* PolicySetupHelper.swift in Sources */,
 				BD50260E2AE6C59A00B727C4 /* ButtonStyleTint.swift in Sources */,
 				BDFE3C132AD871C3000C76D4 /* SymmetricEncryption.swift in Sources */,
 				BD5026072AE6C55D00B727C4 /* RandomUtils.swift in Sources */,
