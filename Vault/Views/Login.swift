@@ -11,6 +11,7 @@ import AuthenticationServices
 struct Login: View {
     @State private var showingError = false
     @State private var error: Error?
+    @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
 
     var onSuccess: () -> Void
 
@@ -19,33 +20,34 @@ struct Login: View {
     }
 
     var body: some View {
-        VStack {
-            Spacer()
-            Image("Logo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 124)
-
-            Image("CensoText")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 208)
-            
-            Text("sensible crypto security")
-                .font(.system(size: 24, weight: .semibold))
-                .padding()
-            
-            SignInWithAppleButton(.signIn) { request in
-                request.requestedScopes = []
-            } onCompletion: { result in
-                switch result {
+        if (acceptedTermsOfUseVersion != "") {
+            VStack {
+                Spacer()
+                Image("Logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 124)
+                
+                Image("CensoText")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 208)
+                
+                Text("sensible crypto security")
+                    .font(.system(size: 24, weight: .semibold))
+                    .padding()
+                
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = []
+                } onCompletion: { result in
+                    switch result {
                     case .success(let authResults):
                         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
                             guard let idToken = appleIDCredential.identityToken else {
                                 showError(AppleSignInError.noIdentityToken)
                                 break
                             }
-
+                            
                             Keychain.userCredentials = .init(idToken: idToken, userIdentifier: appleIDCredential.user)
                             onSuccess()
                         } else {
@@ -53,65 +55,73 @@ struct Login: View {
                         }
                     case .failure(let error):
                         showError(error)
-                }
-            }
-            .signInWithAppleButtonStyle(.black)
-            .frame(maxWidth: 322, maxHeight: 64)
-            .cornerRadius(100.0)
-            .padding()
-            HStack {
-                Image(systemName: "info.circle")
-                Text("Why Apple ID?")
-                    .font(.system(size: 18, weight: .medium))
-            }
-            Spacer()
-            VStack {
-                HStack(alignment: .top) {
-                    VStack {
-                        Image("EyeSlash")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        Text("No personal info required, ever.")
-                            .font(.system(size: 14))
-                            .multilineTextAlignment(.center)
                     }
-                    .frame(maxWidth: .infinity)
-                    VStack {
-                        Image("Safe")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        Text("Multiple layers of authentication.")
-                            .font(.system(size: 14))
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
                 }
-                Divider()
-                    .padding()
+                .signInWithAppleButtonStyle(.black)
+                .frame(maxWidth: 322, maxHeight: 64)
+                .cornerRadius(100.0)
+                .padding()
                 HStack {
-                    Link(destination: URL(string: "https://censo.co/terms/")!, label: {
-                        Text("Terms")
-                            .padding()
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            .tint(.black)
-                            .frame(width: .infinity)
-                    })
-                    Link(destination: URL(string: "https://censo.co/privacy/")!, label: {
-                        Text("Privacy")
-                            .padding()
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            .tint(.black)
-                            .frame(width: .infinity)
-                    })
+                    Image(systemName: "info.circle")
+                    Text("Why Apple ID?")
+                        .font(.system(size: 18, weight: .medium))
                 }
-            }.frame(height: 180)
-        }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button(role: .cancel, action: {}) {
-                Text("OK")
+                Spacer()
+                VStack {
+                    HStack(alignment: .top) {
+                        VStack {
+                            Image("EyeSlash")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                            Text("No personal info required, ever.")
+                                .font(.system(size: 14))
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Image("Safe")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                            Text("Multiple layers of authentication.")
+                                .font(.system(size: 14))
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    Divider()
+                        .padding()
+                    HStack {
+                        Link(destination: URL(string: "https://censo.co/terms/")!, label: {
+                            Text("Terms")
+                                .padding()
+                                .fontWeight(.bold)
+                                .tint(.black)
+                                .frame(maxWidth: .infinity)
+                        })
+                        Link(destination: URL(string: "https://censo.co/privacy/")!, label: {
+                            Text("Privacy")
+                                .padding()
+                                .fontWeight(.bold)
+                                .tint(.black)
+                                .frame(maxWidth: .infinity)
+                        })
+                    }
+                }.frame(height: 180)
             }
-        } message: { error in
-            Text("There was an error trying to sign you in: \(error.localizedDescription)")
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button(role: .cancel, action: {}) {
+                    Text("OK")
+                }
+            } message: { error in
+                Text("There was an error trying to sign you in: \(error.localizedDescription)")
+            }
+        } else {
+            TermsOfUse(
+                text: TermsOfUse.v0_1,
+                onAccept: {
+                    acceptedTermsOfUseVersion = "v0.1"
+                }
+            )
         }
     }
 
