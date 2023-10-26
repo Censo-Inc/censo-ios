@@ -115,21 +115,8 @@ struct RecoveredSecretsView: View {
     }
     
     private func recoverSecrets(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) throws -> [RecoveredSecret] {
-        let points = try encryptedShards.map {
-            
-            let decryptedShard = $0.isOwnerShard 
-                ? try decryptWithOwnerApproverKey($0)
-                : try session.deviceKey.decrypt(data: $0.encryptedShard.data)
-            return Point(
-                x: $0.participantId.bigInt,
-                y: decryptedShard.toPositiveBigInt()
-            )
-        }
-        
-        let intermediateKey = try EncryptionKey.generateFromPrivateKeyRaw(
-            data: SecretSharerUtils.recoverSecret(shares: points).magnitude.serialize().padded(toByteCount: 32)
-        )
-        let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: encryptedMasterKey))
+        let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
+        let masterKey = try EncryptionKey.fromEncryptedPrivateKey(encryptedMasterKey, intermediateKey)
         
         return try requestedSecrets.map {
             let decryptedSecret = try masterKey.decrypt(base64EncodedString: $0.encryptedSeedPhrase)
@@ -139,13 +126,6 @@ struct RecoveredSecretsView: View {
                 secret: decodedWords.joined(separator: " ")
             )
         }
-    }
-    
-    private func decryptWithOwnerApproverKey(_ encryptedShard: API.RetrieveRecoveryShardsApiResponse.EncryptedShard) throws -> Data {
-        guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier) else {
-            throw CensoError.failedToRetrieveApproverKey
-        }
-        return try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)
     }
     
     private func dismissAndDeleteRecovery() {

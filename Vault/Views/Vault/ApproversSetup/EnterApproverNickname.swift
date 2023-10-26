@@ -7,12 +7,22 @@
 
 import Foundation
 import SwiftUI
+import Moya
+import raygun4apple
 
 struct EnterApproverNickname: View {
+    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
+    var session: Session
+    var policySetup: API.PolicySetup?
+    var isPrimary: Bool
+    var onComplete: (API.OwnerState) -> Void
+    
     @State private var nickname: String = ""
-    var onSave: (String) -> Void
+    @State private var submitting = false
+    @State private var showingError = false
+    @State private var error: Error?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -36,14 +46,30 @@ struct EnterApproverNickname: View {
             .frame(maxWidth: .infinity)
             
             Button {
-                onSave(nickname)
+                submit()
             } label: {
-                Text("Save")
-                    .font(.system(size: 24))
-                    .frame(maxWidth: .infinity)
+                Group {
+                    if submitting {
+                        ProgressView()
+                    } else {
+                        Text("Save")
+                            .font(.system(size: 24))
+                    }
+                }
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            .disabled(nickname.isEmpty)
+            .disabled(submitting || nickname.trimmingCharacters(in: .whitespaces).isEmpty)
+        }
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button {
+                showingError = false
+                error = nil
+            } label: {
+                Text("OK")
+            }
+        } message: { error in
+            Text(error.localizedDescription)
         }
         .padding([.leading, .trailing], 32)
         .navigationBarTitleDisplayMode(.inline)
@@ -57,6 +83,71 @@ struct EnterApproverNickname: View {
                 }
             }
         })
+    }
+    
+    private func showError(_ error: Error) {
+        self.submitting = false
+        self.error = error
+        self.showingError = true
+    }
+    
+    private func submit() {
+        self.submitting = true
+            
+        do {
+            let newApproverParticipantId = ParticipantId.random()
+            let guardians: [API.GuardianSetup]
+            
+            if let owner = policySetup?.guardians.first,
+               let primaryApprover = policySetup?.guardians.last {
+                guardians = [
+                    .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                        participantId: owner.participantId,
+                        label: "Me",
+                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
+                    )),
+                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                        participantId: primaryApprover.participantId,
+                        label: primaryApprover.label,
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                    )),
+                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                        participantId: newApproverParticipantId,
+                        label: nickname,
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                    ))
+                ]
+            } else {
+                let ownerParticipantId = ParticipantId.random()
+                guardians = [
+                    .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                        participantId: ownerParticipantId,
+                        label: "Me",
+                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
+                    )),
+                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                        participantId: newApproverParticipantId,
+                        label: nickname,
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                    ))
+                ]
+            }
+            
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, guardians: guardians))
+            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+                switch result {
+                case .success(let response):
+                    onComplete(response.ownerState)
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+        } catch {
+            RaygunClient.sharedInstance().send(error: error, tags: ["Setup policy"], customData: nil)
+            showError(CensoError.failedToSaveApproversName)
+        }
     }
 }
 

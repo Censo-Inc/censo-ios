@@ -264,6 +264,10 @@ extension API {
                 return guardians.count > 2 ? guardians[2] : nil
             }
         }
+        
+        func approverByParticipantId(_ participantId: ParticipantId) -> ProspectGuardian? {
+            return guardians.first(where: { $0.participantId == participantId })
+        }
     }
         
     enum OwnerState: Codable {
