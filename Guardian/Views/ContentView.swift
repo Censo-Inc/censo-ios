@@ -21,28 +21,30 @@ struct ContentView: View {
     
     var body: some View {
         Authentication { session in
-            NavigationStack {
-                GuardianHome()
-                    .navigationDestination(
-                        isPresented: $isPresented,
-                        destination: {
-                            ApproverRouting(
-                                inviteCode: $identifier,
-                                participantId: $participantId,
-                                route: $route,
-                                session: session,
-                                onSuccess: {
-                                    isPresented = false
-                                }
-                            )
-                        }
-                    )
-            }
-            .onOpenURL(perform: openURL)
-            .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-                Button("OK", role: .cancel, action: {})
-            } message: { error in
-                Text(error.localizedDescription)
+            CloudCheck {
+                NavigationStack {
+                    GuardianHome()
+                        .navigationDestination(
+                            isPresented: $isPresented,
+                            destination: {
+                                ApproverRouting(
+                                    inviteCode: $identifier,
+                                    participantId: $participantId,
+                                    route: $route,
+                                    session: session,
+                                    onSuccess: {
+                                        isPresented = false
+                                    }
+                                )
+                            }
+                        )
+                }
+                .onOpenURL(perform: openURL)
+                .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
+                    Button("OK", role: .cancel, action: {})
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
             }
         }
     }

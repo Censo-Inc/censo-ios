@@ -11,7 +11,9 @@ import Moya
 struct ContentView: View {
     var body: some View {
         Authentication { session in
-            Owner(session: session)
+            CloudCheck {
+                Owner(session: session)
+            }
         }
     }
 }

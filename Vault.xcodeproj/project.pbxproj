@@ -65,6 +65,8 @@
 		3DE0B97F2ABA57160001F3A3 /* MoyaProvider+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */; };
 		3DE0B9812ABA5F0C0001F3A3 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */; };
 		3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9822ABA5F4A0001F3A3 /* Session.swift */; };
+		3DF711312AEABDCF009B18CB /* CloudCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF711302AEABDCF009B18CB /* CloudCheck.swift */; };
+		3DF711322AEABE76009B18CB /* CloudCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF711302AEABDCF009B18CB /* CloudCheck.swift */; };
 		3DFF192E2AC6C7DC006111B2 /* OpenVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF192D2AC6C7DC006111B2 /* OpenVault.swift */; };
 		3DFF19522AC95574006111B2 /* PinInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF194E2AC954E8006111B2 /* PinInputField.swift */; };
 		3DFF19532AC95578006111B2 /* PinInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF19502AC954FE006111B2 /* PinInput.swift */; };
@@ -315,6 +317,7 @@
 		3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaProvider+Session.swift"; sourceTree = "<group>"; };
 		3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Owner.swift; sourceTree = "<group>"; };
 		3DE0B9822ABA5F4A0001F3A3 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		3DF711302AEABDCF009B18CB /* CloudCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCheck.swift; sourceTree = "<group>"; };
 		3DFF192D2AC6C7DC006111B2 /* OpenVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenVault.swift; sourceTree = "<group>"; };
 		3DFF194E2AC954E8006111B2 /* PinInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinInputField.swift; sourceTree = "<group>"; };
 		3DFF19502AC954FE006111B2 /* PinInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinInput.swift; sourceTree = "<group>"; };
@@ -516,6 +519,7 @@
 				E463C5A22AE13E1700AFDFBB /* TextFieldStyles */,
 				3D8214682AC28C2B00AC2598 /* Shared */,
 				3D0C1E792A83A79400AB3A48 /* ContentView.swift */,
+				3DF711302AEABDCF009B18CB /* CloudCheck.swift */,
 				3DE0B9802ABA5F0C0001F3A3 /* Owner.swift */,
 				3DE0B97C2ABA56BA0001F3A3 /* SignIn.swift */,
 				3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */,
@@ -1075,6 +1079,7 @@
 				E4D3768B2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift in Sources */,
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				6C2392AF2AE6C9A300987A91 /* HomeView.swift in Sources */,
+				3DF711312AEABDCF009B18CB /* CloudCheck.swift in Sources */,
 				E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */,
 				6C4D5E872AE9C0EA001DCDA6 /* AccessPhrases.swift in Sources */,
 				E4D376832AE8391D005809F7 /* SetupApprover.swift in Sources */,
@@ -1146,6 +1151,7 @@
 				BD89A3FA2AE989F20035B094 /* TermsOfUse.swift in Sources */,
 				3D23ACDC2AB22C9200F55C5D /* ContentView.swift in Sources */,
 				6CD6DAF12ABC9A2200974035 /* SignIn.swift in Sources */,
+				3DF711322AEABE76009B18CB /* CloudCheck.swift in Sources */,
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
 				6C0AF9652ACC6722009A9B54 /* Base32.swift in Sources */,
 				BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */,
