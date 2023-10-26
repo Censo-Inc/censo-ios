@@ -80,10 +80,12 @@ struct SetupStep: View {
                     .fontWeight(.bold)
                     .padding(.horizontal)
                     .padding(.vertical, -1)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(content)
                     .font(.system(size: 14))
                     .padding(.leading)
                     .padding(.top, 1)
+                    .fixedSize(horizontal: false, vertical: true)
                 switch (completionText) {
                 case .some(let text):
                     Text("✓ " + text)

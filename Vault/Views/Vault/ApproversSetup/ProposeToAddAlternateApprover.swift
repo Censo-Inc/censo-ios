@@ -1,5 +1,5 @@
 //
-//  ProposeToAddBackupApprover.swift
+//  ProposeToAddAlternateApprover.swift
 //  Vault
 //
 //  Created by Anton Onyshchenko on 24.10.23.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct ProposeToAddBackupApprover : View {
+struct ProposeToAddAlternateApprover : View {
     @Environment(\.dismiss) var dismiss
     
     var onAccept: () -> Void
@@ -18,17 +18,17 @@ struct ProposeToAddBackupApprover : View {
         VStack(alignment: .leading, spacing: 20) {
             Spacer()
             
-            Text("Add a backup approver?")
+            Text("Add an alternate approver?")
                 .font(.system(size: 24))
                 .bold()
             
-            Text("For added peace of mind, add a backup approver. You can use either your primary or your backup approver along with your face scan to access your seed phrase.")
+            Text("For added peace of mind, add an alternate approver. You can use either your primary or your alternate approver along with your face scan to access your seed phrase.")
                 .font(.system(size: 14))
             
             Button {
                 onAccept()
             } label: {
-                Text("Invite backup")
+                Text("Invite alternate")
                     .font(.system(size: 24))
                     .frame(maxWidth: .infinity)
             }
@@ -60,7 +60,7 @@ struct ProposeToAddBackupApprover : View {
 
 #if DEBUG
 #Preview {
-    ProposeToAddBackupApprover(
+    ProposeToAddAlternateApprover(
         onAccept: {},
         onSkip: {}
     )

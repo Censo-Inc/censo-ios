@@ -101,7 +101,7 @@ struct PhrasesView: View {
             GeometryReader { geometry in
                 ScrollView {
                     ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
-                        VStack(alignment: .leading) {
+                        ZStack(alignment: .leading) {
                             Button {
                                 showingEditSheet = true
                                 editingIndex = i
@@ -111,14 +111,14 @@ struct PhrasesView: View {
                                     Image("Pencil").padding([.trailing], 4)
                                 }
                             }
+        
                             Text(ownerState.vault.secrets[i].label)
                                 .font(.system(size: 18, weight: .medium))
                                 .multilineTextAlignment(.leading)
-                                .padding([.bottom, .leading])
-                                .padding([.trailing], 30)
+                                .padding([.bottom, .leading, .top])
+                                .padding([.trailing], 35)
                         }
-                        .multilineTextAlignment(.leading)
-                        .frame(minWidth: 300, minHeight: 107, maxHeight: 107)
+                        .frame(height: 100)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .strokeBorder(style: StrokeStyle(lineWidth: 1))

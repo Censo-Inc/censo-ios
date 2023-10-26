@@ -259,7 +259,7 @@ extension API {
             }
         }
         
-        var backupApprover: ProspectGuardian? {
+        var alternateApprover: ProspectGuardian? {
             get {
                 return guardians.count > 2 ? guardians[2] : nil
             }

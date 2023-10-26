@@ -39,7 +39,7 @@ struct InitialApproversSetup: View {
                     Text("Invite up to two trusted approvers for an additional layer of security")
                         .font(.system(size: 14))
                     
-                    Text("You can use either your primary or your backup approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
+                    Text("You can use either your primary or your alternate approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
                         .font(.system(size: 14))
                 }
                 

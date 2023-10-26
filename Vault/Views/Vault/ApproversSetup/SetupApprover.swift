@@ -18,7 +18,7 @@ struct SetupApprover : View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     var body: some View {
-        if let policySetup = policySetup, let approver = isPrimary ? policySetup.primaryApprover : policySetup.backupApprover {
+        if let policySetup = policySetup, let approver = isPrimary ? policySetup.primaryApprover : policySetup.alternateApprover {
             ActivateApprover(
                 session: session,
                 policySetup: policySetup,

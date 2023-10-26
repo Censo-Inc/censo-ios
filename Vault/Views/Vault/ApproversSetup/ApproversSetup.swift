@@ -20,28 +20,28 @@ struct ApproversSetup: View {
     
     enum Step {
         case setupPrimary
-        case proposeBackup
-        case setupBackup
+        case proposeAlternate
+        case setupAlternate
         case requestingRecovery
         case retrievingShards
         case replacingPolicy
         case done
         
         static func fromOwnerState(_ ownerState: API.OwnerState.Ready) -> Step {
-            if ownerState.policySetup?.backupApprover == nil {
+            if ownerState.policySetup?.alternateApprover == nil {
                 if ownerState.policySetup?.primaryApprover?.isConfirmed == true {
-                    return .proposeBackup
+                    return .proposeAlternate
                 } else {
                     return .setupPrimary
                 }
             } else {
-                return .setupBackup
+                return .setupAlternate
             }
         }
     }
     
     @State private var step: Step
-    @State private var proposeToAddBackupApprover = false
+    @State private var proposeToAddAlternateApprover = false
     @State private var showingError = false
     @State private var error: Error?
     
@@ -67,20 +67,20 @@ struct ApproversSetup: View {
                 policySetup: ownerState.policySetup,
                 isPrimary: true,
                 onComplete: {
-                    step = .proposeBackup
+                    step = .proposeAlternate
                 },
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
-        case .proposeBackup:
-            ProposeToAddBackupApprover(
+        case .proposeAlternate:
+            ProposeToAddAlternateApprover(
                 onAccept: {
-                    step = .setupBackup
+                    step = .setupAlternate
                 },
                 onSkip: {
                     initPolicyReplacement()
                 }
             )
-        case .setupBackup:
+        case .setupAlternate:
             SetupApprover(
                 session: session,
                 policySetup: ownerState.policySetup,

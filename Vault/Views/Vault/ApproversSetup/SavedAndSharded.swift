@@ -54,9 +54,10 @@ struct SavedAndSharded : View {
             .padding(.vertical, 10)
             
             let approverNames = approvers
+                .filter({ !$0.isOwner })
                 .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
-                .map({ $0.isOwner ? "You" : $0.label })
-            
+                .map({ $0.label })
+
             VStack {
                 ForEach(approverNames, id: \.self) { approver in
                     Text(approver)
