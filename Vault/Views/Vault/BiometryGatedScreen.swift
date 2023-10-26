@@ -11,6 +11,7 @@ import Moya
 
 struct BiometryGatedScreen<Content: View>: View {
     @Environment(\.apiProvider) var apiProvider
+    @Environment(\.scenePhase) var scenePhase
     
     var session: Session
     @Binding var ownerState: API.OwnerState
@@ -19,29 +20,44 @@ struct BiometryGatedScreen<Content: View>: View {
     
     @State private var showFacetec = false
     
+    private let prolongationThreshold: TimeInterval = 600
+    @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
     var body: some View {
         VStack {
             switch ownerState {
             case .ready(let ready):
                 if let unlockedDuration = ready.unlockedForSeconds {
-                    UnlockedContentWrapper(
-                        session: session,
-                        locksAt: unlockedDuration.locksAt,
-                        ownerState: $ownerState,
-                        onExpired: onUnlockExpired,
-                        content: content
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
-                    .onAppear {
-                        showFacetec = false
-                    }
+                        content()
+                        .onChange(of: scenePhase) { newScenePhase in
+                            switch newScenePhase {
+                            case .active:
+                                timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+                            case .inactive,
+                                 .background:
+                                timer.upstream.connect().cancel()
+                            default:
+                                break;
+                            }
+                        }
+                        .onAppear {
+                            showFacetec = false
+                        }
+                        .onReceive(timer) { _ in
+                            if (Date.now >= unlockedDuration.locksAt) {
+                                onUnlockExpired()
+                            } else {
+                                if unlockedDuration.locksAt.timeIntervalSinceNow < prolongationThreshold {
+                                    prolongUnlock()
+                                }
+                            }
+                        }
                 } else {
                     if showFacetec {
                         FacetecAuth<API.UnlockApiResponse>(
                             session: session,
-                            onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                                return .unlock(API.UnlockApiRequest(biometryVerificationId: biomentryVerificationId, biometryData: biometryData))
+                            onReadyToUploadResults: { biometryVerificationId, biometryData in
+                                return .unlock(API.UnlockApiRequest(biometryVerificationId: biometryVerificationId, biometryData: biometryData))
                             },
                             onSuccess: { response in
                                 ownerState = response.ownerState
@@ -60,79 +76,6 @@ struct BiometryGatedScreen<Content: View>: View {
             }
         }
     }
-}
-
-
-private struct UnlockedContentWrapper<Content: View>: View {
-    @Environment(\.apiProvider) var apiProvider
-    
-    var session: Session
-    var locksAt: Date
-    @Binding var ownerState: API.OwnerState
-    var onExpired: () -> Void
-    @ViewBuilder var content: () -> Content
-    
-    @State private var timeRemaining: TimeInterval = 0
-    private let timeRemainingWhenProlongationPossible: TimeInterval = 180
-    
-    @State private var prolongationPromptDismissed = false
-    @State private var prolongationFailed = false
-    
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    private var timeFormatter: DateComponentsFormatter {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .full
-        formatter.zeroFormattingBehavior = .dropLeading
-        formatter.allowedUnits = [.minute]
-        formatter.includesApproximationPhrase = true
-        return formatter
-    }
-    
-    var body: some View {
-        let showProlongationPrompt = Binding<Bool>(
-            get: {
-                timeRemaining > 0
-                && timeRemaining <= timeRemainingWhenProlongationPossible
-                && !prolongationPromptDismissed
-            },
-            set: { _ in }
-        )
-        
-        content()
-        .onAppear {
-            timeRemaining = locksAt.timeIntervalSinceNow
-        }
-        .onReceive(timer) { _ in
-            if (Date.now >= locksAt) {
-                onExpired()
-            } else {
-                timeRemaining = locksAt.timeIntervalSinceNow
-            }
-            if (prolongationPromptDismissed && timeRemaining > timeRemainingWhenProlongationPossible) {
-                prolongationPromptDismissed = false
-            }
-        }
-        .alert("Extend session?", isPresented: showProlongationPrompt, presenting: timeRemaining) { _ in
-            VStack {
-                Button("Extend") {
-                    prolongationPromptDismissed = true
-                    prolongUnlock()
-                }
-                Button("Cancel", role: .cancel) {
-                    prolongationPromptDismissed = true
-                }
-            }
-        } message: { timeRemaining in
-            let formattedTime = timeRemaining > 60 ? timeFormatter.string(from: timeRemaining)?.lowercased() ?? "a few minutes" : "under a minute"
-            Text("For security, your session will expire in \(formattedTime)")
-        }
-        .alert("Failed to extend session", isPresented: $prolongationFailed) {
-            Button("OK") {
-                prolongationFailed = false
-            }
-        }
-    }
     
     private func prolongUnlock() {
         apiProvider.decodableRequest(with: session, endpoint: .prolongUnlock) { (result: Result<API.ProlongUnlockApiResponse, MoyaError>) in
@@ -140,57 +83,62 @@ private struct UnlockedContentWrapper<Content: View>: View {
             case .success(let response):
                 ownerState = response.ownerState
             case .failure:
-                prolongationFailed = true
+                break
             }
         }
     }
 }
 
+
 #if DEBUG
-struct BiometryGatedScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        let session = Session.sample
-        
-        @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: try! UnlockedDuration(value: 600)))
-        BiometryGatedScreen(
-            session: session,
-            ownerState: $ownerState1,
-            onUnlockExpired: {}
-        ) {
-            RecoveredSecretsView(
-                session: .sample,
-                requestedSecrets: [],
-                encryptedMasterKey: Base64EncodedString(data: Data()),
-                deleteRecovery: {},
-                status: RecoveredSecretsView.Status.showingSecrets(
-                    secrets: [
-                        RecoveredSecretsView.RecoveredSecret(label: "Secret 1", secret: "Secret Phrase 1"),
-                        RecoveredSecretsView.RecoveredSecret(label: "Secret 2", secret: "Secret Phrase 2"),
-                    ]
-                )
+#Preview("ReadyUnlocked") {
+    let session = Session.sample
+    
+    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600)))
+    return BiometryGatedScreen(
+        session: session,
+        ownerState: $ownerState1,
+        onUnlockExpired: {}
+    ) {
+        RecoveredSecretsView(
+            session: .sample,
+            requestedSecrets: [],
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            deleteRecovery: {},
+            status: RecoveredSecretsView.Status.showingSecrets(
+                secrets: [
+                    RecoveredSecretsView.RecoveredSecret(label: "Secret 1", secret: "Secret Phrase 1"),
+                    RecoveredSecretsView.RecoveredSecret(label: "Secret 2", secret: "Secret Phrase 2"),
+                ]
             )
+        )
+    }
+}
+
+#Preview("ReadyLocked") {
+    let session = Session.sample
+    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil))
+    return BiometryGatedScreen(
+        session: session,
+        ownerState: $ownerState2,
+        onUnlockExpired: {}
+    ) {
+        VStack {
+            Text("test")
         }
-        
-        @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil))
-        BiometryGatedScreen(
-            session: session,
-            ownerState: $ownerState2,
-            onUnlockExpired: {}
-        ) {
-            VStack {
-                Text("test")
-            }
-        }
-        
-        @State var ownerState3 = API.OwnerState.initial
-        BiometryGatedScreen(
-            session: session,
-            ownerState: $ownerState3,
-            onUnlockExpired: {}
-        ) {
-            VStack {
-                Text("test")
-            }
+    }
+}
+
+#Preview("Initial") {
+    let session = Session.sample
+    @State var ownerState3 = API.OwnerState.initial
+    return BiometryGatedScreen(
+        session: session,
+        ownerState: $ownerState3,
+        onUnlockExpired: {}
+    ) {
+        VStack {
+            Text("test")
         }
     }
 }
