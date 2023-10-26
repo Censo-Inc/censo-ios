@@ -29,7 +29,7 @@
       "size" : "29x29"
     },
     {
-      "filename" : "icon-76.png",
+      "filename" : "icon-2-76.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -71,35 +71,35 @@
       "size" : "60x60"
     },
     {
-      "filename" : "icon-128.png",
+      "filename" : "icon-2-128.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
       "size" : "64x64"
     },
     {
-      "filename" : "icon-192.png",
+      "filename" : "icon-2-192.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
       "size" : "64x64"
     },
     {
-      "filename" : "icon-136.png",
+      "filename" : "icon-2-136.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
       "size" : "68x68"
     },
     {
-      "filename" : "icon-152.png",
+      "filename" : "icon-2-152.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
       "size" : "76x76"
     },
     {
-      "filename" : "icon-167.png",
+      "filename" : "icon-2-167.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
