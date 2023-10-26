@@ -209,6 +209,7 @@
 		E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */; };
 		E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */; };
 		E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073A2AEA7746009A06A1 /* RenameApprover.swift */; };
+		E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		E4AB90B62AD0269500390AEF /* RecoveredSecretsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */; };
 		E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */; };
@@ -375,6 +376,7 @@
 		E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryExpirationCountDown.swift; sourceTree = "<group>"; };
 		E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryApproverRow.swift; sourceTree = "<group>"; };
 		E472073A2AEA7746009A06A1 /* RenameApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameApprover.swift; sourceTree = "<group>"; };
+		E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptionKey+Owner.swift"; sourceTree = "<group>"; };
 		E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveredSecretsView.swift; sourceTree = "<group>"; };
 		E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+BigInt.swift"; sourceTree = "<group>"; };
 		E4D3767E2AE82D7E005809F7 /* InitialApproversSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialApproversSetup.swift; sourceTree = "<group>"; };
@@ -513,6 +515,7 @@
 				3D0C1E8D2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift */,
 				3D0C1E8F2A83AA3D00AB3A48 /* SecureEnclaveKey.swift */,
 				6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */,
+				E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */,
 			);
 			path = KeyManagement;
 			sourceTree = "<group>";
@@ -1071,6 +1074,7 @@
 				6C5307792AE1847100E20F1E /* InvitationId.swift in Sources */,
 				3D3E64D52AE6B76A0000C56C /* SaveSeedPhrase.swift in Sources */,
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
+				E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */,
 				E4D3768D2AE83A24005809F7 /* SavedAndSharded.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3D3E64D12AE6B76A0000C56C /* SeedVerification.swift in Sources */,
