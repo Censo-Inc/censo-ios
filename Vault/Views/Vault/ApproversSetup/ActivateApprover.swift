@@ -19,13 +19,13 @@ struct ActivateApprover : View {
     var onComplete: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
-    enum Step {
+    enum Mode {
         case getLive
         case activate
         case rename
     }
     
-    @State private var step: Step = .getLive
+    @State private var mode: Mode = .getLive
     @State private var showingError = false
     @State private var error: Error?
     
@@ -35,12 +35,12 @@ struct ActivateApprover : View {
     var body: some View {
         let isPrimary = approver == policySetup.primaryApprover
         
-        switch(step) {
+        switch(mode) {
         case .getLive:
             GetLiveWithApprover(
                 approverName: approver.label,
                 onContinue: {
-                    step = .activate
+                    mode = .activate
                 }
             )
         case .rename:
@@ -50,7 +50,7 @@ struct ActivateApprover : View {
                 approver: approver,
                 onComplete: { ownerState in
                     onOwnerStateUpdated(ownerState)
-                    step = .activate
+                    mode = .activate
                 }
             )
             .navigationTitle(Text("\(isPrimary ? "Primary" : "Backup") approver"))
@@ -58,7 +58,7 @@ struct ActivateApprover : View {
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        step = .activate
+                        mode = .activate
                     } label: {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
@@ -210,7 +210,7 @@ struct ActivateApprover : View {
                                 Spacer()
                                 
                                 Button {
-                                    step = .rename
+                                    mode = .rename
                                 } label: {
                                     Image("Pencil")
                                         .resizable()
@@ -268,7 +268,7 @@ struct ActivateApprover : View {
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        step = .getLive
+                        mode = .getLive
                     } label: {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
