@@ -53,7 +53,7 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationTitle(Text("\(isPrimary ? "Primary" : "Backup") approver"))
+            .navigationTitle(Text("\(isPrimary ? "Primary" : "Alternate") approver"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -68,7 +68,7 @@ struct ActivateApprover : View {
         case .activate:
             ScrollView {
                 VStack(spacing: 10) {
-                    Text("Activate \(isPrimary ? "primary": "backup") approver")
+                    Text("Activate \(isPrimary ? "primary": "alternate") approver")
                         .font(.system(size: 24))
                         .bold()
                     
@@ -169,7 +169,7 @@ struct ActivateApprover : View {
                                 .bold()
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret {
-                                Text("They must enter this 6-digit code to become your \(isPrimary ? "primary" : "backup") approver.")
+                                Text("They must enter this 6-digit code to become your \(isPrimary ? "primary" : "alternate") approver.")
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                                 
@@ -179,7 +179,7 @@ struct ActivateApprover : View {
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
-                                Text("They will need to enter a 6-digit code to become your \(isPrimary ? "primary" : "backup") approver.")
+                                Text("They will need to enter a 6-digit code to become your \(isPrimary ? "primary" : "alternate") approver.")
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                             }
@@ -198,7 +198,7 @@ struct ActivateApprover : View {
                     
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("\(isPrimary ? "Primary": "Backup") approver")
+                            Text("\(isPrimary ? "Primary": "Alternate") approver")
                                 .font(.system(size: 14))
                                 .bold()
                             
@@ -263,7 +263,7 @@ struct ActivateApprover : View {
                 .padding([.leading, .trailing], 32)
             }
             .padding([.top], 24)
-            .navigationTitle(Text("\(isPrimary ? "Primary" : "Backup") approver"))
+            .navigationTitle(Text("\(isPrimary ? "Primary" : "Alternate") approver"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

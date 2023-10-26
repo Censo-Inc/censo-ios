@@ -34,14 +34,14 @@ struct PastePhrase: View {
 
     var session: Session
     @State var phrase: String = ""
-    @State var nickname: String = ""
+    @State var label: String = ""
 
     var ownerState: API.OwnerState.Ready
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
     @FocusState private var isPhraseFocused: Bool
-    @FocusState private var isNicknameFocused: Bool
+    @FocusState private var isLabelFocused: Bool
 
     @State private var phraseValidation: PhraseValidity = .notChecked
 
@@ -93,12 +93,12 @@ struct PastePhrase: View {
                         .frame(maxWidth: .infinity)
                         Spacer()
 
-                        Text("Add a nickname")
+                        Text("Add a label")
                             .font(.system(size: 24, weight: .semibold))
                             .padding(.vertical)
 
 
-                        Text("Give your seed phrase a nickname of your choice so you can identify it in the future.")
+                        Text("Give your seed phrase a label of your choice so you can identify it in the future.")
                             .font(.system(size: 14))
                             .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
                             .fixedSize(horizontal: false, vertical: true)
@@ -106,14 +106,14 @@ struct PastePhrase: View {
                             .font(.system(size: 14))
                             .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
                             .fixedSize(horizontal: false, vertical: true)
-                        TextField(text: $nickname) {
-                            Text("Enter a nickname...")
+                        TextField(text: $label) {
+                            Text("Enter a label...")
                         }
-                        .focused($isNicknameFocused)
+                        .focused($isLabelFocused)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                         .onAppear {
-                            isNicknameFocused = true
+                            isLabelFocused = true
                         }
 
                         Button {
@@ -125,7 +125,7 @@ struct PastePhrase: View {
                         .disabled(
                             inProgress ||
                             !phraseValidation.isValid() ||
-                            nickname.trimmingCharacters(in: .whitespaces).isEmpty
+                            label.trimmingCharacters(in: .whitespaces).isEmpty
                         )
                         .buttonStyle(RoundedButtonStyle())
                         .padding()
@@ -186,7 +186,7 @@ struct PastePhrase: View {
             let payload = API.StoreSecretApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: secretData).compactMap { String(format: "%02x", $0) }.joined(),
-                label: nickname.trimmingCharacters(in: .whitespaces)
+                label: label.trimmingCharacters(in: .whitespaces)
             )
             apiProvider.decodableRequest(with: session, endpoint: .storeSecret(payload)) { (result: Result<API.StoreSecretApiResponse, MoyaError>) in
                 switch result {
