@@ -192,62 +192,17 @@ struct ActivateApprover : View {
                 .padding([.bottom], 8)
                 
                 Spacer()
-                
-                VStack(spacing: 30) {
-                    Divider()
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("\(isPrimary ? "Primary": "Alternate") approver")
-                                .font(.system(size: 14))
-                                .bold()
-                            
-                            HStack {
-                                Text(approver.label)
-                                    .font(.system(size: 24))
-                                    .bold()
-                                
-                                Spacer()
-                                
-                                Button {
-                                    mode = .rename
-                                } label: {
-                                    Image("Pencil")
-                                        .resizable()
-                                        .frame(width: 32, height: 32)
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                            
-                            switch approver.status {
-                            case .declined:
-                                Text("Declined")
-                                    .foregroundColor(.red)
-                            case .initial:
-                                Text("Not yet active")
-                                    .foregroundColor(.Censo.gray)
-                            case .accepted:
-                                Text("Opened link in app")
-                                    .foregroundColor(.Censo.gray)
-                            case .verificationSubmitted(let verificationSubmitted):
-                                Text("Checking Code")
-                                    .foregroundColor(.Censo.gray)
-                                    .onAppear {
-                                        confirmApprover(participantId: approver.participantId, status: verificationSubmitted)
-                                    }
-                            case .confirmed:
-                                Text("Activated")
-                                    .foregroundColor(.Censo.green)
-                            case .implicitlyOwner:
-                                Text("")
-                            }
+                VStack {
+                    ApproverPill(
+                        isPrimary: isPrimary,
+                        approver: .prospect(approver),
+                        onEdit: { mode = .rename },
+                        onVerificationSubmitted: { status in
+                            confirmApprover(
+                                participantId: approver.participantId,
+                                status: status
+                            )
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16.0)
-                            .stroke(Color.gray, lineWidth: 1)
                     )
                     
                     Button {

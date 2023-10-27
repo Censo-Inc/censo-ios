@@ -23,23 +23,27 @@ struct HomeView: View {
         VStack {
             VStack {
                 Spacer()
-                VStack {
-                    Text("\(vault.secrets.count)")
-                        .font(.system(size: 100, weight: .semibold))
-                        .foregroundColor(.black)
-                        .frame(alignment: .center)
-                    
-                    Text("seed phrase\(vault.secrets.count != 1 ? "s" : "")")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundColor(.black)
-                        .frame(alignment: .center)
+                Button {
+                    self.parentTabViewSelectedTab = VaultHomeScreen.TabName.phrases
+                } label: {
+                    VStack {
+                        Text("\(vault.secrets.count)")
+                            .font(.system(size: 100, weight: .semibold))
+                            .foregroundColor(.black)
+                            .frame(alignment: .center)
+                        
+                        Text("seed phrase\(vault.secrets.count != 1 ? "s" : "")")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundColor(.black)
+                            .frame(alignment: .center)
+                    }
+                    .frame(minWidth: 322, minHeight: 247)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: vault.secrets.count == 0 ? [3] : []))
+                            .foregroundColor(.Censo.lightGray)
+                    )
                 }
-                .frame(minWidth: 322, minHeight: 247)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: vault.secrets.count == 0 ? [3] : []))
-                        .foregroundColor(.Censo.lightGray)
-                )
                 
                 Button {
                     showingAddPhrase = true
@@ -54,23 +58,27 @@ struct HomeView: View {
                 
                 Divider().padding([.top, .bottom], 10)
                 
-                VStack {
-                    Text("\(policy.externalApproversCount)")
-                        .font(.system(size: 100, weight: .semibold))
-                        .foregroundColor(.black)
-                        .frame(alignment: .center)
-                    
-                    Text("approver\(policy.externalApproversCount != 1 ? "s" : "")")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundColor(.black)
-                        .frame(alignment: .center)
+                Button {
+                    self.parentTabViewSelectedTab = VaultHomeScreen.TabName.approvers
+                } label: {
+                    VStack {
+                        Text("\(policy.externalApproversCount)")
+                            .font(.system(size: 100, weight: .semibold))
+                            .foregroundColor(.black)
+                            .frame(alignment: .center)
+                        
+                        Text("approver\(policy.externalApproversCount != 1 ? "s" : "")")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundColor(.black)
+                            .frame(alignment: .center)
+                    }
+                    .frame(minWidth: 322, minHeight: 247)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.externalApproversCount == 0 ? [3] : []))
+                            .foregroundColor(.Censo.lightGray)
+                    )
                 }
-                .frame(minWidth: 322, minHeight: 247)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.externalApproversCount == 0 ? [3] : []))
-                        .foregroundColor(.Censo.lightGray)
-                )
                 
                 if policy.externalApproversCount == 0 {
                     Button {

@@ -186,6 +186,7 @@
 		BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */; };
 		BD89A3F92AE989F20035B094 /* TermsOfUse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD89A3F82AE989F20035B094 /* TermsOfUse.swift */; };
 		BD89A3FA2AE989F20035B094 /* TermsOfUse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD89A3F82AE989F20035B094 /* TermsOfUse.swift */; };
+		BD89A3FC2AEB3FA50035B094 /* ApproverPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD89A3FB2AEB3FA50035B094 /* ApproverPill.swift */; };
 		BD8BC98E2ADD89F400DA979C /* FirstPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */; };
 		BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */; };
 		BD8BC9922ADDC4E100DA979C /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC9912ADDC4E100DA979C /* BIP39.swift */; };
@@ -358,6 +359,7 @@
 		BD50261A2AE8B0E400B727C4 /* AppSpecificError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpecificError.swift; sourceTree = "<group>"; };
 		BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitVerification.swift; sourceTree = "<group>"; };
 		BD89A3F82AE989F20035B094 /* TermsOfUse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfUse.swift; sourceTree = "<group>"; };
+		BD89A3FB2AEB3FA50035B094 /* ApproverPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproverPill.swift; sourceTree = "<group>"; };
 		BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstPhrase.swift; sourceTree = "<group>"; };
 		BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastePhrase.swift; sourceTree = "<group>"; };
 		BD8BC9912ADDC4E100DA979C /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
@@ -606,6 +608,7 @@
 				3DD3F5C82AD03C1F0059FEFA /* PieSegment.swift */,
 				3D8214692AC28C4000AC2598 /* InfoBoard.swift */,
 				3DFF192D2AC6C7DC006111B2 /* OpenVault.swift */,
+				BD89A3FB2AEB3FA50035B094 /* ApproverPill.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1016,6 +1019,7 @@
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */,
+				BD89A3FC2AEB3FA50035B094 /* ApproverPill.swift in Sources */,
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */,
 				BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */,
