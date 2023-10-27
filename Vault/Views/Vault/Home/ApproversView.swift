@@ -58,7 +58,7 @@ struct ApproversView: View {
                     }
                     .padding([.leading, .trailing], 52)
                 } else {
-                    VStack {
+                    VStack(spacing: 30) {
                         let approvers = ownerState.policy.guardians
                             .filter({ !$0.isOwner })
                             .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
@@ -68,7 +68,7 @@ struct ApproversView: View {
                         }
                         Spacer()
                     }
-                    .padding([.leading, .trailing], 30)
+                    .padding(30)
                     
                 }
                 

@@ -169,6 +169,15 @@ extension API {
     struct DeleteSecretApiResponse : Decodable {
         var ownerState: OwnerState
     }
+    
+    enum RecoveryIntent : String, Codable {
+        case accessPhrases = "AccessPhrases"
+        case replacePolicy = "ReplacePolicy"
+    }
+    
+    struct RequestRecoveryApiRequest : Encodable {
+        var intent: RecoveryIntent
+    }
 
     struct RequestRecoveryApiResponse : Decodable {
         var ownerState: OwnerState

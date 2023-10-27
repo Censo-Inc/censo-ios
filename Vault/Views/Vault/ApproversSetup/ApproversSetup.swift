@@ -141,7 +141,7 @@ struct ApproversSetup: View {
     private func requestRecovery(onSuccess: @escaping () -> Void) {
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery
+            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(intent: .replacePolicy))
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
             switch result {
             case .success(let success):
