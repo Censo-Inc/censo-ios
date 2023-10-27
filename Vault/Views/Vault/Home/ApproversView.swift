@@ -15,66 +15,79 @@ struct ApproversView: View {
     @State private var showApproversSetup = false
     
     var body: some View {
-        VStack {
-            if ownerState.policy.externalApproversCount == 0 {
-                VStack(alignment: .leading, spacing: 30) {
-                    Spacer()
-                    
-                    Text("Invite trusted approvers")
-                        .font(.system(size: 24))
-                        .bold()
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Invite up to two trusted approvers for an additional layer of security")
-                            .font(.system(size: 14))
+        NavigationView {
+            VStack {
+                if ownerState.policy.externalApproversCount == 0 {
+                    VStack(alignment: .leading, spacing: 30) {
+                        Spacer()
                         
-                        Text("You can use either your primary or your alternate approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
-                            .font(.system(size: 14))
-                    }
-                    
-                    Button {
-                        showApproversSetup = true
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Image("TwoPeopleWhite")
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                            Text("Invite approver(s)")
-                                .font(.system(size: 24))
-                            Spacer()
+                        Text("Invite trusted approvers")
+                            .font(.system(size: 24))
+                            .bold()
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Invite up to two trusted approvers for an additional layer of security")
+                                .font(.system(size: 14))
+                            
+                            Text("You can use either your primary or your alternate approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
+                                .font(.system(size: 14))
                         }
+                        
+                        Button {
+                            showApproversSetup = true
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Image("TwoPeopleWhite")
+                                    .resizable()
+                                    .frame(width: 32, height: 32)
+                                Text("Invite approver(s)")
+                                    .font(.system(size: 24))
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(RoundedButtonStyle())
+                        
+                        HStack {
+                            Image(systemName: "info.circle")
+                            Text("Learn more")
+                        }
+                        .frame(maxWidth: .infinity)
+                        
+                        Spacer()
                     }
-                    .buttonStyle(RoundedButtonStyle())
-                    
-                    HStack {
-                        Image(systemName: "info.circle")
-                        Text("Learn more")
+                    .padding([.leading, .trailing], 52)
+                } else {
+                    VStack {
+                        let approvers = ownerState.policy.guardians
+                            .filter({ !$0.isOwner })
+                            .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
+
+                        ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
+                          ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
+                        }
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity)
+                    .padding([.leading, .trailing], 30)
                     
-                    Spacer()
                 }
-                .padding([.leading, .trailing], 52)
-            } else {
-                VStack {
-                    Text("Approvers")
-                    Spacer()
-                }
+                
+                Divider()
+                    .padding([.bottom], 4)
             }
-            
-            Divider()
-            .padding([.bottom], 4)
+            .navigationTitle(Text("Approvers"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .sheet(isPresented: $showApproversSetup, content: {
+                NavigationView {
+                    ApproversSetup(
+                        session: session,
+                        ownerState: ownerState,
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                }
+            })
         }
-        .sheet(isPresented: $showApproversSetup, content: {
-            NavigationView {
-                ApproversSetup(
-                    session: session,
-                    ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated
-                )
-            }
-        })
     }
 }
 
@@ -97,7 +110,7 @@ struct ApproversView: View {
         ownerState: API.OwnerState.Ready(
             policy: .init(
                 createdAt: Date(),
-                guardians: [.sample, .sample2, .sample3],
+                guardians: [.sampleOwner, .sample2, .sample3],
                 threshold: 2,
                 encryptedMasterKey: Base64EncodedString(data: Data()),
                 intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")

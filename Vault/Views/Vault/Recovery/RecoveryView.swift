@@ -291,6 +291,18 @@ extension API.TrustedGuardian {
             )
         )
     }
+    
+    
+    static var sampleOwner: Self {
+        .init(
+            label: "Me",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: true,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
 }
 
 struct RecoveryView_Previews: PreviewProvider {
