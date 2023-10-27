@@ -59,13 +59,12 @@ struct ApproversView: View {
                     .padding([.leading, .trailing], 52)
                 } else {
                     VStack {
-                        ForEach(0..<ownerState.policy.guardians.count, id: \.self) { i in
-                            let approver = ownerState.policy.guardians[i]
-                            if (approver.isOwner) {
-                                EmptyView()
-                            } else {
-                                ApproverPill(isPrimary: i < 2, approver: .trusted(approver))
-                            }
+                        let approvers = ownerState.policy.guardians
+                            .filter({ !$0.isOwner })
+                            .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
+
+                        ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
+                          ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
                         }
                         Spacer()
                     }

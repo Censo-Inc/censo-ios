@@ -10,9 +10,7 @@ import SwiftUI
 enum Approver {
     case prospect(API.ProspectGuardian)
     case trusted(API.TrustedGuardian)
-}
 
-extension Approver {
     func label() -> String {
         switch (self) {
         case .prospect(let approver):
