@@ -188,7 +188,6 @@ extension API {
             var unlocksAt: Date
             var expiresAt: Date
             var approvals: [Approval]
-            var vaultSecretIds: [String]
             
             struct Approval : Codable {
                 var participantId: ParticipantId
@@ -200,15 +199,6 @@ extension API {
                     case waitingForApproval = "WaitingForApproval"
                     case approved = "Approved"
                     case rejected = "Rejected"
-                }
-            }
-        }
-        
-        var noSecretsRequested: Bool {
-            get {
-                switch (self) {
-                case .thisDevice(let thisDevice): return thisDevice.vaultSecretIds.isEmpty
-                default: return false
                 }
             }
         }
