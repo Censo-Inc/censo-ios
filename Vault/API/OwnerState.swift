@@ -188,6 +188,7 @@ extension API {
             var unlocksAt: Date
             var expiresAt: Date
             var approvals: [Approval]
+            var intent: RecoveryIntent
             
             struct Approval : Codable {
                 var participantId: ParticipantId

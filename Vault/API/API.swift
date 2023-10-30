@@ -36,7 +36,7 @@ struct API {
         case storeSecret(StoreSecretApiRequest)
         case deleteSecret(guid: String)
         
-        case requestRecovery
+        case requestRecovery(RequestRecoveryApiRequest)
         case deleteRecovery
         case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
         case retrieveRecoveredShards(RetrieveRecoveryShardsApiRequest)
@@ -164,8 +164,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .deleteSecret:
             return .requestPlain
-        case .requestRecovery:
-            return .requestPlain
+        case .requestRecovery(let request):
+            return .requestJSONEncodable(request)
         case .deleteRecovery:
             return .requestPlain
         case .submitRecoveryTotpVerification(_, let payload):

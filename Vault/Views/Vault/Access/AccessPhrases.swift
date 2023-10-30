@@ -142,7 +142,7 @@ struct AccessPhrases: View {
         self.step = .creatingAccessRequest
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery
+            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(intent: .accessPhrases))
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
             switch result {
             case .success(let response):

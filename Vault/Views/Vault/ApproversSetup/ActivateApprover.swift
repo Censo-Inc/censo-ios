@@ -192,7 +192,9 @@ struct ActivateApprover : View {
                 .padding([.bottom], 8)
                 
                 Spacer()
-                VStack {
+                VStack(spacing: 30) {
+                    Divider()
+
                     ApproverPill(
                         isPrimary: isPrimary,
                         approver: .prospect(approver),

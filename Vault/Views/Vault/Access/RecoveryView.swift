@@ -351,7 +351,8 @@ struct RecoveryView_Previews: PreviewProvider {
                         participantId: guardians[4].participantId,
                         status: API.Recovery.ThisDevice.Approval.Status.rejected
                     )
-                ]
+                ],
+                intent: .accessPhrases
             )),
             onOwnerStateUpdated: { _ in }
         )
@@ -377,7 +378,8 @@ struct RecoveryView_Previews: PreviewProvider {
                         participantId: guardians[1].participantId,
                         status: API.Recovery.ThisDevice.Approval.Status.approved
                     ),
-                ]
+                ],
+                intent: .accessPhrases
             )),
             onOwnerStateUpdated: { _ in }
         )
