@@ -24,47 +24,14 @@ struct PhrasesView: View {
     @State private var secretsGuidsBeingDeleted: Set<String> = []
     @State private var showingDeleteConfirmation = false
     @State private var showingAddPhrase = false
-    
+    @State private var showingAccess: Bool = false
     
     var body: some View {
         VStack {
-            if let recovery = ownerState.recovery {
-                if ownerState.policy.guardians.allSatisfy({ $0.isOwner }) {
-                    NavigationView {
-                        phraseHomeView()
-                    }
-                } else {
-                    RecoveryView(
-                        session: session,
-                        threshold: ownerState.policy.threshold,
-                        guardians: ownerState.policy.guardians,
-                        encryptedSecrets: ownerState.vault.secrets,
-                        encryptedMasterKey: ownerState.policy.encryptedMasterKey,
-                        recovery: recovery,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
-                }
-            } else {
-                if (recoveryRequestInProgress) {
-                    VStack {
-                        ProgressView("Requesting access to seed phrases...")
-                            .foregroundColor(.white)
-                            .tint(.white)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: .infinity)
-                    .background(Color.white)
-                } else {
-                    NavigationView {
-                        phraseHomeView()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func phraseHomeView() -> some View {
-        VStack {
+            Text("Seed Phrases")
+            .frame(width: 430, height: 64)
+            .background(Color.Censo.gray95)
+            
             HStack {
                 Button {
                     showingAddPhrase = true
@@ -78,7 +45,7 @@ struct PhrasesView: View {
                 Spacer()
                 
                 Button {
-                    requestRecovery()
+                    showingAccess = true
                 } label: {
                     HStack {
                         Image("LockLaminated")
@@ -98,34 +65,32 @@ struct PhrasesView: View {
             
             Divider().frame(maxWidth: .infinity)
             
-            GeometryReader { geometry in
-                ScrollView {
-                    ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
-                        ZStack(alignment: .leading) {
-                            Button {
-                                showingEditSheet = true
-                                editingIndex = i
-                            } label: {
-                                HStack {
-                                    Spacer()
-                                    Image("Pencil").padding([.trailing], 4)
-                                }
+            ScrollView {
+                ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
+                    ZStack(alignment: .leading) {
+                        Button {
+                            showingEditSheet = true
+                            editingIndex = i
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Image("Pencil").padding([.trailing], 4)
                             }
-        
-                            Text(ownerState.vault.secrets[i].label)
-                                .font(.system(size: 18, weight: .medium))
-                                .multilineTextAlignment(.leading)
-                                .padding([.bottom, .leading, .top])
-                                .padding([.trailing], 35)
                         }
-                        .frame(height: 100)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                .foregroundColor(.Censo.lightGray)
-                        )
-                        .padding()
+    
+                        Text(ownerState.vault.secrets[i].label)
+                            .font(.system(size: 18, weight: .medium))
+                            .multilineTextAlignment(.leading)
+                            .padding([.bottom, .leading, .top])
+                            .padding([.trailing], 35)
                     }
+                    .frame(height: 100)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(style: StrokeStyle(lineWidth: 1))
+                            .foregroundColor(.Censo.lightGray)
+                    )
+                    .padding()
                 }
             }
         }
@@ -138,6 +103,13 @@ struct PhrasesView: View {
                 ownerState: ownerState,
                 session: session,
                 onComplete: onOwnerStateUpdated
+            )
+        })
+        .sheet(isPresented: $showingAccess, content: {
+            AccessPhrases(
+                session: session,
+                ownerState: ownerState,
+                onOwnerStateUpdated: onOwnerStateUpdated
             )
         })
         .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
@@ -182,23 +154,6 @@ struct PhrasesView: View {
                 showError(error)
             }
             secretsGuidsBeingDeleted.remove(secret.guid)
-        }
-    }
-    
-    func requestRecovery() {
-        recoveryRequestInProgress = true
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .requestRecovery
-        ) { (result: Result<API.RequestRecoveryApiResponse, MoyaError>) in
-            switch result {
-            case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
-            case .failure(let error):
-                self.showingError = true
-                self.error = error
-            }
-            self.recoveryRequestInProgress = false
         }
     }
     

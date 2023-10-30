@@ -65,12 +65,13 @@ struct SetupStep: View {
     var heading: String
     var content: String
     var completionText: String?
+    var opacity: Double = 0.3
     var body: some View {
         HStack(alignment: .center) {
             ZStack {
                 Rectangle()
                     .fill(.gray)
-                    .opacity(0.3)
+                    .opacity(opacity)
                     .cornerRadius(18)
                 image
             }.frame(width: 64, height: 64)
@@ -98,7 +99,7 @@ struct SetupStep: View {
                     EmptyView()
                 }
             }
-            .frame(maxHeight: .infinity)
+            .frame(minHeight: 64, maxHeight: .infinity)
         }
         .padding(.vertical, 4)
     }

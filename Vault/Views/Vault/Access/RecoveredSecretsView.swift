@@ -55,6 +55,9 @@ struct RecoveredSecretsView: View {
                                 self.error = CensoError.failedToDecryptSecrets
                                 self.showingError = true
                             }
+                        },
+                        onCancelled: {
+                            dismiss()
                         }
                     )
                 }

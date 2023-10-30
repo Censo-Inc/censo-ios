@@ -47,6 +47,8 @@ struct InitialPlanSetup: View {
                         )
                 } onSuccess: { response in
                     onComplete(response.ownerState)
+                } onCancelled: {
+                    dismiss()
                 }
             } else {
                 Spacer(minLength: 20)

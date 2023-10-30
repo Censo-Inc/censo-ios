@@ -26,6 +26,7 @@ enum CensoError: Swift.Error {
     case failedToEncodeSecrets
     case failedToSaveApproversName
     case failedToReplacePolicy
+    case recoveryAlreadyOnAnotherDevice
 }
 
 extension CensoError: LocalizedError {
@@ -67,6 +68,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Failed to save approver's name", comment: "approver setup")
         case .failedToReplacePolicy:
             return NSLocalizedString("Failed to replace policy", comment: "policy replacement")
+        case .recoveryAlreadyOnAnotherDevice:
+            return NSLocalizedString("There is already a recovery on another device", comment: "another device recovery")
         }
     }
 }

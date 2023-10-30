@@ -203,6 +203,15 @@ extension API {
             }
         }
         
+        var isThisDevice: Bool {
+            get {
+                switch (self) {
+                case .thisDevice: return true
+                default: return false
+                }
+            }
+        }
+
         enum Status : String, Codable {
             case requested = "Requested"
             case timelocked = "Timelocked"

@@ -11,6 +11,7 @@ import raygun4apple
 
 struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     @Environment(\.apiProvider) var apiProvider
+    @Environment(\.dismiss) var dismiss
 
     @State private var setupStep: SetupStep = .idle
 
@@ -24,6 +25,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     var session: Session
     var onReadyToUploadResults: ResultsReadyCallback
     var onSuccess: (ResponseType) -> Void
+    var onCancelled: () -> Void
 
     var body: some View {
         Group {
@@ -59,19 +61,28 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     }
                 }
 #else
-                FacetecUIKitWrapper(
-                    session: session,
-                    verificationId: initBiometryResponse.id,
-                    sessionToken: initBiometryResponse.sessionToken,
-                    onBack: {
-                        setupStep = .ready(initBiometryResponse)
-                    },
-                    onError: { error in
-                        setupStep = .failure(error)
-                    },
-                    onReadyToUploadResults: onReadyToUploadResults,
-                    onSuccess: onSuccess
-                )
+                ProgressView()
+                    .sheet(isPresented: .constant(true)) {
+                        NavigationView {
+                            FacetecUIKitWrapper(
+                                session: session,
+                                verificationId: initBiometryResponse.id,
+                                sessionToken: initBiometryResponse.sessionToken,
+                                onBack: {
+                                    onCancelled()
+                                },
+                                onError: { error in
+                                    setupStep = .failure(error)
+                                },
+                                onReadyToUploadResults: onReadyToUploadResults,
+                                onSuccess: onSuccess
+                            )
+                            .interactiveDismissDisabled()
+                            .navigationTitle(Text("Face scan"))
+                            .navigationBarTitleDisplayMode(.inline)
+                            .navigationBarBackButtonHidden(true)
+                        }
+                    }
 #endif
             case .failure(let error):
                 switch (error) {
@@ -130,8 +141,6 @@ extension FaceTecSDKProtocol {
     func customizations() {
         let customization = FaceTecCustomization()
          
-        customization.cancelButtonCustomization.location = FaceTecCancelButtonLocation.disabled
-        
         customization.frameCustomization.borderColor = UIColor.black
         
         customization.overlayCustomization.showBrandingImage = false
@@ -177,9 +186,7 @@ extension UIImage {
 #if DEBUG
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in }
-        }
+        FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in } onCancelled: {}
     }
 }
 

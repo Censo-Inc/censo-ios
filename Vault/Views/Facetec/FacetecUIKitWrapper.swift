@@ -79,12 +79,12 @@ class FacetecUIKitWrapperCoordinator<ResponseType: BiometryVerificationResponse>
         // Handles early exit scenarios where there is no FaceScan to handle -- i.e. User Cancellation, Timeouts, etc.
         switch (sessionResult.status) {
         case FaceTecSessionStatus.userCancelled:
-            //faceScanResultCallback.onFaceScanResultCancel() // FIXME this closes complete pop-up. Try later embedded mode.
+            faceScanResultCallback.onFaceScanResultCancel()
             onBack()
         case FaceTecSessionStatus.sessionCompletedSuccessfully:
             uploadResultsToServer(sessionResult: sessionResult, faceScanResultCallback: faceScanResultCallback)
         default:
-            //faceScanResultCallback.onFaceScanResultCancel() // FIXME this closes complete pop-up. Try later embedded mode.
+            faceScanResultCallback.onFaceScanResultCancel()
             onError(FaceTecSessionError(status: sessionResult.status))
         }
     }

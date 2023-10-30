@@ -115,6 +115,9 @@ struct ApproversSetup: View {
                 },
                 onSuccess: { response in
                     replacePolicy(response.encryptedShards)
+                },
+                onCancelled: {
+                    dismiss()
                 }
             )
         case .done:

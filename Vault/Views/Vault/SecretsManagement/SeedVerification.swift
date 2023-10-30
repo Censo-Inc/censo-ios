@@ -32,31 +32,7 @@ struct SeedVerification: View {
             Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
                 .padding()
 
-            TabView {
-                ForEach(0..<words.count, id: \.self) { i in
-                    VStack {
-                        Group {
-                            Text(NumberFormatter.ordinal.string(from: NSNumber(value: i + 1)) ?? "") + Text(" word")
-                        }
-                        .font(.title2)
-                        .padding()
-
-                        Text(words[i])
-                            .padding()
-                            .multilineTextAlignment(.center)
-                            .font(.title)
-                            .padding()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(lineWidth: 1)
-                    }
-                    .padding(20)
-                }
-            }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+            WordList(words: words)
 
             Button {
                 showingSave = true

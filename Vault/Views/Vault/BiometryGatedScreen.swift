@@ -61,6 +61,9 @@ struct BiometryGatedScreen<Content: View>: View {
                             },
                             onSuccess: { response in
                                 ownerState = response.ownerState
+                            },
+                            onCancelled: {
+                                showFacetec = false
                             }
                         )
                     } else {
