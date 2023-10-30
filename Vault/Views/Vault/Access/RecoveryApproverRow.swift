@@ -124,7 +124,9 @@ struct RecoveryApproverRow : View {
         @State private var submitting = false
         @State private var error: Error?
 
-        let waitingForApproval = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+        private let waitingForApproval = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+        private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
+
         
         var body: some View {
             VStack {
@@ -152,6 +154,8 @@ struct RecoveryApproverRow : View {
                                 Text("Waiting for approver to verify the code...")
                             }
                         ).onReceive(waitingForApproval) { _ in
+                            reloadUser()
+                        }.onReceive(remoteNotificationPublisher) { _ in
                             reloadUser()
                         }
                     case .rejected:

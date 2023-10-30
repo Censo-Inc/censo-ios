@@ -24,6 +24,27 @@ struct GuardianHome: View {
                 .padding()
         }
         .multilineTextAlignment(.center)
+        .onAppear {
+            handlePushRegistration()
+        }
+    }
+    
+    private func handlePushRegistration() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .notDetermined {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
+                        if result {
+                            DispatchQueue.main.async {
+                                UIApplication.shared.registerForRemoteNotifications()
+                            }
+                        }
+                    }
+                } else if settings.authorizationStatus == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
     }
 }
 

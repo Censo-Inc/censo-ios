@@ -23,6 +23,8 @@ struct RecoveryApproval: View {
     var onSuccess: () -> Void
     
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
+    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
 
     var body: some View {
         VStack {
@@ -46,6 +48,8 @@ struct RecoveryApproval: View {
                         guardianState: guardianState!,
                         onSuccess: reload
                     ).onReceive(refreshStatePublisher) { firedDate in
+                        reload()
+                    }.onReceive(remoteNotificationPublisher) { _ in
                         reload()
                     }
                 case .recoveryConfirmation:

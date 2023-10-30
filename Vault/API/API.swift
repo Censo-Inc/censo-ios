@@ -132,14 +132,12 @@ extension API: TargetType {
             #if DEBUG
             return .requestJSONEncodable([
                 "deviceType": "IosDebug",
-                "token": token,
-                "appIdentifier": Bundle.main.bundleIdentifier
+                "token": token
             ])
             #else
             return .requestJSONEncodable([
                 "deviceType": "Ios",
                 "token": token,
-                "appIdentifier": Bundle.main.bundleIdentifier
             ])
             #endif
         case .createPolicy(let request):

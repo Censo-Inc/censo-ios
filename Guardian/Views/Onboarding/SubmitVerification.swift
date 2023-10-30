@@ -21,7 +21,10 @@ struct SubmitVerification: View {
 
     var onSuccess: (API.GuardianState?) -> Void
 
-    let waitingForVerification = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    private let waitingForVerification = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
+    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
+    
 
     var body: some View {
         VStack {
@@ -35,15 +38,10 @@ struct SubmitVerification: View {
                     label: {
                         Text("Waiting for the code to be verified...")
                     }
-                ).onReceive(waitingForVerification) { firedDate in
-                    apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
-                        switch(result) {
-                        case .success(let user):
-                            onSuccess(user.guardianStates.forInvite(invitationId))
-                        case .failure:
-                            break
-                        }
-                    }
+                ).onReceive(waitingForVerification) { _ in
+                    reload()
+                }.onReceive(remoteNotificationPublisher) { _ in
+                    reload()
                 }
             case .waitingForCode:
                 Text("Enter the 6-digit code from the seed phrase owner")
@@ -122,6 +120,17 @@ struct SubmitVerification: View {
                 onSuccess(response.guardianState)
             case .failure(let error):
                showError(error)
+            }
+        }
+    }
+    
+    private func reload() {
+        apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
+            switch(result) {
+            case .success(let user):
+                onSuccess(user.guardianStates.forInvite(invitationId))
+            case .failure:
+                break
             }
         }
     }

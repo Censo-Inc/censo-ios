@@ -209,10 +209,17 @@ extension API: TargetType {
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
         case .registerPushToken(let token):
+            #if DEBUG
             return .requestJSONEncodable([
-                "token": token,
-                "deviceType": "Ios"
+                "deviceType": "IosDebug",
+                "token": token
             ])
+            #else
+            return .requestJSONEncodable([
+                "deviceType": "Ios",
+                "token": token,
+            ])
+            #endif
         case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):
             return .requestJSONEncodable([
                 "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
@@ -231,7 +238,7 @@ extension API: TargetType {
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
             "X-Censo-App-Version": Bundle.main.shortVersionString,
-            "X-Censo-App-Identifer": Bundle.main.bundleIdentifier ?? "Unknown"
+            "X-Censo-App-Identifier": Bundle.main.bundleIdentifier ?? "Unknown"
         ]
     }
 }
