@@ -15,7 +15,7 @@ struct AccessIntro: View {
     var onReadyToGetStarted: () -> Void
     
     var body: some View {
-        NavigationStack {
+        VStack {
             Spacer()
             VStack(alignment: .leading) {
                 Text("Ready to start your 15 minutes of access?")
@@ -53,14 +53,6 @@ struct AccessIntro: View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .navigationTitle(Text("Access"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    BackButton()
-                }
-            })
             .padding()
         }
     }

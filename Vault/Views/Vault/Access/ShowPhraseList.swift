@@ -19,74 +19,60 @@ struct ShowPhraseList: View {
     var onFinished: () -> Void
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                
-                Spacer()
-                
-                Text("Which seed phrase would you like to access \(viewedPhrases.count == 0 ? "first" : "next")?")
-                    .font(.system(size: 24, weight: .semibold))
-                    .padding()
-                
-                ScrollView {
-                    ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
-                        Button {
-                            onPhraseSelected(i)
-                        } label: {
-                            HStack {
-                                Text(ownerState.vault.secrets[i].label)
-                                    .font(.system(size: 24, weight: .medium))
-                                    .padding([.leading])
-                                    .foregroundColor(viewedPhrases.contains(i) ? .green : .black)
-                                    .frame(maxWidth: 300, minHeight: 107, alignment: .leading)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                            .foregroundColor(.Censo.lightGray)
-                                    )
-                                    .multilineTextAlignment(.leading)
-                                    .buttonStyle(PlainButtonStyle())
-                                Spacer()
-                                VStack {
-                                    if viewedPhrases.contains(i) {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .symbolRenderingMode(.palette)
-                                            .foregroundStyle(.white, Color.Censo.green)
-                                            .font(.system(size: 28))
-                                    }
-                                }.frame(minWidth: 40)
-        
-                            }
-                        }
-                        .padding()
-                    }
-                }
-                
-                Spacer()
-                
-                Button {
-                    onFinished()
-                } label: {
-                    Text("Finish")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(RoundedButtonStyle())
-            }
-            .navigationTitle(Text("Access"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
+        VStack {
+            
+            Spacer()
+            
+            Text("Which seed phrase would you like to access \(viewedPhrases.count == 0 ? "first" : "next")?")
+                .font(.system(size: 24, weight: .semibold))
+                .padding()
+            
+            ScrollView {
+                ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
                     Button {
-                        onFinished()
+                        onPhraseSelected(i)
                     } label: {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.black)
+                        HStack {
+                            Text(ownerState.vault.secrets[i].label)
+                                .font(.system(size: 24, weight: .medium))
+                                .padding([.leading])
+                                .foregroundColor(viewedPhrases.contains(i) ? .green : .black)
+                                .frame(maxWidth: 300, minHeight: 107, alignment: .leading)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(style: StrokeStyle(lineWidth: 1))
+                                        .foregroundColor(.Censo.lightGray)
+                                )
+                                .multilineTextAlignment(.leading)
+                                .buttonStyle(PlainButtonStyle())
+                            Spacer()
+                            VStack {
+                                if viewedPhrases.contains(i) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(.white, Color.Censo.green)
+                                        .font(.system(size: 28))
+                                }
+                            }.frame(minWidth: 40)
+                            
+                        }
                     }
+                    .padding()
                 }
-            })
-            .padding()
+            }
+            
+            Spacer()
+            
+            Button {
+                onFinished()
+            } label: {
+                Text("Finish")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
         }
+        .padding()
     }
 }
 

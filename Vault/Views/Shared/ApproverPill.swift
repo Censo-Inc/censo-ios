@@ -24,18 +24,35 @@ enum Approver {
 struct ApproverPill: View {
     var isPrimary: Bool
     var approver: Approver
+    var isSelected: Bool?
     var onEdit: (() -> Void)?
     var onVerificationSubmitted: ((API.GuardianStatus.VerificationSubmitted) -> Void)?
     
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(spacing: 0) {
+            if let isSelected {
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .symbolRenderingMode(.palette)
+                        .foregroundColor(.black)
+                        .frame(width: 12, height: 12)
+                        .padding([.trailing], 24)
+                } else {
+                    Text("")
+                        .padding(.trailing, 36)
+                }
+            }
+
             VStack(alignment: .leading) {
                 Text("\(isPrimary ? "Primary": "Alternate") approver")
                     .font(.system(size: 14))
+                    .foregroundColor(.black)
                     .bold()
                 
                 Text(approver.label())
                     .font(.system(size: 24))
+                    .foregroundColor(.black)
                     .bold()
                 
                 switch approver {
@@ -84,14 +101,43 @@ struct ApproverPill: View {
         .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 16.0)
-                .stroke(Color.gray, lineWidth: 1)
+                .stroke(isSelected == true ? Color.black : Color.gray, lineWidth: 1)
         )
     }
 }
     
 #if DEBUG
-#Preview {
-    ApproverPill(isPrimary: true, approver: .trusted(API.TrustedGuardian(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date()))), onEdit: {})
+#Preview("without selection") {
+    VStack {
+        let trustedApprover = API.TrustedGuardian(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date()))
+        ApproverPill(isPrimary: true, approver: .trusted(trustedApprover))
+        ApproverPill(isPrimary: false, approver: .trusted(trustedApprover))
+    }
+}
+
+struct ApproverPillsWithSelection_Previews: PreviewProvider {
+    struct ContainerView: View {
+        let approvers = [
+            API.TrustedGuardian(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date())),
+            API.TrustedGuardian(label: "John Wick", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date())),
+        ]
+        @State var selectedApprover: API.TrustedGuardian? = nil
+            
+        var body: some View {
+            VStack {
+                ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
+                    ApproverPill(isPrimary: i == 0, approver: .trusted(approver), isSelected: approver.participantId == selectedApprover?.participantId)
+                        .onTapGesture {
+                            selectedApprover = approver
+                        }
+                }
+            }
+        }
+    }
+    
+    static var previews: some View {
+        ContainerView()
+    }
 }
 #endif
     

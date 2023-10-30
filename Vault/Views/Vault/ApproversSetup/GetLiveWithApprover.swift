@@ -11,6 +11,7 @@ import SwiftUI
 struct GetLiveWithApprover : View {
     @Environment(\.dismiss) var dismiss
     var approverName: String
+    var showResumeLater = true
     var onContinue: () -> Void
     
     var body: some View {
@@ -49,30 +50,21 @@ struct GetLiveWithApprover : View {
                     }
                     .buttonStyle(RoundedButtonStyle())
                     
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Resume later")
-                            .font(.system(size: 24))
-                            .frame(maxWidth: .infinity)
+                    if showResumeLater {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Resume later")
+                                .font(.system(size: 24))
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(RoundedButtonStyle())
                     }
-                    .buttonStyle(RoundedButtonStyle())
                 }
             }
             .padding([.top], 24)
             .padding([.leading, .trailing], 32)
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.black)
-                }
-            }
-        })
     }
 }
 

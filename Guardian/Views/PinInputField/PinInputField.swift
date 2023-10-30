@@ -46,15 +46,39 @@ struct PinInputField: UIViewRepresentable {
     }
 }
 
+struct PinInputFieldWithBackground : View {
+    @Binding var value: [Int]
+
+    var length: Int
+    var foregroundColor: Color = .black
+    var unfocusedColor: Color = .gray.opacity(0.5)
+    var disabled: Bool = false
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 16.0)
+                .strokeBorder(Color.gray, lineWidth: 1)
+                .background(RoundedRectangle(cornerRadius: 16.0).fill(Color.Censo.gray95))
+            
+            PinInputField(value: $value, length: 6)
+                .padding(.vertical, 34)
+                .padding(.horizontal, 20)
+                .disabled(disabled)
+            
+        }
+        .frame(height: 100)
+
+    }
+}
+
 #if DEBUG
 struct PinInputField_Previews: PreviewProvider {
     struct PinPreview: View {
-        @State private var pin: [Int] = []
+        @State private var pin: [Int] = [4, 2, 8]
 
         var body: some View {
             VStack {
-                PinInputField(value: $pin, length: 6)
-
+                PinInputFieldWithBackground(value: $pin, length: 6)
                 Text("Entered: \(pin.map(String.init).joined())")
             }
             .padding()

@@ -9,14 +9,15 @@ import Foundation
 import UIKit
 
 class PinInput: UIControl {
+    
     class DigitView: UIView {
         private(set) lazy var label: UILabel = {
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = .boldSystemFont(ofSize: 48)
+            label.font = .boldSystemFont(ofSize: 24)
             label.adjustsFontSizeToFitWidth = true
             label.textAlignment = .center
-            label.text = " "
+            label.text = "_"
             label.textColor = .black
             return label
         }()
@@ -46,7 +47,6 @@ class PinInput: UIControl {
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.spacing = 12
         view.distribution = .fillEqually
         return view
     }()
@@ -70,7 +70,7 @@ class PinInput: UIControl {
         didSet {
             for (i, view) in digitViews.enumerated() {
                 guard i < value.count else {
-                    view.label.text = " "
+                    view.label.text = "_"
                     continue
                 }
 
@@ -96,11 +96,19 @@ class PinInput: UIControl {
         self.length = length
 
         var views = [DigitView]()
-        for _ in 0..<length {
+        for i in 0..<length {
             let view = DigitView()
-            view.layer.borderWidth = 2
-            view.layer.borderColor = UIColor.lightGray.cgColor.copy(alpha: 0.5)
-            view.layer.cornerRadius = 4
+            if i < length - 1 {
+                let separator = UIView()
+                separator.backgroundColor = .gray
+                separator.translatesAutoresizingMaskIntoConstraints = false
+                view.addSubview(separator)
+                let insets: UIEdgeInsets = .zero
+                separator.topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top).isActive = true
+                separator.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -insets.bottom).isActive = true
+                separator.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -insets.right).isActive = true
+                separator.widthAnchor.constraint(equalToConstant: 2).isActive = true
+            }
             views.append(view)
         }
         digitViews = views
@@ -109,10 +117,6 @@ class PinInput: UIControl {
 
         for i in 0..<digitViews.count {
             stackView.addArrangedSubview(digitViews[i])
-
-            if digitViews.count.isMultiple(of: 2) && i == (digitViews.count / 2) - 1 {
-                stackView.setCustomSpacing(12 + 12, after: digitViews[i])
-            }
         }
 
         addSubview(stackView)
@@ -137,7 +141,7 @@ class PinInput: UIControl {
     }
 
     override var intrinsicContentSize: CGSize {
-        CGSize(width: stackView.intrinsicContentSize.width, height: 100)
+        CGSize(width: stackView.intrinsicContentSize.width, height: 32)
     }
 
     override func layoutSubviews() {

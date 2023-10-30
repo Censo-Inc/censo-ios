@@ -95,6 +95,16 @@ extension API.Policy {
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
+    
+    static var sample2Approvers: Self {
+        .init(
+            createdAt: Date(),
+            guardians: [.sample, .sample2],
+            threshold: 2,
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+        )
+    }
 }
 
 extension API.Vault {
