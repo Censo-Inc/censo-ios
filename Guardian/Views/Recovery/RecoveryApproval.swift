@@ -59,10 +59,13 @@ struct RecoveryApproval: View {
                         onSuccess: reload
                     )
                 case .complete:
-                    RecoveryApprovalComplete(onSuccess: onSuccess)
+                    RecoveryApprovalComplete()
                         .navigationBarHidden(true) 
                         .onAppear {
                             refreshStatePublisher.upstream.connect().cancel()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                onSuccess()
+                            }
                         }
                 default:
                     Text("Invalid Recovery")

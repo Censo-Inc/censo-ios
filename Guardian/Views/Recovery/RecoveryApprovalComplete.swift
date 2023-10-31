@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct RecoveryApprovalComplete: View {
-    
-    var onSuccess: () -> Void
-    
     var body: some View {
         NavigationStack {
             
@@ -25,7 +22,7 @@ struct RecoveryApprovalComplete: View {
 #if DEBUG
 
 #Preview {
-    RecoveryApprovalComplete(onSuccess: {})
+    RecoveryApprovalComplete()
 }
 
 #endif

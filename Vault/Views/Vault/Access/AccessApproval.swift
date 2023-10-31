@@ -118,7 +118,7 @@ struct AccessApproval : View {
         case .approved(let ownerState):
             AccessApproved()
                 .onAppear(perform: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         onOwnerStateUpdated(ownerState)
                     }
                 })
