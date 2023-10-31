@@ -51,7 +51,13 @@ struct Onboarding: View {
                         onSuccess: {newState in guardianState = newState}
                     )
                 case .complete:
-                    Onboarded().navigationBarHidden(true) 
+                    Onboarded()
+                        .navigationBarHidden(true)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                onSuccess()
+                            }
+                        }
                 default:
                     EmptyView()
                 }
