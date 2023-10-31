@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUI
 import Moya
 import BigInt
+import raygun4apple
 
 struct  OwnerVerification: View {
     @Environment(\.apiProvider) var apiProvider
@@ -73,11 +74,13 @@ struct  OwnerVerification: View {
             guard let guardianPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
                   let guardianPublicKey = try? guardianPrivateKey.publicExternalRepresentation(),
                   guardianPublicKey == status.recoveryPublicKey else {
+                RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverPrivateKey, tags: ["Verification"], customData: nil)
                 showError(CensoError.failedToRecoverPrivateKey)
                 return
             }
             guard let ownerPublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.ownerPublicKey),
                   let encryptedShard = try? ownerPublicKey.encrypt(data: guardianPrivateKey.decrypt(base64EncodedString: status.guardianEncryptedShard)) else {
+                RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverShard, tags: ["Verification"], customData: nil)
                 showError(CensoError.failedToRecoverShard)
                 return
             }

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Moya
+import raygun4apple
 
 struct EnterAccessVerificationCode : View {
     @Environment(\.apiProvider) var apiProvider
@@ -225,6 +226,7 @@ struct EnterAccessVerificationCode : View {
         guard let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: deviceKey),
               let devicePublicKey = try? Base58EncodedPublicKey(data: deviceKey.publicExternalRepresentation())
         else {
+            RaygunClient.sharedInstance().send(error: CensoError.failedToCreateSignature, tags: ["Verification"], customData: nil)
             self.error = CensoError.failedToCreateSignature
             self.submitting = false
             return

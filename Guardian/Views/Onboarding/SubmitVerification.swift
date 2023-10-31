@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import raygun4apple
 
 struct SubmitVerification: View {
     @Environment(\.apiProvider) var apiProvider
@@ -95,6 +96,7 @@ struct SubmitVerification: View {
               let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: guardianKey),
               let guardianPublicKey = try? guardianKey.publicExternalRepresentation() 
         else {
+            RaygunClient.sharedInstance().send(error: CensoError.failedToCreateSignature, tags: ["Verification"], customData: nil)
             showError(CensoError.failedToCreateSignature)
             return
         }

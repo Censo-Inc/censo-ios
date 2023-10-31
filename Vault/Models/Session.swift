@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import raygun4apple
 
 struct Session {
     var deviceKey: DeviceKey
@@ -19,6 +20,7 @@ extension Session {
         if (existingKey == nil) {
             guard let privateKey = try? generatePrivateKey(),
                   let encryptedKey = encryptPrivateKey(privateKey: privateKey, userIdentifier: userIdentifier) else {
+                RaygunClient.sharedInstance().send(error: CensoError.failedToCreateApproverKey, tags: ["Approver Key"], customData: nil)
                 throw CensoError.failedToCreateApproverKey
             }
             participantId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey)

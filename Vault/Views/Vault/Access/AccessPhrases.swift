@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import raygun4apple
 
 struct AccessPhrases: View {
     @Environment(\.apiProvider) var apiProvider
@@ -266,10 +267,15 @@ struct AvailableRecovery: View {
     }
     
     private func recoverSecret(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard], _ phraseIndex: Int) throws -> [String] {
-        let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
-        let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
-        let decryptedSecret = try masterKey.decrypt(base64EncodedString:ownerState.vault.secrets[phraseIndex].encryptedSeedPhrase)
-        return try BIP39.binaryDataToWords(binaryData: decryptedSecret)
+        do {
+            let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
+            let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
+            let decryptedSecret = try masterKey.decrypt(base64EncodedString:ownerState.vault.secrets[phraseIndex].encryptedSeedPhrase)
+            return try BIP39.binaryDataToWords(binaryData: decryptedSecret)
+        } catch {
+            RaygunClient.sharedInstance().send(error: error, tags: ["Access"], customData: nil)
+            throw error
+        }
    }
 }
 
