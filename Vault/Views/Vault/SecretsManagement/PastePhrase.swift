@@ -110,7 +110,7 @@ struct PastePhrase: View {
                             Text("Enter a label...")
                         }
                         .focused($isLabelFocused)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(RoundedTextFieldStyle())
                         .padding()
                         .onAppear {
                             isLabelFocused = true

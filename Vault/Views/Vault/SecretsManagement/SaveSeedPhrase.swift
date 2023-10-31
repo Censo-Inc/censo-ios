@@ -43,6 +43,7 @@ struct SaveSeedPhrase: View {
             TextField(text: $label) {
                 Text("Enter a label...")
             }
+            .textFieldStyle(RoundedTextFieldStyle())
             .padding(.vertical)
 
             Button {
