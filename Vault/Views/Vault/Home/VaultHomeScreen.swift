@@ -85,6 +85,72 @@ struct VaultHomeScreen: View {
 }
 
 #if DEBUG
+extension API.TrustedGuardian {
+    static var sample: Self {
+        .init(
+            label: "Ben",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    static var sample2: Self {
+        .init(
+            label: "Brendan",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    static var sample3: Self {
+        .init(
+            label: "Ievgen",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample4: Self {
+        .init(
+            label: "Ata",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample5: Self {
+        .init(
+            label: "Sam",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sampleOwner: Self {
+        .init(
+            label: "Me",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: true,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+}
+
 extension API.Policy {
     static var sample: Self {
         .init(

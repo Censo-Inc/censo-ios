@@ -59,36 +59,44 @@ struct AccessPhrases: View {
                             }
                         })
                 case .thisDevice(let recovery):
-                    switch (recovery.status) {
-                    case .requested:
-                        AccessApproval(
-                            session: session,
-                            policy: ownerState.policy,
-                            recovery: recovery,
-                            onCancel: deleteRecovery,
-                            onOwnerStateUpdated: onOwnerStateUpdated
-                        )
-                    case .timelocked:
-                        Text("Timelocked")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar(content: {
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button {
-                                        dismiss()
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                            .foregroundColor(.black)
+                    // delete it in case this is a leftover recovery from a policy replacement
+                    if recovery.intent == .replacePolicy {
+                        ProgressView()
+                            .onAppear {
+                                deleteRecovery(dismissOnSuccess: false)
+                            }
+                    } else {
+                        switch (recovery.status) {
+                        case .requested:
+                            AccessApproval(
+                                session: session,
+                                policy: ownerState.policy,
+                                recovery: recovery,
+                                onCancel: deleteRecovery,
+                                onOwnerStateUpdated: onOwnerStateUpdated
+                            )
+                        case .timelocked:
+                            Text("Timelocked")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar(content: {
+                                    ToolbarItem(placement: .navigationBarLeading) {
+                                        Button {
+                                            dismiss()
+                                        } label: {
+                                            Image(systemName: "xmark")
+                                                .foregroundColor(.black)
+                                        }
                                     }
-                                }
-                            })
-                    case .available:
-                        AvailableRecovery(
-                            session: session,
-                            ownerState: ownerState,
-                            recovery: recovery,
-                            onFinished: deleteRecovery,
-                            onOwnerStateUpdated: onOwnerStateUpdated
-                        )
+                                })
+                        case .available:
+                            AvailableRecovery(
+                                session: session,
+                                ownerState: ownerState,
+                                recovery: recovery,
+                                onFinished: deleteRecovery,
+                                onOwnerStateUpdated: onOwnerStateUpdated
+                            )
+                        }
                     }
                 }
             }
@@ -110,12 +118,18 @@ struct AccessPhrases: View {
     }
     
     private func deleteRecovery() {
+        deleteRecovery(dismissOnSuccess: true)
+    }
+    
+    private func deleteRecovery(dismissOnSuccess: Bool) {
         self.deletingRecovery = true
         apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
-                dismiss()
+                if dismissOnSuccess {
+                    dismiss()
+                }
             case .failure(let error):
                 self.showingError = true
                 self.error = error

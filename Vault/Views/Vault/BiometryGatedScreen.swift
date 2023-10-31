@@ -103,18 +103,9 @@ struct BiometryGatedScreen<Content: View>: View {
         ownerState: $ownerState1,
         onUnlockExpired: {}
     ) {
-        RecoveredSecretsView(
-            session: .sample,
-            requestedSecrets: [],
-            encryptedMasterKey: Base64EncodedString(data: Data()),
-            deleteRecovery: {},
-            status: RecoveredSecretsView.Status.showingSecrets(
-                secrets: [
-                    RecoveredSecretsView.RecoveredSecret(label: "Secret 1", secret: "Secret Phrase 1"),
-                    RecoveredSecretsView.RecoveredSecret(label: "Secret 2", secret: "Secret Phrase 2"),
-                ]
-            )
-        )
+        VStack {
+            Text("test")
+        }
     }
 }
 

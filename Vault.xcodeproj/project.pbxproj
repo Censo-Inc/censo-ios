@@ -209,7 +209,6 @@
 		BDFE3C142AD872A2000C76D4 /* EncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */; };
 		E4025C992AC6C8B5008FE3B8 /* VaultHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */; };
 		E4025C9B2AC6E019008FE3B8 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
-		E4025C9F2AC70184008FE3B8 /* RecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */; };
 		E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
 		E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */; };
 		E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */; };
@@ -219,17 +218,16 @@
 		E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF194E2AC954E8006111B2 /* PinInputField.swift */; };
 		E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFF19502AC954FE006111B2 /* PinInput.swift */; };
 		E4716FD82ACEB9A400BC2AA7 /* VerificationCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */; };
-		E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */; };
-		E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */; };
 		E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073A2AEA7746009A06A1 /* RenameApprover.swift */; };
 		E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */; };
 		E472073F2AEBCCC6009A06A1 /* AccessApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073E2AEBCCC6009A06A1 /* AccessApproval.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
-		E4AB90B62AD0269500390AEF /* RecoveredSecretsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */; };
 		E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */; };
 		E4ADF6502AF01A9900EFCF4F /* ChooseAccessApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF64F2AF01A9900EFCF4F /* ChooseAccessApprover.swift */; };
 		E4ADF6542AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF6532AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift */; };
 		E4ADF6562AF01AF400EFCF4F /* AccessApproved.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF6552AF01AF400EFCF4F /* AccessApproved.swift */; };
+		E4ADF6582AF1127000EFCF4F /* SigningKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF6572AF1127000EFCF4F /* SigningKey.swift */; };
+		E4ADF6592AF1127000EFCF4F /* SigningKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF6572AF1127000EFCF4F /* SigningKey.swift */; };
 		E4D376802AE82D7E005809F7 /* InitialApproversSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3767E2AE82D7E005809F7 /* InitialApproversSetup.swift */; };
 		E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */; };
 		E4D376832AE8391D005809F7 /* SetupApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376822AE8391D005809F7 /* SetupApprover.swift */; };
@@ -392,23 +390,20 @@
 		BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionTests.swift; sourceTree = "<group>"; };
 		E4025C982AC6C8B5008FE3B8 /* VaultHomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultHomeScreen.swift; sourceTree = "<group>"; };
 		E4025C9A2AC6E019008FE3B8 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
-		E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryView.swift; sourceTree = "<group>"; };
 		E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyleTint.swift; sourceTree = "<group>"; };
 		E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsListView.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometryGatedScreen.swift; sourceTree = "<group>"; };
 		E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetup.swift; sourceTree = "<group>"; };
 		E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldStyle.swift; sourceTree = "<group>"; };
 		E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeEntry.swift; sourceTree = "<group>"; };
-		E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryExpirationCountDown.swift; sourceTree = "<group>"; };
-		E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryApproverRow.swift; sourceTree = "<group>"; };
 		E472073A2AEA7746009A06A1 /* RenameApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameApprover.swift; sourceTree = "<group>"; };
 		E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptionKey+Owner.swift"; sourceTree = "<group>"; };
 		E472073E2AEBCCC6009A06A1 /* AccessApproval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessApproval.swift; sourceTree = "<group>"; };
-		E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveredSecretsView.swift; sourceTree = "<group>"; };
 		E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+BigInt.swift"; sourceTree = "<group>"; };
 		E4ADF64F2AF01A9900EFCF4F /* ChooseAccessApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseAccessApprover.swift; sourceTree = "<group>"; };
 		E4ADF6532AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterAccessVerificationCode.swift; sourceTree = "<group>"; };
 		E4ADF6552AF01AF400EFCF4F /* AccessApproved.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessApproved.swift; sourceTree = "<group>"; };
+		E4ADF6572AF1127000EFCF4F /* SigningKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningKey.swift; sourceTree = "<group>"; };
 		E4D3767E2AE82D7E005809F7 /* InitialApproversSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialApproversSetup.swift; sourceTree = "<group>"; };
 		E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialPlanSetup.swift; sourceTree = "<group>"; };
 		E4D376822AE8391D005809F7 /* SetupApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupApprover.swift; sourceTree = "<group>"; };
@@ -548,6 +543,7 @@
 				3D0C1E8F2A83AA3D00AB3A48 /* SecureEnclaveKey.swift */,
 				6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */,
 				E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */,
+				E4ADF6572AF1127000EFCF4F /* SigningKey.swift */,
 			);
 			path = KeyManagement;
 			sourceTree = "<group>";
@@ -791,19 +787,15 @@
 		E4025C9D2AC70157008FE3B8 /* Access */ = {
 			isa = PBXGroup;
 			children = (
-				6C4D5E832AE9BF61001DCDA6 /* AccessIntro.swift */,
 				6C4D5E862AE9C0EA001DCDA6 /* AccessPhrases.swift */,
-				E4025C9E2AC70184008FE3B8 /* RecoveryView.swift */,
-				E4716FDA2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift */,
-				E4716FDC2ACEF17500BC2AA7 /* RecoveryApproverRow.swift */,
-				E4AB90B52AD0269500390AEF /* RecoveredSecretsView.swift */,
-				6C4D5E882AEACFA9001DCDA6 /* ShowPhraseList.swift */,
-				6C4D5E8A2AEAF104001DCDA6 /* ShowPhrase.swift */,
-				6C4D5E8C2AEB069E001DCDA6 /* AccessExpirationCountdown.swift */,
 				E472073E2AEBCCC6009A06A1 /* AccessApproval.swift */,
 				E4ADF64F2AF01A9900EFCF4F /* ChooseAccessApprover.swift */,
 				E4ADF6532AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift */,
 				E4ADF6552AF01AF400EFCF4F /* AccessApproved.swift */,
+				6C4D5E882AEACFA9001DCDA6 /* ShowPhraseList.swift */,
+				6C4D5E832AE9BF61001DCDA6 /* AccessIntro.swift */,
+				6C4D5E8A2AEAF104001DCDA6 /* ShowPhrase.swift */,
+				6C4D5E8C2AEB069E001DCDA6 /* AccessExpirationCountdown.swift */,
 			);
 			path = Access;
 			sourceTree = "<group>";
@@ -1043,7 +1035,6 @@
 				6C2372882AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				3DFF192E2AC6C7DC006111B2 /* OpenVault.swift in Sources */,
-				E4716FDD2ACEF17500BC2AA7 /* RecoveryApproverRow.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
 				6C2392B32AE6CDB200987A91 /* PhrasesView.swift in Sources */,
@@ -1065,7 +1056,7 @@
 				BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */,
-				E4AB90B62AD0269500390AEF /* RecoveredSecretsView.swift in Sources */,
+				E4ADF6582AF1127000EFCF4F /* SigningKey.swift in Sources */,
 				E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */,
 				3D3E64D22AE6B76A0000C56C /* PhraseSaveSuccess.swift in Sources */,
 				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,
@@ -1084,7 +1075,6 @@
 				E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */,
 				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
 				3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */,
-				E4716FDB2ACEF11900BC2AA7 /* RecoveryExpirationCountDown.swift in Sources */,
 				6C5307762AE0111A00E20F1E /* VerificationCodeEntry.swift in Sources */,
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
 				E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */,
@@ -1114,7 +1104,6 @@
 				E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */,
 				6C86F2162AECB71B00E73EA1 /* WordList.swift in Sources */,
 				3DE0B97D2ABA56BA0001F3A3 /* SignIn.swift in Sources */,
-				E4025C9F2AC70184008FE3B8 /* RecoveryView.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				6C2392B12AE6CB4500987A91 /* SettingsView.swift in Sources */,
 				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
@@ -1172,6 +1161,7 @@
 				6C0AF9652ACC6722009A9B54 /* Base32.swift in Sources */,
 				BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */,
 				BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
+				E4ADF6592AF1127000EFCF4F /* SigningKey.swift in Sources */,
 				6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */,
 				6C0AF96A2ACC93FE009A9B54 /* RotatingTotpPinView.swift in Sources */,
 				6CD6DAE82ABB4E8000974035 /* Onboarding.swift in Sources */,

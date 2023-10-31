@@ -23,7 +23,7 @@ struct AuthPlugin: Moya.PluginType {
         let requestQuery = request.url?.query().flatMap { "?\($0)" } ?? ""
         let requestBody = request.httpBody?.base64EncodedString() ?? ""
         let dataToSign = "\(request.httpMethod ?? "GET")\(requestPath)\(requestQuery)\(requestBody)\(timestampString)".data(using: .utf8)
-        let signature = dataToSign.flatMap { try? deviceKey.signature(for: $0) }?.base64EncodedString() ?? "[CORRUPT_DEVICE_KEY]"
+        let signature = dataToSign.flatMap { try? deviceKey.signature(for: $0) }?.value ?? "[CORRUPT_DEVICE_KEY]"
 
         request.addValue(timestampString, forHTTPHeaderField: "X-Censo-Timestamp")
         request.addValue("signature \(signature)", forHTTPHeaderField: "Authorization")

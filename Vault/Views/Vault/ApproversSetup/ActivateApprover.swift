@@ -290,7 +290,7 @@ struct ActivateApprover : View {
                 endpoint: .confirmGuardian(
                     API.ConfirmGuardianApiRequest(
                         participantId: participantId,
-                        keyConfirmationSignature: Base64EncodedString(data: signature),
+                        keyConfirmationSignature: signature,
                         keyConfirmationTimeMillis: timeMillis
                     )
                 )

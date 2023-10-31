@@ -222,13 +222,8 @@ struct EnterAccessVerificationCode : View {
     private func submitVerificationCode(_ code: String) {
         submitting = true
         let deviceKey = session.deviceKey
-        
-        let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-        
-        guard let codeBytes = code.data(using: .utf8),
-              let timeMillisData = String(timeMillis).data(using: .utf8),
-              let devicePublicKey = try? Base58EncodedPublicKey(data: deviceKey.publicExternalRepresentation()),
-              let signature = try? Base64EncodedString(data: deviceKey.signature(for: codeBytes + timeMillisData))
+        guard let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: deviceKey),
+              let devicePublicKey = try? Base58EncodedPublicKey(data: deviceKey.publicExternalRepresentation())
         else {
             self.error = CensoError.failedToCreateSignature
             self.submitting = false

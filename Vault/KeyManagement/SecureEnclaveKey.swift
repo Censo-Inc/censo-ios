@@ -8,7 +8,7 @@
 import Foundation
 import LocalAuthentication
 
-protocol SecureEnclaveKey {
+protocol SecureEnclaveKey : SigningKey {
     var identifier: String { get }
     var secKey: SecKey { get }
 }
@@ -62,7 +62,7 @@ extension SecureEnclaveKey {
         return decryptedData!
     }
 
-    func signature(for data: Data) throws -> Data {
+    func signature(for data: Data) throws -> Base64EncodedString {
         let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
 
         guard SecKeyIsAlgorithmSupported(secKey, .sign, algorithm) else {
@@ -79,7 +79,7 @@ extension SecureEnclaveKey {
             throw error!.takeRetainedValue() as Error
         }
 
-        return signature!
+        return Base64EncodedString(data: signature!)
     }
 }
 
