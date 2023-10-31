@@ -59,7 +59,7 @@ struct EnterAccessVerificationCode : View {
                             .font(.system(size: 14))
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        if let url = URL(string: "https://censo.co/") {
+                        if let url = URL(string: "https://censo.co/approvers") {
                             ShareLink(
                                 item: url
                             ) {
