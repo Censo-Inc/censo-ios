@@ -16,6 +16,12 @@
 		<string>Vault Integration AppStore</string>
 		<key>co.censo.Vault</key>
 		<string>Vault AppStore</string>
+		<key>co.censo.Guardian-staging</key>
+		<string>Guardian Staging AppStore</string>
+		<key>co.censo.Guardian-integration</key>
+		<string>Guardian Integration AppStore</string>
+		<key>co.censo.Guardian</key>
+		<string>Guardian AppStore</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>1B5AD483C0DF4E0E45BAABCEB1D571B3639228A2</string>

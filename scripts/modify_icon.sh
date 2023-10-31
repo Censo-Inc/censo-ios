@@ -18,7 +18,11 @@ function generateIcon() {
     echo "Modified ${IMAGE_PATH}"
 }
 
-ICON_FILES=$(find "./Vault/Assets.xcassets/AppIcon.appiconset" -name "*.png")
+if [[ $APP == "approver"]]; then
+  ICON_FILES=$(find "./Vault/Assets.xcassets/AppIcon2.appiconset" -name "*.png")
+else
+  ICON_FILES=$(find "./Vault/Assets.xcassets/AppIcon.appiconset" -name "*.png")
+fi
 
 if [ "${ICON_RIBBON}" != "" ]; then
     for ICON in $ICON_FILES; do

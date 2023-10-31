@@ -16,6 +16,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -a|--app)
+    APP="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -p|--publish)
     PUBLISH=true
     shift # past argument
@@ -31,29 +36,53 @@ done
 # Setup environment
 
 export RAYGUN_ACCESS_TOKEN="YXRhQHBlcHBlcmVkc29mdHdhcmUuY29tOkxLSjEyM3BvaWFzZA=="
+if [[ $APP == 'approver' ]]; then
+  export APP="approver"
 
-if [[ $ENVIRONMENT == 'production' ]]; then
-  export SCHEME="Vault"
-  export CONFIGURATION="Release"
-  export PROVISIONING_PROFILE="Vault AppStore"
-  export RAYGUN_APPLICATION_ID="282j3o2"
-elif [[ $ENVIRONMENT == 'integration' ]]; then
-  export ICON_RIBBON="Dev"
-  export SCHEME="Vault (Integration)"
-  export CONFIGURATION="Release (Integration)"
-  export PROVISIONING_PROFILE="Vault Integration AppStore"
-  export RAYGUN_APPLICATION_ID="283703j"
-elif [[ $ENVIRONMENT == 'staging' ]]; then
-  export ICON_RIBBON="Preprod"
-  export SCHEME="Vault (Staging)"
-  export CONFIGURATION="Release (Staging)"
-  export PROVISIONING_PROFILE="Vault Staging AppStore"
-  export RAYGUN_APPLICATION_ID="283706g"
+  if [[ $ENVIRONMENT == 'production' ]]; then
+    export SCHEME="Guardian"
+    export CONFIGURATION="Release"
+    export PROVISIONING_PROFILE="Guardian AppStore"
+    export RAYGUN_APPLICATION_ID="282j3o2"
+  elif [[ $ENVIRONMENT == 'integration' ]]; then
+    export ICON_RIBBON="Dev"
+    export SCHEME="Guardian (Integration)"
+    export CONFIGURATION="Release (Integration)"
+    export PROVISIONING_PROFILE="Guardian Integration AppStore"
+    export RAYGUN_APPLICATION_ID="283703j"
+  elif [[ $ENVIRONMENT == 'staging' ]]; then
+    export ICON_RIBBON="Preprod"
+    export SCHEME="Guardian (Staging)"
+    export CONFIGURATION="Release (Staging)"
+    export PROVISIONING_PROFILE="Guardian Staging AppStore"
+    export RAYGUN_APPLICATION_ID="283706g"
+  else
+    echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
+    exit 1
+  fi
 else
-  echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
-  exit 1
+  if [[ $ENVIRONMENT == 'production' ]]; then
+    export SCHEME="Vault"
+    export CONFIGURATION="Release"
+    export PROVISIONING_PROFILE="Vault AppStore"
+    export RAYGUN_APPLICATION_ID="282j3o2"
+  elif [[ $ENVIRONMENT == 'integration' ]]; then
+    export ICON_RIBBON="Dev"
+    export SCHEME="Vault (Integration)"
+    export CONFIGURATION="Release (Integration)"
+    export PROVISIONING_PROFILE="Vault Integration AppStore"
+    export RAYGUN_APPLICATION_ID="283703j"
+  elif [[ $ENVIRONMENT == 'staging' ]]; then
+    export ICON_RIBBON="Preprod"
+    export SCHEME="Vault (Staging)"
+    export CONFIGURATION="Release (Staging)"
+    export PROVISIONING_PROFILE="Vault Staging AppStore"
+    export RAYGUN_APPLICATION_ID="283706g"
+  else
+    echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
+    exit 1
+  fi
 fi
-
 # Read AppleID credentials
 
 LINE_NUMBER=0
