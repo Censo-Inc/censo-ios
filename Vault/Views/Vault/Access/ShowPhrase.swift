@@ -49,19 +49,6 @@ struct ShowPhrase: View {
             .padding()
             
         }
-        .navigationTitle(Text(label))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    onComplete(false)
-                } label: {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.black)
-                }
-            }
-        })
     }
     
 }

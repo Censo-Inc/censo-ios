@@ -16,130 +16,94 @@ struct AccessPhrases: View {
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
-    enum Step {
-        case initial
-        case creatingAccessRequest
-        case cancellingAccessRequest
-        case showingList
-        case otherDevice
-        case intro(phraseIndex: Int)
-        case retrievingShards(phraseIndex: Int)
-        case showingSeedPhrase(phraseIndex: Int, phrase: [String])
-        case done
-        
-        static func fromOwnerState(_ ownerState: API.OwnerState.Ready) -> Step {
-            if let recovery = ownerState.recovery {
-                if recovery.isThisDevice {
-                    return .showingList
-                } else {
-                    return .otherDevice
-                }
-            } else {
-                return .initial
-            }
-        }
-    }
-    
-    @State private var step: Step
-    @State private var viewedPhrases: [Int] = []
+    @State private var deletingRecovery = false
     @State private var showingError = false
     @State private var error: Error?
     
-    init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
-        self.session = session
-        self.ownerState = ownerState
-        self.onOwnerStateUpdated = onOwnerStateUpdated
-        self._step = State(initialValue: Step.fromOwnerState(ownerState))
-    }
-    
     var body: some View {
-        VStack {
-            switch (step) {
-            case .initial:
-                if ownerState.policy.guardians.count == 1 {
-                    ProgressView().onAppear {
-                        requestRecovery()
-                    }
-                }
-            case .creatingAccessRequest,
-                    .cancellingAccessRequest:
+        NavigationView {
+            if deletingRecovery {
                 ProgressView()
-            case .otherDevice:
-                Text("There is a recovery in progress on another device")
-            case .showingList:
-                ShowPhraseList(
-                    session: session,
-                    ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated,
-                    viewedPhrases: viewedPhrases,
-                    onPhraseSelected: { selectedPhraseIndex in
-                        self.step = .intro(phraseIndex: selectedPhraseIndex)
-                    },
-                    onFinished: {
-                        cancelRecovery()
-                    }
-                )
-            case .intro(let phraseIndex):
-                AccessIntro(
-                    ownerState: ownerState,
-                    session: session,
-                    onReadyToGetStarted: {
-                        self.step = .retrievingShards(phraseIndex: phraseIndex)
-                    }
-                )
-            case .retrievingShards(let phraseIndex):
-                FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
-                    session: session,
-                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                        return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
-                            biometryVerificationId: biomentryVerificationId,
-                            biometryData: biometryData
-                        ))
-                    },
-                    onSuccess: { response in
-                        do {
-                            self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
-                        } catch {
-                            self.step = .showingList
-                            showError(CensoError.failedToDecryptSecrets)
+                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("OK")
                         }
-                    },
-                    onCancelled: {
-                        self.step = .showingList
                     }
-                )
-            case .showingSeedPhrase(let phraseIndex, let phrase):
-                NavigationView {
-                    ShowPhrase(
-                        label: ownerState.vault.secrets[phraseIndex].label,
-                        words: phrase,
-                        onComplete: { finished in
-                            if finished {
-                                viewedPhrases.append(phraseIndex)
+            } else {
+                switch (ownerState.recovery) {
+                case nil:
+                    ProgressView()
+                        .onAppear {
+                            requestRecovery()
+                        }
+                        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                            Button {
+                                dismiss()
+                            } label: {
+                                Text("OK")
                             }
-                            self.step = .showingList
                         }
-                    )
-                }
-            case .done:
-                EmptyView()
-                    .onAppear{
-                        dismiss()
+                case .anotherDevice:
+                    Text("There is a recovery in progress on another device")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    dismiss()
+                                } label: {
+                                    Image(systemName: "xmark")
+                                        .foregroundColor(.black)
+                                }
+                            }
+                        })
+                case .thisDevice(let recovery):
+                    // delete it in case this is a leftover recovery from a policy replacement
+                    if recovery.intent == .replacePolicy {
+                        ProgressView()
+                            .onAppear {
+                                deleteRecovery(dismissOnSuccess: false)
+                            }
+                    } else {
+                        switch (recovery.status) {
+                        case .requested:
+                            AccessApproval(
+                                session: session,
+                                policy: ownerState.policy,
+                                recovery: recovery,
+                                onCancel: deleteRecovery,
+                                onOwnerStateUpdated: onOwnerStateUpdated
+                            )
+                        case .timelocked:
+                            Text("Timelocked")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar(content: {
+                                    ToolbarItem(placement: .navigationBarLeading) {
+                                        Button {
+                                            dismiss()
+                                        } label: {
+                                            Image(systemName: "xmark")
+                                                .foregroundColor(.black)
+                                        }
+                                    }
+                                })
+                        case .available:
+                            AvailableRecovery(
+                                session: session,
+                                ownerState: ownerState,
+                                recovery: recovery,
+                                onFinished: deleteRecovery,
+                                onOwnerStateUpdated: onOwnerStateUpdated
+                            )
+                        }
                     }
-            }
-        }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-            } label: {
-                Text("OK")
+                }
             }
         }
     }
     
     private func requestRecovery() {
-        self.step = .creatingAccessRequest
         apiProvider.decodableRequest(
             with: session,
             endpoint: .requestRecovery(API.RequestRecoveryApiRequest(intent: .accessPhrases))
@@ -147,26 +111,152 @@ struct AccessPhrases: View {
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
-                self.step = .showingList
             case .failure(let error):
                 showError(error)
-                self.step = .initial
             }
         }
     }
     
-    private func cancelRecovery() {
-        self.step = .cancellingAccessRequest
+    private func deleteRecovery() {
+        deleteRecovery(dismissOnSuccess: true)
+    }
+    
+    private func deleteRecovery(dismissOnSuccess: Bool) {
+        self.deletingRecovery = true
         apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
-                dismiss()
+                if dismissOnSuccess {
+                    dismiss()
+                }
             case .failure(let error):
                 self.showingError = true
                 self.error = error
-                self.step = .showingList
             }
+        }
+    }
+    
+    private func showError(_ error: Error) {
+        self.showingError = true
+        self.error = error
+    }
+}
+
+struct AvailableRecovery: View {
+    @Environment(\.apiProvider) var apiProvider
+    @Environment(\.dismiss) var dismiss
+    
+    var session: Session
+    var ownerState: API.OwnerState.Ready
+    var recovery: API.Recovery.ThisDevice
+    var onFinished: () -> Void
+    var onOwnerStateUpdated: (API.OwnerState) -> Void
+    
+    enum Step {
+        case showingList
+        case intro(phraseIndex: Int)
+        case retrievingShards(phraseIndex: Int)
+        case showingSeedPhrase(phraseIndex: Int, phrase: [String])
+    }
+    
+    @State private var step: Step = .showingList
+    @State private var viewedPhrases: [Int] = []
+    @State private var showingError = false
+    @State private var error: Error?
+    
+    var body: some View {
+        switch (step) {
+        case .showingList:
+            ShowPhraseList(
+                session: session,
+                ownerState: ownerState,
+                onOwnerStateUpdated: onOwnerStateUpdated,
+                viewedPhrases: viewedPhrases,
+                onPhraseSelected: { selectedPhraseIndex in
+                    self.step = .intro(phraseIndex: selectedPhraseIndex)
+                },
+                onFinished: onFinished
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        onFinished()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.black)
+                    }
+                }
+            })
+        case .intro(let phraseIndex):
+            AccessIntro(
+                ownerState: ownerState,
+                session: session,
+                onReadyToGetStarted: {
+                    self.step = .retrievingShards(phraseIndex: phraseIndex)
+                }
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        self.step = .showingList
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                    }
+                }
+            })
+        case .retrievingShards(let phraseIndex):
+            FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
+                session: session,
+                onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                    return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
+                        biometryVerificationId: biomentryVerificationId,
+                        biometryData: biometryData
+                    ))
+                },
+                onSuccess: { response in
+                    do {
+                        self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
+                    } catch {
+                        self.step = .showingList
+                        showError(CensoError.failedToDecryptSecrets)
+                    }
+                },
+                onCancelled: {
+                    self.step = .showingList
+                }
+            )
+        case .showingSeedPhrase(let phraseIndex, let phrase):
+            let label = ownerState.vault.secrets[phraseIndex].label
+            ShowPhrase(
+                label: label,
+                words: phrase,
+                onComplete: { finished in
+                    if finished {
+                        viewedPhrases.append(phraseIndex)
+                    }
+                    self.step = .showingList
+                }
+            )
+            .navigationTitle(Text(label))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        self.step = .showingList
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.black)
+                    }
+                }
+            })
         }
     }
     

@@ -68,8 +68,8 @@ struct ApproversView: View {
                         }
                         Spacer()
                     }
-                    .padding(30)
-                    
+                    .padding([.top], 30)
+                    .padding([.leading, .trailing], 30)
                 }
                 
                 Divider()

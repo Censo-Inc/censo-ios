@@ -43,6 +43,17 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.black)
+                    }
+                }
+            })
         case .rename:
             RenameApprover(
                 session: session,
@@ -192,6 +203,7 @@ struct ActivateApprover : View {
                 .padding([.bottom], 8)
                 
                 Spacer()
+
                 VStack(spacing: 30) {
                     Divider()
 
@@ -278,7 +290,7 @@ struct ActivateApprover : View {
                 endpoint: .confirmGuardian(
                     API.ConfirmGuardianApiRequest(
                         participantId: participantId,
-                        keyConfirmationSignature: Base64EncodedString(data: signature),
+                        keyConfirmationSignature: signature,
                         keyConfirmationTimeMillis: timeMillis
                     )
                 )

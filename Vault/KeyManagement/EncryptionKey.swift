@@ -9,7 +9,7 @@ import Foundation
 import CryptoKit
 import BigInt
 
-struct EncryptionKey {
+struct EncryptionKey : SigningKey {
     var secKey: SecKey
     
     fileprivate init(secKey: SecKey) {

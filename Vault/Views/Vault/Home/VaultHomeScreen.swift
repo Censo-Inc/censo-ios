@@ -85,11 +85,87 @@ struct VaultHomeScreen: View {
 }
 
 #if DEBUG
+extension API.TrustedGuardian {
+    static var sample: Self {
+        .init(
+            label: "Ben",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    static var sample2: Self {
+        .init(
+            label: "Brendan",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    static var sample3: Self {
+        .init(
+            label: "Ievgen",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample4: Self {
+        .init(
+            label: "Ata",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sample5: Self {
+        .init(
+            label: "Sam",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: false,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+    
+    static var sampleOwner: Self {
+        .init(
+            label: "Me",
+            participantId: ParticipantId(bigInt: generateParticipantId()),
+            isOwner: true,
+            attributes: API.TrustedGuardian.Attributes(
+                onboardedAt: Date()
+            )
+        )
+    }
+}
+
 extension API.Policy {
     static var sample: Self {
         .init(
             createdAt: Date(),
             guardians: [.sample],
+            threshold: 2,
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+        )
+    }
+    
+    static var sample2Approvers: Self {
+        .init(
+            createdAt: Date(),
+            guardians: [.sample, .sample2],
             threshold: 2,
             encryptedMasterKey: Base64EncodedString(data: Data()),
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")

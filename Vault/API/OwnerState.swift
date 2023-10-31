@@ -177,6 +177,11 @@ extension API {
         case anotherDevice(AnotherDevice)
         case thisDevice(ThisDevice)
         
+        enum Intent : String, Codable {
+            case accessPhrases = "AccessPhrases"
+            case replacePolicy = "ReplacePolicy"
+        }
+        
         struct AnotherDevice: Codable {
             var guid: String
         }
@@ -188,7 +193,7 @@ extension API {
             var unlocksAt: Date
             var expiresAt: Date
             var approvals: [Approval]
-            var intent: RecoveryIntent
+            var intent: Intent
             
             struct Approval : Codable {
                 var participantId: ParticipantId

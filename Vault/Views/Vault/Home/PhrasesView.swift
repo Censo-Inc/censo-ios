@@ -93,6 +93,28 @@ struct PhrasesView: View {
                     .padding()
                 }
             }
+            .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
+                Button(role: .destructive) {
+                    showingEditSheet = false
+                    showingDeleteConfirmation = true
+                } label: {
+                    Text("Delete")
+                }
+            } message: { i in
+                Text(ownerState.vault.secrets[i].label)
+            }
+            .confirmationDialog(
+                Text("Are you sure?"),
+                isPresented: $showingDeleteConfirmation,
+                presenting: editingIndex
+            ) { i in
+                Button("Yes", role: .destructive) {
+                    deleteSecret(ownerState.vault.secrets[i])
+                }
+            } message: { i in
+                Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
+            }
+            
         }
         .navigationTitle(Text("Seed Phrases"))
         .navigationBarTitleDisplayMode(.inline)
@@ -112,29 +134,7 @@ struct PhrasesView: View {
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
         })
-        .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
-            
-            Button(role: .destructive) {
-                showingEditSheet = false
-                showingDeleteConfirmation = true
-            } label: {
-                Text("Delete")
-            }
-        } message: { i in
-            Text(ownerState.vault.secrets[i].label)
-        }
-        .confirmationDialog(
-            Text("Are you sure?"),
-            isPresented: $showingDeleteConfirmation,
-            presenting: editingIndex
-        ) { i in
-            Button("Yes", role: .destructive) {
-                deleteSecret(ownerState.vault.secrets[i])
-            }
-        } message: { i in
-            Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
-        }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+       .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
                 showingError = false
                 error = nil

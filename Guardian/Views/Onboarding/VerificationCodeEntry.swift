@@ -10,9 +10,10 @@ import SwiftUI
 
 struct VerificationCodeEntry: View {
     @Binding var pinInput: [Int]
+    var disabled: Bool = false
     
     var body: some View {
-        PinInputField(value: $pinInput, length: 6)
+        PinInputFieldWithBackground(value: $pinInput, length: 6, disabled: disabled)
             .padding()
     }
 }

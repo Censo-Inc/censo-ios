@@ -42,6 +42,17 @@ struct TotpUtils {
         let remainder = UInt64(date.timeIntervalSince1970.rounded()) % UInt64(period.rounded())
         return Double(remainder) / period
     }
+    
+    static func signCode(code: String, signingKey: SigningKey) -> (UInt64, Base64EncodedString)? {
+        let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
+        guard let codeBytes = code.data(using: .utf8),
+              let timeMillisData = String(timeMillis).data(using: .utf8),
+              let signature = try? signingKey.signature(for: codeBytes + timeMillisData) else {
+            return nil
+        }
+        
+        return (timeMillis, signature)
+    }
 }
 
 extension String {
