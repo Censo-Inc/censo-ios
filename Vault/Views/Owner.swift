@@ -13,6 +13,7 @@ struct Owner: View {
 
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
     @State private var showApproversIntro = false
+    @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
 
     var session: Session
 
@@ -24,45 +25,58 @@ struct Owner: View {
         case .loading:
             ProgressView()
         case .success(let ownerState):
-            let ownerStateBinding = Binding<API.OwnerState>(
-                get: { ownerState },
-                set: { replaceOwnerState(newOwnerState: $0) }
-            )
-            BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                switch ownerState {
-                case .initial:
-                    Welcome(
-                        session: session,
-                        onComplete: {ownerState in
-                            replaceOwnerState(newOwnerState: ownerState)
+            if (acceptedTermsOfUseVersion != "") {
+                let ownerStateBinding = Binding<API.OwnerState>(
+                    get: { ownerState },
+                    set: { replaceOwnerState(newOwnerState: $0) }
+                )
+                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                    switch ownerState {
+                    case .initial:
+                        Welcome(
+                            session: session,
+                            onComplete: {ownerState in
+                                replaceOwnerState(newOwnerState: ownerState)
+                            }
+                        )
+                    case .ready(let ready) where ready.vault.secrets.isEmpty:
+                        FirstPhrase(
+                            ownerState: ready,
+                            session: session,
+                            onComplete: { ownerState in
+                                showApproversIntro = true
+                                replaceOwnerState(newOwnerState: ownerState)
+                            }
+                        )
+                    case .ready(let ready):
+                        VaultHomeScreen(
+                            session: session,
+                            ownerState: ready,
+                            onOwnerStateUpdated: { _ in
+                                reload()
+                            }
+                        )
+                        .sheet(isPresented: $showApproversIntro, content: {
+                            NavigationView {
+                                InitialApproversSetup(
+                                    session: session,
+                                    ownerState: ready,
+                                    onOwnerStateUpdated: replaceOwnerState
+                                )
+                            }
+                        })
+                    }
+                }
+            } else {
+                NavigationStack {
+                    TermsOfUse(
+                        text: TermsOfUse.v0_1,
+                        onAccept: {
+                            acceptedTermsOfUseVersion = "v0.1"
                         }
                     )
-                case .ready(let ready) where ready.vault.secrets.isEmpty:
-                    FirstPhrase(
-                        ownerState: ready, 
-                        session: session,
-                        onComplete: { ownerState in
-                            showApproversIntro = true
-                            replaceOwnerState(newOwnerState: ownerState)
-                        }
-                    )
-                case .ready(let ready):
-                    VaultHomeScreen(
-                        session: session,
-                        ownerState: ready,
-                        onOwnerStateUpdated: { _ in
-                            reload()
-                        }
-                    )
-                    .sheet(isPresented: $showApproversIntro, content: {
-                        NavigationView {
-                            InitialApproversSetup(
-                                session: session,
-                                ownerState: ready,
-                                onOwnerStateUpdated: replaceOwnerState
-                            )
-                        }
-                    })
+                    .navigationTitle("Terms of Use")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:

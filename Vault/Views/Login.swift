@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct Login: View {
-    @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
-
     var onSuccess: () -> Void
 
     var body: some View {
-        if (acceptedTermsOfUseVersion != "") {
             VStack {
                 Spacer()
                 Image("Logo")
@@ -31,7 +28,7 @@ struct Login: View {
                     .padding()
                 
                 AppleSignIn(onSuccess: onSuccess)
-                
+
                 HStack {
                     Image(systemName: "info.circle")
                     Text("Why Apple ID?")
@@ -59,22 +56,15 @@ struct Login: View {
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    
+
                     Divider()
                         .padding()
-                    
+
                     LoginBottomLinks()
-                    
+
                 }.frame(height: 180)
             }
-        } else {
-            TermsOfUse(
-                text: TermsOfUse.v0_1,
-                onAccept: {
-                    acceptedTermsOfUseVersion = "v0.1"
-                }
-            )
-        }
+
     }
 }
 
