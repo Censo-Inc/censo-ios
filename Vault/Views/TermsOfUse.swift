@@ -15,22 +15,23 @@ struct TermsOfUse: View {
 
     var body: some View {
         VStack {
-            Text("TERMS OF USE")
-                .font(.system(size: 24.0, weight: .bold))
+            Text("We built Censo to be a secure, open-source way to safeguard seed phrases with fair, simple terms. Please read & accept the terms of use.")
+                .font(.system(size: 14, weight: .medium))
+                .padding(30)
+            Divider()
             WebView(text: $text)
                 .frame(minWidth: 0, maxWidth: .infinity)
-                .padding()
+            Divider()
             Button {
                 onAccept()
             } label: {
-                Text("Accept")
+                Text("Accept & Continue")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            .padding()
-            Text("By clicking Accept you agree to our terms of use.")
-                .font(.system(size: 14.0))
-                .italic()
+            .padding(30)
+            Text("By tapping Accept & Continue, you agree to our terms of use.")
+                .font(.system(size: 12.0))
         }
     }
 }
@@ -49,8 +50,8 @@ struct WebView: UIViewRepresentable {
 
 extension TermsOfUse {
     static let v0_1: String = """
-<div style="font-size: 24px">
-<p><em>Revised: May 9th, 2022</em></p>
+<div style="font-size: 24px; padding: 0 64px;">
+<p>Revised: May 9th, 2022</p>
 <p class="pt-24"><strong>1. ACCEPTANCE OF TERMS</strong><br>
 Censo Incorporated (<strong>“Censo”</strong>) provides solutions for storage and management of and participation in transactions involving decentralized finance and crypto assets, and it makes this website or online platform and related services (collectively, the <strong>“Service”</strong>) available for access or use subject to the terms and conditions in these Terms of Use (the <strong>“TOU”</strong>). Censo may, in its sole discretion, update the TOU at any time. You can access and review the most-current version of the TOU at the URL for this page or by clicking on the “Terms of Use” link within the Service or as otherwise made available by Censo.</p> <p>PLEASE REVIEW THE TOU CAREFULLY. IT IMPOSES <strong>BINDING ARBITRATION</strong> AND A <strong>WAIVER OF CLASS ACTIONS</strong>. THE TOU REQUIRES BINDING ARBITRATION TO RESOLVE ANY DISPUTE OR CLAIM ARISING FROM OR RELATING TO THE TOU OR YOUR ACCESS TO OR USE OF THE SERVICE, INCLUDING THE VALIDITY, APPLICABILITY OR INTERPRETATION OF THE TOU (EACH, A <strong>“CLAIM”</strong>). YOU AGREE THAT ANY CLAIM WILL BE RESOLVED ONLY ON AN INDIVIDUAL BASIS AND NOT IN A CLASS, COLLECTIVE, CONSOLIDATED OR REPRESENTATIVE ACTION, ARBITRATION OR OTHER SIMILAR PROCESS. PLEASE REVIEW SECTION 22 CAREFULLY TO UNDERSTAND YOUR RIGHTS AND OBLIGATIONS WITH RESPECT TO THE RESOLUTION OF ANY CLAIM.</p> <p>BY REGISTERING FOR AN ACCOUNT OR OTHERWISE ACCESSING OR USING THE SERVICE, YOU AGREE TO BE BOUND BY THE TOU, INCLUDING ANY UPDATES OR REVISIONS POSTED HERE OR OTHERWISE COMMUNICATED TO YOU. IF YOU ARE ENTERING INTO THE TOU ON BEHALF OF A COMPANY OR OTHER LEGAL ENTITY, YOU REPRESENT AND WARRANT THAT YOU ARE AUTHORIZED AND LAWFULLY ABLE TO BIND SUCH ENTITY TO THE TOU, IN WHICH CASE THE TERM “YOU” WILL REFER TO SUCH ENTITY. IF YOU DO NOT HAVE SUCH AUTHORITY, OR IF YOU DO NOT AGREE WITH THE TERMS AND CONDITIONS OF THE TOU, YOU MAY NOT ACCESS OR USE THE SERVICE, AND YOU MUST UNINSTALL ANY COMPONENTS OF THE SERVICE FROM ANY DEVICE WITHIN YOUR CUSTODY OR CONTROL.</p> <p>You represent and warrant that you are at least 18 years of age or the age of majority in your jurisdiction, whichever is greater, and of legal age to form a binding contract. You further represent and warrant that you are not a person barred from accessing or using the Service under the laws of your country of residence or any other applicable jurisdiction.</p> <p><strong>2. OTHER AGREEMENTS AND TERMS</strong><br>
 In addition to the TOU, your access to and use of the Service are further subject to the Censo Privacy Policy and any usage or other policies relating to the Service posted or otherwise made available to you by Censo, including any purchase, subscription or other similar terms posted within the Service (the Privacy Policy and any such usage or other policies, collectively, <strong>“Additional Terms”</strong>). The Additional Terms are part of the TOU and are hereby incorporated by reference, and you agree to be bound by the Additional Terms.</p> <p>You acknowledge and agree that: (i) by accessing or using the Service, Censo may receive certain information about you, including personal information, and Censo may collect, use, disclose, store and process such information in accordance with the TOU, including any Additional Terms; and (ii) technical processing and transmission of data, including Your Content (defined in Section (a) ), associated with the Service may require transmissions over various networks and changes to conform and adapt to technical requirements of connecting networks or devices.</p> <p>Before accessing or using the Service to engage in any transaction involving Digital Assets (defined in Section (a) ), you must agree to be bound by Additional Terms governing such access to or use of the Service, which will be presented to you before you are permitted to access or use the Service for such purpose.</p> <p><strong>3. REGISTRATION AND ACCOUNT</strong><br>
