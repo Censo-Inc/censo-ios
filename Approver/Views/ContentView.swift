@@ -57,7 +57,7 @@ struct ContentView: View {
               scheme.starts(with: "censo"),
               url.pathComponents.count > 1,
               let action = url.host,
-              ["invite", "recovery"].contains(action) else {
+              ["invite", "access"].contains(action) else {
             showError(CensoError.invalidUrl)
             return
         }

@@ -97,7 +97,7 @@ struct EnterAccessVerificationCode : View {
                             .font(.system(size: 14))
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        if let link = URL(string: "censo-guardian://recovery/\(approver.participantId.value)") {
+                        if let link = URL(string: "\(Configuration.approverUrlScheme)://access/\(approver.participantId.value)") {
                             ShareLink(
                                 item: link
                             ) {
