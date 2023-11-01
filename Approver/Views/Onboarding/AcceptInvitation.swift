@@ -28,7 +28,7 @@ struct AcceptInvitation: View {
                 OperationCompletedView(successText: "Link accepted")
                     .navigationBarHidden(true)
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                             onSuccess(guardianState)
                         }
                     }

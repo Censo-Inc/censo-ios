@@ -12,37 +12,48 @@ import Moya
 import BigInt
 import raygun4apple
 
-struct  OwnerVerification: View {
+struct OwnerVerification: View {
     @Environment(\.apiProvider) var apiProvider
     
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
+    @State private var wrongCode = false
 
     var session: Session
     var guardianState: API.GuardianState
-    var onSuccess: () -> Void
+    var onGuardianStatesUpdated: ([API.GuardianState]) -> Void
+    var onBack: () -> Void
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 30) {
+            Text("Share the code")
+                .font(.system(size: 24))
+                .bold()
             
-            Text("Tell seed phrase owner this 6-digit code to approve their access")
-                .font(.headline)
-                .padding()
+            Text("The owner must enter this 6-digit code:")
+                .font(.system(size: 14))
             
             switch (guardianState.phase) {
+            case .recoveryRequested:
+                ProgressView()
+                    .onAppear {
+                        startOwnerVerification(participantId: guardianState.participantId)
+                    }
             case .recoveryVerification(let phase):
                 RotatingTotpPinView(
                     session: session,
-                    deviceEncryptedTotpSecret: phase.encryptedTotpSecret
+                    deviceEncryptedTotpSecret: phase.encryptedTotpSecret,
+                    style: .approver
                 )
-                .frame(width: .infinity, height: 64)
+                .frame(width: .infinity)
             case .recoveryConfirmation(let status):
                 RotatingTotpPinView(
                     session: session,
-                    deviceEncryptedTotpSecret: status.encryptedTotpSecret
+                    deviceEncryptedTotpSecret: status.encryptedTotpSecret,
+                    style: .approver
                 )
-                .frame(width: .infinity, height: 64)
+                .frame(width: .infinity)
                 .onAppear {
                     confirmOrRejectOwner(
                         participantId: guardianState.participantId,
@@ -52,8 +63,31 @@ struct  OwnerVerification: View {
             default:
                 EmptyView()
             }
+            
+            if wrongCode {
+                Text("Owner entered wrong code")
+                    .font(.system(size: 14))
+                    .foregroundColor(Color.red)
+            } else {
+                Text("")
+                    .font(.system(size: 14))
+            }
         }
         .multilineTextAlignment(.center)
+        .navigationTitle(Text("Approve Access"))
+        .toolbarBackground(.visible, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    onBack()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                }
+            }
+        }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button { } label: { Text("OK") }
         } message: { error in
@@ -67,9 +101,33 @@ struct  OwnerVerification: View {
         self.showingError = true
     }
     
+    private func startOwnerVerification(participantId: ParticipantId) {
+        inProgress = true
+
+        do {
+            let encryptedTotpSecret = try Base64EncodedString.encryptedTotpSecret(deviceKey: session.deviceKey)
+
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .storeRecoveryTotpSecret(
+                    participantId,
+                    encryptedTotpSecret
+                )
+            ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
+                inProgress = false
+                switch result {
+                case .success(let success):
+                    onGuardianStatesUpdated(success.guardianStates)
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+        } catch {
+            showError(error)
+        }
+    }
     
     private func confirmOrRejectOwner(participantId: ParticipantId, status: API.GuardianPhase.RecoveryConfirmation) {
-        
         if (try? verifyOwnerSignature(participantId: participantId, status: status)) ?? false {
             guard let guardianPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
                   let guardianPublicKey = try? guardianPrivateKey.publicExternalRepresentation(),
@@ -85,6 +143,7 @@ struct  OwnerVerification: View {
                 return
             }
             inProgress = true
+            wrongCode = false
             apiProvider.decodableRequest(
                 with: session,
                 endpoint: .approveOwnerVerification(
@@ -94,8 +153,8 @@ struct  OwnerVerification: View {
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
                 inProgress = false
                 switch result {
-                case .success:
-                    onSuccess()
+                case .success(let success):
+                    onGuardianStatesUpdated(success.guardianStates)
                 case .failure(let error):
                     showError(error)
                 }
@@ -108,8 +167,9 @@ struct  OwnerVerification: View {
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
                 inProgress = false
                     switch result {
-                    case .success:
-                        onSuccess()
+                    case .success(let success):
+                        wrongCode = true
+                        onGuardianStatesUpdated(success.guardianStates)
                     case .failure(let error):
                         showError(error)
                     }
@@ -140,29 +200,24 @@ struct  OwnerVerification: View {
 
 #if DEBUG
 #Preview {
-    OwnerVerification(
-        session: .sample,
-        guardianState: .sampleRecoveryVerification,
-        onSuccess: {}
-    )
-}
-
-extension API.GuardianPhase.RecoveryVerification {
-    static var sample: Self {
-        .init(createdAt: Date(),
-              recoveryPublicKey: .sample,
-              encryptedTotpSecret: try! DeviceKey.sample.encrypt(
-                data: generateBase32().decodeBase32()
-              )
-        )
-    }
-}
-
-extension API.GuardianState {
-    static var sampleRecoveryVerification: Self {
-        .init(
-            participantId: .random(),
-            phase: .recoveryVerification(.sample)
+    NavigationStack {
+        let session = Session.sample
+        OwnerVerification(
+            session: session,
+            guardianState: .init(
+                participantId: .random(),
+                phase: .recoveryVerification(
+                    .init(
+                        createdAt: Date(),
+                        recoveryPublicKey: .sample,
+                        encryptedTotpSecret: try! session.deviceKey.encrypt(
+                            data: generateBase32().decodeBase32()
+                        )
+                    )
+                )
+            ),
+            onGuardianStatesUpdated: { _ in },
+            onBack: {}
         )
     }
 }

@@ -184,7 +184,11 @@ struct ActivateApprover : View {
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                                 
-                                RotatingTotpPinView(session: session, deviceEncryptedTotpSecret: deviceEncryptedTotpSecret)
+                                RotatingTotpPinView(
+                                    session: session,
+                                    deviceEncryptedTotpSecret: deviceEncryptedTotpSecret,
+                                    style: .owner
+                                )
                             } else if approver.isConfirmed {
                                 Text("The verification code has been succesfully confirmed.")
                                     .font(.system(size: 14))

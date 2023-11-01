@@ -13,10 +13,9 @@ struct RecoveryApproval: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var inProgress = false
-    @State private var showingError = false
-    @State private var currentError: Error?
+    @State private var showGetLive = true
     
-    @RemoteResult<API.GuardianUser, API> private var user
+    @RemoteResult<[API.GuardianState], API> private var guardianStates
 
     var session: Session
     var participantId: ParticipantId
@@ -27,86 +26,78 @@ struct RecoveryApproval: View {
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
 
     var body: some View {
-        VStack {
-            switch user {
-            case .idle:
-                ProgressView()
-                    .onAppear(perform: reload)
-            case .loading:
-                ProgressView()
-            case .success(let user):
-                let guardianState = user.guardianStates.forParticipantId(participantId)
-                switch guardianState?.phase {
-                case .recoveryRequested:
-                    StartRecoveryApproval(
-                        session: session,
-                        guardianState: guardianState!,
-                        onSuccess: reload)
-                case .recoveryVerification:
-                    OwnerVerification(
-                        session: session,
-                        guardianState: guardianState!,
-                        onSuccess: reload
-                    ).onReceive(refreshStatePublisher) { firedDate in
-                        reload()
-                    }.onReceive(remoteNotificationPublisher) { _ in
-                        reload()
-                    }
-                case .recoveryConfirmation:
-                    OwnerVerification(
-                        session: session,
-                        guardianState: guardianState!,
-                        onSuccess: reload
-                    )
-                case .complete:
-                    RecoveryApprovalComplete()
-                        .navigationBarHidden(true) 
-                        .onAppear {
-                            refreshStatePublisher.upstream.connect().cancel()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                onSuccess()
-                            }
+        switch guardianStates {
+        case .idle:
+            ProgressView()
+                .onAppear(perform: reload)
+        case .loading:
+            ProgressView()
+        case .success(let guardianStates):
+            if let guardianState = guardianStates.forParticipantId(participantId) {
+                if showGetLive {
+                    GetLiveWithOwner(
+                        onContinue: {
+                            showGetLive = false
                         }
-                default:
+                    )
+                } else {
+                    switch guardianState.phase {
+                    case .recoveryRequested, .recoveryVerification, .recoveryConfirmation:
+                        OwnerVerification(
+                            session: session,
+                            guardianState: guardianState,
+                            onGuardianStatesUpdated: replaceGuardianStates,
+                            onBack: {
+                                showGetLive = true
+                            }
+                        )
+                        .onReceive(refreshStatePublisher) { firedDate in
+                            reload()
+                        }
+                        .onReceive(remoteNotificationPublisher) { _ in
+                            reload()
+                        }
+                    case .complete:
+                        OperationCompletedView(successText: "Approval completed")
+                            .navigationBarHidden(true)
+                            .onAppear {
+                                refreshStatePublisher.upstream.connect().cancel()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    onSuccess()
+                                }
+                            }
+                    default:
+                        VStack {
+                            Text("Invalid Recovery")
+                        }
+                        .multilineTextAlignment(.center)
+                    }
+                }
+            } else {
+                VStack {
                     Text("Invalid Recovery")
                 }
-            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
-                SignIn(session: session, onSuccess: reload) {
-                    ProgressView("Signing in...")
-                }
-            case .failure(let error):
-                RetryView(error: error, action: reload)
+                .multilineTextAlignment(.center)
             }
-        }
-        .multilineTextAlignment(.center)
-        .navigationTitle(Text(""))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+        case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
+            SignIn(session: session, onSuccess: reload) {
+                ProgressView("Signing in...")
             }
-        }
-        .padding()
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel) {
-                dismiss()
-            }
-        } message: { error in
-            Text(error.localizedDescription)
+        case .failure(let error):
+            RetryView(error: error, action: reload)
         }
     }
 
     private func reload() {
-        _user.reload(with: apiProvider, target: session.target(for: .user))
+        _guardianStates.reload(
+            with: apiProvider,
+            target: session.target(for: .user),
+            adaptSuccess: { (user: API.GuardianUser) in user.guardianStates }
+        )
     }
     
-    private func showError(_ error: Error) {
-        inProgress = false
-        
-        showingError = true
-        currentError = error
+    private func replaceGuardianStates(newGuardianStates: [API.GuardianState]) {
+        _guardianStates.replace(newGuardianStates)
     }
-    
 }
 

@@ -27,20 +27,20 @@ struct ContentView: View {
                         session: session,
                         onUrlPasted: { url in openURL(url) }
                     )
-                        .navigationDestination(
-                            isPresented: $isPresented,
-                            destination: {
-                                ApproverRouting(
-                                    inviteCode: $identifier,
-                                    participantId: $participantId,
-                                    route: $route,
-                                    session: session,
-                                    onSuccess: {
-                                        isPresented = false
-                                    }
-                                )
-                            }
-                        )
+                    .navigationDestination(
+                        isPresented: $isPresented,
+                        destination: {
+                            ApproverRouting(
+                                inviteCode: $identifier,
+                                participantId: $participantId,
+                                route: $route,
+                                session: session,
+                                onSuccess: {
+                                    isPresented = false
+                                }
+                            )
+                        }
+                    )
                 }
                 .onOpenURL(perform: openURL)
                 .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
