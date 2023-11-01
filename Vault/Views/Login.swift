@@ -6,18 +6,11 @@
 //
 
 import SwiftUI
-import AuthenticationServices
 
 struct Login: View {
-    @State private var showingError = false
-    @State private var error: Error?
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
 
     var onSuccess: () -> Void
-
-    enum AppleSignInError: Error {
-        case noIdentityToken
-    }
 
     var body: some View {
         if (acceptedTermsOfUseVersion != "") {
@@ -37,30 +30,8 @@ struct Login: View {
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
                 
-                SignInWithAppleButton(.signIn) { request in
-                    request.requestedScopes = []
-                } onCompletion: { result in
-                    switch result {
-                    case .success(let authResults):
-                        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                            guard let idToken = appleIDCredential.identityToken else {
-                                showError(AppleSignInError.noIdentityToken)
-                                break
-                            }
-                            
-                            Keychain.userCredentials = .init(idToken: idToken, userIdentifier: appleIDCredential.user)
-                            onSuccess()
-                        } else {
-                            break
-                        }
-                    case .failure(let error):
-                        showError(error)
-                    }
-                }
-                .signInWithAppleButtonStyle(.black)
-                .frame(maxWidth: 322, maxHeight: 64)
-                .cornerRadius(100.0)
-                .padding()
+                AppleSignIn(onSuccess: onSuccess)
+                
                 HStack {
                     Image(systemName: "info.circle")
                     Text("Why Apple ID?")
@@ -88,32 +59,13 @@ struct Login: View {
                         }
                         .frame(maxWidth: .infinity)
                     }
+                    
                     Divider()
                         .padding()
-                    HStack {
-                        Link(destination: URL(string: "https://censo.co/terms/")!, label: {
-                            Text("Terms")
-                                .padding()
-                                .fontWeight(.bold)
-                                .tint(.black)
-                                .frame(maxWidth: .infinity)
-                        })
-                        Link(destination: URL(string: "https://censo.co/privacy/")!, label: {
-                            Text("Privacy")
-                                .padding()
-                                .fontWeight(.bold)
-                                .tint(.black)
-                                .frame(maxWidth: .infinity)
-                        })
-                    }
+                    
+                    LoginBottomLinks()
+                    
                 }.frame(height: 180)
-            }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button(role: .cancel, action: {}) {
-                    Text("OK")
-                }
-            } message: { error in
-                Text("There was an error trying to sign you in: \(error.localizedDescription)")
             }
         } else {
             TermsOfUse(
@@ -123,11 +75,6 @@ struct Login: View {
                 }
             )
         }
-    }
-
-    private func showError(_ error: Error) {
-        self.showingError = true
-        self.error = error
     }
 }
 
