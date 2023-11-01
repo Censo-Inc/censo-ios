@@ -11,7 +11,7 @@
 			<string>censo-guardian</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(APPROVER_URL_SCHEME)</string>
+				<string>censo-guardian</string>
 			</array>
 		</dict>
 	</array>

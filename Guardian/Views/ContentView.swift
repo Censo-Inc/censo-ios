@@ -52,7 +52,7 @@ struct ContentView: View {
     private func openURL(_ url: URL) {
         guard url.pathComponents.count > 1,
               let action = url.host,
-              ["invite", "access"].contains(action) else {
+              ["invite", "recovery"].contains(action) else {
             self.route = .unknown
             return
         }

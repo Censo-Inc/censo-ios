@@ -12,7 +12,7 @@ struct InvitationId: Codable, Equatable, Hashable {
     var url: URL
     
     init(value: String) throws {
-        guard let url = URL(string: "\(Configuration.approverUrlScheme)://invite/\(value)") else {
+        guard let url = URL(string: "censo-guardian://invite/\(value)") else {
             throw ValueWrapperError.invalidInvitationId
         }
         self.value = value

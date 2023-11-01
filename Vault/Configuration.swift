@@ -11,7 +11,6 @@ struct Configuration {
     static let termsOfServiceURL: URL = URL(string: "https://censo.co/terms-of-service.html")!
     static let privacyPolicyURL: URL = URL(string: "https://censo.co/privacy-policy.html")!
     static let apiBaseURL: URL = URLValue(for: "API_BASE_URL")
-    static let approverUrlScheme: URL = URLValue(for: "APPROVER_URL_SCHEME")
     static let raygunApiKey: String = stringValue(for: "RAYGUN_API_KEY")
     static let raygunEnabled: Bool = stringValue(for: "RAYGUN_ENABLED").lowercased() == "yes"
     static let censoAuthBaseURL: URL = URLValue(for: "CENSO_AUTH_BASE_URL")
