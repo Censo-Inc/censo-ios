@@ -17,8 +17,8 @@ struct SubmitVerification: View {
 
 
     @State private var currentError: Error?
-
     @State private var verificationCode: [Int] = []
+    @State private var disabled = false
 
     var onSuccess: (API.GuardianState?) -> Void
 
@@ -29,7 +29,7 @@ struct SubmitVerification: View {
 
     var body: some View {
         VStack {
-            Text("Become an approver")
+            Text("Enter the code")
                 .font(.system(size: 24, weight: .bold))
                 .padding()
             
@@ -49,36 +49,26 @@ struct SubmitVerification: View {
                     .font(.system(size: 18, weight: .medium))
                     .padding()
                 
-                VStack {
-                    VerificationCodeEntry(pinInput: $verificationCode)
-                    .onChange(of: verificationCode) { _ in
-                        if (verificationCode.count == 6) {
-                            submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
-                        }
-                    }
-                }
-                
             case .verificationRejected:
                 Text("Code not approved. Please send new verification code")
                     .font(.system(size: 18, weight: .medium))
-                    .padding()
-                
-                VStack {
-                    VerificationCodeEntry(pinInput: $verificationCode)
-                    .onChange(of: verificationCode) { _ in
-                        if (verificationCode.count == 6) {
-                            submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
-                        }
-                    }
-                }
-                
-                Text(CensoError.verificationFailed.localizedDescription)
-                    .bold()
                     .foregroundColor(Color.red)
-                    .multilineTextAlignment(.center)
+                    .padding()
                 
             default:
                 EmptyView()
+            }
+            
+            VStack {
+                VerificationCodeEntry(
+                    pinInput: $verificationCode, 
+                    disabled: self.disabled
+                )
+                .onChange(of: verificationCode) { _ in
+                    if (verificationCode.count == 6) {
+                        submitVerificaton(code: verificationCode.map({ digit in String(digit) }).joined())
+                    }
+                }
             }
 
             if (currentError != nil) {
@@ -102,6 +92,7 @@ struct SubmitVerification: View {
         }
         
         currentError = nil
+        disabled = true
 
         apiProvider.decodableRequest(
             with: session,
@@ -127,6 +118,7 @@ struct SubmitVerification: View {
         apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
             switch(result) {
             case .success(let user):
+                disabled = false
                 onSuccess(user.guardianStates.forInvite(invitationId))
             case .failure:
                 break
@@ -136,6 +128,7 @@ struct SubmitVerification: View {
 
     private func showError(_ error: Error) {       
         currentError = error
+        disabled = false
     }
 }
 

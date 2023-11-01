@@ -40,7 +40,11 @@ struct Onboarding: View {
                 let currentState = guardianState ?? user.guardianStates.forInvite(inviteCode)
                 switch currentState?.phase {
                 case .none:
-                    AcceptInvitation(invitationId: inviteCode, session: session, onSuccess: {newState in guardianState = newState})
+                    AcceptInvitation(
+                        invitationId: inviteCode,
+                        session: session,
+                        onSuccess: {newState in guardianState = newState}
+                    )
                 case .waitingForCode,
                      .waitingForVerification,
                     . verificationRejected:
@@ -50,8 +54,9 @@ struct Onboarding: View {
                         guardianState: currentState!,
                         onSuccess: {newState in guardianState = newState}
                     )
+                    .navigationBarBackButtonHidden(true)
                 case .complete:
-                    Onboarded()
+                    OperationCompletedView(successText: "Code accepted")
                         .navigationBarHidden(true)
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

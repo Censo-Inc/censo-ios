@@ -14,66 +14,45 @@ struct AcceptInvitation: View {
 
     var invitationId: InvitationId
 
-    @State private var inProgress = false
     @State private var showingError = false
     @State private var currentError: Error?
-    @State private var showCancelAlert = false
+    @State private var inProgress = false
+    @State private var guardianState: API.GuardianState?
+    
     var session: Session
-
     var onSuccess: (API.GuardianState?) -> Void
 
     var body: some View {
         VStack {
-            
-            Text("You have been invited to become an approver!")
-                .padding()
-                .font(.headline)
-            
-            Button {
-                acceptInvitation()
-            } label: {
-                if (inProgress) {
+            if let guardianState = self.guardianState {
+                OperationCompletedView(successText: "Link accepted")
+                    .navigationBarHidden(true)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            onSuccess(guardianState)
+                        }
+                    }
+            } else {
+                if inProgress {
                     ProgressView()
-                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
+                            Button { 
+                                inProgress = false
+                            } label: { Text("OK") }
+                        } message: { error in
+                            Text(error.localizedDescription)
+                        }
                 } else {
-                    Text("Accept Invitation")
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .frame(height: 44)
+                    ProgressView()
+                        .onAppear {
+                            acceptInvitation()
+                        }
                 }
+                
             }
-            .padding()
-            .buttonStyle(RoundedButtonStyle())
-            .disabled(inProgress)
-            
-            Button {
-               showCancelAlert = true
-            } label: {
-                Text("Close")
-            }
-            .padding()
-        }
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button { } label: { Text("OK") }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
-        .alert("", isPresented: $showCancelAlert) {
-            Button("Yes", role: .cancel) {
-                dismiss()
-            }
-            Button("No") {}
-        } message: {
-            Text("Do you really want to cancel?")
         }
         .multilineTextAlignment(.center)
-        .navigationTitle(Text(""))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
-            }
-        }
+        .navigationBarHidden(true)
     }
     
     private func acceptInvitation() {
@@ -81,9 +60,7 @@ struct AcceptInvitation: View {
         apiProvider.decodableRequest(with: session, endpoint: .acceptInvitation(invitationId)) { (result: Result<API.AcceptInvitationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
-                inProgress = false
-
-                onSuccess(response.guardianState)
+                guardianState = response.guardianState
             case .failure(let error):
                 showError(error)
             }
@@ -91,8 +68,6 @@ struct AcceptInvitation: View {
     }
 
     private func showError(_ error: Error) {
-        inProgress = false
-        
         showingError = true
         currentError = error
     }

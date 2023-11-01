@@ -23,7 +23,10 @@ struct ContentView: View {
         Authentication { session in
             CloudCheck {
                 NavigationStack {
-                    GuardianHome()
+                    GuardianHome(
+                        session: session,
+                        onUrlPasted: { url in openURL(url) }
+                    )
                         .navigationDestination(
                             isPresented: $isPresented,
                             destination: {
@@ -50,10 +53,12 @@ struct ContentView: View {
     }
 
     private func openURL(_ url: URL) {
-        guard url.pathComponents.count > 1,
+        guard let scheme = url.scheme,
+              scheme.starts(with: "censo"),
+              url.pathComponents.count > 1,
               let action = url.host,
               ["invite", "recovery"].contains(action) else {
-            self.route = .unknown
+            showError(CensoError.invalidUrl)
             return
         }
         

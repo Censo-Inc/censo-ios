@@ -30,8 +30,6 @@ struct ApproverRouting: View {
             )
         case .initial:
             ProgressView()
-        case .unknown:
-            Text("Unknown URL")
         }
     }
 }
