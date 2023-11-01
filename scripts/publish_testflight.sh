@@ -3,10 +3,10 @@
 
 set -eo pipefail
 
-IPA="Vault.ipa"
+IPA="Censo.ipa"
 
 if [[ $APP == 'approver' ]]; then
-  IPA="Guardian.ipa"
+  IPA="Approver.ipa"
 fi
 
 xcrun altool --upload-app -t ios -f build/"$IPA" -u "$APPLEID_USERNAME" -p "$APPLEID_PASSWORD" --verbose

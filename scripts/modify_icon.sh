@@ -19,9 +19,9 @@ function generateIcon() {
 }
 
 if [[ $APP == "approver"]]; then
-  ICON_FILES=$(find "./Vault/Assets.xcassets/AppIcon2.appiconset" -name "*.png")
+  ICON_FILES=$(find "./Censo/Assets.xcassets/AppIcon2.appiconset" -name "*.png")
 else
-  ICON_FILES=$(find "./Vault/Assets.xcassets/AppIcon.appiconset" -name "*.png")
+  ICON_FILES=$(find "./Censo/Assets.xcassets/AppIcon.appiconset" -name "*.png")
 fi
 
 if [ "${ICON_RIBBON}" != "" ]; then
