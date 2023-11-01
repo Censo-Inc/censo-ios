@@ -10,10 +10,12 @@
 		<string>$(RAYGUN_API_KEY)</string>
 		<key>RAYGUN_ENABLED</key>
 		<string>$(RAYGUN_ENABLED)</string>
+		<key>APPROVER_URL_SCHEME</key>
+		<string>${APPROVER_URL_SCHEME}</string>
 	</dict>
 	<key>MIN_VERSION_URL</key>
 	<string>$(MIN_VERSION_URL)</string>
-        <key>NSCameraUsageDescription</key>
-        <string>Censo uses the camera for biometry</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Censo uses the camera for biometry</string>
 </dict>
 </plist>
