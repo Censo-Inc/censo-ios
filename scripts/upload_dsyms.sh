@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Locating dSYMs"
-pushd "$PWD/build/Vault.xcarchive/dSYMs/"
+pushd "$PWD/build/Censo.xcarchive/dSYMs/"
 echo "Found dSYMs"
 zip -r "vault-dSYMs.zip" "."
 echo "Created dSYMs zip"
