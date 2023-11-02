@@ -11,18 +11,19 @@ import Moya
 struct RecoveryApproval: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
-
-    @State private var inProgress = false
-    @State private var showGetLive = true
     
-    @RemoteResult<[API.GuardianState], API> private var guardianStates
-
     var session: Session
     var participantId: ParticipantId
     var onSuccess: () -> Void
-    
+
+    @RemoteResult<[API.GuardianState], API> private var guardianStates
+    @State private var inProgress = false
+    @State private var showLinkAccepted = true
+    @State private var showGetLive = true
+    @State private var showingError = false
+    @State private var error: Error?
+
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
 
     var body: some View {
@@ -34,50 +35,45 @@ struct RecoveryApproval: View {
             ProgressView()
         case .success(let guardianStates):
             if let guardianState = guardianStates.forParticipantId(participantId) {
-                if showGetLive {
-                    GetLiveWithOwner(
-                        onContinue: {
-                            showGetLive = false
+                switch guardianState.phase {
+                case .recoveryRequested:
+                    ProgressView()
+                        .onAppear {
+                            startOwnerVerification(participantId: guardianState.participantId)
                         }
+                        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                            Button { 
+                                dismiss()
+                            } label: { Text("OK") }
+                        } message: { error in
+                            Text(error.localizedDescription)
+                        }
+                case .recoveryVerification, .recoveryConfirmation:
+                    OwnerVerification(
+                        session: session,
+                        guardianState: guardianState,
+                        onGuardianStatesUpdated: replaceGuardianStates
                     )
-                } else {
-                    switch guardianState.phase {
-                    case .recoveryRequested, .recoveryVerification, .recoveryConfirmation:
-                        OwnerVerification(
-                            session: session,
-                            guardianState: guardianState,
-                            onGuardianStatesUpdated: replaceGuardianStates,
-                            onBack: {
-                                showGetLive = true
-                            }
-                        )
-                        .onReceive(refreshStatePublisher) { firedDate in
-                            reload()
-                        }
-                        .onReceive(remoteNotificationPublisher) { _ in
-                            reload()
-                        }
-                    case .complete:
-                        OperationCompletedView(successText: "Approval completed")
-                            .navigationBarHidden(true)
-                            .onAppear {
-                                refreshStatePublisher.upstream.connect().cancel()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                    onSuccess()
-                                }
-                            }
-                    default:
-                        VStack {
-                            Text("Invalid Recovery")
-                        }
-                        .multilineTextAlignment(.center)
+                    .onReceive(refreshStatePublisher) { firedDate in
+                        reload()
                     }
+                    .onReceive(remoteNotificationPublisher) { _ in
+                        reload()
+                    }
+                case .complete:
+                    OperationCompletedView(successText: "Approval completed")
+                        .navigationBarHidden(true)
+                        .onAppear {
+                            refreshStatePublisher.upstream.connect().cancel()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                onSuccess()
+                            }
+                        }
+                default:
+                    InvalidLinkView()
                 }
             } else {
-                VStack {
-                    Text("Invalid Recovery")
-                }
-                .multilineTextAlignment(.center)
+                InvalidLinkView()
             }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
             SignIn(session: session, onSuccess: reload) {
@@ -99,5 +95,57 @@ struct RecoveryApproval: View {
     private func replaceGuardianStates(newGuardianStates: [API.GuardianState]) {
         _guardianStates.replace(newGuardianStates)
     }
+    
+    private func showError(_ error: Error) {
+        showingError = true
+        self.error = error
+    }
+    
+    private func startOwnerVerification(participantId: ParticipantId) {
+        do {
+            let encryptedTotpSecret = try Base64EncodedString.encryptedTotpSecret(deviceKey: session.deviceKey)
+
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .storeRecoveryTotpSecret(
+                    participantId,
+                    encryptedTotpSecret
+                )
+            ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
+                switch result {
+                case .success(let success):
+                    replaceGuardianStates(newGuardianStates: success.guardianStates)
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+        } catch {
+            showError(error)
+        }
+    }
 }
 
+struct InvalidLinkView : View {
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            Text("Invalid link")
+        }
+        .multilineTextAlignment(.center)
+        .navigationTitle(Text(""))
+        .toolbarBackground(.visible, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.black)
+                }
+            }
+        }
+    }
+}
