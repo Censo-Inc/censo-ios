@@ -70,7 +70,7 @@
 		6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF9582ACB626F009A9B54 /* RotatingTotpPinView.swift */; };
 		6C0AF95B2ACC5BCE009A9B54 /* ApproverHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */; };
 		6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */; };
-		6C0AF9612ACC5CEC009A9B54 /* RecoveryApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95E2ACC5CEC009A9B54 /* RecoveryApproval.swift */; };
+		6C0AF9612ACC5CEC009A9B54 /* AccessApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */; };
 		6C0AF9622ACC5CEC009A9B54 /* GetLiveWithOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */; };
 		6C0AF9632ACC62D1009A9B54 /* RandomUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */; };
 		6C0AF9642ACC66A2009A9B54 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
@@ -322,7 +322,7 @@
 		6C0AF9582ACB626F009A9B54 /* RotatingTotpPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingTotpPinView.swift; sourceTree = "<group>"; };
 		6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApproverHome.swift; sourceTree = "<group>"; };
 		6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerVerification.swift; sourceTree = "<group>"; };
-		6C0AF95E2ACC5CEC009A9B54 /* RecoveryApproval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecoveryApproval.swift; sourceTree = "<group>"; };
+		6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessApproval.swift; sourceTree = "<group>"; };
 		6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetLiveWithOwner.swift; sourceTree = "<group>"; };
 		6C0AF9662ACC7240009A9B54 /* ParticipantId+PrivateKeyStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParticipantId+PrivateKeyStorage.swift"; sourceTree = "<group>"; };
 		6C0AF96D2ACD90A5009A9B54 /* ApproverRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproverRouting.swift; sourceTree = "<group>"; };
@@ -639,14 +639,14 @@
 			path = PinInputField;
 			sourceTree = "<group>";
 		};
-		6C0AF95C2ACC5C75009A9B54 /* Recovery */ = {
+		6C0AF95C2ACC5C75009A9B54 /* Access */ = {
 			isa = PBXGroup;
 			children = (
-				6C0AF95E2ACC5CEC009A9B54 /* RecoveryApproval.swift */,
-				6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */,
+				6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */,
 				6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */,
+				6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */,
 			);
-			path = Recovery;
+			path = Access;
 			sourceTree = "<group>";
 		};
 		6C2392AD2AE6C98B00987A91 /* Home */ = {
@@ -722,13 +722,13 @@
 		6CD6DAED2ABC730F00974035 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				6C5307752ADF1DAD00E20F1E /* Onboarding */,
-				6C0AF95C2ACC5C75009A9B54 /* Recovery */,
-				6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */,
-				3DFF194D2AC954CF006111B2 /* PinInputField */,
 				3D23ACDB2AB22C9200F55C5D /* ContentView.swift */,
-				6C0AF96D2ACD90A5009A9B54 /* ApproverRouting.swift */,
 				6CFEAD5D2AF15C1200C20140 /* Login.swift */,
+				6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */,
+				6C0AF96D2ACD90A5009A9B54 /* ApproverRouting.swift */,
+				6C5307752ADF1DAD00E20F1E /* Onboarding */,
+				6C0AF95C2ACC5C75009A9B54 /* Access */,
+				3DFF194D2AC954CF006111B2 /* PinInputField */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1176,7 +1176,7 @@
 				3D23ACFA2AB264E600F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				6CD6DAFE2ABC9D3F00974035 /* FilledButtonStyle.swift in Sources */,
 				6CD6DAF62ABC9B7A00974035 /* Keychain.swift in Sources */,
-				6C0AF9612ACC5CEC009A9B54 /* RecoveryApproval.swift in Sources */,
+				6C0AF9612ACC5CEC009A9B54 /* AccessApproval.swift in Sources */,
 				6C0AF96E2ACD90A5009A9B54 /* ApproverRouting.swift in Sources */,
 				3D23ACDA2AB22C9200F55C5D /* ApproverApp.swift in Sources */,
 				3D23ACF02AB2358000F55C5D /* Base58.swift in Sources */,

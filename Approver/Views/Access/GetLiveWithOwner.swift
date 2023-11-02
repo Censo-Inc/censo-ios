@@ -1,6 +1,6 @@
 //
 //  GetLiveWithOwner.swift
-//  Recovery
+//  Access
 //
 //  Created by Anton Onyshchenko on 11/01/23.
 //

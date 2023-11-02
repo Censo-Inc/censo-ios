@@ -11,9 +11,8 @@ import Moya
 enum ApproverRoute {
     case initial
     case onboard
-    case recovery
+    case access
 }
-
 
 struct ApproverHome: View {
     @Environment(\.apiProvider) var apiProvider

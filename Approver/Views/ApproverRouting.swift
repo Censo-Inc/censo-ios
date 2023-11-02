@@ -16,16 +16,16 @@ struct ApproverRouting: View {
     
     var body: some View {
         switch (route) {
-        case .recovery:
-            RecoveryApproval(
-                session: session,
-                participantId: participantId,
-                onSuccess: onSuccess
-            )
         case .onboard:
             Onboarding(
                 inviteCode: inviteCode,
                 session: session,
+                onSuccess: onSuccess
+            )
+        case .access:
+            AccessApproval(
+                session: session,
+                participantId: participantId,
                 onSuccess: onSuccess
             )
         case .initial:

@@ -1,6 +1,6 @@
 //
-//  ApproverRecovery.swift
-//  Recovery
+//  AccessApproval.swift
+//  Accesss
 //
 //  Created by Brendan Flood on 9/29/23.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 import Moya
 
-struct RecoveryApproval: View {
+struct AccessApproval: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     

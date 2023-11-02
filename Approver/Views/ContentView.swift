@@ -63,7 +63,7 @@ struct ContentView: View {
         }
         
         self.identifier = url.pathComponents[1]
-        checkIdentifier(route: action == "invite" ? .onboard : .recovery)
+        checkIdentifier(route: action == "invite" ? .onboard : .access)
     }
 
     private func showError(_ error: Error) {
@@ -80,7 +80,7 @@ struct ContentView: View {
             } else {
                 showError(CensoError.invalidIdentifier)
             }
-        case .recovery:
+        case .access:
             if let participantId = try? ParticipantId(value: self.identifier) {
                 self.participantId = participantId
                 self.isPresented = true
