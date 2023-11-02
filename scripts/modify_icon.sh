@@ -18,7 +18,7 @@ function generateIcon() {
     echo "Modified ${IMAGE_PATH}"
 }
 
-if [[ $APP == "approver"]]; then
+if [[ $APP == "approver" ]]; then
   ICON_FILES=$(find "./Censo/Assets.xcassets/AppIcon2.appiconset" -name "*.png")
 else
   ICON_FILES=$(find "./Censo/Assets.xcassets/AppIcon.appiconset" -name "*.png")
