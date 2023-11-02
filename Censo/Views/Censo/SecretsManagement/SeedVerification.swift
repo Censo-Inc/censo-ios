@@ -46,6 +46,7 @@ struct SeedVerification: View {
         .multilineTextAlignment(.center)
         .navigationTitle(Text("Add Seed Phrase"))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButton()

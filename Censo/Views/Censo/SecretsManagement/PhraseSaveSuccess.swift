@@ -24,9 +24,9 @@ struct PhraseSaveSuccess: View {
             Text(label)
                 .font(.title2)
         }
-        .navigationTitle(Text("Add Seed Phrase"))
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
+        .navigationBarBackButtonHidden(true)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {

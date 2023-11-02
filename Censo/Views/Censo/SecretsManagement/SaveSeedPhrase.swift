@@ -26,66 +26,69 @@ struct SaveSeedPhrase: View {
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Spacer()
-
-            Text("Add a label")
-                .font(.title2.bold())
-
-            Text(
+        if let newOwnerState {
+            PhraseSaveSuccess(label: label) {
+                onSuccess(newOwnerState)
+            }
+            .navigationTitle(Text("Add Seed Phrase"))
+        } else {
+            VStack(alignment: .leading, spacing: 20) {
+                Spacer()
+                
+                Text("Add a label")
+                    .font(.title2.bold())
+                
+                Text(
                 """
                 Now, give your seed phrase a label of your choice so you can identify it in the future.
-
+                
                 This will be secured by your face scan and not shared with anyone.
                 """
-            )
-
-            TextField(text: $label) {
-                Text("Enter a label...")
-            }
-            .textFieldStyle(RoundedTextFieldStyle())
-            .padding(.vertical)
-
-            Button {
-                save()
-            } label: {
-                Group {
-                    if inProgress {
-                        ProgressView()
-                    } else {
-                        Text("Save")
-                    }
+                )
+                
+                TextField(text: $label) {
+                    Text("Enter a label...")
                 }
-                .frame(maxWidth: .infinity)
+                .textFieldStyle(RoundedTextFieldStyle())
+                .padding(.vertical)
+                
+                Button {
+                    save()
+                } label: {
+                    Group {
+                        if inProgress {
+                            ProgressView()
+                        } else {
+                            Text("Save")
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .disabled(label.isEmpty || inProgress)
             }
-            .disabled(label.isEmpty || inProgress)
-        }
-        .padding(50)
-        .buttonStyle(RoundedButtonStyle())
-        .navigationTitle(Text("Add Seed Phrase"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+            .padding(50)
+            .buttonStyle(RoundedButtonStyle())
+            .navigationTitle(Text("Add Seed Phrase"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    BackButton()
+                }
+            })
+            .alert("Are you sure?", isPresented: $showingDismissAlert) {
+                Button(role: .destructive, action: { dismiss() }) {
+                    Text("Exit")
+                }
+            } message: {
+                Text("Your progress will be lost")
             }
-        })
-        .alert("Are you sure?", isPresented: $showingDismissAlert) {
-            Button(role: .destructive, action: { dismiss() }) {
-                Text("Exit")
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button { } label: { Text("OK") }
+            } message: { error in
+                Text("Failed to save phrase.\n\(error.localizedDescription)")
             }
-        } message: {
-            Text("Your progress will be lost")
-        }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button { } label: { Text("OK") }
-        } message: { error in
-            Text("Failed to save phrase.\n\(error.localizedDescription)")
-        }
-        .interactiveDismissDisabled()
-        .navigationDestination(isPresented: .constant(newOwnerState != nil)) {
-            PhraseSaveSuccess(label: label) {
-                onSuccess(newOwnerState!)
-            }
+            .interactiveDismissDisabled()
         }
     }
 

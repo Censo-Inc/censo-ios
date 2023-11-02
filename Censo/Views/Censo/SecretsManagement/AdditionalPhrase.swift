@@ -89,13 +89,19 @@ struct AdditionalPhrase: View {
             SeedEntry(
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                onSuccess: onComplete
+                onSuccess: { ownerState in
+                    onComplete(ownerState)
+                    dismiss()
+                }
             )
         case .pastePhrase:
             PastePhrase(
-                onComplete: onComplete,
                 session: session,
-                ownerState: ownerState
+                ownerState: ownerState,
+                onComplete: { ownerState in
+                    onComplete(ownerState)
+                    dismiss()
+                }
             )
         }
     }
