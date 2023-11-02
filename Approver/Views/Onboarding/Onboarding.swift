@@ -59,7 +59,7 @@ struct Onboarding: View {
                     OperationCompletedView(successText: "Code accepted")
                         .navigationBarHidden(true)
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                 onSuccess()
                             }
                         }

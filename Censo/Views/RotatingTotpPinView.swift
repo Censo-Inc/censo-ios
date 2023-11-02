@@ -10,6 +10,21 @@ import SwiftUI
 struct RotatingTotpPinView: View {
     var session: Session
     var deviceEncryptedTotpSecret: Base64EncodedString
+    var style: Style
+    
+    enum Style {
+        case owner
+        case approver
+        
+        var pinFontSize: CGFloat {
+            get {
+                switch (self) {
+                case .owner: return 28
+                case .approver: return 48
+                }
+            }
+        }
+    }
 
     @State private var pin: String = ""
     @State private var timerPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -27,14 +42,31 @@ struct RotatingTotpPinView: View {
         }
     }
     
+    struct Stack<Content: View>: View {
+        let style: Style
+        let content: () -> Content
+        
+        init(_ style: Style, @ViewBuilder _ content: @escaping () -> Content) {
+            self.style = style
+            self.content = content
+        }
+        
+        var body: some View {
+            switch (style) {
+            case .owner: HStack(content: content)
+            case .approver: VStack(content: content)
+            }
+        }
+    }
+        
     var body: some View {
         if let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
             let pin = TotpUtils.getOTP(date: Date(), secret: totpSecret)
             let color = detectColor()
 
-            HStack {
+            Stack(style) {
                 Text(pin.splittingCharacters(by: " "))
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.system(size: style.pinFontSize, weight: .semibold))
                     .foregroundColor(.black)
                     .padding(.horizontal)
                 
@@ -81,7 +113,35 @@ extension String {
     fileprivate func splittingCharacters(by char: Character) -> String {
         var returnString = self
         returnString.insert(char, at: index(startIndex, offsetBy: count / 2))
+        returnString.insert(char, at: index(startIndex, offsetBy: count / 2))
         return returnString
     }
 }
 
+#if DEBUG
+#Preview("owner style") {
+    NavigationView {
+        let session = Session.sample
+        RotatingTotpPinView(
+            session: session,
+            deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
+                data: generateBase32().decodeBase32()
+            ),
+            style: .owner
+        )
+    }
+}
+
+#Preview("approver style") {
+    NavigationView {
+        let session = Session.sample
+        RotatingTotpPinView(
+            session: session,
+            deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
+                data: generateBase32().decodeBase32()
+            ),
+            style: .approver
+        )
+    }
+}
+#endif

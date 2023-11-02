@@ -125,7 +125,7 @@ struct API {
         }
     }
     
-struct GuardianState: Codable {
+    struct GuardianState: Codable {
         var participantId: ParticipantId
         var phase: GuardianPhase
     }
