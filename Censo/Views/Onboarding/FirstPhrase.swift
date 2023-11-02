@@ -71,9 +71,8 @@ struct FirstPhrase: View {
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
-                session: session,
-                ownerState: ownerState,
-                onComplete: onComplete
+                onComplete: onComplete, session: session,
+                ownerState: ownerState
             )
         })
     }

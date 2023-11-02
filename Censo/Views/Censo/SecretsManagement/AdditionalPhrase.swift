@@ -93,12 +93,11 @@ struct AdditionalPhrase: View {
             )
         case .pastePhrase:
             PastePhrase(
-                session: session,
-                ownerState: ownerState,
                 onComplete: { ownerState in
                     onComplete(ownerState)
                     dismiss()
-                }
+                }, session: session,
+                ownerState: ownerState
             )
         }
     }
