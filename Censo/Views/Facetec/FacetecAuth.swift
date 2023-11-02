@@ -77,10 +77,6 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                                 onReadyToUploadResults: onReadyToUploadResults,
                                 onSuccess: onSuccess
                             )
-                            .interactiveDismissDisabled()
-                            .navigationTitle(Text("Face scan"))
-                            .navigationBarTitleDisplayMode(.inline)
-                            .navigationBarBackButtonHidden(true)
                         }
                     }
 #endif
