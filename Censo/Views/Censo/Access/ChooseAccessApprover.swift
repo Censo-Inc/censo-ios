@@ -25,16 +25,24 @@ struct ChooseAccessApprover : View {
             Spacer()
             
             VStack(alignment: .leading, spacing: 30) {
-                Text("Request access")
+                Text("Request access approval")
                     .font(.system(size: 24))
                     .bold()
-                
-                Text("Which approver would you like to use to request access?")
-                    .font(.system(size: 14))
                 
                 let approvers = policy.guardians
                     .filter({ !$0.isOwner })
                     .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
+
+                Text("""
+                    Seed phrase access requires the approval of \(
+                        approvers.map { $0.label }.joined(separator: " or ")
+                    ).
+                    
+                    This access approval should take place either on the phone or in-person to allow the approver to verify your identify.
+                    
+                    Select your approver below when you are speaking with them:
+                    """)
+                    .font(.system(size: 14))
                 
                 VStack(spacing: 20) {
                     ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in

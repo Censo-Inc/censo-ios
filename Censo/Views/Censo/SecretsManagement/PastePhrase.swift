@@ -49,7 +49,7 @@ struct PastePhrase: View {
     var body: some View {
         NavigationStack {
             if let newOwnerState {
-                PhraseSaveSuccess(label: label) {
+                PhraseSaveSuccess() {
                     onComplete(newOwnerState)
                 }
                 .navigationTitle(Text("Paste Seed Phrase"))

@@ -20,7 +20,6 @@ struct AccessApproval : View {
     
     enum Step {
         case chooseApprover(selected: API.TrustedGuardian?)
-        case getLive(approver: API.TrustedGuardian)
         case enterTotp(approver: API.TrustedGuardian)
         case approved(ownerState: API.OwnerState)
     }
@@ -33,11 +32,7 @@ struct AccessApproval : View {
         self.recovery = recovery
         self.onCancel = onCancel
         self.onOwnerStateUpdated = onOwnerStateUpdated
-        if policy.externalApproversCount == 2 {
-            self._step = State(initialValue: .chooseApprover(selected: nil))
-        } else {
-            self._step = State(initialValue: .getLive(approver: policy.guardians.filter({ !$0.isOwner })[0]))
-        }
+        self._step = State(initialValue: .chooseApprover(selected: nil))
     }
     
     var body: some View {
@@ -47,7 +42,7 @@ struct AccessApproval : View {
                 policy: policy,
                 selectedApprover: selected,
                 onContinue: { approver in
-                    step = .getLive(approver: approver)
+                    step = .enterTotp(approver: approver)
                 }
             )
             .navigationTitle(Text("Access"))
@@ -59,35 +54,6 @@ struct AccessApproval : View {
                     } label: {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
-                    }
-                }
-            })
-        case .getLive(let approver):
-            GetLiveWithApprover(
-                approverName: approver.label,
-                showResumeLater: false,
-                onContinue: {
-                    step = .enterTotp(approver: approver)
-                }
-            )
-            .navigationTitle(Text("Access"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if policy.externalApproversCount == 2 {
-                        Button {
-                            step = .chooseApprover(selected: approver)
-                        } label: {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.black)
-                        }
-                    } else {
-                        Button {
-                            onCancel()
-                        } label: {
-                            Image(systemName: "xmark")
-                                .foregroundColor(.black)
-                        }
                     }
                 }
             })
@@ -108,7 +74,7 @@ struct AccessApproval : View {
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        step = .getLive(approver: approver)
+                        step = .chooseApprover(selected: approver)
                     } label: {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)

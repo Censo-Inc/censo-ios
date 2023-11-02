@@ -31,20 +31,17 @@ struct GetLiveWithApprover : View {
                 Spacer()
                 
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Get live with \(approverName)")
+                    Text("Activate \(approverName)")
                         .font(.system(size: 24))
                         .bold()
                     
-                    Text("For maximum security, it's best to be face-to-face with the person you're adding as an approver in a private location.")
-                        .font(.system(size: 14))
-                    
-                    Text("This ensures direct and private sharing of the necessary codes and information, reducing the risk of eavesdropping and interception.")
+                    Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
                         .font(.system(size: 14))
                     
                     Button {
                         onContinue()
                     } label: {
-                        Text("Continue live")
+                        Text("Activate now")
                             .font(.system(size: 24))
                             .frame(maxWidth: .infinity)
                     }

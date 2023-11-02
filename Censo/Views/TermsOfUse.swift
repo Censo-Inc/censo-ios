@@ -15,7 +15,7 @@ struct TermsOfUse: View {
 
     var body: some View {
         VStack {
-            Text("We built Censo to be a secure, open-source way to safeguard seed phrases with fair, simple terms. Please read & accept the terms of use.")
+            Text("We built Censo to allow you to secure your seed phrases while maintaining your privacy and control. Our Terms of Use support these principles. Please read and accept to continue.")
                 .font(.system(size: 14, weight: .medium))
                 .padding(30)
             Divider()
@@ -30,7 +30,7 @@ struct TermsOfUse: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(30)
-            Text("By tapping Accept & Continue, you agree to our terms of use.")
+            Text("By tapping Accept & Continue, you agree to our Terms of Use.")
                 .font(.system(size: 12.0))
         }
     }

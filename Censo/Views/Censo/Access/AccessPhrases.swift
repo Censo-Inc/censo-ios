@@ -47,7 +47,7 @@ struct AccessPhrases: View {
                             }
                         }
                 case .anotherDevice:
-                    Text("There is a recovery in progress on another device")
+                    Text("An access request is in progress on another device")
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar(content: {
                             ToolbarItem(placement: .navigationBarLeading) {

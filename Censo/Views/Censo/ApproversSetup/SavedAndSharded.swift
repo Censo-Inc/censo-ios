@@ -28,44 +28,11 @@ struct SavedAndSharded : View {
                 Spacer()
             }
             
-            Text("Saved & sharded")
+            Text("Saved")
                 .font(.system(size: 24))
                 .bold()
-                .padding([.leading, .trailing], 32)
-                .padding([.top], 25)
-                .padding([.bottom], 10)
-            
-            if secrets.count > 0 {
-                Text(secrets.count == 1 ? secrets[0].label : "\(secrets.count) Seed Phrases")
-                .font(.system(size: 24))
-                .padding([.leading, .trailing], 32)
-            }
-            
-            HStack {
-                Spacer()
-                
-                Divider()
-                    .frame(width: 1)
-                    .overlay(.black)
-                
-                Spacer()
-            }
-            .frame(maxHeight: 44)
-            .padding(.vertical, 10)
-            
-            let approverNames = approvers
-                .filter({ !$0.isOwner })
-                .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
-                .map({ $0.label })
+                .padding()
 
-            VStack {
-                ForEach(approverNames, id: \.self) { approver in
-                    Text(approver)
-                        .font(.system(size: 24))
-                        .padding([.vertical], 1)
-                }
-            }
-            
             Spacer()
         }
         .frame(maxHeight: .infinity)

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PhraseSaveSuccess: View {
-    var label: String
     var onFinish: () -> Void
 
     var body: some View {
@@ -18,11 +17,8 @@ struct PhraseSaveSuccess: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(.horizontal, 100)
 
-            Text("Saved & encrypted")
+            Text("Saved")
                 .font(.title.bold())
-
-            Text(label)
-                .font(.title2)
         }
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
@@ -49,7 +45,7 @@ struct PhraseSaveSuccess: View {
 struct PhraseSaveSuccess_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            PhraseSaveSuccess(label: "My Seed Phrase") {}
+            PhraseSaveSuccess() {}
         }
     }
 }

@@ -35,7 +35,7 @@ struct EnterAccessVerificationCode : View {
                     .font(.system(size: 24))
                     .bold()
                 
-                Text("Your approver must do three things:")
+                Text("\(approver.label) must do three things:")
                     .font(.system(size: 14))
             }
             .padding([.leading, .trailing], 32)
@@ -43,76 +43,61 @@ struct EnterAccessVerificationCode : View {
             
             VStack(spacing: 32) {
                 HStack(alignment: .top) {
-                    Image("Export")
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                        .padding(8)
-                        .background(.gray.opacity(0.25))
-                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                        .padding([.trailing], 10)
+                    if let url = URL(string: "https://censo.co/approvers") {
+                        ShareLink(
+                            item: url
+                        ) {
+                            Image("Export")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .padding(8)
+                                .background(.gray.opacity(0.25))
+                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                .padding([.trailing], 10)
+                        }
+                    } else {
+                        EmptyView()
+                    }
                     
                     VStack(alignment: .leading, spacing: 10) {
                         Text("1. Open the app")
                             .font(.system(size: 18))
                             .bold()
                         
-                        Text("They must download Censo Approver App from the Apple or Android App stores.")
+                        Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple or Android App stores.")
                             .font(.system(size: 14))
                             .fixedSize(horizontal: false, vertical: true)
-                        
-                        if let url = URL(string: "https://censo.co/approvers") {
-                            ShareLink(
-                                item: url
-                            ) {
-                                Text("Share app link")
-                                    .frame(maxWidth: .infinity, minHeight: 42)
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(Color.white)
-                                    .background(Color.black)
-                                    .cornerRadius(100.0)
-                            }
-                        } else {
-                            EmptyView()
-                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
                 
                 HStack(alignment: .top) {
-                    Image("Export")
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                        .padding(8)
-                        .background(.gray.opacity(0.25))
-                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                        .padding([.trailing], 10)
-                    
+                    if let link = URL(string: "\(Configuration.approverUrlScheme)://access/\(approver.participantId.value)") {
+                        ShareLink(
+                            item: link
+                        ) {
+                            
+                            Image("Export")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .padding(8)
+                                .background(.gray.opacity(0.25))
+                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                .padding([.trailing], 10)
+                        }
+                    } else {
+                        EmptyView()
+                    }
+
                     VStack(alignment: .leading, spacing: 10) {
                         Text("2. Open unique link")
                             .font(.system(size: 18))
                             .bold()
                         
-                        Text("After they have installed Censo, send them this unique, secret link.")
+                        Text("After \(approver.label) has installed the Censo Approver app, share this unique link and have \(approver.label) click on it or paste it into the Censo Approver app.")
                             .font(.system(size: 14))
                             .fixedSize(horizontal: false, vertical: true)
-                        
-                        if let link = URL(string: "\(Configuration.approverUrlScheme)://access/\(approver.participantId.value)") {
-                            ShareLink(
-                                item: link
-                            ) {
-                                Text("Share unique link")
-                                    .frame(maxWidth: .infinity, minHeight: 42)
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(Color.white)
-                                    .background(Color.black)
-                                    .cornerRadius(100.0)
-                            }.onAppear {
-                                print(link)
-                            }
-                        } else {
-                            EmptyView()
-                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -133,7 +118,7 @@ struct EnterAccessVerificationCode : View {
                             .font(.system(size: 18))
                             .bold()
                         
-                        Text("Enter the 6-digit code from your approver.")
+                        Text("Enter the 6-digit code that \(approver.label) reads to you.")
                             .font(.system(size: 14))
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -145,7 +130,7 @@ struct EnterAccessVerificationCode : View {
             
             VStack(spacing: 0) {
                 if approval.status == .initial {
-                    ProgressView("Waiting for approver to open the link")
+                    ProgressView("Waiting for \(approver.label) to open the link")
                 } else {
                     if approval.status == .rejected {
                         Text(CensoError.verificationFailed.localizedDescription)

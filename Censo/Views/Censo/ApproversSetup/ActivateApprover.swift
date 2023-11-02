@@ -25,7 +25,7 @@ struct ActivateApprover : View {
         case rename
     }
     
-    @State private var mode: Mode = .getLive
+    @State private var mode: Mode = .activate
     @State private var showingError = false
     @State private var error: Error?
     
@@ -64,7 +64,7 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationTitle(Text("\(isPrimary ? "Primary" : "Alternate") approver"))
+            .navigationTitle(Text("Activate \(approver.label)"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -79,93 +79,77 @@ struct ActivateApprover : View {
         case .activate:
             ScrollView {
                 VStack(spacing: 10) {
-                    Text("Activate \(isPrimary ? "primary": "alternate") approver")
+                    Text("Activate \(approver.label)")
                         .font(.system(size: 24))
                         .bold()
-                    
-                    Text("Now, your approver must do three things:")
-                        .font(.system(size: 14))
                 }
                 .padding([.leading, .trailing], 32)
                 .padding([.bottom], 20)
                 
                 VStack(spacing: 32) {
                     HStack(alignment: .top) {
-                        Image("Export")
-                            .resizable()
-                            .frame(width: 48, height: 48)
-                            .padding(8)
-                            .background(.gray.opacity(0.25))
-                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                            .padding([.trailing], 10)
+                       
+                        if let url = URL(string: "https://censo.co/approvers") {
+                            ShareLink(
+                                item: url
+                            ) {
+                                Image("Export")
+                                    .resizable()
+                                    .frame(width: 48, height: 48)
+                                    .padding(8)
+                                    .background(.gray.opacity(0.25))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                    .padding([.trailing], 10)
+                            }
+                        } else {
+                            EmptyView()
+                        }
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("1. Download the app")
+                            Text("1. Share app link")
                                 .font(.system(size: 18))
                                 .bold()
                             
-                            Text("They must download Censo Approver App from the Apple or Android App stores.")
+                            Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple or Android App stores.")
                                 .font(.system(size: 14))
                                 .fixedSize(horizontal: false, vertical: true)
-                            
-                            if let url = URL(string: "https://censo.co/approvers") {
-                                ShareLink(
-                                    item: url
-                                ) {
-                                    Text("Share app link")
-                                        .frame(maxWidth: .infinity, minHeight: 42)
-                                        .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(Color.white)
-                                        .background(Color.black)
-                                        .cornerRadius(100.0)
-                                }
-                            } else {
-                                EmptyView()
-                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
                     
                     HStack(alignment: .top) {
-                        Image("Export")
-                            .resizable()
-                            .frame(width: 48, height: 48)
-                            .padding(8)
-                            .background(.gray.opacity(0.25))
-                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                            .padding([.trailing], 10)
+                        if let invitationId = approver.invitationId {
+                            ShareLink(
+                                item: invitationId.url
+                            ) {
+                                Image("Export")
+                                    .resizable()
+                                    .frame(width: 48, height: 48)
+                                    .padding(8)
+                                    .background(.gray.opacity(0.25))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                    .padding([.trailing], 10)
+                            }
+                        } else {
+                            EmptyView()
+                        }
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("2. Share the link")
+                            Text("2. Share invitation link")
                                 .font(.system(size: 18))
                                 .bold()
                             
-                            Text("After they have installed Censo, send them this unique, secret link.")
+                            Text("After \(approver.label) has installed the Censo Approver app, share this invitation link and have \(approver.label) click on it or paste it into the Censo Approver app.")
                                 .font(.system(size: 14))
                                 .fixedSize(horizontal: false, vertical: true)
-                            
-                            if let invitationId = approver.invitationId {
-                                ShareLink(
-                                    item: invitationId.url
-                                ) {
-                                    Text("Share unique link")
-                                        .frame(maxWidth: .infinity, minHeight: 42)
-                                        .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(Color.white)
-                                        .background(Color.black)
-                                        .cornerRadius(100.0)
-                                }
-                            } else {
-                                EmptyView()
-                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
                     
                     HStack(alignment: .top) {
-                        Image("PhraseEntry")
+                        Image(systemName: "waveform")
                             .resizable()
                             .frame(width: 48, height: 32)
                             .padding(.horizontal, 8)
@@ -175,12 +159,12 @@ struct ActivateApprover : View {
                             .padding([.trailing], 10)
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("3. Share the code")
+                            Text("3. Read authentication code")
                                 .font(.system(size: 18))
                                 .bold()
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret {
-                                Text("They must enter this 6-digit code to become your \(isPrimary ? "primary" : "alternate") approver.")
+                                Text("Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                                 
@@ -190,11 +174,11 @@ struct ActivateApprover : View {
                                     style: .owner
                                 )
                             } else if approver.isConfirmed {
-                                Text("The verification code has been succesfully confirmed.")
+                                Text("\(approver.label) is now activated!")
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
-                                Text("They will need to enter a 6-digit code to become your \(isPrimary ? "primary" : "alternate") approver.")
+                                Text("As soon as \(approver.label) accepts the invitation, a code will appear here. Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
                                     .font(.system(size: 14))
                                     .fixedSize(horizontal: false, vertical: true)
                             }
@@ -226,7 +210,7 @@ struct ActivateApprover : View {
                     Button {
                         onComplete()
                     } label: {
-                        Text(isPrimary ? "Continue": "Save & finish")
+                        Text("Continue")
                             .font(.system(size: 24))
                             .frame(maxWidth: .infinity)
                     }
@@ -236,7 +220,7 @@ struct ActivateApprover : View {
                 .padding([.leading, .trailing], 32)
             }
             .padding([.top], 24)
-            .navigationTitle(Text("\(isPrimary ? "Primary" : "Alternate") approver"))
+            .navigationTitle(Text(isPrimary ? "Add Approver" : "Add Second Approver"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

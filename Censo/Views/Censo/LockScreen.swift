@@ -19,15 +19,11 @@ struct LockScreen: View {
                 .frame(width: 200)
                 .saturation(0.0)
             
-            Text("Data encrypted")
+            Text("Locked")
                 .font(.system(size: 24))
                 .padding(.bottom, 1)
                 .bold()
-                    
-            Text("Censo has encrypted your data behind a live 3D scan of your face with layered security")
-                .font(.system(size: 14))
-                .padding(32)
-                                           
+
             Button {
                 onReadyToStartFaceScan()
             } label: {
@@ -36,7 +32,7 @@ struct LockScreen: View {
                     Image("FaceScanBW")
                         .resizable()
                         .frame(width: 36, height: 36)
-                    Text("Face scan to unlock")
+                    Text("Unlock")
                         .font(.system(size: 24, weight: .semibold))
                     Spacer()
                 }
