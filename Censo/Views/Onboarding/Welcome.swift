@@ -20,18 +20,18 @@ struct Welcome: View {
                 Text("Welcome to Censo")
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
-                Text("We built Censo to be a secure way to safeguard your seed phrases with multiple levels of security:")
+                Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
                     .font(.system(size: 18, weight: .medium))
                     .padding()
                 
                 VStack(alignment: .leading) {
-                    SetupStep(image: Image("Apple"), heading: "Authenticate privately", content: "Censo does not store your info.", completionText: "Authenticated")
+                    SetupStep(image: Image("Apple"), heading: "Authenticate anonymously", content: "No personal info collected, ever, from Apple or any other source.", completionText: "Authenticated")
                     SetupStep(
-                        image: Image("FaceScan"), heading: "Scan your face", content: "Fortify your Censo account with an encrypted, 3rd-party-verified scan.")
+                        image: Image("FaceScan"), heading: "Scan your face", content: "Biometrics ensure that only you have access to your seed phrase.")
                     SetupStep(
-                        image: Image("PhraseEntry"), heading: "Enter your seed phrase", content: "Add your seed phrase; Censo will encrypt it for your eyes only.")
+                        image: Image("PhraseEntry"), heading: "Enter your seed phrase", content: "Now your seed phrase is encrypted and entirely in your control.")
                     Divider()
-                    SetupStep(image: Image("TwoPeople"), heading: "Optional: Add approvers", content: "To improve security, choose people to approve access.")
+                    SetupStep(image: Image("TwoPeople"), heading: "Optional: Add approvers", content: "Provide additional security through safety in numbers.")
                     Divider()
                 }
                 .padding()
@@ -48,12 +48,6 @@ struct Welcome: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
-                
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Learn more")
-                }
-                .frame(maxWidth: .infinity)
             }
             .padding()
         }
@@ -81,7 +75,7 @@ struct SetupStep: View {
                     .fontWeight(.bold)
                     .padding(.horizontal)
                     .padding(.vertical, -1)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(horizontal: true, vertical: true)
                 Text(content)
                     .font(.system(size: 14))
                     .padding(.leading)

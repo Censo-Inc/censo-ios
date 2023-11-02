@@ -27,7 +27,7 @@ struct InitialApproversSetup: View {
                 Spacer()
                 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Optional: Increase security")
+                    Text("Optional: Additional security")
                         .font(.system(size: 18))
                         .bold()
                     Text("Invite trusted approvers")
@@ -35,13 +35,15 @@ struct InitialApproversSetup: View {
                         .bold()
                 }
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Invite up to two trusted approvers for an additional layer of security")
-                        .font(.system(size: 14))
-                    
-                    Text("You can use either your primary or your alternate approver along with your face scan to access your seed phrases. They help you keep the key but can never unlock the door.")
-                        .font(.system(size: 14))
-                }
+                Text("""
+                    Increase your security by adding trusted approvers. Access to your seed phrase will require their approval.
+
+                    Adding a first approver ensures that your seed phrase is split into two fragments and encrypted for more security.
+
+                    Adding a second approver ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
+                    """
+                )
+                .font(.system(size: 14))
                 
                 Button {
                     showApproversSetup = true
@@ -51,7 +53,7 @@ struct InitialApproversSetup: View {
                         Image("TwoPeopleWhite")
                             .resizable()
                             .frame(width: 32, height: 32)
-                        Text("Invite approver(s)")
+                        Text("Invite approvers")
                             .font(.system(size: 24))
                         Spacer()
                     }
@@ -61,7 +63,7 @@ struct InitialApproversSetup: View {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Skip this step")
+                    Text("No, I'm happy with none")
                         .font(.system(size: 24))
                         .frame(maxWidth: .infinity)
                 }

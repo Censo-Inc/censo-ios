@@ -27,31 +27,29 @@ struct SaveSeedPhrase: View {
 
     var body: some View {
         if let newOwnerState {
-            PhraseSaveSuccess(label: label) {
+            PhraseSaveSuccess() {
                 onSuccess(newOwnerState)
             }
             .navigationTitle(Text("Add Seed Phrase"))
         } else {
             VStack(alignment: .leading, spacing: 20) {
                 Spacer()
-                
-                Text("Add a label")
+
+                Text("Label your seed phrase")
                     .font(.title2.bold())
-                
+
                 Text(
                 """
-                Now, give your seed phrase a label of your choice so you can identify it in the future.
-                
-                This will be secured by your face scan and not shared with anyone.
+                Give your seed phrase a unique label so you can identify it.
                 """
                 )
-                
+
                 TextField(text: $label) {
                     Text("Enter a label...")
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
                 .padding(.vertical)
-                
+
                 Button {
                     save()
                 } label: {
@@ -59,7 +57,7 @@ struct SaveSeedPhrase: View {
                         if inProgress {
                             ProgressView()
                         } else {
-                            Text("Save")
+                            Text("Save seed phrase")
                         }
                     }
                     .frame(maxWidth: .infinity)

@@ -21,25 +21,19 @@ struct FirstPhrase: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
                 Spacer()
-                Text("Step 2")
-                    .font(.system(size: 18, weight: .semibold))
-                    .padding()
                 Text("Add your first seed phrase")
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
-                Text("Add a seed phrase to store it safely with Censo. Your seed phrase is sharded and encrypted for ultimate security.")
+                Text("Your seed phrase will be encrypted so only you can access it.")
                     .font(.system(size: 14))
                     .padding(.horizontal)
-                Text("Only you can retrieve your seed phrase. Neither Censo nor trusted approvers can access it.")
-                    .font(.system(size: 14))
-                    .padding()
 
                 Button {
                     showingAddPhrase = true
                 } label: {
                     HStack(spacing: 20) {
                         Image("PhraseEntry").colorInvert()
-                        Text("Enter seed phrase")
+                        Text("Input seed phrase")
                             .font(.title2)
                     }
                     .frame(maxWidth: .infinity)
@@ -59,12 +53,7 @@ struct FirstPhrase: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding(.horizontal)
-                
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Learn more")
-                }
-                .frame(maxWidth: .infinity)
+              
             }
             .padding()
         }

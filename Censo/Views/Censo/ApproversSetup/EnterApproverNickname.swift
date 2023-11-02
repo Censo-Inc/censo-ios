@@ -28,16 +28,13 @@ struct EnterApproverNickname: View {
         VStack(alignment: .leading, spacing: 20) {
             Spacer()
             
-            Text("Add approver nickname")
+            Text("Name your \(isPrimary ? "first" : "second") approver")
                 .font(.system(size: 24))
                 .bold()
             
-            Text("Give your approver a nickname of your choice so you can identify them in the future.")
+            Text("Give your approver a unique nickname so you can identify them.")
                 .font(.system(size: 14))
-            
-            Text("This will be visible only to you.")
-                .font(.system(size: 14))
-            
+
             TextField(text: $nickname) {
                 Text("Enter a nickname...")
             }
@@ -52,7 +49,7 @@ struct EnterApproverNickname: View {
                     if submitting {
                         ProgressView()
                     } else {
-                        Text("Save")
+                        Text("Continue")
                             .font(.system(size: 24))
                     }
                 }

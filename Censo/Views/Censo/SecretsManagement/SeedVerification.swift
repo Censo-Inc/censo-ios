@@ -26,7 +26,7 @@ struct SeedVerification: View {
                 .padding()
                 .padding(.horizontal, 100)
 
-            Text("Seed phrase verified")
+            Text("Seed phrase validated")
                 .font(.title)
 
             Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")

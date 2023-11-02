@@ -45,7 +45,7 @@ struct ApproverPill: View {
             }
 
             VStack(alignment: .leading) {
-                Text("\(isPrimary ? "Primary": "Alternate") approver")
+                Text("Approver")
                     .font(.system(size: 14))
                     .foregroundColor(.black)
                     .bold()

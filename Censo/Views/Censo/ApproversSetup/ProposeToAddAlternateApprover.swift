@@ -18,17 +18,21 @@ struct ProposeToAddAlternateApprover : View {
         VStack(alignment: .leading, spacing: 20) {
             Spacer()
             
-            Text("Add an alternate approver?")
+            Text("Invite a second approver?")
                 .font(.system(size: 24))
                 .bold()
             
-            Text("For added peace of mind, add an alternate approver. You can use either your primary or your alternate approver along with your face scan to access your seed phrase.")
+            Text("""
+                 Adding a second approver ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
+
+                 Your activated first approver ensures your seed phrase is split into two fragments and encrypted for more security, but adding a second approver is even more secure.
+                 """)
                 .font(.system(size: 14))
             
             Button {
                 onAccept()
             } label: {
-                Text("Invite alternate")
+                Text("Invite a second")
                     .font(.system(size: 24))
                     .frame(maxWidth: .infinity)
             }
@@ -37,7 +41,7 @@ struct ProposeToAddAlternateApprover : View {
             Button {
                 onSkip()
             } label: {
-                Text("Save & finish")
+                Text("No, I'm happy with one")
                     .font(.system(size: 24))
                     .frame(maxWidth: .infinity)
             }

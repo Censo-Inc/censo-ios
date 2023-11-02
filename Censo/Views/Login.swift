@@ -23,17 +23,12 @@ struct Login: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 208)
                 
-                Text("sensible crypto security")
+                Text("Seed Phrase Manager")
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
                 
                 AppleSignIn(onSuccess: onSuccess)
 
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Why Apple ID?")
-                        .font(.system(size: 18, weight: .medium))
-                }
                 Spacer()
                 VStack {
                     HStack(alignment: .top) {
@@ -41,7 +36,7 @@ struct Login: View {
                             Image("EyeSlash")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                            Text("No personal info required, ever.")
+                            Text("No personal info collected, ever.")
                                 .font(.system(size: 14))
                                 .multilineTextAlignment(.center)
                         }

@@ -60,23 +60,18 @@ struct InitialPlanSetup: View {
                 Spacer()
                 VStack(alignment: .leading) {
                     Spacer()
-                    VStack(alignment: .leading) {
-                        Text("Step 1")
-                            .font(.system(size: 18))
-                            .padding(.bottom, 1)
-                            .bold()
-                        Text("Scan your face")
-                            .font(.system(size: 24))
-                            .bold()
-                    }
-                    .padding()
+                   
+                    Text("Scan your face")
+                        .font(.system(size: 24))
+                        .bold()
+                        .padding()
                     
                     VStack(alignment: .leading) {
-                        Text("Access to your seed phrases is always sealed behind a live scan of your face")
+                        Text("Your face scan ensures that only you have access to your seed phrase.")
                             .font(.system(size: 14))
                             .padding(.bottom, 1)
                         
-                        Text("Capture a 3D map of your face and confirm your live, physical presence with third-party-verified technology")
+                        Text("You will capture and store an encrypted 3D map of your face to confirm your live physical presence.")
                             .font(.system(size: 14))
                             .padding(.bottom, 1)
                     }
@@ -98,12 +93,6 @@ struct InitialPlanSetup: View {
                     }
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
-                    .frame(maxWidth: .infinity)
-                    
-                    HStack {
-                        Image(systemName: "info.circle")
-                        Text("Learn more")
-                    }
                     .frame(maxWidth: .infinity)
                 }
                 .padding()
