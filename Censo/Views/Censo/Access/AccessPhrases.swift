@@ -191,6 +191,14 @@ struct AvailableRecovery: View {
                     }
                 }
             })
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button {
+                } label: {
+                    Text("OK")
+                }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
         case .intro(let phraseIndex):
             AccessIntro(
                 ownerState: ownerState,
