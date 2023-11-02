@@ -166,6 +166,18 @@ extension FaceTecSDKProtocol {
         customization.resultScreenCustomization.resultAnimationBackgroundColor = UIColor.black
         customization.resultScreenCustomization.resultAnimationForegroundColor = UIColor.white
         
+        customization.cancelButtonCustomization.customImage = UIImage(
+            systemName: "xmark"
+        )?.resized(
+            to: CGSize(width: 20, height: 20)
+        ).withTintColor(
+            UIColor.black
+        )
+        customization.cancelButtonCustomization.location = .custom
+        customization.cancelButtonCustomization.customLocation = CGRect(x: 12, y: 12, width: 20, height: 20)
+        customization.frameCustomization.borderWidth = 0
+        customization.frameCustomization.cornerRadius = 0
+        
         // Apply Customization
         FaceTec.sdk.setCustomization(customization);
     }
