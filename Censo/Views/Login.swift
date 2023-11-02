@@ -24,7 +24,8 @@ struct Login: View {
                     .frame(width: 208)
                 
                 Text("Seed Phrase Manager")
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.title2)
+                    .fontWeight(.semibold)
                     .padding()
                 
                 AppleSignIn(onSuccess: onSuccess)
@@ -36,8 +37,8 @@ struct Login: View {
                             Image("EyeSlash")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                            Text("No personal info collected, ever.")
-                                .font(.system(size: 14))
+                            Text("No personal info\ncollected, ever.")
+                                .font(.footnote)
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
@@ -45,8 +46,8 @@ struct Login: View {
                             Image("Safe")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                            Text("Multiple layers of authentication.")
-                                .font(.system(size: 14))
+                            Text("Multiple layers of \nauthentication.")
+                                .font(.footnote)
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)

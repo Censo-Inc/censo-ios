@@ -20,19 +20,26 @@ struct SeedVerification: View {
 
     var body: some View {
         VStack {
+            Spacer()
+
             Image(systemName: "checkmark.circle")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .padding()
                 .padding(.horizontal, 100)
 
+            Spacer()
+
             Text("Seed phrase validated")
                 .font(.title)
 
             Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
+                .fixedSize(horizontal: false, vertical: true)
                 .padding()
 
             WordList(words: words)
+                .padding(.horizontal)
+                .frame(height: 210)
 
             Button {
                 showingSave = true

@@ -14,24 +14,29 @@ struct WordList: View {
         TabView {
             ForEach(0..<words.count, id: \.self) { i in
                 VStack {
-                    Group {
-                        Text(NumberFormatter.ordinal.string(from: NSNumber(value: i + 1)) ?? "") + Text(" word")
-                    }
-                    .font(.title2)
-                    .padding()
+                    VStack(spacing: 0) {
+                        Group {
+                            Text(NumberFormatter.ordinal.string(from: NSNumber(value: i + 1)) ?? "") + Text(" word")
+                        }
+                        .font(.title2)
+                        .padding()
 
-                    Text(words[i])
-                        .padding()
-                        .multilineTextAlignment(.center)
-                        .font(.title)
-                        .padding()
+                        Text(words[i])
+                            .padding()
+                            .multilineTextAlignment(.center)
+                            .font(.title)
+                            .padding()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(lineWidth: 1)
+                    }
+                    .padding(20)
+
+                    Spacer()
+                        .frame(height: 50)
                 }
-                .frame(maxWidth: .infinity)
-                .background {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(lineWidth: 1)
-                }
-                .padding(20)
             }
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))

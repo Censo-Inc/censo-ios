@@ -15,13 +15,15 @@ struct Welcome: View {
     
     var body: some View {
         NavigationStack {
-            Spacer()
+            Spacer(minLength: 5)
             VStack(alignment: .leading) {
                 Text("Welcome to Censo")
-                    .font(.system(size: 24, weight: .semibold))
-                    .padding()
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal)
                 Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
-                    .font(.system(size: 18, weight: .medium))
+                    .font(.headline)
+                    .fontWeight(.medium)
                     .padding()
                 
                 VStack(alignment: .leading) {
@@ -43,11 +45,13 @@ struct Welcome: View {
                     )
                 } label: {
                     Text("Get started")
-                        .font(.headline)
+                        .font(.title2)
+                        .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
+                .padding(.horizontal)
+                
             }
             .padding()
         }
@@ -71,20 +75,20 @@ struct SetupStep: View {
             }.frame(width: 64, height: 64)
             VStack(alignment: .leading) {
                 Text(heading)
-                    .font(.system(size: 18))
+                    .font(.headline)
                     .fontWeight(.bold)
                     .padding(.horizontal)
                     .padding(.vertical, -1)
                     .fixedSize(horizontal: true, vertical: true)
                 Text(content)
-                    .font(.system(size: 14))
+                    .font(.footnote)
                     .padding(.leading)
                     .padding(.top, 1)
                     .fixedSize(horizontal: false, vertical: true)
                 switch (completionText) {
                 case .some(let text):
                     Text("✓ " + text)
-                        .font(.system(size: 14))
+                        .font(.footnote)
                         .fontWeight(.bold)
                         .foregroundColor(.green)
                         .padding(.leading)
@@ -93,7 +97,7 @@ struct SetupStep: View {
                     EmptyView()
                 }
             }
-            .frame(minHeight: 64, maxHeight: .infinity)
+            .frame(maxHeight: 64)
         }
         .padding(.vertical, 4)
     }

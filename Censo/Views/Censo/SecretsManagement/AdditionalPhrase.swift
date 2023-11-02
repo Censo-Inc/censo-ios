@@ -30,14 +30,14 @@ struct AdditionalPhrase: View {
                 VStack(alignment: .leading, spacing: 20) {
                     Spacer()
                     Text("Add another seed phrase")
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.title2)
+                        .fontWeight(.semibold)
                         .padding()
-                    Text("Add a seed phrase to store it safely with Censo. Your seed phrase is sharded and encrypted for ultimate security.")
-                        .font(.system(size: 14))
+                    
+                    Text("Your seed phrase will be encrypted so only you can access it.")
+                        .font(.subheadline)
                         .padding(.horizontal)
-                    Text("Only you can retrieve your seed phrase. Neither Censo nor trusted approvers can access it.")
-                        .font(.system(size: 14))
-                        .padding()
+                        .padding(.bottom)
                     
                     Button {
                         step = .addPhrase
@@ -46,6 +46,7 @@ struct AdditionalPhrase: View {
                             Image("PhraseEntry").colorInvert()
                             Text("Enter seed phrase")
                                 .font(.title2)
+                                .fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -59,17 +60,13 @@ struct AdditionalPhrase: View {
                             Image("ClipboardText")
                             Text("Paste seed phrase")
                                 .font(.title2)
+                                .fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
                     .padding(.horizontal)
                     
-                    HStack {
-                        Image(systemName: "info.circle")
-                        Text("Learn more")
-                    }
-                    .frame(maxWidth: .infinity)
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {

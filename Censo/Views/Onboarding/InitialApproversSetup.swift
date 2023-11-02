@@ -23,17 +23,18 @@ struct InitialApproversSetup: View {
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
         } else {
-            VStack(alignment: .leading, spacing: 30) {
+            VStack(alignment: .leading, spacing: 20) {
                 Spacer()
                 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Optional: Additional security")
-                        .font(.system(size: 18))
+                        .font(.title3)
                         .bold()
                     Text("Invite trusted approvers")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .bold()
                 }
+                .padding(.horizontal)
                 
                 Text("""
                     Increase your security by adding trusted approvers. Access to your seed phrase will require their approval.
@@ -43,7 +44,8 @@ struct InitialApproversSetup: View {
                     Adding a second approver ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
                     """
                 )
-                .font(.system(size: 14))
+                .font(.subheadline)
+                .padding(.horizontal)
                 
                 Button {
                     showApproversSetup = true
@@ -54,28 +56,24 @@ struct InitialApproversSetup: View {
                             .resizable()
                             .frame(width: 32, height: 32)
                         Text("Invite approvers")
-                            .font(.system(size: 24))
+                            .font(.title2)
                         Spacer()
                     }
                 }
                 .buttonStyle(RoundedButtonStyle())
+                .padding(.horizontal)
                 
                 Button {
                     dismiss()
                 } label: {
                     Text("No, I'm happy with none")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Learn more")
-                }
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
             }
-            .padding([.leading, .trailing], 32)
+            .padding()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

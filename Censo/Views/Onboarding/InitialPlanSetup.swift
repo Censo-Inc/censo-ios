@@ -30,7 +30,7 @@ struct InitialPlanSetup: View {
     @State private var createPolicyParams: CreatePolicyParams?
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 10) {
             if let createPolicyParams {
                 FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
                         .createPolicy(
@@ -51,32 +51,30 @@ struct InitialPlanSetup: View {
                     dismiss()
                 }
             } else {
-                Spacer(minLength: 20)
                 Image("LargeFaceScan")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 298)
+                    .frame(maxWidth: 298, maxHeight: 200)
                     .saturation(0.0)
-                Spacer()
+
                 VStack(alignment: .leading) {
                     Spacer()
                    
                     Text("Scan your face")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .bold()
                         .padding()
                     
                     VStack(alignment: .leading) {
                         Text("Your face scan ensures that only you have access to your seed phrase.")
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                             .padding(.bottom, 1)
                         
                         Text("You will capture and store an encrypted 3D map of your face to confirm your live physical presence.")
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                             .padding(.bottom, 1)
                     }
                     .padding()
-                    
                     
                     Button {
                         startPolicyCreation()
@@ -87,7 +85,8 @@ struct InitialPlanSetup: View {
                                 .resizable()
                                 .frame(width: 36, height: 36)
                             Text("Begin face scan")
-                                .font(.system(size: 24, weight: .semibold))
+                                .font(.title2)
+                                .fontWeight(.semibold)
                             Spacer()
                         }
                     }
@@ -98,6 +97,7 @@ struct InitialPlanSetup: View {
                 .padding()
             }
         }
+        .padding()
         .navigationTitle(Text(""))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)

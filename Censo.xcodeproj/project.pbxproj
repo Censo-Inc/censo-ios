@@ -207,7 +207,6 @@
 		E4025C992AC6C8B5008FE3B8 /* CensoHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C982AC6C8B5008FE3B8 /* CensoHomeScreen.swift */; };
 		E4025C9B2AC6E019008FE3B8 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
 		E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
-		E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */; };
 		E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */; };
 		E463C5A12AE1359100AFDFBB /* ApproversSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */; };
 		E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */; };
@@ -387,7 +386,6 @@
 		E4025C982AC6C8B5008FE3B8 /* CensoHomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CensoHomeScreen.swift; sourceTree = "<group>"; };
 		E4025C9A2AC6E019008FE3B8 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyleTint.swift; sourceTree = "<group>"; };
-		E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsListView.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometryGatedScreen.swift; sourceTree = "<group>"; };
 		E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetup.swift; sourceTree = "<group>"; };
 		E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldStyle.swift; sourceTree = "<group>"; };
@@ -765,7 +763,6 @@
 		E4025C9C2AC6E223008FE3B8 /* SecretsManagement */ = {
 			isa = PBXGroup;
 			children = (
-				E447AB942ABDCEF5005FBDE7 /* SecretsListView.swift */,
 				BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */,
 				3D3E64CC2AE6B7690000C56C /* PhraseSaveSuccess.swift */,
 				3D3E64CF2AE6B76A0000C56C /* SaveSeedPhrase.swift */,
@@ -1051,7 +1048,6 @@
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */,
 				E4ADF6582AF1127000EFCF4F /* SigningKey.swift in Sources */,
-				E447AB952ABDCEF5005FBDE7 /* SecretsListView.swift in Sources */,
 				3D3E64D22AE6B76A0000C56C /* PhraseSaveSuccess.swift in Sources */,
 				6CFEAD572AF157EB00C20140 /* AppleSignIn.swift in Sources */,
 				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,

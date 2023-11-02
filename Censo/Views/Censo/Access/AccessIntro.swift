@@ -47,11 +47,6 @@ struct AccessIntro: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
                 
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Learn more")
-                }
-                .frame(maxWidth: .infinity)
             }
             .padding()
         }

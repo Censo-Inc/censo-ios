@@ -22,11 +22,14 @@ struct FirstPhrase: View {
             VStack(alignment: .leading, spacing: 20) {
                 Spacer()
                 Text("Add your first seed phrase")
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.title2)
+                    .fontWeight(.semibold)
                     .padding()
+
                 Text("Your seed phrase will be encrypted so only you can access it.")
-                    .font(.system(size: 14))
+                    .font(.subheadline)
                     .padding(.horizontal)
+                    .padding(.bottom)
 
                 Button {
                     showingAddPhrase = true
@@ -35,6 +38,7 @@ struct FirstPhrase: View {
                         Image("PhraseEntry").colorInvert()
                         Text("Input seed phrase")
                             .font(.title2)
+                            .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -48,6 +52,7 @@ struct FirstPhrase: View {
                         Image("ClipboardText")
                         Text("Paste seed phrase")
                             .font(.title2)
+                            .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
                 }
