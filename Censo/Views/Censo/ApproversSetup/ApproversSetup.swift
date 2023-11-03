@@ -22,6 +22,7 @@ struct ApproversSetup: View {
         case setupPrimary
         case proposeAlternate
         case setupAlternate
+        case cancellingAlternate
         case requestingRecovery
         case retrievingShards
         case replacingPolicy
@@ -88,9 +89,12 @@ struct ApproversSetup: View {
                 onComplete: {
                     initPolicyReplacement()
                 },
-                onOwnerStateUpdated: onOwnerStateUpdated
+                onOwnerStateUpdated: onOwnerStateUpdated,
+                onBack: {
+                    cancelAlternateApproverSetup()
+                }
             )
-        case .requestingRecovery, .replacingPolicy:
+        case .cancellingAlternate, .requestingRecovery, .replacingPolicy:
             ProgressView()
                 .navigationBarTitleDisplayMode(.inline)
                 .alert("Error", isPresented: $showingError, presenting: error) { _ in
@@ -224,6 +228,44 @@ struct ApproversSetup: View {
                 showError(CensoError.failedToReplacePolicy)
             }
         })
+    }
+    
+    func cancelAlternateApproverSetup() {
+        self.step = .cancellingAlternate
+            
+        do {
+            let policySetup = ownerState.policySetup!
+            let owner = policySetup.guardians[0]
+            let primaryApprover = policySetup.guardians[1]
+            let guardians: [API.GuardianSetup] = [
+                .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                    participantId: owner.participantId,
+                    label: "Me",
+                    guardianPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
+                )),
+                .externalApprover(API.GuardianSetup.ExternalApprover(
+                    participantId: primaryApprover.participantId,
+                    label: primaryApprover.label,
+                    deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                ))
+            ]
+            
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, guardians: guardians))
+            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+                switch result {
+                case .success(let response):
+                    onOwnerStateUpdated(response.ownerState)
+                    step = .proposeAlternate
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+        } catch {
+            RaygunClient.sharedInstance().send(error: error, tags: ["Setup policy"], customData: nil)
+            showError(CensoError.failedToCancelAlternateApproverSetup)
+        }
     }
 }
 

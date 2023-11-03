@@ -16,6 +16,7 @@ struct SetupApprover : View {
     var isPrimary: Bool
     var onComplete: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
+    var onBack: (() -> Void)?
     
     var body: some View {
         if let policySetup = policySetup, let approver = isPrimary ? policySetup.primaryApprover : policySetup.alternateApprover {
@@ -24,14 +25,16 @@ struct SetupApprover : View {
                 policySetup: policySetup,
                 approver: approver,
                 onComplete: onComplete,
-                onOwnerStateUpdated: onOwnerStateUpdated
+                onOwnerStateUpdated: onOwnerStateUpdated,
+                onBack: onBack
             )
         } else {
             EnterApproverNickname(
                 session: session,
                 policySetup: policySetup,
                 isPrimary: isPrimary,
-                onComplete: onOwnerStateUpdated
+                onComplete: onOwnerStateUpdated,
+                onBack: onBack
             )
         }
     }

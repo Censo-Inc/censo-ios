@@ -18,6 +18,7 @@ struct EnterApproverNickname: View {
     var policySetup: API.PolicySetup?
     var isPrimary: Bool
     var onComplete: (API.OwnerState) -> Void
+    var onBack: (() -> Void)?
     
     @State private var nickname: String = ""
     @State private var submitting = false
@@ -77,11 +78,20 @@ struct EnterApproverNickname: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.black)
+                if let onBack {
+                    Button {
+                        onBack()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                    }
+                } else {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmar")
+                            .foregroundColor(.black)
+                    }
                 }
             }
         })
