@@ -25,7 +25,7 @@ struct ActivateApprover : View {
         case rename
     }
     
-    @State private var mode: Mode = .activate
+    @State private var mode: Mode = .getLive
     @State private var showingError = false
     @State private var error: Error?
     
