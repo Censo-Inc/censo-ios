@@ -30,36 +30,41 @@ struct GetLiveWithApprover : View {
                 
                 Spacer()
                 
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text("Activate \(approverName)")
-                        .font(.system(size: 24))
-                        .bold()
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .padding(.bottom)
                     
                     Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
-                        .font(.system(size: 14))
+                        .font(.subheadline)
+                        .padding(.bottom)
                     
                     Button {
                         onContinue()
                     } label: {
                         Text("Activate now")
-                            .font(.system(size: 24))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .padding(.bottom)
                     
                     if showResumeLater {
                         Button {
                             dismiss()
                         } label: {
                             Text("Resume later")
-                                .font(.system(size: 24))
+                                .font(.title2)
+                                .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())
+                        .padding(.bottom)
                     }
                 }
             }
-            .padding([.top], 24)
             .padding([.leading, .trailing], 32)
         }
     }
@@ -68,35 +73,20 @@ struct GetLiveWithApprover : View {
 #if DEBUG
 #Preview {
     NavigationView {
-        ApproversSetup(
-            session: Session.sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                guardianSetup: API.PolicySetup(
-                    guardians: [
-                        API.ProspectGuardian(
-                            invitationId: try! InvitationId(value: ""),
-                            label: "Me",
-                            participantId: .random(),
-                            status: API.GuardianStatus.initial(.init(
-                                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-                            ))
-                        ),
-                        API.ProspectGuardian(
-                            invitationId: try! InvitationId(value: ""),
-                            label: "Neo",
-                            participantId: .random(),
-                            status: API.GuardianStatus.initial(.init(
-                                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-                            ))
-                        )
-                    ],
-                    threshold: 2
-                )
-            ),
-            onOwnerStateUpdated: { _ in }
+        GetLiveWithApprover(
+            approverName: "Neo",
+            onContinue: {}
         )
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.black)
+                }
+            }
+        })
     }
 }
 #endif

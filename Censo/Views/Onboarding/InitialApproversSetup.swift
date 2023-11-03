@@ -30,10 +30,10 @@ struct InitialApproversSetup: View {
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
         } else {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 0) {
                 Spacer()
                 
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text("Optional: Additional security")
                         .font(.title3)
                         .bold()
@@ -41,7 +41,7 @@ struct InitialApproversSetup: View {
                         .font(.title2)
                         .bold()
                 }
-                .padding(.horizontal)
+                .padding(.bottom)
                 
                 Text("""
                     Increase your security by adding trusted approvers. Access to your seed phrase will require their approval.
@@ -52,7 +52,7 @@ struct InitialApproversSetup: View {
                     """
                 )
                 .font(.subheadline)
-                .padding(.horizontal)
+                .padding(.bottom)
                 
                 Button {
                     showApproversSetup = true
@@ -68,7 +68,7 @@ struct InitialApproversSetup: View {
                     }
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
+                .padding(.vertical)
                 
                 Button {
                     dismiss()
@@ -78,9 +78,9 @@ struct InitialApproversSetup: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
+                .padding(.bottom)
             }
-            .padding()
+            .padding([.leading, .trailing], 32)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

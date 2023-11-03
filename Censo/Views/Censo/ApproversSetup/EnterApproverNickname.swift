@@ -25,22 +25,25 @@ struct EnterApproverNickname: View {
     @State private var error: Error?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
             Text("Name your \(isPrimary ? "first" : "second") approver")
-                .font(.system(size: 24))
-                .bold()
+                .font(.title2)
+                .fontWeight(.semibold)
+                .padding(.bottom)
             
             Text("Give your approver a unique nickname so you can identify them.")
-                .font(.system(size: 14))
+                .font(.subheadline)
+                .padding(.bottom)
 
             TextField(text: $nickname) {
                 Text("Enter a nickname...")
             }
             .textFieldStyle(RoundedTextFieldStyle())
-            .font(.system(size: 24))
+            .font(.title2)
             .frame(maxWidth: .infinity)
+            .padding(.bottom)
             
             Button {
                 submit()
@@ -50,12 +53,14 @@ struct EnterApproverNickname: View {
                         ProgressView()
                     } else {
                         Text("Continue")
-                            .font(.system(size: 24))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                     }
                 }
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .padding(.bottom)
             .disabled(submitting || nickname.trimmingCharacters(in: .whitespaces).isEmpty)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
