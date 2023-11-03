@@ -11,7 +11,7 @@ struct Welcome: View {
     @Environment(\.apiProvider) var apiProvider
 
     var session: Session
-    var onComplete: (API.OwnerState) -> Void
+    @Binding var ownerState: API.OwnerState
     
     var body: some View {
         NavigationStack {
@@ -21,19 +21,43 @@ struct Welcome: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding(.horizontal)
+                    .padding(.bottom)
                 Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
                     .font(.headline)
                     .fontWeight(.medium)
-                    .padding()
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal)
                 
                 VStack(alignment: .leading) {
-                    SetupStep(image: Image("Apple"), heading: "Authenticate anonymously", content: "No personal info collected, ever, from Apple or any other source.", completionText: "Authenticated")
                     SetupStep(
-                        image: Image("FaceScan"), heading: "Scan your face", content: "Biometrics ensure that only you have access to your seed phrase.")
+                        image: Image("Apple"),
+                        heading: "Authenticate anonymously",
+                        content: "No personal info collected, ever, from Apple or any other source.",
+                        completionText: "Authenticated"
+                    )
                     SetupStep(
-                        image: Image("PhraseEntry"), heading: "Enter your seed phrase", content: "Now your seed phrase is encrypted and entirely in your control.")
+                        image: Image("FaceScan"), 
+                        heading: "Scan your face",
+                        content: "Biometrics ensure that only you have access to your seed phrase.",
+                        completionText: {
+                            if case .ready = ownerState {
+                                return "Completed"
+                            } else {
+                                return nil
+                            }
+                        }()
+                    )
+                    SetupStep(
+                        image: Image("PhraseEntry"), 
+                        heading: "Enter your seed phrase",
+                        content: "Now your seed phrase is encrypted and entirely in your control."
+                    )
                     Divider()
-                    SetupStep(image: Image("TwoPeople"), heading: "Optional: Add approvers", content: "Provide additional security through safety in numbers.")
+                    SetupStep(
+                        image: Image("TwoPeople"),
+                        heading: "Optional: Add approvers",
+                        content: "Provide additional security through safety in numbers."
+                    )
                     Divider()
                 }
                 .padding()
@@ -41,7 +65,9 @@ struct Welcome: View {
                 NavigationLink {
                     InitialPlanSetup(
                         session: session,
-                        onComplete: onComplete
+                        onComplete: { newOwnerState in
+                            ownerState = newOwnerState
+                        }
                     )
                 } label: {
                     Text("Get started")
@@ -99,12 +125,12 @@ struct SetupStep: View {
             }
             .frame(maxHeight: 64)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical)
     }
 }
 
 #if DEBUG
 #Preview {
-    Welcome(session: .sample, onComplete: {_ in })
+    Welcome(session: .sample, ownerState: .constant(API.OwnerState.initial))
 }
 #endif
