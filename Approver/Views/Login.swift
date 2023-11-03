@@ -27,78 +27,85 @@ struct Login: View {
             
             TabView {
                 ForEach(0..<3, id: \.self) { i in
-                    switch i {
-                    case 0:
-                        VStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 16.0)
-                                .inset(by: 1)
-                                .stroke(Color.Censo.gray95, lineWidth: 1)
-                                .background(Color.Censo.gray252)
-                                .frame(maxWidth: 322, minHeight: 160, maxHeight: 240)
-                                .padding()
-
-                            Text("Welcome, approvers")
-                                .font(.system(size: 24, weight: .semibold))
-                                .padding([.horizontal, .bottom])
-                            
-                            
-                            Text("This app is for those who have been selected to approve another person’s seed phrase.")
-                                .font(.system(size: 14, weight: .medium))
-                                .padding(.horizontal)
-                        }
-                    case 1:
-                        VStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 16.0)
-                                .inset(by: 1)
-                                .stroke(Color.Censo.gray95, lineWidth: 1)
-                                .background(Color.Censo.gray252)
-                                .frame(maxWidth: 322, minHeight: 160, maxHeight: 240)
-                                .padding()
-
-                            Text("How it works")
-                                .font(.system(size: 24, weight: .semibold))
-                                .padding([.horizontal, .bottom])
-                            
-                            
-                            Text("You will be given a link & six-digit code to enter to secure the phrase.")
-                                .font(.system(size: 14, weight: .medium))
-                                .padding(.horizontal)
-                        }
-                        
-                    case 2:
-                        VStack(alignment: .leading) {
-                            ZStack {
+                    VStack {
+                        switch i {
+                        case 0:
+                            VStack(alignment: .leading, spacing: 0) {
                                 RoundedRectangle(cornerRadius: 16.0)
                                     .inset(by: 1)
                                     .stroke(Color.Censo.gray95, lineWidth: 1)
                                     .background(Color.Censo.gray252)
                                     .frame(maxWidth: 322, minHeight: 160, maxHeight: 240)
                                     .padding()
-                                HStack {
-                                    Spacer()
-                                    imageAndTextView(imageWithOverlay(imageName: "Censo"), "Censo", "")
-                                    Spacer()
-                                    imageAndTextView(Image("Plus"), "", "")
-                                    Spacer()
-                                    imageAndTextView(imageWithOverlay(imageName: "Censo"), "Censo", "Approver")
-                                    Spacer()
-                                }.frame(maxWidth: 322)
+                                
+                                Text("Welcome, approvers")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .padding([.horizontal, .bottom])
+                                
+                                
+                                Text("This app is for those who have been selected to approve another person’s seed phrase.")
+                                    .font(.subheadline)
+                                    .padding(.horizontal)
                             }
-
-                            Text("Looking for Censo?")
-                                .font(.system(size: 24, weight: .semibold))
-                                .padding([.horizontal, .bottom])
+                        case 1:
+                            VStack(alignment: .leading, spacing: 0) {
+                                RoundedRectangle(cornerRadius: 16.0)
+                                    .inset(by: 1)
+                                    .stroke(Color.Censo.gray95, lineWidth: 1)
+                                    .background(Color.Censo.gray252)
+                                    .frame(maxWidth: 322, minHeight: 160, maxHeight: 240)
+                                    .padding()
+                                
+                                Text("How it works")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .padding([.horizontal, .bottom])
+                                
+                                
+                                Text("You will be given a link & six-digit code to enter to secure the phrase.")
+                                    .font(.subheadline)
+                                    .padding(.horizontal)
+                            }
                             
-                            
-                            Text("If you would like to secure your own seed phrase, download the main Censo app **here**.")
-                                .font(.system(size: 14))
-                                .padding(.horizontal)
-                                .onTapGesture {
-                                        UIApplication.shared.open(URL(string: "https://censo.co")!)
+                        case 2:
+                            VStack(alignment: .leading, spacing: 0) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 16.0)
+                                        .inset(by: 1)
+                                        .stroke(Color.Censo.gray95, lineWidth: 1)
+                                        .background(Color.Censo.gray252)
+                                        .frame(maxWidth: 322, minHeight: 160, maxHeight: 240)
+                                        .padding()
+                                    HStack {
+                                        Spacer()
+                                        imageAndTextView(imageWithOverlay(imageName: "Censo"), "Censo", "")
+                                        Spacer()
+                                        imageAndTextView(Image("Plus"), "", "")
+                                        Spacer()
+                                        imageAndTextView(imageWithOverlay(imageName: "Censo"), "Censo", "Approver")
+                                        Spacer()
+                                    }.frame(maxWidth: 322)
                                 }
+                                
+                                Text("Looking for Censo?")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .padding([.horizontal, .bottom])
+                                
+                                
+                                Text("If you would like to secure your own seed phrase, download the main Censo app **here**.")
+                                    .font(.subheadline)
+                                    .padding(.horizontal)
+                                    .onTapGesture {
+                                        UIApplication.shared.open(URL(string: "https://censo.co")!)
+                                    }
+                            }
+                        default:
+                            EmptyView()
                         }
-                    default:
-                        EmptyView()
+                        Spacer()
+                            .frame(height: 50)
                     }
                 }
             }
@@ -112,7 +119,8 @@ struct Login: View {
                 AppleSignIn(onSuccess: onSuccess)
                 
                 Text("By tapping Sign in, you agree to our terms of use.")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.caption)
+                    .fontWeight(.medium)
                     .padding(.bottom)
                 
                 Divider()
@@ -148,9 +156,11 @@ struct Login: View {
         VStack {
             imageView
             Text(textLine1)
-                .font(.system(size: 10, weight: .regular))
+                .font(.caption2)
+                .fontWeight(.regular)
             Text(textLine2)
-                .font(.system(size: 10, weight: .regular))
+                .font(.caption2)
+                .fontWeight(.regular)
         }
     }
 }
