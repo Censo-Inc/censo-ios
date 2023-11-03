@@ -15,6 +15,13 @@ struct InitialApproversSetup: View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     @State private var showApproversSetup = false
     
+    init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
+        self.session = session
+        self.ownerState = ownerState
+        self.onOwnerStateUpdated = onOwnerStateUpdated
+        self._showApproversSetup = State(initialValue: ownerState.policySetup != nil)
+    }
+    
     var body: some View {
         if showApproversSetup {
             ApproversSetup(

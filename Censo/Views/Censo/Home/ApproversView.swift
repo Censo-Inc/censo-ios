@@ -42,9 +42,8 @@ struct ApproversView: View {
                                 Spacer()
                                 Image("TwoPeopleWhite")
                                     .resizable()
-                                    .frame(width: 32, height: 32)
-                                Text("Invite approvers")
-                                    .font(.system(size: 24))
+                                    .frame(width: 24, height: 24)
+                                Text(ownerState.policySetup == nil ? "Invite approvers" : "Resume approvers setup")
                                 Spacer()
                             }
                         }

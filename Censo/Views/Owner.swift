@@ -12,7 +12,7 @@ struct Owner: View {
     @Environment(\.apiProvider) var apiProvider
 
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
-    @State private var showApproversIntro = false
+    @AppStorage("showInitialApproversSetup") var showInitialApproversSetup = false
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
 
     var session: Session
@@ -44,7 +44,7 @@ struct Owner: View {
                             ownerState: ready,
                             session: session,
                             onComplete: { ownerState in
-                                showApproversIntro = true
+                                showInitialApproversSetup = true
                                 replaceOwnerState(newOwnerState: ownerState)
                             }
                         )
@@ -56,7 +56,7 @@ struct Owner: View {
                                 reload()
                             }
                         )
-                        .sheet(isPresented: $showApproversIntro, content: {
+                        .sheet(isPresented: $showInitialApproversSetup, content: {
                             NavigationView {
                                 InitialApproversSetup(
                                     session: session,
