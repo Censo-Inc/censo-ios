@@ -23,7 +23,7 @@ struct ShowPhraseList: View {
             
             Spacer()
             
-            Text("Which seed phrase would you like to access \(viewedPhrases.count == 0 ? "first" : "next")?")
+            Text("Select the seed phrase you would like to access:")
                 .font(.system(size: 24, weight: .semibold))
                 .padding()
             
@@ -52,6 +52,11 @@ struct ShowPhraseList: View {
                                         .symbolRenderingMode(.palette)
                                         .foregroundStyle(.white, Color.Censo.green)
                                         .font(.system(size: 28))
+                                } else {
+                                    Image(systemName: "chevron.forward")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 28))
                                 }
                             }.frame(minWidth: 40)
                             
@@ -66,7 +71,7 @@ struct ShowPhraseList: View {
             Button {
                 onFinished()
             } label: {
-                Text("Finish")
+                Text("Exit accessing phrases")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }

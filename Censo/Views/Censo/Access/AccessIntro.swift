@@ -21,19 +21,13 @@ struct AccessIntro: View {
                 Text("Ready to start your 15 minutes of access?")
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
-                Text("Get ready to type your seed phrase into a secure location on another device. You will have 15 minutes to access **\(ownerState.vault.secrets[0].label)**.")
-                    .font(.system(size: 18))
-                    .padding()
-                
+
                 VStack(alignment: .leading) {
-                    SetupStep(image: Image("PrivatePlace"), heading: "Go to a private place", content: "Make sure you are alone in your home or a highly secure area.")
+                    SetupStep(image: Image("PrivatePlace"), heading: "Go to a private place", content: "Make sure you are alone in your home or a secure area.")
                     SetupStep(
-                        image: Image("FaceScan"), heading: "Scan your face", content: "When you're ready, start your 15 min access via 3D face scan.")
+                        image: Image("FaceScan"), heading: "Scan your face", content: "Start your access with a face scan. If you leave the app you will need to scan your face again.")
                     SetupStep(
-                        image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 min to access your seed phrase and cannot extend the time.")
-                    Divider()
-                    SetupStep(image: Image("AccessWarning"), heading: "Don't leave the app", content: "You will need to scan your face again if you leave or close the app.", opacity: 1.0)
-                    Divider()
+                        image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 minutes to access your seed phrase. If you need more time, you will have to scan your face again.")
                 }
                 .padding()
                 

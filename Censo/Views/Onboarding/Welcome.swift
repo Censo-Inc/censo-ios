@@ -97,7 +97,6 @@ struct SetupStep: View {
                     EmptyView()
                 }
             }
-            .frame(maxHeight: 64)
         }
         .padding(.vertical, 4)
     }

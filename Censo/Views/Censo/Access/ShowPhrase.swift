@@ -25,14 +25,6 @@ struct ShowPhrase: View {
                         onComplete(false)
                     }
                 )
-                .frame(width: 240, height: 4)
-                Button {
-                    onComplete(true)
-                } label: {
-                    Text("Done")
-                        .frame(width: 50, height: 4)
-                }
-                .buttonStyle(RoundedButtonStyle())
             }
             .frame(width: 430, height: 64)
             .background(Color.Censo.gray224)
@@ -43,7 +35,15 @@ struct ShowPhrase: View {
             
             Group {
                 Divider()
-                SetupStep(image: Image("AccessWarning"), heading: "Don't leave the app", content: "You will need to scan your face again if you leave or close the app.", opacity: 1.0)
+                Button {
+                    onComplete(true)
+                } label: {
+                    Text("Done viewing phrase")
+                        .font(.title2)
+                        .padding([.horizontal])
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding()
             }
             .frame(maxHeight: 80, alignment: .bottom)
             .padding()

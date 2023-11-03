@@ -21,13 +21,13 @@ struct AccessExpirationCountdown: View {
     private var formatter: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
-        formatter.allowedUnits = [.minute, .second]
+        formatter.allowedUnits = [.minute]
         return formatter
     }
     
     var body: some View {
         let formattedTime = formatter.string(from: timeRemaining)
-        Text(formattedTime != nil ? "Access ends in: **\(formattedTime!)**" : "")
+        Text(formattedTime != nil ? "Access ends in: **\(timeRemaining.isLess(than: TimeInterval(60)) ? "less than 1 minute" : formattedTime!)**" : "")
         .font(.system(size: 16))
         .foregroundStyle(.black)
         .onChange(of: scenePhase) { newScenePhase in

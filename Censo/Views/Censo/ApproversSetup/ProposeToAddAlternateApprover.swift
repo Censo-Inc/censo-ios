@@ -24,7 +24,7 @@ struct ProposeToAddAlternateApprover : View {
                 .padding(.bottom)
             
             Text("""
-                 Adding a second approver ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
+                 Adding a **second approver** ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
 
                  Your activated first approver ensures your seed phrase is split into two fragments and encrypted for more security, but adding a second approver is even more secure.
                  """)

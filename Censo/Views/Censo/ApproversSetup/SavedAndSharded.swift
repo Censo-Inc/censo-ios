@@ -28,7 +28,7 @@ struct SavedAndSharded : View {
                 Spacer()
             }
             
-            Text("Saved")
+            Text("Activated")
                 .font(.system(size: 24))
                 .bold()
                 .padding()
