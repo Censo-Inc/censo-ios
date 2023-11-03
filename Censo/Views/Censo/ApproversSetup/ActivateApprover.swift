@@ -78,15 +78,12 @@ struct ActivateApprover : View {
             })
         case .activate:
             ScrollView {
-                VStack(spacing: 10) {
-                    Text("Activate \(approver.label)")
-                        .font(.system(size: 24))
-                        .bold()
-                }
-                .padding([.leading, .trailing], 32)
-                .padding([.bottom], 20)
+                Text("Activate \(approver.label)")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom)
                 
-                VStack(spacing: 32) {
+                VStack(spacing: 0) {
                     HStack(alignment: .top) {
                        
                         if let url = URL(string: "https://censo.co/approvers") {
@@ -99,24 +96,26 @@ struct ActivateApprover : View {
                                     .padding(8)
                                     .background(.gray.opacity(0.25))
                                     .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                    .padding([.trailing], 10)
+                                    .padding(.trailing)
                             }
                         } else {
                             EmptyView()
                         }
                         
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Text("1. Share app link")
-                                .font(.system(size: 18))
-                                .bold()
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom)
                             
                             Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple or Android App stores.")
-                                .font(.system(size: 14))
+                                .font(.subheadline)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
+                    .padding(.bottom)
                     
                     HStack(alignment: .top) {
                         if let invitationId = approver.invitationId {
@@ -129,24 +128,26 @@ struct ActivateApprover : View {
                                     .padding(8)
                                     .background(.gray.opacity(0.25))
                                     .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                    .padding([.trailing], 10)
+                                    .padding(.trailing)
                             }
                         } else {
                             EmptyView()
                         }
                         
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Text("2. Share invitation link")
-                                .font(.system(size: 18))
-                                .bold()
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom)
                             
                             Text("After \(approver.label) has installed the Censo Approver app, share this invitation link and have \(approver.label) click on it or paste it into the Censo Approver app.")
-                                .font(.system(size: 14))
+                                .font(.subheadline)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical)
                     
                     HStack(alignment: .top) {
                         Image(systemName: "waveform")
@@ -156,16 +157,17 @@ struct ActivateApprover : View {
                             .padding(.vertical, 16)
                             .background(.gray.opacity(0.25))
                             .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                            .padding([.trailing], 10)
+                            .padding(.trailing)
                         
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Text("3. Read authentication code")
-                                .font(.system(size: 18))
-                                .bold()
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom)
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret {
                                 Text("Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
-                                    .font(.system(size: 14))
+                                    .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                                 
                                 RotatingTotpPinView(
@@ -175,25 +177,26 @@ struct ActivateApprover : View {
                                 )
                             } else if approver.isConfirmed {
                                 Text("\(approver.label) is now activated!")
-                                    .font(.system(size: 14))
+                                    .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
                                 Text("As soon as \(approver.label) accepts the invitation, a code will appear here. Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
-                                    .font(.system(size: 14))
+                                    .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical)
                 }
                 .padding([.leading, .trailing], 32)
-                .padding([.bottom], 8)
                 
                 Spacer()
 
-                VStack(spacing: 30) {
+                VStack(spacing: 0) {
                     Divider()
+                        .padding(.bottom)
 
                     ApproverPill(
                         isPrimary: isPrimary,
@@ -206,15 +209,18 @@ struct ActivateApprover : View {
                             )
                         }
                     )
+                    .padding(.bottom)
                     
                     Button {
                         onComplete()
                     } label: {
                         Text("Continue")
-                            .font(.system(size: 24))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .padding(.bottom)
                     .disabled(!approver.isConfirmed)
                 }
                 .padding([.leading, .trailing], 32)

@@ -33,17 +33,19 @@ struct RenameApprover: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
             Text("Rename approver")
-                .font(.system(size: 24))
-                .bold()
+                .font(.title2)
+                .fontWeight(.semibold)
+                .padding(.bottom)
             
             TextField(text: $newName) {}
                 .textFieldStyle(RoundedTextFieldStyle())
-                .font(.system(size: 24))
+                .font(.title2)
                 .frame(maxWidth: .infinity)
+                .padding(.bottom)
             
             Button {
                 submit()
@@ -53,12 +55,14 @@ struct RenameApprover: View {
                         ProgressView()
                     } else {
                         Text("Save")
-                            .font(.system(size: 24))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                     }
                 }
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .padding(.bottom)
             .disabled(submitting || newName.trimmingCharacters(in: .whitespaces).isEmpty)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
@@ -128,6 +132,17 @@ struct RenameApprover: View {
             approver: policySetup.guardians[1],
             onComplete: { _ in }
         )
+        .navigationTitle(Text("Activate Neo"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                }
+            }
+        })
     }
 }
 #endif
