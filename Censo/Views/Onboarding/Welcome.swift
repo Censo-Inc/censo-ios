@@ -21,10 +21,12 @@ struct Welcome: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding(.horizontal)
+                    .padding(.bottom)
                 Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
                     .font(.headline)
                     .fontWeight(.medium)
-                    .padding()
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal)
                 
                 VStack(alignment: .leading) {
                     SetupStep(
