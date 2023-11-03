@@ -35,9 +35,7 @@ struct Owner: View {
                     case .initial:
                         Welcome(
                             session: session,
-                            onComplete: {ownerState in
-                                replaceOwnerState(newOwnerState: ownerState)
-                            }
+                            ownerState: ownerStateBinding
                         )
                     case .ready(let ready) where ready.vault.secrets.isEmpty:
                         FirstPhrase(
