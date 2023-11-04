@@ -28,11 +28,9 @@ struct OperationCompletedView: View {
             }
             
             Text(successText)
-                .font(.system(size: 24))
+                .font(.title2)
                 .bold()
-                .padding([.leading, .trailing], 32)
-                .padding([.top], 25)
-                .padding([.bottom], 10)
+                .padding()
             
             Spacer()
         }

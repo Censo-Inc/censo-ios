@@ -20,39 +20,41 @@ struct GetLiveWithOwner: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 30) {
+        VStack {
+            VStack(alignment: .leading) {
                 HStack {
                     RoundedRectangle(cornerRadius: 16.0)
                         .fill(Color.gray)
-                        .frame(maxWidth: .infinity, minHeight: 322, maxHeight: 322)
+                        .frame(maxWidth: .infinity, minHeight: 260, maxHeight: 322)
                 }
                 
                 Spacer()
                 
                 Text("Get live with the owner")
-                    .font(.system(size: 24))
+                    .font(.title2)
                     .bold()
+                    .padding(.vertical)
                 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading) {
                     Text("For maximum security, it's best to be face-to-face with the phrase owner in a private location.")
-                        .font(.system(size: 14))
+                        .font(.subheadline)
                     
                     Text("This ensures direct and private sharing of the necessary codes and information, reducing the risk of eavesdropping and interception.")
-                        .font(.system(size: 14))
+                        .font(.subheadline)
+                        .padding(.vertical)
                 }
                 
                 Button {
                     onContinue()
                 } label: {
                     Text("Continue live")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
             }
-            .padding([.top], 24)
-            .padding([.leading, .trailing], 54)
+            .padding(.vertical)
+            .padding(.horizontal, 32)
         }
         .navigationTitle(Text("Approve Access"))
         .toolbarBackground(.visible, for: .navigationBar)

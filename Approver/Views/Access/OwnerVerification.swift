@@ -51,11 +51,11 @@ struct OwnerVerification: View {
         case .verify:
             VStack(alignment: .center, spacing: 30) {
                 Text("Share the code")
-                    .font(.system(size: 24))
+                    .font(.title2)
                     .bold()
                 
                 Text("The owner must enter this 6-digit code:")
-                    .font(.system(size: 14))
+                    .font(.subheadline)
                 
                 switch (guardianState.phase) {
                 case .recoveryVerification(let phase):
@@ -82,11 +82,11 @@ struct OwnerVerification: View {
                 
                 if wrongCode {
                     Text("Owner entered wrong code")
-                        .font(.system(size: 14))
+                        .font(.subheadline)
                         .foregroundColor(Color.red)
                 } else {
                     Text("")
-                        .font(.system(size: 14))
+                        .font(.subheadline)
                 }
             }
             .multilineTextAlignment(.center)

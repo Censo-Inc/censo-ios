@@ -30,7 +30,8 @@ struct SubmitVerification: View {
     var body: some View {
         VStack {
             Text("Enter the code")
-                .font(.system(size: 24, weight: .bold))
+                .font(.title2)
+                .bold()
                 .padding()
             
             switch guardianState.phase {
@@ -46,12 +47,14 @@ struct SubmitVerification: View {
                 }
             case .waitingForCode:
                 Text("Enter the 6-digit code from the seed phrase owner")
-                    .font(.system(size: 18, weight: .medium))
+                    .font(.headline)
+                    .fontWeight(.medium)
                     .padding()
                 
             case .verificationRejected:
                 Text("Code not approved. Please send new verification code")
-                    .font(.system(size: 18, weight: .medium))
+                    .font(.headline)
+                    .fontWeight(.medium)
                     .foregroundColor(Color.red)
                     .padding()
                 
