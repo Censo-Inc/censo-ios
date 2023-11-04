@@ -32,16 +32,16 @@ struct EnterAccessVerificationCode : View {
         ScrollView {
             VStack(spacing: 10) {
                 Text("Request access")
-                    .font(.system(size: 24))
+                    .font(.title)
                     .bold()
                 
                 Text("You must do two things:")
-                    .font(.system(size: 14))
+                    .font(.subheadline)
             }
             .padding([.leading, .trailing], 32)
             .padding([.bottom], 20)
             
-            VStack(spacing: 32) {
+            VStack(spacing: 24) {
                 
                 HStack(alignment: .top) {
                     if let link = URL(string: "\(Configuration.approverUrlScheme)://access/\(approver.participantId.value)") {
@@ -63,11 +63,11 @@ struct EnterAccessVerificationCode : View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         Text("1. Share this link")
-                            .font(.system(size: 18))
+                            .font(.headline)
                             .bold()
                         
                         Text("Share this link and have \(approver.label) click on it or paste it into the Censo Approver app. If \(approver.label) no longer has the app installed, it can be downloaded here.")
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -86,11 +86,11 @@ struct EnterAccessVerificationCode : View {
                     
                     VStack(alignment: .leading, spacing: 10) {
                         Text("2. Enter the code")
-                            .font(.system(size: 18))
+                            .font(.headline)
                             .bold()
                         
                         Text("Have \(approver.label) read aloud the 6-digit code from the Censo Approver app and enter it below.")
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,7 +108,7 @@ struct EnterAccessVerificationCode : View {
                             .bold()
                             .foregroundColor(Color.red)
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     
@@ -131,7 +131,7 @@ struct EnterAccessVerificationCode : View {
             }
             Spacer()
         }
-        .padding([.top], 24)
+        .padding(.vertical, 24)
         .padding(.horizontal, 32)
         .onReceive(remoteNotificationPublisher) { _ in
             refreshState()
@@ -213,7 +213,7 @@ struct EnterAccessVerificationCode : View {
 }
 
 #if DEBUG
-#Preview {
+#Preview("initial") {
     NavigationView {
         let policy = API.Policy.sample2Approvers
         let approver = policy.guardians.last!
@@ -226,6 +226,62 @@ struct EnterAccessVerificationCode : View {
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
         )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview("entercode") {
+    NavigationView {
+        let policy = API.Policy.sample2Approvers
+        let approver = policy.guardians.last!
+        
+        EnterAccessVerificationCode(
+            session: .sample,
+            policy: policy,
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .waitingForVerification),
+            approver: approver,
+            onOwnerStateUpdated: { _ in },
+            onSuccess: { _ in }
+        )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview("rejected") {
+    NavigationView {
+        let policy = API.Policy.sample2Approvers
+        let approver = policy.guardians.last!
+        
+        EnterAccessVerificationCode(
+            session: .sample,
+            policy: policy,
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .rejected),
+            approver: approver,
+            onOwnerStateUpdated: { _ in },
+            onSuccess: { _ in }
+        )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview("waiting") {
+    NavigationView {
+        let policy = API.Policy.sample2Approvers
+        let approver = policy.guardians.last!
+        
+        EnterAccessVerificationCode(
+            session: .sample,
+            policy: policy,
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .waitingForApproval),
+            approver: approver,
+            onOwnerStateUpdated: { _ in },
+            onSuccess: { _ in }
+        )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 #endif

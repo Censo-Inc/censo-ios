@@ -31,9 +31,8 @@ struct InitialApproversSetup: View {
             )
         } else {
             VStack(alignment: .leading, spacing: 0) {
-                Spacer()
                 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 20) {
                     Text("Optional: Additional security")
                         .font(.title3)
                         .bold()
@@ -41,7 +40,7 @@ struct InitialApproversSetup: View {
                         .font(.title2)
                         .bold()
                 }
-                .padding(.bottom)
+                .padding(.vertical)
                 
                 Text("""
                     Increase your security by adding trusted approvers. Access to your seed phrase will require their approval.

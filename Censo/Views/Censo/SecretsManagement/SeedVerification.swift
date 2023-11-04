@@ -25,7 +25,7 @@ struct SeedVerification: View {
             Image(systemName: "checkmark.circle")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding()
+                .padding(.vertical)
                 .padding(.horizontal, 100)
 
             Spacer()
@@ -39,7 +39,7 @@ struct SeedVerification: View {
 
             WordList(words: words)
                 .padding(.horizontal)
-                .frame(height: 210)
+                .frame(height: 250)
 
             Button {
                 showingSave = true

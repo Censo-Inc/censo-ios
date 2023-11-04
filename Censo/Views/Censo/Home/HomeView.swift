@@ -28,16 +28,17 @@ struct HomeView: View {
                 } label: {
                     VStack {
                         Text("\(vault.secrets.count)")
-                            .font(.system(size: 100, weight: .semibold))
+                            .font(.system(size: UIFont.textStyleSize(.largeTitle) * 3, weight: .semibold))
                             .foregroundColor(.black)
                             .frame(alignment: .center)
                         
                         Text("seed phrase\(vault.secrets.count != 1 ? "s" : "")")
-                            .font(.system(size: 24, weight: .semibold))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                             .foregroundColor(.black)
                             .frame(alignment: .center)
                     }
-                    .frame(minWidth: 322, minHeight: 247)
+                    .frame(minWidth: 322, minHeight: 180, maxHeight: 247)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: vault.secrets.count == 0 ? [3] : []))
@@ -50,7 +51,8 @@ struct HomeView: View {
                 } label: {
                     Text("Add seed phrase")
                         .foregroundColor(.black)
-                        .font(.system(size: 18, weight: .regular))
+                        .font(.headline)
+                        .fontWeight(.regular)
                         .frame(maxWidth: 322, maxHeight: 4)
                 }
                 .padding([.top], 10)
@@ -63,16 +65,17 @@ struct HomeView: View {
                 } label: {
                     VStack {
                         Text("\(policy.externalApproversCount)")
-                            .font(.system(size: 100, weight: .semibold))
+                            .font(.system(size: UIFont.textStyleSize(.largeTitle) * 3, weight: .semibold))
                             .foregroundColor(.black)
                             .frame(alignment: .center)
                         
                         Text("approver\(policy.externalApproversCount != 1 ? "s" : "")")
-                            .font(.system(size: 24, weight: .semibold))
+                            .font(.title2)
+                            .fontWeight(.semibold)
                             .foregroundColor(.black)
                             .frame(alignment: .center)
                     }
-                    .frame(minWidth: 322, minHeight: 247)
+                    .frame(minWidth: 322, minHeight: 180, maxHeight: 247)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.externalApproversCount == 0 ? [3] : []))
@@ -86,18 +89,14 @@ struct HomeView: View {
                     } label: {
                         Text("Add approvers")
                             .foregroundColor(.black)
-                            .font(.system(size: 18, weight: .regular))
+                            .font(.headline)
+                            .fontWeight(.regular)
                             .frame(maxWidth: 322, maxHeight: 4)
                     }
                     .padding([.top], 10)
                     .buttonStyle(RoundedButtonStyle(tint: .gray95))
                 }
             }.frame(maxWidth: 322)
-            
-            
-            Divider()
-            .padding([.bottom], 4)
-            .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .sheet(isPresented: $showingAddPhrase, content: {
             AdditionalPhrase(
@@ -106,6 +105,12 @@ struct HomeView: View {
                 onComplete: onOwnerStateUpdated
             )
         })
+    }
+}
+
+public extension UIFont {
+    static func textStyleSize(_ style: UIFont.TextStyle) -> CGFloat {
+        UIFont.preferredFont(forTextStyle: style).pointSize
     }
 }
 

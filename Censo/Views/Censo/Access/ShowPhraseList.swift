@@ -24,7 +24,8 @@ struct ShowPhraseList: View {
             Spacer()
             
             Text("Select the seed phrase you would like to access:")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.title2)
+                .fontWeight(.semibold)
                 .padding()
             
             ScrollView {
@@ -34,7 +35,8 @@ struct ShowPhraseList: View {
                     } label: {
                         HStack {
                             Text(ownerState.vault.secrets[i].label)
-                                .font(.system(size: 24, weight: .medium))
+                                .font(.title2)
+                                .fontWeight(.medium)
                                 .padding([.leading])
                                 .foregroundColor(viewedPhrases.contains(i) ? .green : .black)
                                 .frame(maxWidth: 300, minHeight: 107, alignment: .leading)

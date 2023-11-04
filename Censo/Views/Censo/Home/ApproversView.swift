@@ -18,12 +18,13 @@ struct ApproversView: View {
         NavigationView {
             VStack {
                 if ownerState.policy.externalApproversCount == 0 {
-                    VStack(alignment: .leading, spacing: 30) {
+                    VStack(alignment: .leading, spacing: 0) {
                         Spacer()
                         
                         Text("Invite trusted approvers")
                             .font(.system(size: 24))
                             .bold()
+                            .padding(.vertical)
                         
                         Text("""
                             Increase your security by adding trusted approvers. Access to your seed phrase will require their approval.
@@ -33,7 +34,8 @@ struct ApproversView: View {
                             Adding a **second approver** ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you lose your own login ID or your biometry fails.
                             """
                         )
-                        .font(.system(size: 14))
+                        .font(.subheadline)
+                        .padding(.vertical)
 
                         Button {
                             showApproversSetup = true
@@ -44,20 +46,16 @@ struct ApproversView: View {
                                     .resizable()
                                     .frame(width: 24, height: 24)
                                 Text(ownerState.policySetup == nil ? "Invite approvers" : "Resume approvers setup")
+                                    .font(.title3)
                                 Spacer()
                             }
                         }
                         .buttonStyle(RoundedButtonStyle())
+                        .padding(.top)
                         
-                        HStack {
-                            Image(systemName: "info.circle")
-                            Text("Learn more")
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        Spacer()
+                        Spacer(minLength: 0)
                     }
-                    .padding([.leading, .trailing], 52)
+                    .padding([.leading, .trailing], 32)
                 } else {
                     VStack(spacing: 30) {
                         let approvers = ownerState.policy.guardians
@@ -72,9 +70,6 @@ struct ApproversView: View {
                     .padding([.top], 30)
                     .padding([.leading, .trailing], 30)
                 }
-                
-                Divider()
-                    .padding([.bottom], 4)
             }
             .navigationTitle(Text("Approvers"))
             .navigationBarTitleDisplayMode(.inline)

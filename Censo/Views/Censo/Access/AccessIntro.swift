@@ -17,9 +17,10 @@ struct AccessIntro: View {
     var body: some View {
         VStack {
             Spacer()
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text("Ready to start your 15 minutes of access?")
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.title2)
+                    .fontWeight(.semibold)
                     .padding()
 
                 VStack(alignment: .leading) {
@@ -29,7 +30,8 @@ struct AccessIntro: View {
                     SetupStep(
                         image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 minutes to access your seed phrase. If you need more time, you will have to scan your face again.")
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.vertical, 20)
                 
                 Button {
                     onReadyToGetStarted()

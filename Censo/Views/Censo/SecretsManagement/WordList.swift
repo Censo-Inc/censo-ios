@@ -25,7 +25,7 @@ struct WordList: View {
                             .padding()
                             .multilineTextAlignment(.center)
                             .font(.title)
-                            .padding()
+                            .padding([.horizontal])
                     }
                     .frame(maxWidth: .infinity)
                     .background {

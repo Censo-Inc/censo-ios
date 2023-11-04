@@ -24,9 +24,9 @@ struct ChooseAccessApprover : View {
         VStack {
             Spacer()
             
-            VStack(alignment: .leading, spacing: 30) {
+            VStack(alignment: .leading, spacing: 20) {
                 Text("Request access")
-                    .font(.system(size: 24))
+                    .font(.title2)
                     .bold()
                 
                 let approvers = policy.guardians
@@ -42,7 +42,7 @@ struct ChooseAccessApprover : View {
                     
                     Select your approver below when you are speaking with them:
                     """)
-                    .font(.system(size: 14))
+                .font(.subheadline)
                 
                 VStack(spacing: 20) {
                     ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
@@ -72,7 +72,7 @@ struct ChooseAccessApprover : View {
                     }
                 } label: {
                     Text("Continue")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
@@ -91,6 +91,8 @@ struct ChooseAccessApprover : View {
             policy: .sample2Approvers,
             onContinue: { _ in }
         )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 #endif

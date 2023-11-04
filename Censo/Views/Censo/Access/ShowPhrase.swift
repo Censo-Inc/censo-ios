@@ -60,5 +60,16 @@ struct ShowPhrase: View {
             words: ["hello", "goodbye", "three", "four"],
             onComplete: {_ in}
         )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.black)
+                }
+            }
+        })
     }
 }

@@ -16,7 +16,7 @@ struct Welcome: View {
     var body: some View {
         NavigationStack {
             Spacer(minLength: 5)
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text("Welcome to Censo")
                     .font(.title2)
                     .fontWeight(.semibold)

@@ -27,62 +27,87 @@ struct CensoHomeScreen: View {
     @State private var selectedTab = TabName.home
                     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeView(
-                session: session,
-                ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated,
-                parentTabViewSelectedTab: $selectedTab
-            )
-            .tabItem {
+        VStack {
+            Spacer()
+            TabView(selection: $selectedTab) {
                 VStack {
-                    Text("Home")
-                    Image("SimpleHomeGray").renderingMode(.template)
+                    HomeView(
+                        session: session,
+                        ownerState: ownerState,
+                        onOwnerStateUpdated: onOwnerStateUpdated,
+                        parentTabViewSelectedTab: $selectedTab
+                    )
+                    tabDivider()
                 }
-            }
-            .tag(TabName.home)
-            
-            PhrasesView(
-                session: session,
-                ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated
-            )
-            .tabItem {
+                .tabItem {
+                    VStack {
+                        Text("Home")
+                        Image("SimpleHomeGray").renderingMode(.template)
+                    }
+                }
+                .tag(TabName.home)
+                    
                 VStack {
-                    Text("Phrases")
-                    Image("LockSimpleGray").renderingMode(.template)
+                    PhrasesView(
+                        session: session,
+                        ownerState: ownerState,
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                    tabDivider()
                 }
-            }
-            .tag(TabName.phrases)
-            
-            ApproversView(
-                session: session,
-                ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated
-            )
-            .tabItem {
+                .tabItem {
+                    VStack {
+                        Text("Phrases")
+                        Image("LockSimpleGray").renderingMode(.template)
+                    }
+                }
+                .tag(TabName.phrases)
+                
                 VStack {
-                    Text("Approvers")
-                    Image("TwoUsersGray").renderingMode(.template)
+                    ApproversView(
+                        session: session,
+                        ownerState: ownerState,
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                    tabDivider()
                 }
-            }
-            .tag(TabName.approvers)
-            
-            SettingsView(
-                session: session,
-                onOwnerStateUpdated: onOwnerStateUpdated
-            )
-            .tabItem {
+                .tabItem {
+                    VStack {
+                        Text("Approvers")
+                        Image("TwoUsersGray").renderingMode(.template)
+                    }
+                }
+                .tag(TabName.approvers)
+                
                 VStack {
-                    Text("Settings")
-                    Image("SettingsGray").renderingMode(.template)
+                    SettingsView(
+                        session: session,
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                    tabDivider()
                 }
+                .tabItem {
+                    VStack {
+                        Text("Settings")
+                        Image("SettingsGray").renderingMode(.template)
+                    }
+                }
+                .tag(TabName.settings)
             }
-            .tag(TabName.settings)
+            .accentColor(.black)
         }
-        .accentColor(.black)
+        .padding(.vertical)
+    }
+    
+    private func tabDivider() -> some View {
+        VStack {
+            Spacer()
+            Divider().padding(.bottom, 20)
+        }.frame(height: 30)
     }
 }
+
+
 
 #if DEBUG
 extension API.TrustedGuardian {

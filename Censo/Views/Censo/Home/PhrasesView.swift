@@ -27,120 +27,120 @@ struct PhrasesView: View {
     @State private var showingAccess: Bool = false
     
     var body: some View {
-        VStack {
-            Text("Seed Phrases")
-            .frame(width: 430, height: 64)
-            .background(Color.Censo.gray95)
-            
-            HStack {
-                Button {
-                    showingAddPhrase = true
-                } label: {
-                    Text("Add")
-                        .font(.system(size: 18, weight: .semibold))
-                        .frame(maxWidth: 188, maxHeight: 64)
-                }
-                .buttonStyle(RoundedButtonStyle())
+        NavigationStack {
+            VStack {
                 
-                Spacer()
-                
-                Button {
-                    showingAccess = true
-                } label: {
-                    HStack {
-                        Image("LockLaminated")
-                            .resizable()
-                            .colorInvert()
-                            .frame(width: 27, height: 24)
-                        Text("Access")
-                            .font(.system(size: 18, weight: .semibold))
-                        
+                HStack {
+                    Button {
+                        showingAddPhrase = true
+                    } label: {
+                        Text("Add")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: 188)
                     }
-                    .frame(maxWidth: 188, maxHeight: 64)
-                }
-                .buttonStyle(RoundedButtonStyle())
-            }
-            .frame(maxWidth: .infinity, maxHeight: 64)
-            .padding()
-            
-            Divider().frame(maxWidth: .infinity)
-            
-            ScrollView {
-                ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
-                    ZStack(alignment: .leading) {
-                        Button {
-                            showingEditSheet = true
-                            editingIndex = i
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Image("Pencil").padding([.trailing], 4)
-                            }
+                    .buttonStyle(RoundedButtonStyle())
+                    
+                    Button {
+                        showingAccess = true
+                    } label: {
+                        HStack {
+                            Image("LockLaminated")
+                                .resizable()
+                                .colorInvert()
+                                .frame(width: 26, height: 20)
+                            Text("Access")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                            
                         }
-    
-                        Text(ownerState.vault.secrets[i].label)
-                            .font(.system(size: 18, weight: .medium))
-                            .multilineTextAlignment(.leading)
-                            .padding([.bottom, .leading, .top])
-                            .padding([.trailing], 35)
+                        .frame(maxWidth: 188)
                     }
-                    .frame(height: 100)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                            .foregroundColor(.Censo.lightGray)
-                    )
-                    .padding()
+                    .buttonStyle(RoundedButtonStyle())
                 }
-            }
-            .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
-                Button(role: .destructive) {
-                    showingEditSheet = false
-                    showingDeleteConfirmation = true
-                } label: {
-                    Text("Delete")
+                .frame(maxWidth: .infinity, maxHeight: 64)
+                .padding()
+                
+                Divider().frame(maxWidth: .infinity)
+                
+                ScrollView {
+                    ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
+                        ZStack(alignment: .leading) {
+                            Button {
+                                showingEditSheet = true
+                                editingIndex = i
+                            } label: {
+                                HStack {
+                                    Spacer()
+                                    Image("Pencil").padding([.trailing], 4)
+                                }
+                            }
+                            
+                            Text(ownerState.vault.secrets[i].label)
+                                .font(.system(size: 18, weight: .medium))
+                                .multilineTextAlignment(.leading)
+                                .padding([.bottom, .leading, .top])
+                                .padding([.trailing], 35)
+                        }
+                        .frame(height: 100)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(style: StrokeStyle(lineWidth: 1))
+                                .foregroundColor(.Censo.lightGray)
+                        )
+                        .padding(.horizontal)
+                        .padding(.top)
+                    }
                 }
-            } message: { i in
-                Text(ownerState.vault.secrets[i].label)
-            }
-            .confirmationDialog(
-                Text("Are you sure?"),
-                isPresented: $showingDeleteConfirmation,
-                presenting: editingIndex
-            ) { i in
-                Button("Yes", role: .destructive) {
-                    deleteSecret(ownerState.vault.secrets[i])
+                .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
+                    Button(role: .destructive) {
+                        showingEditSheet = false
+                        showingDeleteConfirmation = true
+                    } label: {
+                        Text("Delete")
+                    }
+                } message: { i in
+                    Text(ownerState.vault.secrets[i].label)
                 }
-            } message: { i in
-                Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
+                .confirmationDialog(
+                    Text("Are you sure?"),
+                    isPresented: $showingDeleteConfirmation,
+                    presenting: editingIndex
+                ) { i in
+                    Button("Yes", role: .destructive) {
+                        deleteSecret(ownerState.vault.secrets[i])
+                    }
+                } message: { i in
+                    Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
+                }
+                
             }
-            
-        }
-        .navigationTitle(Text("Seed Phrases"))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .padding()
-        .sheet(isPresented: $showingAddPhrase, content: {
-            AdditionalPhrase(
-                ownerState: ownerState,
-                session: session,
-                onComplete: onOwnerStateUpdated
-            )
-        })
-        .sheet(isPresented: $showingAccess, content: {
-            AccessPhrases(
-                session: session,
-                ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated
-            )
-        })
-       .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-            } label: { Text("OK") }
-        } message: { error in
-            Text(error.localizedDescription)
+            .navigationTitle(Text("Seed Phrases"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .padding()
+            .sheet(isPresented: $showingAddPhrase, content: {
+                AdditionalPhrase(
+                    ownerState: ownerState,
+                    session: session,
+                    onComplete: onOwnerStateUpdated
+                )
+            })
+            .sheet(isPresented: $showingAccess, content: {
+                AccessPhrases(
+                    session: session,
+                    ownerState: ownerState,
+                    onOwnerStateUpdated: onOwnerStateUpdated
+                )
+            })
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button {
+                    showingError = false
+                    error = nil
+                } label: { Text("OK") }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
         }
     }
     
