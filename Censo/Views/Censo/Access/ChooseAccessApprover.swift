@@ -25,7 +25,7 @@ struct ChooseAccessApprover : View {
             Spacer()
             
             VStack(alignment: .leading, spacing: 30) {
-                Text("Request access approval")
+                Text("Request access")
                     .font(.system(size: 24))
                     .bold()
                 
@@ -34,11 +34,11 @@ struct ChooseAccessApprover : View {
                     .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
 
                 Text("""
-                    Seed phrase access requires the approval of \(
+                    Seed phrase access requires the assistance of \(
                         approvers.map { $0.label }.joined(separator: " or ")
                     ).
                     
-                    This access approval should take place either on the phone or in-person to allow the approver to verify your identify.
+                    This should take place either on the phone or in-person to allow the approver to verify your identify.
                     
                     Select your approver below when you are speaking with them:
                     """)

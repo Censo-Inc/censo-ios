@@ -15,58 +15,45 @@ struct GetLiveWithApprover : View {
     var onContinue: () -> Void
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                HStack {
-                    Spacer()
-                    
-                    RoundedRectangle(cornerRadius: 16.0)
-                        .fill(Color.gray)
-                        .frame(maxWidth: 322, minHeight: 322, maxHeight: 322)
-                        .padding()
-                    
-                    Spacer()
-                }
+        VStack(alignment: .leading) {
+            Spacer()
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Activate \(approverName)")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom)
                 
-                Spacer()
+                Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
+                    .font(.subheadline)
+                    .padding(.bottom)
                 
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Activate \(approverName)")
+                Button {
+                    onContinue()
+                } label: {
+                    Text("Activate now")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .padding(.bottom)
-                    
-                    Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
-                        .font(.subheadline)
-                        .padding(.bottom)
-                    
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding(.bottom)
+                
+                if showResumeLater {
                     Button {
-                        onContinue()
+                        dismiss()
                     } label: {
-                        Text("Activate now")
+                        Text("Resume later")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
                     .padding(.bottom)
-                    
-                    if showResumeLater {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Text("Resume later")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding(.bottom)
-                    }
                 }
             }
-            .padding([.leading, .trailing], 32)
         }
+        .padding([.leading, .trailing], 32)
     }
 }
 

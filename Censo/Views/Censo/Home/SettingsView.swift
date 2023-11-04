@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 struct SettingsView: View {
     @Environment(\.apiProvider) var apiProvider
@@ -20,31 +21,39 @@ struct SettingsView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                Spacer()
-                Button {
-                    resetRequested = true
-                } label: {
-                    if resetInProgress {
-                        ProgressView()
-                    } else {
-                        HStack {
-                            Spacer()
-                            Image("arrow.circlepath")
-                                .frame(width: 36, height: 36)
-                            Text("Reset User Data")
-                                .font(.system(size: 24, weight: .semibold))
-                                .padding()
-                            Spacer()
-                        }.frame(maxWidth: 322)
-                    }
-                }
-                .buttonStyle(RoundedButtonStyle())
-            }
+            Spacer()
             
-            Divider()
-            .padding([.bottom], 4)
-            .frame(maxHeight: .infinity, alignment: .bottom)
+            Button {
+                lock()
+            } label: {
+                HStack {
+                    Image(systemName: "lock")
+                        .frame(maxWidth: 32, maxHeight: 32)
+                    Text("Lock")
+                        .font(.title2)
+                }
+                .frame(maxWidth: 322)
+            }
+            .buttonStyle(RoundedButtonStyle())
+            .padding()
+            
+            Button {
+                resetRequested = true
+            } label: {
+                if resetInProgress {
+                    ProgressView()
+                } else {
+                    HStack {
+                        Image("arrow.circlepath")
+                        Text("Reset User Data")
+                            .font(.title2)
+                    }.frame(maxWidth: 322)
+                }
+            }
+            .buttonStyle(RoundedButtonStyle())
+            .padding()
+            
+            Spacer()
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
@@ -75,6 +84,18 @@ struct SettingsView: View {
             case .failure(let error):
                 self.showingError = true
                 self.error = error
+            }
+        }
+    }
+    
+    private func lock() {
+        apiProvider.decodableRequest(with: session, endpoint: .lock) { (result: Result<API.LockApiResponse, MoyaError>) in
+            switch result {
+            case .success(let payload):
+                onOwnerStateUpdated(payload.ownerState)
+            case .failure(let err):
+                error = err
+                showingError = true
             }
         }
     }

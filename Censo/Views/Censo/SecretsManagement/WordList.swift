@@ -32,8 +32,8 @@ struct WordList: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(lineWidth: 1)
                     }
-                    .padding(20)
-
+                    .padding([.top, .leading, .trailing], 20)
+                    Text("swipe back and forth to view words")
                     Spacer()
                         .frame(height: 50)
                 }
