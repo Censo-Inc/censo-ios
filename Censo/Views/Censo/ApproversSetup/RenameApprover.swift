@@ -41,11 +41,20 @@ struct RenameApprover: View {
                 .fontWeight(.semibold)
                 .padding(.bottom)
             
-            TextField(text: $newName.value) {}
+            VStack(spacing: 0) {
+                TextField(text: $newName.value) {}
                 .textFieldStyle(RoundedTextFieldStyle())
                 .font(.title2)
                 .frame(maxWidth: .infinity)
-                .padding(.bottom)
+                
+                Text(newName.isTooLong ? "Can't be longer than \(newName.limit) characters" : " ")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.red)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.bottom)
             
             Button {
                 submit()
@@ -63,7 +72,7 @@ struct RenameApprover: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(.bottom)
-            .disabled(submitting || newName.isEmpty)
+            .disabled(submitting || !newName.isValid)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {

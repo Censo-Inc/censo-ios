@@ -38,12 +38,21 @@ struct EnterApproverNickname: View {
                 .font(.subheadline)
                 .padding(.bottom)
 
-            TextField(text: $nickname.value) {
-                Text("Enter a nickname...")
+            VStack(spacing: 0) {
+                TextField(text: $nickname.value) {
+                    Text("Enter a nickname...")
+                }
+                .textFieldStyle(RoundedTextFieldStyle())
+                .font(.title2)
+                .frame(maxWidth: .infinity)
+                
+                Text(nickname.isTooLong ? "Can't be longer than \(nickname.limit) characters" : " ")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.red)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
             }
-            .textFieldStyle(RoundedTextFieldStyle())
-            .font(.title2)
-            .frame(maxWidth: .infinity)
             .padding(.bottom)
             
             Button {
@@ -62,7 +71,7 @@ struct EnterApproverNickname: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(.bottom)
-            .disabled(submitting || nickname.isEmpty)
+            .disabled(submitting || !nickname.isValid)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {

@@ -41,10 +41,19 @@ struct SaveSeedPhrase: View {
                 Text("Give your seed phrase a unique label so you can identify it.")
                     .fixedSize(horizontal: false, vertical: true)
 
-                TextField(text: $label.value) {
-                    Text("Enter a label...")
+                VStack(spacing: 0) {
+                    TextField(text: $label.value) {
+                        Text("Enter a label...")
+                    }
+                    .textFieldStyle(RoundedTextFieldStyle())
+                    
+                    Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.red)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
                 }
-                .textFieldStyle(RoundedTextFieldStyle())
                 .padding(.vertical)
 
                 Button {
@@ -59,7 +68,7 @@ struct SaveSeedPhrase: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-                .disabled(label.isEmpty || inProgress)
+                .disabled(!label.isValid || inProgress)
             }
             .padding(50)
             .buttonStyle(RoundedButtonStyle())

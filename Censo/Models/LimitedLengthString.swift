@@ -8,14 +8,8 @@
 import Foundation
 
 class LimitedLengthString: ObservableObject {
-    private var limit: Int
-    @Published var value: String {
-        didSet {
-            if value.count > limit {
-                value = String(value.prefix(limit))
-            }
-        }
-    }
+    var limit: Int
+    @Published var value: String
     
     init(_ value: String, limit: Int) {
         self.value = value
@@ -25,6 +19,18 @@ class LimitedLengthString: ObservableObject {
     var isEmpty: Bool {
         get {
             return value.trimmingCharacters(in: .whitespaces).isEmpty
+        }
+    }
+    
+    var isTooLong: Bool {
+        get {
+            return value.count > limit
+        }
+    }
+    
+    var isValid: Bool {
+        get {
+            return !isEmpty && !isTooLong
         }
     }
 }
