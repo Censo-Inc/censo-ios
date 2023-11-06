@@ -44,7 +44,7 @@ struct AdditionalPhrase: View {
                     } label: {
                         HStack(spacing: 20) {
                             Image("PhraseEntry").colorInvert()
-                            Text("Enter seed phrase")
+                            Text("Input seed phrase")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                         }

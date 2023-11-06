@@ -17,8 +17,11 @@ struct PhraseSaveSuccess: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(.horizontal, 100)
 
-            Text("Saved")
+            Text("ENCRYPTED")
                 .font(.title.bold())
+            Text("NOW CAN BE ACCESSED ONLY BY YOU")
+                .font(.title.bold())
+                .multilineTextAlignment(.center)
         }
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
