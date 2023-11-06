@@ -258,20 +258,42 @@ extension API {
         var guardians: [ProspectGuardian]
         var threshold: Int
         
+        var owner: ProspectGuardian? {
+            get {
+                return guardians.first(where: {
+                    switch ($0.status) {
+                    case .implicitlyOwner:
+                        return true
+                    default:
+                        return false
+                    }
+                })
+            }
+        }
+        
         var primaryApprover: ProspectGuardian? {
             get {
-                return guardians.count > 1 ? guardians[1] : nil
+                return explicitApprovers().first
             }
         }
         
         var alternateApprover: ProspectGuardian? {
             get {
-                return guardians.count > 2 ? guardians[2] : nil
+                let explicitApprovers = explicitApprovers()
+                return explicitApprovers.count > 1 ? explicitApprovers[1] : nil
             }
         }
         
         func approverByParticipantId(_ participantId: ParticipantId) -> ProspectGuardian? {
             return guardians.first(where: { $0.participantId == participantId })
+        }
+        
+        private func explicitApprovers() -> [ProspectGuardian] {
+            if let owner = self.owner {
+                return guardians.filter({ $0.participantId != owner.participantId })
+            } else {
+                return []
+            }
         }
     }
         

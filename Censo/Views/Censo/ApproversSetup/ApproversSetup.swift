@@ -235,8 +235,8 @@ struct ApproversSetup: View {
             
         do {
             let policySetup = ownerState.policySetup!
-            let owner = policySetup.guardians[0]
-            let primaryApprover = policySetup.guardians[1]
+            let owner = policySetup.owner!
+            let primaryApprover = policySetup.primaryApprover!
             let guardians: [API.GuardianSetup] = [
                 .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
                     participantId: owner.participantId,
