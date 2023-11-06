@@ -13,7 +13,7 @@ struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.apiProvider) var apiProvider
 
-    @State private var label = ""
+    @ObservedObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
     @State private var newOwnerState: API.OwnerState?
@@ -41,7 +41,7 @@ struct SaveSeedPhrase: View {
                 Text("Give your seed phrase a unique label so you can identify it.")
                     .fixedSize(horizontal: false, vertical: true)
 
-                TextField(text: $label) {
+                TextField(text: $label.value) {
                     Text("Enter a label...")
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
@@ -97,7 +97,7 @@ struct SaveSeedPhrase: View {
             let payload = API.StoreSecretApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: secretData).compactMap { String(format: "%02x", $0) }.joined(),
-                label: label
+                label: label.value
             )
 
             inProgress = true

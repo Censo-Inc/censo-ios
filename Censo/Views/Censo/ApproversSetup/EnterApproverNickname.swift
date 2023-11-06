@@ -20,7 +20,7 @@ struct EnterApproverNickname: View {
     var onComplete: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     
-    @State private var nickname: String = ""
+    @ObservedObject private var nickname = ApproverNickname()
     @State private var submitting = false
     @State private var showingError = false
     @State private var error: Error?
@@ -38,7 +38,7 @@ struct EnterApproverNickname: View {
                 .font(.subheadline)
                 .padding(.bottom)
 
-            TextField(text: $nickname) {
+            TextField(text: $nickname.value) {
                 Text("Enter a nickname...")
             }
             .textFieldStyle(RoundedTextFieldStyle())
@@ -62,7 +62,7 @@ struct EnterApproverNickname: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(.bottom)
-            .disabled(submitting || nickname.trimmingCharacters(in: .whitespaces).isEmpty)
+            .disabled(submitting || nickname.isEmpty)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
@@ -125,7 +125,7 @@ struct EnterApproverNickname: View {
                     )),
                     .externalApprover(API.GuardianSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
-                        label: nickname,
+                        label: nickname.value,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
                     ))
                 ]
@@ -139,7 +139,7 @@ struct EnterApproverNickname: View {
                     )),
                     .externalApprover(API.GuardianSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
-                        label: nickname,
+                        label: nickname.value,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
                     ))
                 ]
