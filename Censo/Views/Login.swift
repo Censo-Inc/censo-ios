@@ -23,7 +23,7 @@ struct Login: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 208)
                 
-                Text("Seed Phrase Manager")
+                Text("The Seed Phrase Manager")
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding()

@@ -70,7 +70,7 @@ struct InitialPlanSetup: View {
                             .font(.subheadline)
                             .padding(.bottom, 4)
                         
-                        Text("You will capture and store an encrypted 3D map of your face to confirm your live physical presence.")
+                        Text("You will capture and store an anonymous 3D map of your face to confirm your live physical presence.")
                             .font(.subheadline)
                             .padding(.bottom, 1)
                     }
