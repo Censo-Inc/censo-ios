@@ -22,12 +22,6 @@ struct GetLiveWithOwner: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
-                HStack {
-                    RoundedRectangle(cornerRadius: 16.0)
-                        .fill(Color.gray)
-                        .frame(maxWidth: .infinity, minHeight: 260, maxHeight: 322)
-                }
-                
                 Spacer()
                 
                 Text("Get live with the owner")
