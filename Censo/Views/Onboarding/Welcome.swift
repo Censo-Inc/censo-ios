@@ -27,6 +27,7 @@ struct Welcome: View {
                     .fontWeight(.medium)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
+                    .padding(.bottom)
                 
                 VStack(alignment: .leading) {
                     SetupStep(
@@ -52,34 +53,38 @@ struct Welcome: View {
                         heading: "Enter your seed phrase",
                         content: "Now your seed phrase is encrypted and entirely in your control."
                     )
+                    
                     Divider()
+                        .padding(.bottom)
+                    
                     SetupStep(
                         image: Image("TwoPeople"),
                         heading: "Optional: Add approvers",
                         content: "Provide additional security through safety in numbers."
                     )
+                    
                     Divider()
+                        .padding(.bottom)
+                
+                    NavigationLink {
+                        InitialPlanSetup(
+                            session: session,
+                            onComplete: { newOwnerState in
+                                ownerState = newOwnerState
+                            }
+                        )
+                    } label: {
+                        Text("Get started")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    .padding(.horizontal)
                 }
                 .padding()
-                
-                NavigationLink {
-                    InitialPlanSetup(
-                        session: session,
-                        onComplete: { newOwnerState in
-                            ownerState = newOwnerState
-                        }
-                    )
-                } label: {
-                    Text("Get started")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
-                
             }
-            .padding()
+            .padding(.horizontal)
         }
     }
 }
@@ -124,7 +129,7 @@ struct SetupStep: View {
                 }
             }
         }
-        .padding(.vertical)
+        .padding(.bottom)
     }
 }
 
