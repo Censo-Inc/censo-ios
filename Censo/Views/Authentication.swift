@@ -8,26 +8,26 @@
 import SwiftUI
 import AuthenticationServices
 
-struct Authentication<Content>: View where Content : View {
+struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutContent : View, LoggedInContent : View {
     @State private var credentialState: ASAuthorizationAppleIDProvider.CredentialState?
     @State private var session: Result<Session, Error>?
 
-    @ViewBuilder var content: (Session) -> Content
+    @ViewBuilder var loggedOutContent: (@escaping () -> Void) -> LoggedOutContent
+    @ViewBuilder var loggedInContent: (Session) -> LoggedInContent
 
     var body: some View {
         switch credentialState {
         case .none:
             ProgressView()
                 .onAppear(perform: fetchCredentialState)
-        case .notFound,
-             .revoked:
-            Login(onSuccess: fetchCredentialState)
+        case .notFound, .revoked:
+            loggedOutContent(fetchCredentialState)
         case .authorized:
             switch session {
             case .none:
                 Text("No DeviceKey")
             case .success(let session):
-                content(session)
+                loggedInContent(session)
             case .failure:
                 Text("There was an error generating a device key")
             }

@@ -18,13 +18,12 @@ struct Onboarding: View {
     @State private var showingError = false
     @State private var currentError: Error?
     
-    var inviteCode: String
-    
     @RemoteResult<API.GuardianUser, API> private var user
 
     @State var guardianState: API.GuardianState?
 
     var session: Session
+    var inviteCode: String
     var onSuccess: () -> Void
 
     var body: some View {
