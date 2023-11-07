@@ -10,18 +10,45 @@ import WebKit
 
 struct TermsOfUse: View {
     @State var text: String
-    
+    @State var isReview: Bool = false
+
     var onAccept: () -> Void
 
     var body: some View {
-        VStack {
-            Text("We built Censo to allow you to secure your seed phrases while maintaining your privacy and control. Our Terms of Use support these principles. Please read and accept to continue.")
-                .font(.system(size: 14, weight: .medium))
-                .padding(30)
-            Divider()
-            WebView(text: $text)
-                .frame(minWidth: 0, maxWidth: .infinity)
-            Divider()
+        VStack(alignment: .center) {
+            Spacer()
+            if (isReview) {
+                WebView(text: $text)
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                Divider()
+            } else {
+
+                Image("Files")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 130)
+
+                Text("Terms of Use")
+                    .font(.system(size: 25, weight: .medium))
+                    .padding(.horizontal)
+                    .padding(.vertical, 20)
+
+                Text("We built Censo to allow you to secure your seed phrases while maintaining your privacy and control. Our Terms of Use support these principles. Please read and accept to continue.")
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 14, weight: .medium))
+                    .padding()
+
+                Button {
+                    isReview = true
+                } label: {
+                    Text("Review Terms of Use")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+            }
+
             Button {
                 onAccept()
             } label: {
@@ -29,9 +56,12 @@ struct TermsOfUse: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            .padding(30)
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+
             Text("By tapping Accept & Continue, you agree to our Terms of Use.")
                 .font(.system(size: 12.0))
+                .padding(.bottom, 5)
         }
     }
 }
