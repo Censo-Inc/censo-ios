@@ -37,7 +37,9 @@ struct ApproverHome: View {
         case .success(let user):
             PasteLinkScreen(
                 user: user,
-                handlePastedInfo: handlePastedInfo
+                handlePastedInfo: handlePastedInfo,
+                session: session,
+                onDeleted: reload
             )
             .onAppear {
                 handlePushRegistration()
@@ -98,17 +100,26 @@ struct ApproverHome: View {
 }
 
 struct PasteLinkScreen: View {
+    @Environment(\.apiProvider) var apiProvider
     var user: API.GuardianUser
     var handlePastedInfo: () -> Void
-    
+    @GestureState var accountPress = false
+    @State var showDeactivateAndDelete = false
+    @State var showDeactivateAndDeleteConfirmation = false
+    @State private var showingError = false
+    @State private var error: Error?
+
+    var session: Session
+    var onDeleted: () -> Void
+
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
             
             Image("Import")
-                
+            
             Group {
-                Text("Get the unique link")
+                Text("Waiting for a link")
                     .font(.system(size: 24))
                     .bold()
                 
@@ -135,7 +146,7 @@ struct PasteLinkScreen: View {
             .frame(maxWidth: .infinity)
             
             Spacer()
-                
+
             if user.guardianStates.countExternalApprovers() > 0 {
                 VStack(spacing: 12) {
                     Image("TwoPeople")
@@ -145,9 +156,50 @@ struct PasteLinkScreen: View {
                         .font(.system(size: 14))
                         .bold()
                 }
+                .gesture(
+                    LongPressGesture(minimumDuration: 0.5)
+                        .updating($accountPress) { currentState, gestureState, transaction in
+                            gestureState = currentState
+                        }
+                        .onEnded {_ in
+                            showDeactivateAndDelete = true
+                        }
+                )
             }
         }
         .padding(.horizontal, 54)
+        .confirmationDialog(
+            Text("Deactivate and delete?"),
+            isPresented: $showDeactivateAndDelete
+        ) {
+            Button("Deactivate & Delete", role: .destructive) {
+                showDeactivateAndDeleteConfirmation = true
+            }
+        }
+        .alert("Deactivate & Delete", isPresented: $showDeactivateAndDeleteConfirmation) {
+            Button {
+                apiProvider.request(with: session, endpoint: .deleteUser) {result in
+                    showDeactivateAndDelete = false
+                    switch result {
+                    case .success:
+                        onDeleted()
+                    case .failure(let error):
+                        self.showingError = true
+                        self.error = error
+                    }
+                }
+            } label: { Text("Confirm") }
+            Button {
+                showDeactivateAndDelete = false
+            } label: { Text("Cancel") }
+        } message: {
+            Text("You are about to permanently delete your data and stop being an approver. THIS CANNOT BE UNDONE! The seed phrases you are helping to protect may become inaccessible if you confirm this action.\nAre you sure?")
+        }
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button("OK", role: .cancel, action: {})
+        } message: { error in
+            Text(error.localizedDescription)
+        }
     }
 }
 
@@ -155,7 +207,9 @@ struct PasteLinkScreen: View {
 #Preview("onboarding") {
     PasteLinkScreen(
         user: API.GuardianUser(guardianStates: []),
-        handlePastedInfo: {}
+        handlePastedInfo: {},
+        session: .sample,
+        onDeleted: {}
     )
 }
 
@@ -167,7 +221,9 @@ struct PasteLinkScreen: View {
                 phase: .complete
             )
         ]),
-        handlePastedInfo: {}
+        handlePastedInfo: {},
+        session: .sample,
+        onDeleted: {}
     )
 }
 
