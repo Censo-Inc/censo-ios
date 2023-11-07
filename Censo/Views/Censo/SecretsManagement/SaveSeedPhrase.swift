@@ -38,7 +38,7 @@ struct SaveSeedPhrase: View {
                 Text("Label your seed phrase")
                     .font(.title2.bold())
 
-                Text("Give your seed phrase a unique label so you can identify it.")
+                Text("Give your seed phrase a unique label so you can easily identify it.")
                     .fixedSize(horizontal: false, vertical: true)
 
                 TextField(text: $label) {

@@ -94,19 +94,28 @@ struct ActivateApprover : View {
                     .padding(.bottom)
                 
                 VStack(spacing: 0) {
-                    HStack(alignment: .top) {
+                    HStack(alignment: .top, spacing: 20) {
                        
                         if let url = URL(string: "https://censo.co/approvers") {
                             ShareLink(
                                 item: url
                             ) {
-                                Image("Export")
-                                    .resizable()
-                                    .frame(width: 48, height: 48)
-                                    .padding(8)
-                                    .background(.gray.opacity(0.25))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                    .padding(.trailing)
+                                ZStack(alignment: .topLeading) {
+                                    Text("1")
+                                        .font(.system(size: 12))
+                                        .tint(.black)
+                                        .padding(7)
+                                    Image("Export")
+                                        .resizable()
+                                        .frame(width: 48, height: 48)
+                                        .padding(8)
+                                        .background(.gray.opacity(0.25))
+                                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 16.0)
+                                                .stroke(Color.black, lineWidth: 1)
+                                        )
+                                }
                             }
                         } else {
                             EmptyView()
@@ -132,13 +141,23 @@ struct ActivateApprover : View {
                             ShareLink(
                                 item: invitationId.url
                             ) {
-                                Image("Export")
-                                    .resizable()
-                                    .frame(width: 48, height: 48)
-                                    .padding(8)
-                                    .background(.gray.opacity(0.25))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                    .padding(.trailing)
+                                ZStack(alignment: .topLeading) {
+                                    Text("2")
+                                        .font(.system(size: 12))
+                                        .tint(.black)
+                                        .padding(7)
+                                    Image("Export")
+                                        .resizable()
+                                        .frame(width: 48, height: 48)
+                                        .padding(8)
+                                        .background(.gray.opacity(0.25))
+                                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 16.0)
+                                                .stroke(Color.black, lineWidth: 1)
+                                        )
+                                        .padding(.trailing)
+                                }
                             }
                         } else {
                             EmptyView()

@@ -55,6 +55,7 @@ struct EnterAccessVerificationCode : View {
                                 .padding(8)
                                 .background(.gray.opacity(0.25))
                                 .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                .overlay(RoundedRectangle(cornerRadius: 16.0).stroke(.black, lineWidth: 1))
                                 .padding([.trailing], 10)
                         }
                     } else {

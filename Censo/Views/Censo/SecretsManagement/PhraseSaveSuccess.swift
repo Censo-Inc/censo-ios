@@ -12,16 +12,27 @@ struct PhraseSaveSuccess: View {
 
     var body: some View {
         VStack(spacing: 30) {
+            Spacer()
             Image(systemName: "checkmark.circle")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .padding(.horizontal, 100)
 
-            Text("ENCRYPTED")
+            Text("Encrypted")
                 .font(.title.bold())
-            Text("NOW CAN BE ACCESSED ONLY BY YOU")
+            Text("Now can be accessed only by you")
                 .font(.title.bold())
                 .multilineTextAlignment(.center)
+            Spacer()
+            Button() {
+                onFinish()
+            } label: {
+                Text("Continue")
+                    .font(.title2)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+            .padding(30)
         }
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
@@ -34,11 +45,6 @@ struct PhraseSaveSuccess: View {
                     Image(systemName: "xmark")
                         .foregroundColor(.black)
                 }
-            }
-        })
-        .onAppear(perform: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                onFinish()
             }
         })
     }

@@ -33,7 +33,7 @@ struct WordList: View {
                             .stroke(lineWidth: 1)
                     }
                     .padding([.top, .leading, .trailing], 20)
-                    Text("swipe back and forth to view words")
+                    Text("swipe back and forth to review words")
                     Spacer()
                         .frame(height: 50)
                 }
