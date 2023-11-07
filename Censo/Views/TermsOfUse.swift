@@ -36,7 +36,7 @@ struct TermsOfUse: View {
                 Text("We built Censo to allow you to secure your seed phrases while maintaining your privacy and control. Our Terms of Use support these principles. Please read and accept to continue.")
                     .multilineTextAlignment(.center)
                     .font(.subheadline)
-                    .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 5)
+                    .shadow(color: Color.gray.opacity(0.4), radius: 3, x: 0, y: 5)
                     .padding()
 
                 Button {
