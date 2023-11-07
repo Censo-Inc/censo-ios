@@ -40,11 +40,10 @@ struct Onboarding: View {
                 let currentState = guardianState ?? user.guardianStates.forInvite(inviteCode)
                 switch currentState?.phase {
                 case .none:
-                    AcceptInvitation(
-                        invitationId: inviteCode,
-                        session: session,
-                        onSuccess: {newState in guardianState = newState}
-                    )
+                    ProgressView()
+                        .onAppear {
+                            acceptInvitation(invitationId: inviteCode)
+                        }
                 case .waitingForCode,
                      .waitingForVerification,
                     . verificationRejected:
@@ -89,6 +88,18 @@ struct Onboarding: View {
             }
         } message: { error in
             Text(error.localizedDescription)
+        }
+    }
+    
+    private func acceptInvitation(invitationId: String) {
+        inProgress = true
+        apiProvider.decodableRequest(with: session, endpoint: .acceptInvitation(invitationId)) { (result: Result<API.AcceptInvitationApiResponse, MoyaError>) in
+            switch result {
+            case .success(let response):
+                guardianState = response.guardianState
+            case .failure(let error):
+                showError(error)
+            }
         }
     }
 

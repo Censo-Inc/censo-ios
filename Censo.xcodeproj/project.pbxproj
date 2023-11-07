@@ -146,7 +146,6 @@
 		6CFEAD5F2AF15C1200C20140 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD5D2AF15C1200C20140 /* Login.swift */; };
 		6CFEAD632AF1C87100C20140 /* OperationCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */; };
 		6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */; };
-		BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */; };
 		BD5025EB2AE6C30900B727C4 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C23727C2AC4A3600072E256 /* Error.swift */; };
 		BD5025EC2AE6C33500B727C4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3796942A8C228B00913581 /* API.swift */; };
 		BD5025ED2AE6C35300B727C4 /* DeviceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E8B2A83A9EB00AB3A48 /* DeviceKey.swift */; };
@@ -368,7 +367,6 @@
 		6CFEAD582AF15B3800C20140 /* LoginBottomLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginBottomLinks.swift; sourceTree = "<group>"; };
 		6CFEAD5D2AF15C1200C20140 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationCompletedView.swift; sourceTree = "<group>"; };
-		BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitation.swift; sourceTree = "<group>"; };
 		BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpecificError.swift; sourceTree = "<group>"; };
 		BD50261A2AE8B0E400B727C4 /* AppSpecificError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpecificError.swift; sourceTree = "<group>"; };
 		BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitVerification.swift; sourceTree = "<group>"; };
@@ -666,7 +664,6 @@
 			isa = PBXGroup;
 			children = (
 				6CD6DAE72ABB4E8000974035 /* Onboarding.swift */,
-				BD09B6D22AC4940E00D9A3F6 /* AcceptInvitation.swift */,
 				BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */,
 				E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */,
 			);
@@ -1154,7 +1151,6 @@
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
 				6CFEAD5A2AF15B3800C20140 /* LoginBottomLinks.swift in Sources */,
 				6C0AF9652ACC6722009A9B54 /* Base32.swift in Sources */,
-				BD09B6D32AC4940E00D9A3F6 /* AcceptInvitation.swift in Sources */,
 				6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */,
 				BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
 				E4ADF6592AF1127000EFCF4F /* SigningKey.swift in Sources */,

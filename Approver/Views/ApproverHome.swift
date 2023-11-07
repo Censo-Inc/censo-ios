@@ -136,7 +136,7 @@ struct PasteLinkScreen: View {
             
             Spacer()
                 
-            if !user.guardianStates.isEmpty {
+            if user.guardianStates.countExternalApprovers() > 0 {
                 VStack(spacing: 12) {
                     Image("TwoPeople")
                         .frame(width: 32, height: 32)
@@ -169,5 +169,23 @@ struct PasteLinkScreen: View {
         ]),
         handlePastedInfo: {}
     )
+}
+
+extension Session {
+    static var sample: Self {
+        .init(deviceKey: .sample, userCredentials: .sample)
+    }
+}
+
+extension UserCredentials {
+    static var sample: Self {
+        .init(idToken: "012345".hexData()!, userIdentifier: "identifier")
+    }
+}
+
+extension ParticipantId {
+    static var sample: Self {
+        try! .init(value: "2FdCBCBb8cE32e1d4D2c82BF0Ee7c6CDBfaB01DB3e9C5B2C0CccbE2CD4bFBa1f")
+    }
 }
 #endif

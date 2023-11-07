@@ -30,25 +30,13 @@ struct API {
     }
     
     enum GuardianPhase: Codable {
-        case waitingForCode(WaitingForCode)
-        case waitingForVerification(WaitingForVerification)
-        case verificationRejected(VerificationRejected)
+        case waitingForCode
+        case waitingForVerification
+        case verificationRejected
         case complete
         case recoveryRequested(RecoveryRequested)
         case recoveryVerification(RecoveryVerification)
         case recoveryConfirmation(RecoveryConfirmation)
-        
-        struct WaitingForVerification: Codable {
-            var invitationId: String
-        }
-        
-        struct WaitingForCode: Codable {
-            var invitationId: String
-        }
-        
-        struct VerificationRejected: Codable {
-            var invitationId: String
-        }
         
         struct RecoveryRequested: Codable {
             var createdAt: Date
@@ -80,11 +68,11 @@ struct API {
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "WaitingForCode":
-                self = .waitingForCode(try WaitingForCode(from: decoder))
+                self = .waitingForCode
             case "WaitingForVerification":
-                self = .waitingForVerification(try WaitingForVerification(from: decoder))
+                self = .waitingForVerification
             case "VerificationRejected":
-                self = .verificationRejected(try VerificationRejected(from: decoder))
+                self = .verificationRejected
             case "Complete":
                 self = .complete
             case "RecoveryRequested":
@@ -101,15 +89,12 @@ struct API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: GuardianPhaseCodingKeys.self)
             switch self {
-            case .waitingForCode(let phase):
+            case .waitingForCode:
                 try container.encode("WaitingForCode", forKey: .type)
-                try phase.encode(to: encoder)
-            case .waitingForVerification(let phase):
+            case .waitingForVerification:
                 try container.encode("WaitingForVerification", forKey: .type)
-                try phase.encode(to: encoder)
-            case .verificationRejected(let phase):
+            case .verificationRejected:
                 try container.encode("VerificationRejected", forKey: .type)
-                try phase.encode(to: encoder)
             case .complete:
                 try container.encode("Complete", forKey: .type)
             case .recoveryRequested(let phase):
@@ -128,6 +113,7 @@ struct API {
     struct GuardianState: Codable {
         var participantId: ParticipantId
         var phase: GuardianPhase
+        var invitationId: String?
     }
     
     struct GuardianUser: Decodable {
@@ -274,33 +260,14 @@ extension EnvironmentValues {
 
 extension Array where Element == API.GuardianState {
     func forInvite(_ invitationId: String) -> API.GuardianState? {
-        if self.isEmpty {
-            return nil
-        }
-        for guardianState in self {
-            switch(guardianState.phase) {
-            case .waitingForCode(let state):
-                if state.invitationId == invitationId {
-                    return guardianState
-                }
-            case .waitingForVerification(let state):
-                if state.invitationId == invitationId {
-                    return guardianState
-                }
-            case .verificationRejected(let state):
-                if state.invitationId == invitationId {
-                    return guardianState
-                }
-            case .complete:
-                return guardianState
-            default:
-                break
-            }
-        }
-        return nil
+        return self.first(where: {$0.invitationId == invitationId})
     }
     
     func forParticipantId(_ participantId: ParticipantId) -> API.GuardianState? {
         return self.first(where: {$0.participantId == participantId})
+    }
+    
+    func countExternalApprovers() -> Int {
+        self.filter({$0.invitationId != nil}).count
     }
 }

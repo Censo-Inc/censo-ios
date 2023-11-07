@@ -146,33 +146,24 @@ extension API.GuardianState {
     static var sampleWaitingForVerification: Self {
         .init(
             participantId: .random(),
-            phase: .waitingForVerification(
-                API.GuardianPhase.WaitingForVerification(
-                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
-                )
-            )
+            phase: .waitingForVerification,
+            invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
         )
     }
     
     static var sampleVerificationRejected: Self {
         .init(
             participantId: .random(),
-            phase: .verificationRejected(
-                API.GuardianPhase.VerificationRejected(
-                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
-                )
-            )
+            phase: .verificationRejected,
+            invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
         )
     }
     
     static var sampleWaitingForCode: Self {
         .init(
             participantId: .random(),
-            phase: .waitingForCode(
-                API.GuardianPhase.WaitingForCode(
-                    invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
-                )
-            )
+            phase: .waitingForCode,
+            invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
         )
     }
 }
