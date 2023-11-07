@@ -10,14 +10,14 @@ import SwiftUI
 struct LoginBottomLinks: View {
     var body: some View {
         HStack {
-            Link(destination: URL(string: "https://censo.co/terms/")!, label: {
+            Link(destination: Configuration.termsOfServiceURL, label: {
                 Text("Terms")
                     .padding()
                     .fontWeight(.bold)
                     .tint(.black)
                     .frame(maxWidth: .infinity)
             })
-            Link(destination: URL(string: "https://censo.co/privacy/")!, label: {
+            Link(destination: Configuration.privacyPolicyURL, label: {
                 Text("Privacy")
                     .padding()
                     .fontWeight(.bold)
