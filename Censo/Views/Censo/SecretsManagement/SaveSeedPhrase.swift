@@ -13,7 +13,7 @@ struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.apiProvider) var apiProvider
 
-    @State private var label = ""
+    @ObservedObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
     @State private var newOwnerState: API.OwnerState?
@@ -41,10 +41,19 @@ struct SaveSeedPhrase: View {
                 Text("Give your seed phrase a unique label so you can easily identify it.")
                     .fixedSize(horizontal: false, vertical: true)
 
-                TextField(text: $label) {
-                    Text("Enter a label...")
+                VStack(spacing: 0) {
+                    TextField(text: $label.value) {
+                        Text("Enter a label...")
+                    }
+                    .textFieldStyle(RoundedTextFieldStyle())
+                    
+                    Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.red)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
                 }
-                .textFieldStyle(RoundedTextFieldStyle())
                 .padding(.vertical)
 
                 Button {
@@ -59,7 +68,7 @@ struct SaveSeedPhrase: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-                .disabled(label.isEmpty || inProgress)
+                .disabled(!label.isValid || inProgress)
             }
             .padding(50)
             .buttonStyle(RoundedButtonStyle())
@@ -97,7 +106,7 @@ struct SaveSeedPhrase: View {
             let payload = API.StoreSecretApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: secretData).compactMap { String(format: "%02x", $0) }.joined(),
-                label: label
+                label: label.value
             )
 
             inProgress = true

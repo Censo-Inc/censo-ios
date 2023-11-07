@@ -34,8 +34,8 @@ struct PastePhrase: View {
     var ownerState: API.OwnerState.Ready
     var onComplete: (API.OwnerState) -> Void
     
-    @State var phrase: String = ""
-    @State var label: String = ""
+    @State private var phrase: String = ""
+    @ObservedObject private var label = PhraseLabel()
 
     @State private var inProgress = false
     @State private var showingError = false
@@ -104,7 +104,6 @@ struct PastePhrase: View {
                                 .font(.system(size: 24, weight: .semibold))
                                 .padding(.vertical)
                             
-                            
                             Text("Give your seed phrase a label of your choice so you can identify it in the future.")
                                 .font(.system(size: 14))
                                 .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
@@ -113,15 +112,25 @@ struct PastePhrase: View {
                                 .font(.system(size: 14))
                                 .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
                                 .fixedSize(horizontal: false, vertical: true)
-                            TextField(text: $label) {
-                                Text("Enter a label...")
+                            
+                            VStack(spacing: 0) {
+                                TextField(text: $label.value) {
+                                    Text("Enter a label...")
+                                }
+                                .focused($isLabelFocused)
+                                .textFieldStyle(RoundedTextFieldStyle())
+                                .onAppear {
+                                    isLabelFocused = true
+                                }
+                                
+                                Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
+                                    .multilineTextAlignment(.center)
+                                    .foregroundStyle(Color.red)
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity)
                             }
-                            .focused($isLabelFocused)
-                            .textFieldStyle(RoundedTextFieldStyle())
                             .padding()
-                            .onAppear {
-                                isLabelFocused = true
-                            }
                             
                             Button {
                                 storeSecret()
@@ -132,10 +141,11 @@ struct PastePhrase: View {
                             .disabled(
                                 inProgress ||
                                 !phraseValidation.isValid() ||
-                                label.trimmingCharacters(in: .whitespaces).isEmpty
+                                !label.isValid
                             )
                             .buttonStyle(RoundedButtonStyle())
-                            .padding()
+                            .padding(.horizontal)
+                            .padding(.bottom)
                         }
                     }
                     .padding()
@@ -194,7 +204,7 @@ struct PastePhrase: View {
             let payload = API.StoreSecretApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: secretData).compactMap { String(format: "%02x", $0) }.joined(),
-                label: label.trimmingCharacters(in: .whitespaces)
+                label: label.value.trimmingCharacters(in: .whitespaces)
             )
             apiProvider.decodableRequest(with: session, endpoint: .storeSecret(payload)) { (result: Result<API.StoreSecretApiResponse, MoyaError>) in
                 switch result {

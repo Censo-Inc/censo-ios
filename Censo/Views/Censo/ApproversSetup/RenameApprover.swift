@@ -19,7 +19,7 @@ struct RenameApprover: View {
     var approver: API.ProspectGuardian
     var onComplete: (API.OwnerState) -> Void
     
-    @State private var newName: String
+    @ObservedObject private var newName = ApproverNickname()
     @State private var submitting = false
     @State private var showingError = false
     @State private var error: Error?
@@ -29,7 +29,7 @@ struct RenameApprover: View {
         self.policySetup = policySetup
         self.approver = approver
         self.onComplete = onComplete
-        self._newName = State(initialValue: approver.label)
+        self.newName = ApproverNickname(approver.label)
     }
     
     var body: some View {
@@ -41,11 +41,20 @@ struct RenameApprover: View {
                 .fontWeight(.semibold)
                 .padding(.bottom)
             
-            TextField(text: $newName) {}
+            VStack(spacing: 0) {
+                TextField(text: $newName.value) {}
                 .textFieldStyle(RoundedTextFieldStyle())
                 .font(.title2)
                 .frame(maxWidth: .infinity)
-                .padding(.bottom)
+                
+                Text(newName.isTooLong ? "Can't be longer than \(newName.limit) characters" : " ")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.red)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.bottom)
             
             Button {
                 submit()
@@ -63,7 +72,7 @@ struct RenameApprover: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(.bottom)
-            .disabled(submitting || newName.trimmingCharacters(in: .whitespaces).isEmpty)
+            .disabled(submitting || !newName.isValid)
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
@@ -99,7 +108,7 @@ struct RenameApprover: View {
                 } else {
                     return .externalApprover(API.GuardianSetup.ExternalApprover(
                         participantId: approver.participantId,
-                        label: approver.participantId == approverToRename.participantId ? newName : approver.label,
+                        label: approver.participantId == approverToRename.participantId ? newName.value : approver.label,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
                     ))
                 }
