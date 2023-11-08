@@ -31,6 +31,9 @@ struct ContentView: View {
                             self.url = url
                         }
                     )
+                    .onOpenURL(perform: {
+                        self.url = $0
+                    })
                 } else {
                     Login(onSuccess: onSuccess)
                 }
@@ -85,16 +88,16 @@ struct ContentView: View {
                         }
                     }
                     .onOpenURL(perform: openURL)
-                    .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-                        Button("OK", role: .cancel, action: {
-                            self.url = nil
-                        })
-                    } message: { error in
-                        Text(error.localizedDescription)
-                    }
                 }
             }
         )
+        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
+            Button("OK", role: .cancel, action: {
+                self.url = nil
+            })
+        } message: { error in
+            Text(error.localizedDescription)
+        }
     }
 
     private func openURL(_ url: URL) {
