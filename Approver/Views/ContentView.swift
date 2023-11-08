@@ -22,14 +22,14 @@ struct ContentView: View {
     var body: some View {
         Authentication { session in
             CloudCheck {
-                NavigationStack {
-                    ApproverHome(
-                        session: session,
-                        onUrlPasted: { url in openURL(url) }
-                    )
-                    .navigationDestination(
-                        isPresented: $isPresented,
-                        destination: {
+                NavigationView {
+                    VStack {
+                        ApproverHome(
+                            session: session,
+                            onUrlPasted: { url in openURL(url) }
+                        )
+
+                        NavigationLink(isActive: $isPresented) {
                             ApproverRouting(
                                 inviteCode: $identifier,
                                 participantId: $participantId,
@@ -39,8 +39,10 @@ struct ContentView: View {
                                     isPresented = false
                                 }
                             )
+                        } label: {
+                            EmptyView()
                         }
-                    )
+                    }
                 }
                 .onOpenURL(perform: openURL)
                 .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
