@@ -11,7 +11,7 @@ import SwiftUI
 struct AccessExpirationCountdown: View {
     @Environment(\.scenePhase) var scenePhase
     
-    var expiresAt: Date = Date.now.addingTimeInterval(TimeInterval(65))
+    var expiresAt: Date = Date.now.addingTimeInterval(TimeInterval(900))
     @State var timeRemaining: TimeInterval = 0
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
