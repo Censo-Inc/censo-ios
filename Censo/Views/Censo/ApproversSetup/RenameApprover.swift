@@ -19,7 +19,7 @@ struct RenameApprover: View {
     var approver: API.ProspectGuardian
     var onComplete: (API.OwnerState) -> Void
     
-    @ObservedObject private var newName = ApproverNickname()
+    @StateObject private var newName = ApproverNickname()
     @State private var submitting = false
     @State private var showingError = false
     @State private var error: Error?
@@ -29,7 +29,7 @@ struct RenameApprover: View {
         self.policySetup = policySetup
         self.approver = approver
         self.onComplete = onComplete
-        self.newName = ApproverNickname(approver.label)
+        self._newName = StateObject(wrappedValue: ApproverNickname(approver.label))
     }
     
     var body: some View {

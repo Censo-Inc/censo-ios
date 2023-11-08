@@ -20,7 +20,7 @@ struct EnterApproverNickname: View {
     var onComplete: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     
-    @ObservedObject private var nickname = ApproverNickname()
+    @StateObject private var nickname = ApproverNickname()
     @State private var submitting = false
     @State private var showingError = false
     @State private var error: Error?
