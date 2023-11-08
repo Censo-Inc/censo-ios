@@ -32,6 +32,7 @@ struct ShowPhrase: View {
             Spacer()
             
             WordList(words: words)
+                .frame(height: 350)
             
             Group {
                 Divider()

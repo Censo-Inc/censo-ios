@@ -39,7 +39,7 @@ struct SeedVerification: View {
 
             WordList(words: words)
                 .padding(.horizontal)
-                .frame(height: 250)
+                .frame(height: 350)
 
             Button {
                 showingSave = true
