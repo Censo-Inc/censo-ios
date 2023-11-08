@@ -11,7 +11,7 @@ import SwiftUI
 struct AccessExpirationCountdown: View {
     @Environment(\.scenePhase) var scenePhase
     
-    var expiresAt: Date = Date.now.addingTimeInterval(TimeInterval(900))
+    var expiresAt: Date = Date.now.addingTimeInterval(TimeInterval(65))
     @State var timeRemaining: TimeInterval = 0
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -27,7 +27,7 @@ struct AccessExpirationCountdown: View {
     
     var body: some View {
         let formattedTime = formatter.string(from: timeRemaining)
-        Text(formattedTime != nil ? "Access ends in: **\(timeRemaining.isLess(than: TimeInterval(60)) ? "less than 1 minute" : formattedTime!)**" : "")
+        Text(formattedTime != nil ? "Access ends in: **\(timeRemaining.isLess(than: TimeInterval(119)) ? "less than 1 minute" : formattedTime!)**" : "")
         .font(.system(size: 16))
         .foregroundStyle(.black)
         .onChange(of: scenePhase) { newScenePhase in
@@ -44,13 +44,13 @@ struct AccessExpirationCountdown: View {
             }
         }
         .onAppear {
-            timeRemaining = expiresAt.timeIntervalSinceNow
+            timeRemaining = expiresAt.timeIntervalSinceNow + 59
         }
         .onReceive(timer) { time in
             if (Date.now >= expiresAt) {
                 onExpired()
             } else {
-                timeRemaining = expiresAt.timeIntervalSinceNow
+                timeRemaining = expiresAt.timeIntervalSinceNow + 59
             }
         }
     }
