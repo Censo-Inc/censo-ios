@@ -10,11 +10,16 @@ import Moya
 
 struct ContentView: View {
     var body: some View {
-        Authentication { session in
-            CloudCheck {
-                Owner(session: session)
+        Authentication(
+            loggedOutContent: { onSuccess in
+                Login(onSuccess: onSuccess)
+            }, 
+            loggedInContent: { session in
+                CloudCheck {
+                    Owner(session: session)
+                }
             }
-        }
+        )
     }
 }
 
