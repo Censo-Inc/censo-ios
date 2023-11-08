@@ -17,12 +17,11 @@ struct OwnerVerification: View {
     @Environment(\.dismiss) var dismiss
     
     enum Step {
-        case linkAccepted
         case getLive
         case verify
     }
 
-    @State private var step: Step = .linkAccepted
+    @State private var step: Step = .getLive
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
@@ -34,14 +33,6 @@ struct OwnerVerification: View {
     
     var body: some View {
         switch (step) {
-        case .linkAccepted:
-            OperationCompletedView(successText: "Link accepted")
-                .navigationBarHidden(true)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        step = .getLive
-                    }
-                }
         case .getLive:
             GetLiveWithOwner(
                 onContinue: {
