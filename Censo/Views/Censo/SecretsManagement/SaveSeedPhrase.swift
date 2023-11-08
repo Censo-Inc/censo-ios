@@ -13,7 +13,7 @@ struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.apiProvider) var apiProvider
 
-    @ObservedObject private var label = PhraseLabel()
+    @StateObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
     @State private var newOwnerState: API.OwnerState?
