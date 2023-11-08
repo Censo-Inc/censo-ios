@@ -169,7 +169,7 @@ extension API {
         var intermediateKey: Base58EncodedPublicKey
         
         var externalApproversCount: Int {
-            return guardians.count - 1
+            return guardians.filter({ !$0.isOwner }).count
         }
     }
     
