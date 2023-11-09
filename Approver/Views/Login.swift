@@ -29,13 +29,7 @@ struct Login: View {
             Spacer()
             
             VStack(alignment: .leading, spacing: 0) {
-                Text("Welcome")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding([.horizontal, .bottom])
-                
-                
-                Text("This app is for those who have been selected to assist someone in keeping their crypto safe using the Censo app.")
+                Text("To continue, you need to Sign in with Apple.")
                     .font(.subheadline)
                     .padding(.horizontal)
             }

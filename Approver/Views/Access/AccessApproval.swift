@@ -41,7 +41,7 @@ struct AccessApproval: View {
                             startOwnerVerification(participantId: guardianState.participantId)
                         }
                         .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                            Button { 
+                            Button {
                                 dismiss()
                             } label: { Text("OK") }
                         } message: { error in
@@ -57,13 +57,10 @@ struct AccessApproval: View {
                         reload()
                     }
                 case .complete:
-                    OperationCompletedView(successText: "Approval completed")
+                    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)
                         .onAppear {
                             refreshStatePublisher.upstream.connect().cancel()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                onSuccess()
-                            }
                         }
                 default:
                     InvalidLinkView()

@@ -24,24 +24,20 @@ struct GetLiveWithOwner: View {
             VStack(alignment: .leading) {
                 Spacer()
                 
-                Text("Get live with the owner")
+                Text("Approve request")
                     .font(.title2)
                     .bold()
                     .padding(.vertical)
                 
-                VStack(alignment: .leading) {
-                    Text("For maximum security, it's best to be face-to-face with the phrase owner in a private location.")
-                        .font(.subheadline)
-                    
-                    Text("This ensures direct and private sharing of the necessary codes and information, reducing the risk of eavesdropping and interception.")
-                        .font(.subheadline)
-                        .padding(.vertical)
-                }
+                Text("Approving a request will take about 2 minutes. This approval should take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
+                    .font(.subheadline)
+        
+                Spacer()
                 
                 Button {
                     onContinue()
                 } label: {
-                    Text("Continue live")
+                    Text("Continue")
                         .font(.title2)
                         .frame(maxWidth: .infinity)
                 }
@@ -50,7 +46,6 @@ struct GetLiveWithOwner: View {
             .padding(.vertical)
             .padding(.horizontal, 32)
         }
-        .navigationTitle(Text("Approve Access"))
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)

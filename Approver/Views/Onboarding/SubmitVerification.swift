@@ -41,13 +41,13 @@ struct SubmitVerification: View {
                     reload()
                 }
             case .waitingForCode:
-                Text("Enter the 6-digit code from the seed phrase owner")
+                Text("The person you are assisting will give you a 6-digit code. Enter it below.")
                     .font(.headline)
                     .fontWeight(.medium)
-                    .padding()
+                    .padding(20)
                 
             case .verificationRejected:
-                Text("Code not approved. Please send new verification code")
+                Text("That code was not verified. Please get another code and try again.")
                     .font(.headline)
                     .fontWeight(.medium)
                     .foregroundColor(Color.red)
