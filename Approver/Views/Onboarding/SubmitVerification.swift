@@ -22,11 +22,8 @@ struct SubmitVerification: View {
 
     var onSuccess: (API.GuardianState?) -> Void
 
-    private let waitingForVerification = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    private let waitingForVerification = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
-    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
-    
-
     var body: some View {
         VStack {
             Text("Enter the code")
@@ -41,8 +38,6 @@ struct SubmitVerification: View {
                         Text("Waiting for the code to be verified...")
                     }
                 ).onReceive(waitingForVerification) { _ in
-                    reload()
-                }.onReceive(remoteNotificationPublisher) { _ in
                     reload()
                 }
             case .waitingForCode:

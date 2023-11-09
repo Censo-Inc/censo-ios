@@ -23,8 +23,7 @@ struct AccessApproval: View {
     @State private var showingError = false
     @State private var error: Error?
 
-    @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
+    @State private var refreshStatePublisher = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
 
     var body: some View {
         switch guardianStates {
@@ -55,9 +54,6 @@ struct AccessApproval: View {
                         onGuardianStatesUpdated: replaceGuardianStates
                     )
                     .onReceive(refreshStatePublisher) { firedDate in
-                        reload()
-                    }
-                    .onReceive(remoteNotificationPublisher) { _ in
                         reload()
                     }
                 case .complete:
