@@ -1,6 +1,5 @@
 //
-//  CensoHomeScreen.swift
-//  Censo
+//  HomeScreen.swift
 //
 //  Created by Anton Onyshchenko on 29.09.23.
 //
@@ -10,28 +9,27 @@ import SwiftUI
 import UIKit
 import Moya
 
-struct CensoHomeScreen: View {
-    
+struct HomeScreen: View {
     var session: Session
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     //var onUserReset: () -> Void
     
-    enum TabName {
-        case home
+    enum TabId {
+        case dashboard
         case phrases
         case approvers
         case settings
     }
     
-    @State private var selectedTab = TabName.home
+    @State private var selectedTab = TabId.dashboard
                     
     var body: some View {
         VStack {
             Spacer()
             TabView(selection: $selectedTab) {
                 VStack {
-                    HomeView(
+                    DashboardTab(
                         session: session,
                         ownerState: ownerState,
                         onOwnerStateUpdated: onOwnerStateUpdated,
@@ -45,10 +43,10 @@ struct CensoHomeScreen: View {
                         Image("SimpleHomeGray").renderingMode(.template)
                     }
                 }
-                .tag(TabName.home)
+                .tag(TabId.dashboard)
                     
                 VStack {
-                    PhrasesView(
+                    PhrasesTab(
                         session: session,
                         ownerState: ownerState,
                         onOwnerStateUpdated: onOwnerStateUpdated
@@ -61,10 +59,10 @@ struct CensoHomeScreen: View {
                         Image("LockSimpleGray").renderingMode(.template)
                     }
                 }
-                .tag(TabName.phrases)
+                .tag(TabId.phrases)
                 
                 VStack {
-                    ApproversView(
+                    ApproversTab(
                         session: session,
                         ownerState: ownerState,
                         onOwnerStateUpdated: onOwnerStateUpdated
@@ -77,10 +75,10 @@ struct CensoHomeScreen: View {
                         Image("TwoUsersGray").renderingMode(.template)
                     }
                 }
-                .tag(TabName.approvers)
+                .tag(TabId.approvers)
                 
                 VStack {
-                    SettingsView(
+                    SettingsTab(
                         session: session,
                         onOwnerStateUpdated: onOwnerStateUpdated
                     )
@@ -92,7 +90,7 @@ struct CensoHomeScreen: View {
                         Image("SettingsGray").renderingMode(.template)
                     }
                 }
-                .tag(TabName.settings)
+                .tag(TabId.settings)
             }
             .accentColor(.black)
         }
@@ -221,7 +219,7 @@ extension API.VaultSecret {
 
 struct CensoHomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CensoHomeScreen(
+        HomeScreen(
             session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
