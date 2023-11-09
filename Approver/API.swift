@@ -19,7 +19,6 @@ struct API {
         case user
         case deleteUser
         case signIn(UserCredentials)
-        case registerPushToken(String)
 
         case declineInvitation(InvitationId)
         case acceptInvitation(InvitationId)
@@ -158,8 +157,6 @@ extension API: TargetType {
             return "v1/guardianship-invitations/\(id)/accept"
         case .submitVerification(let id, _):
             return "v1/guardianship-invitations/\(id)/verification"
-        case .registerPushToken:
-            return "v1/notification-tokens"
         case .storeRecoveryTotpSecret(let id, _):
             return "v1/recovery/\(id.value)/totp"
         case .approveOwnerVerification(let id, _):
@@ -175,7 +172,6 @@ extension API: TargetType {
              .declineInvitation,
              .acceptInvitation,
              .submitVerification,
-             .registerPushToken,
              .storeRecoveryTotpSecret,
              .approveOwnerVerification,
              .rejectOwnerVerification:
@@ -199,18 +195,6 @@ extension API: TargetType {
             return .requestJSONEncodable(credentials)
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
-        case .registerPushToken(let token):
-            #if DEBUG
-            return .requestJSONEncodable([
-                "deviceType": "IosDebug",
-                "token": token
-            ])
-            #else
-            return .requestJSONEncodable([
-                "deviceType": "Ios",
-                "token": token,
-            ])
-            #endif
         case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):
             return .requestJSONEncodable([
                 "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
