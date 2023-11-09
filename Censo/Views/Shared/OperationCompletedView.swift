@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct OperationCompletedView: View {
-    
+    @Environment(\.scenePhase) var scenePhase
     var successText: String = "Approved"
+    var onSuccess: () -> Void
     
     var body: some View {
         VStack(alignment: .center) {
@@ -31,14 +32,23 @@ struct OperationCompletedView: View {
                 .font(.title2)
                 .bold()
                 .padding()
+                .multilineTextAlignment(.center)
             
             Spacer()
         }
         .frame(maxHeight: .infinity)
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: scenePhase) { newScenePhase in
+            switch newScenePhase {
+            case .inactive, .background:
+                onSuccess()
+            default:
+                break
+            }
+        }
     }
 }
 
 #Preview {
-    OperationCompletedView()
+    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}
 }

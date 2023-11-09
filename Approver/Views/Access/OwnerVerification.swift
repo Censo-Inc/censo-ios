@@ -41,13 +41,14 @@ struct OwnerVerification: View {
             )
         case .verify:
             VStack(alignment: .center, spacing: 30) {
-                Text("Share the code")
+                Text("Read code")
                     .font(.title2)
                     .bold()
                 
-                Text("The owner must enter this 6-digit code:")
+                Text("Read aloud this 6-digit code only to the person you are assisting. Once they have successfully entered it, their identity will have been verified and the request approved.")
                     .font(.subheadline)
-                
+                    .padding()
+
                 switch (guardianState.phase) {
                 case .recoveryVerification(let phase):
                     RotatingTotpPinView(
@@ -72,7 +73,7 @@ struct OwnerVerification: View {
                 }
                 
                 if wrongCode {
-                    Text("Owner entered wrong code")
+                    Text("The code was entered incorrectly")
                         .font(.subheadline)
                         .foregroundColor(Color.red)
                 } else {
@@ -81,7 +82,6 @@ struct OwnerVerification: View {
                 }
             }
             .multilineTextAlignment(.center)
-            .navigationTitle(Text("Approve Access"))
             .toolbarBackground(.visible, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)

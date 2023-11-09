@@ -54,13 +54,9 @@ struct Onboarding: View {
                     )
                     .navigationBarBackButtonHidden(true)
                 case .complete:
-                    OperationCompletedView(successText: "Code accepted")
+                    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                onSuccess()
-                            }
-                        }
+                        
                 default:
                     EmptyView()
                 }

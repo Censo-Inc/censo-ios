@@ -23,29 +23,91 @@ enum PhraseValidityError: Error, LocalizedError {
 struct PastePhrase: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
-
+    
     @State private var showingError = false
     @State private var error: Error?
     @State private var pastedPhrase: String = ""
     @State private var showingVerification = false
-
+    
     var onComplete: (API.OwnerState) -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
-
+    
     var body: some View {
         NavigationStack {
             VStack {
-                Button {
-                    validatePhrase()
-                } label: {
-                    Text("Paste Phrase")
+                VStack(spacing: 0) {
+                    Text("Paste seed phrase")
+                        .font(.title)
+                        .bold()
+                    
+                    Spacer()
+                        .frame(maxHeight: 50)
+
+                    HStack(alignment: .top, spacing: 20) {
+                        Image(systemName: "doc.on.clipboard")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .padding(12)
+                            .background(.gray.opacity(0.25))
+                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                            
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("1. Copy your seed phrase")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom)
+                            
+                            Text("Open the app where your seed phrase is, copy it to the clipboard, and then come back here.")
+                                .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom)
+                    
+                    HStack(alignment: .top) {
+                        
+                        Image(systemName: "square.and.arrow.down")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .padding(12)
+                            .background(.gray.opacity(0.25))
+                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                            .padding(.trailing)
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("2. Click the button below")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom)
+                            
+                            Text("When you tap the Paste From Clipboard button, your seed phrase will be pasted from the clipboard, and the clipboard will then be cleared.\n\nYou will then have the opportunity to review the seed phrase before saving it.")
+                                .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical)
+                    Spacer()
+                    Button {
+                        validatePhrase()
+                    } label: {
+                        Text("Paste From Clipboard")
+                            .font(.title2)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    
                 }
-                .buttonStyle(RoundedButtonStyle())
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .navigationTitle(Text("Paste Seed Phrase"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -80,6 +142,7 @@ struct PastePhrase: View {
         guard let phrase = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
             return
         }
+        UIPasteboard.general.string = ""
 
         if let result = BIP39.validateSeedPhrase(phrase: phrase) {
             showingError = true
