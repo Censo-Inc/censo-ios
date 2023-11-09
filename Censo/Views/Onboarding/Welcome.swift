@@ -56,15 +56,6 @@ struct Welcome: View {
                     
                     Divider()
                         .padding(.bottom)
-                    
-                    SetupStep(
-                        image: Image("TwoPeople"),
-                        heading: "Optional: Add approvers",
-                        content: "Provide additional security through safety in numbers."
-                    )
-                    
-                    Divider()
-                        .padding(.bottom)
                 
                     NavigationLink {
                         InitialPlanSetup(

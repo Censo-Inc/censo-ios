@@ -1,5 +1,5 @@
 //
-//  Owner.swift
+//  LoggedInOwnerView.swift
 //  Censo
 //
 //  Created by Ata Namvari on 2023-09-19.
@@ -8,11 +8,10 @@
 import SwiftUI
 import Moya
 
-struct Owner: View {
+struct LoggedInOwnerView: View {
     @Environment(\.apiProvider) var apiProvider
 
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
-    @AppStorage("showInitialApproversSetup") var showInitialApproversSetup = false
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
 
     var session: Session
@@ -42,7 +41,6 @@ struct Owner: View {
                             ownerState: ready,
                             session: session,
                             onComplete: { ownerState in
-                                showInitialApproversSetup = true
                                 replaceOwnerState(newOwnerState: ownerState)
                             }
                         )
@@ -54,15 +52,6 @@ struct Owner: View {
                                 reload()
                             }
                         )
-                        .sheet(isPresented: $showInitialApproversSetup, content: {
-                            NavigationView {
-                                InitialApproversSetup(
-                                    session: session,
-                                    ownerState: ready,
-                                    onOwnerStateUpdated: replaceOwnerState
-                                )
-                            }
-                        })
                     }
                 }
             } else {
