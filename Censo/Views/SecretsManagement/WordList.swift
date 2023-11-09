@@ -34,6 +34,7 @@ struct WordList: View {
                                 .stroke(lineWidth: 1)
                         }
                         .padding([.top, .leading, .trailing], 20)
+                        Spacer()
                     }
                 }
             }
@@ -42,8 +43,6 @@ struct WordList: View {
             Spacer()
                 .frame(height: 20)
             Text("swipe back and forth to review words")
-            Spacer()
-                .frame(height: 50)
         }
     }
 }

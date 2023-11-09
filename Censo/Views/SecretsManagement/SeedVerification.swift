@@ -25,8 +25,9 @@ struct SeedVerification: View {
             Image(systemName: "checkmark.circle")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding(.vertical)
-                .padding(.horizontal, 100)
+                .frame(minWidth: 64, minHeight: 64)
+                .frame(maxWidth: 128, maxHeight: 128)
+                .padding(.top)
 
             Spacer()
 
@@ -39,7 +40,7 @@ struct SeedVerification: View {
 
             WordList(words: words)
                 .padding(.horizontal)
-                .frame(height: 350)
+                .frame(height: 250)
 
             Button {
                 showingSave = true
@@ -82,8 +83,7 @@ struct SeedVerification: View {
 struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample) { _ in
-            }
+            SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample) { _ in }
         }
     }
 }
