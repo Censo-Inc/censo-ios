@@ -23,78 +23,56 @@ struct DashboardTab: View {
             VStack {
                 Spacer()
                 Button {
-                    self.parentTabViewSelectedTab = HomeScreen.TabId.phrases
+                    parentTabViewSelectedTab = .phrases
                 } label: {
-                    VStack {
-                        Text("\(vault.secrets.count)")
-                            .font(.system(size: UIFont.textStyleSize(.largeTitle) * 3, weight: .semibold))
-                            .foregroundColor(.black)
-                            .frame(alignment: .center)
-                        
-                        Text("seed phrase\(vault.secrets.count != 1 ? "s" : "")")
+                    HStack(alignment: .lastTextBaseline) {
+                        Text("You have")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.black)
-                            .frame(alignment: .center)
+                        Text("\(vault.secrets.count)")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.black)
+                        Text("seed phrase\(vault.secrets.count == 1 ? "" : "s").")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.black)
                     }
-                    .frame(minWidth: 322, minHeight: 180, maxHeight: 247)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: vault.secrets.count == 0 ? [3] : []))
-                            .foregroundColor(.Censo.lightGray)
-                    )
                 }
-                
+                Text("\(vault.secrets.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
+                    .font(.title3)
+                    .padding()
+                    .multilineTextAlignment(.center)
                 Button {
                     showingAddPhrase = true
                 } label: {
                     Text("Add seed phrase")
-                        .foregroundColor(.black)
                         .font(.headline)
                         .fontWeight(.regular)
                         .frame(maxWidth: 322, maxHeight: 4)
                 }
                 .padding([.top], 10)
-                .buttonStyle(RoundedButtonStyle(tint: .gray95))
+                .buttonStyle(RoundedButtonStyle())
                 
-                Divider().padding([.top, .bottom], 10)
-                
-                Button {
-                    self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
-                } label: {
-                    VStack {
-                        Text("\(policy.externalApproversCount)")
-                            .font(.system(size: UIFont.textStyleSize(.largeTitle) * 3, weight: .semibold))
-                            .foregroundColor(.black)
-                            .frame(alignment: .center)
-                        
-                        Text("approver\(policy.externalApproversCount != 1 ? "s" : "")")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.black)
-                            .frame(alignment: .center)
-                    }
-                    .frame(minWidth: 322, minHeight: 180, maxHeight: 247)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: policy.externalApproversCount == 0 ? [3] : []))
-                            .foregroundColor(.Censo.lightGray)
-                    )
-                }
-                
-                if policy.externalApproversCount == 0 {
+                if (policy.externalApproversCount == 0) {
+                    Text("\nYou can increase security by adding approvers.")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
                     Button {
                         self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
                     } label: {
                         Text("Add approvers")
-                            .foregroundColor(.black)
                             .font(.headline)
                             .fontWeight(.regular)
                             .frame(maxWidth: 322, maxHeight: 4)
                     }
                     .padding([.top], 10)
-                    .buttonStyle(RoundedButtonStyle(tint: .gray95))
+                    .buttonStyle(RoundedButtonStyle())
                 }
+                Spacer()
             }.frame(maxWidth: 322)
         }
         .sheet(isPresented: $showingAddPhrase, content: {

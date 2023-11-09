@@ -35,6 +35,7 @@ struct PastePhrase: View {
     var onComplete: (API.OwnerState) -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var isFirstTime: Bool
     
     var body: some View {
         NavigationStack {
@@ -132,7 +133,8 @@ struct PastePhrase: View {
                 SeedVerification(
                     words: pastedPhrase.split(separator: " ").map(String.init),
                     session: session,
-                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey
+                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                    isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)
                     dismiss()
@@ -161,6 +163,11 @@ struct PastePhrase: View {
 
 #if DEBUG
 #Preview {
-    PastePhrase(onComplete: {_ in}, session: .sample, ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample))
+    PastePhrase(
+        onComplete: {_ in},
+        session: .sample,
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+        isFirstTime: true
+    )
 }
 #endif

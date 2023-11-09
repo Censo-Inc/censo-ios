@@ -95,30 +95,25 @@ struct ActivateApprover : View {
                 
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 20) {
-                       
-                        if let url = URL(string: "https://censo.co/approvers") {
-                            ShareLink(
-                                item: url
-                            ) {
-                                ZStack(alignment: .topLeading) {
-                                    Text("1")
-                                        .font(.system(size: 12))
-                                        .tint(.black)
-                                        .padding(7)
-                                    Image("Export")
-                                        .resizable()
-                                        .frame(width: 48, height: 48)
-                                        .padding(8)
-                                        .background(.gray.opacity(0.25))
-                                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 16.0)
-                                                .stroke(Color.black, lineWidth: 1)
-                                        )
-                                }
+                        ShareLink(
+                            item: Configuration.approverAppURL
+                        ) {
+                            ZStack(alignment: .topLeading) {
+                                Text("1")
+                                    .font(.system(size: 12))
+                                    .tint(.black)
+                                    .padding(7)
+                                Image("Export")
+                                    .resizable()
+                                    .frame(width: 48, height: 48)
+                                    .padding(8)
+                                    .background(.gray.opacity(0.25))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16.0)
+                                            .stroke(Color.black, lineWidth: 1)
+                                    )
                             }
-                        } else {
-                            EmptyView()
                         }
                         
                         VStack(alignment: .leading, spacing: 0) {
@@ -127,7 +122,7 @@ struct ActivateApprover : View {
                                 .fontWeight(.semibold)
                                 .padding(.bottom)
                             
-                            Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple or Android App stores.")
+                            Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple App store or Google Play store.")
                                 .font(.subheadline)
                                 .fixedSize(horizontal: false, vertical: true)
                         }

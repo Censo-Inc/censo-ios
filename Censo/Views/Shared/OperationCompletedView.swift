@@ -41,7 +41,9 @@ struct OperationCompletedView: View {
         .onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .inactive, .background:
-                onSuccess()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    onSuccess()
+                }
             default:
                 break
             }

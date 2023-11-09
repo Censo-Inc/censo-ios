@@ -12,7 +12,7 @@ import CryptoKit
 struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.apiProvider) var apiProvider
-
+    
     @StateObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
@@ -23,11 +23,12 @@ struct SaveSeedPhrase: View {
     var words: [String]
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
+    var isFirstTime: Bool
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
         if let newOwnerState {
-            PhraseSaveSuccess() {
+            PhraseSaveSuccess(isFirstTime: isFirstTime) {
                 onSuccess(newOwnerState)
             }
             .navigationTitle(Text("Add Seed Phrase"))
@@ -139,7 +140,7 @@ struct SaveSeedPhrase: View {
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, onSuccess: { _ in })
+            SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true, onSuccess: { _ in })
         }
     }
 }

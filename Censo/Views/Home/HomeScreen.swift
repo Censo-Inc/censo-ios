@@ -55,7 +55,7 @@ struct HomeScreen: View {
                 }
                 .tabItem {
                     VStack {
-                        Text("Phrases")
+                        Text("My Phrases")
                         Image("LockSimpleGray").renderingMode(.template)
                     }
                 }
@@ -178,8 +178,8 @@ extension API.Policy {
     static var sample: Self {
         .init(
             createdAt: Date(),
-            guardians: [.sample],
-            threshold: 2,
+            guardians: [.sampleOwner],
+            threshold: 1,
             encryptedMasterKey: Base64EncodedString(data: Data()),
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )

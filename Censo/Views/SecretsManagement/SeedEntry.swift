@@ -20,6 +20,7 @@ struct SeedEntry: View {
 
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
+    var isFirstTime: Bool
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
@@ -79,6 +80,7 @@ struct SeedEntry: View {
                     words: words,
                     session: session,
                     publicMasterEncryptionKey: publicMasterEncryptionKey,
+                    isFirstTime: isFirstTime,
                     onSuccess: onSuccess
                 )
             }
@@ -118,7 +120,7 @@ struct SeedEntry: View {
 #if DEBUG
 struct SeedEntry_Previews: PreviewProvider {
     static var previews: some View {
-        SeedEntry(session: .sample, publicMasterEncryptionKey: .sample) { _ in
+        SeedEntry(session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true) { _ in
             
         }
     }

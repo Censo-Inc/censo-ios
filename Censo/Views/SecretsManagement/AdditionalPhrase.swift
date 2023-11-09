@@ -86,6 +86,7 @@ struct AdditionalPhrase: View {
             SeedEntry(
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                isFirstTime: false,
                 onSuccess: { ownerState in
                     onComplete(ownerState)
                     dismiss()
@@ -97,7 +98,8 @@ struct AdditionalPhrase: View {
                     onComplete(ownerState)
                     dismiss()
                 }, session: session,
-                ownerState: ownerState
+                ownerState: ownerState,
+                isFirstTime: false
             )
         }
     }
