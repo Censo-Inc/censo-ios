@@ -189,6 +189,10 @@ extension Data {
     func base58EncodedString() -> String {
         Base58.encode(bytes)
     }
+    
+    func base58EncodedPublicKey() -> Base58EncodedPublicKey? {
+        return try? Base58EncodedPublicKey(data: self)
+    }
 }
 
 extension Bundle {

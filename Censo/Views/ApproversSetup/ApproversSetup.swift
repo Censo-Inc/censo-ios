@@ -193,6 +193,11 @@ struct ApproversSetup: View {
         deleteRecoveryIfExists(onSuccess: {
             do {
                 let policySetup = ownerState.policySetup!
+                
+                if !policySetup.guardians.allSatisfy( { verifyKeyConfirmationSignature(guardian: $0) } ) {
+                    throw CensoError.cannotVerifyKeyConfirmationSignature
+                }
+
                 let ownerOldParticipantId = ownerState.policy.guardians.first!.participantId
         
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
@@ -228,6 +233,29 @@ struct ApproversSetup: View {
                 showError(CensoError.failedToReplacePolicy)
             }
         })
+    }
+    
+    private func verifyKeyConfirmationSignature(guardian: API.ProspectGuardian) -> Bool {
+        switch guardian.status {
+        case .confirmed(let confirmed):
+            do {
+                guard let participantIdData = guardian.participantId.value.data(using: .hexadecimal),
+                      let timeMillisData = String(confirmed.timeMillis).data(using: .utf8),
+                      let base58DevicePublicKey = (try? session.deviceKey.publicExternalRepresentation())?.base58EncodedPublicKey(),
+                      let devicePublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: base58DevicePublicKey) else {
+                    return false
+                }
+                
+                return try devicePublicKey.verifySignature(for: confirmed.guardianPublicKey.data + participantIdData + timeMillisData, signature: confirmed.guardianKeySignature)
+            } catch {
+                RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
+            }
+            return false
+        case .implicitlyOwner:
+            return true
+        default:
+            return false
+        }
     }
     
     func cancelAlternateApproverSetup() {

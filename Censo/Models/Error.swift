@@ -29,6 +29,7 @@ enum CensoError: Swift.Error {
     case failedToReplacePolicy
     case recoveryAlreadyOnAnotherDevice
     case invalidUrl
+    case cannotVerifyKeyConfirmationSignature
 }
 
 extension CensoError: LocalizedError {
@@ -76,6 +77,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("There is already a recovery on another device", comment: "another device recovery")
         case .invalidUrl:
             return NSLocalizedString("The link provided is not valid for this app", comment: "Invalid url")
+        case .cannotVerifyKeyConfirmationSignature:
+            return NSLocalizedString("Cannot verify key confirmation signature", comment: "Invalid signature")
         }
     }
 }
