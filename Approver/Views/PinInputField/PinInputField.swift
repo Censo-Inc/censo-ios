@@ -53,18 +53,32 @@ struct PinInputFieldWithBackground : View {
     var foregroundColor: Color = .black
     var unfocusedColor: Color = .gray.opacity(0.5)
     var disabled: Bool = false
-    
+
+    @FocusState private var isFocused: Bool
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16.0)
                 .strokeBorder(Color.gray, lineWidth: 1)
                 .background(RoundedRectangle(cornerRadius: 16.0).fill(Color.Censo.gray95))
-            
-            PinInputField(value: $value, length: 6)
-                .padding(.vertical, 34)
-                .padding(.horizontal, 20)
-                .disabled(disabled)
-            
+
+            ScrollViewReader { proxy in
+                PinInputField(value: $value, length: 6)
+                    .padding(.vertical, 34)
+                    .padding(.horizontal, 20)
+                    .disabled(disabled)
+                    .focused($isFocused)
+                    .onChange(of: isFocused, perform: { value in
+                        if value {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                withAnimation {
+                                    proxy.scrollTo("pinInput")
+                                }
+                            }
+                        }
+                    })
+                    .id("pinInput")
+            }
         }
         .frame(height: 100)
 
