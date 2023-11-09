@@ -18,19 +18,12 @@ struct PasteLinkButton: View {
         Button {
             handlePastedInfo()
         } label: {
-            HStack {
-                Spacer()
-                Image("Clipboard")
-                    .resizable()
-                    .frame(width: 36, height: 36)
-                Text("Paste link")
-                    .font(.system(size: 24, weight: .semibold))
-                    .padding(.horizontal)
-                Spacer()
-            }
+            Text("Paste from clipboard")
+                .font(.title3)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(RoundedButtonStyle())
-        .frame(maxWidth: .infinity)
     }
     
     private func handlePastedInfo() {

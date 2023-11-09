@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PhraseSaveSuccess: View {
+    var isFirstTime: Bool
     var onFinish: () -> Void
 
     var body: some View {
@@ -18,16 +19,24 @@ struct PhraseSaveSuccess: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(.horizontal, 100)
 
-            Text("Encrypted")
-                .font(.title.bold())
-            Text("Now can be accessed only by you")
-                .font(.title.bold())
-                .multilineTextAlignment(.center)
+            if isFirstTime {
+                Text("Congratulations!\n\nYou'll never have to worry about losing access to your valuable crypto again.")
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
+                    .padding(30)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Text("Your seed phrase is securely stored.\n\nIt can be accessed only by you.")
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
+                    .padding(30)
+                
+            }
             Spacer()
             Button() {
                 onFinish()
             } label: {
-                Text("Continue")
+                Text("OK")
                     .font(.title2)
                     .frame(maxWidth: .infinity)
             }
@@ -54,7 +63,7 @@ struct PhraseSaveSuccess: View {
 struct PhraseSaveSuccess_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            PhraseSaveSuccess() {}
+            PhraseSaveSuccess(isFirstTime: true) {}
         }
     }
 }

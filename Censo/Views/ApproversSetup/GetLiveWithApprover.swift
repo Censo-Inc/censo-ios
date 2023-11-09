@@ -24,7 +24,7 @@ struct GetLiveWithApprover : View {
                     .fontWeight(.semibold)
                     .padding(.bottom)
                 
-                Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
+                Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should preferably take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
                     .font(.subheadline)
                     .padding(.bottom)
                 

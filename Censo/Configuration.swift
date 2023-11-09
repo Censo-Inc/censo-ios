@@ -10,6 +10,8 @@ import Foundation
 struct Configuration {
     static let termsOfServiceURL: URL = URL(string: "https://censo.co/legal/terms")!
     static let privacyPolicyURL: URL = URL(string: "https://censo.co/legal/privacy/app")!
+    static let approverAppURL: URL = URL(string: "https://censo.co/approvers")!
+    static let ownerAppURL: URL = URL(string: "https://censo.co")!
     static let apiBaseURL: URL = URLValue(for: "API_BASE_URL")
     static let approverUrlScheme: URL = URLValue(for: "APPROVER_URL_SCHEME")
     static let raygunApiKey: String = stringValue(for: "RAYGUN_API_KEY")

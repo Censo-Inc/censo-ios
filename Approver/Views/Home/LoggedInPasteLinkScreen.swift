@@ -19,25 +19,45 @@ struct LoggedInPasteLinkScreen: View {
     @State var showDeactivateAndDeleteConfirmation = false
     @State private var showingError = false
     @State private var error: Error?
-    
+    @State private var continuePressed = false
+
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
-            
-            Image("Import")
-            
-            Group {
-                Text("Waiting for a link")
-                    .font(.system(size: 24))
-                    .bold()
+            if continuePressed {
+                Image(systemName: "square.and.arrow.down")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 100)
                 
-                Text("Please get the unique link from the seed phrase owner and tap on it, or paste it here.")
-                    .font(.system(size: 14))
+                Text("To continue, the person you are assisting must send you a link.\n\nOnce you receive it, you can tap on it to continue.\n\nOr, simply copy the link to the clipboard and paste using the button below.")
+                    .font(.title3)
+                    .padding(30)
+                    .multilineTextAlignment(.center)
+                
+                PasteLinkButton {url in
+                    continuePressed = false
+                    onUrlPasted(url)
+                }
+                    .padding(30)
+            } else {
+                
+                Text("Hello Approver!")
+                    .font(.largeTitle)
+                Text("You’re helping someone who trusts you keep their crypto safe.\n\n Please tap the continue button when they contact you.")
+                    .font(.title3)
+                    .padding(30)
+                    .multilineTextAlignment(.center)
+                Button {
+                    continuePressed = true
+                } label: {
+                    Text("Continue")
+                        .font(.title3)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding()
             }
-            .multilineTextAlignment(.center)
-            
-            PasteLinkButton(onUrlPasted: onUrlPasted)
-            
             Spacer()
             
             if user.guardianStates.countExternalApprovers() > 0 {
@@ -60,7 +80,7 @@ struct LoggedInPasteLinkScreen: View {
                 )
             }
         }
-        .padding(.horizontal, 54)
+        .padding()
         .confirmationDialog(
             Text("Deactivate and delete?"),
             isPresented: $showDeactivateAndDelete

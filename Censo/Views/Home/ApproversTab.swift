@@ -19,26 +19,27 @@ struct ApproversTab: View {
                 if ownerState.policy.externalApproversCount == 0 {
                     VStack(alignment: .leading, spacing: 0) {
                         Spacer()
-                        Text("Optional: Increase security")
-                            .font(.title3)
-                            .bold()
-
-                        Text("Invite trusted approvers")
-                            .font(.system(size: 24))
+                        Text("You can increase your security!")
+                            .font(.title2)
                             .bold()
                             .padding(.vertical)
                         
                         Text("""
-                            Be more secure by adding trusted approvers. Access to your seed phrase will require their approval, in addition to yours.
+                            Adding approvers makes you more secure. An approver is someone you choose and trust, and will help you when you need to access your seed phrase. Access to your seed phrase will **require** their approval, in addition to yours.
 
                             Adding a **first approver** ensures that your seed phrase is split into two fragments and encrypted for more security.
 
-                            Adding a **second approver** ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you cannot login with your Apple ID or your biometry fails.
+                            Adding a **second approver** ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you cannot login with your Apple ID or your face scan fails.
                             """
                         )
                         .font(.subheadline)
                         .padding(.vertical)
-
+                        
+                        Text("Note: during the beta, approvers can only be added once, and cannot be changed.")
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                            .bold()
+                        
                         Button {
                             showApproversSetup = true
                         } label: {
@@ -47,7 +48,7 @@ struct ApproversTab: View {
                                 Image("TwoPeopleWhite")
                                     .resizable()
                                     .frame(width: 24, height: 24)
-                                Text(ownerState.policySetup == nil ? "Invite approvers" : "Resume approvers setup")
+                                Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
                                     .font(.title3)
                                 Spacer()
                             }

@@ -38,7 +38,7 @@ struct ChooseAccessApprover : View {
                         approvers.map { $0.label }.joined(separator: " or ")
                     ).
                     
-                    This should take place either on the phone or in-person to allow the approver to verify your identify.
+                    This should preferably take place either on the phone or in-person to allow the approver to verify your identify.
                     
                     Select your approver below when you are speaking with them:
                     """)

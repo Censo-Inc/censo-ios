@@ -66,13 +66,14 @@ struct FirstPhrase: View {
             SeedEntry(
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                isFirstTime: true,
                 onSuccess: onComplete
             )
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
                 onComplete: onComplete, session: session,
-                ownerState: ownerState
+                ownerState: ownerState, isFirstTime: true
             )
         })
     }
