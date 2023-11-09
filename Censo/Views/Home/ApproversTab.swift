@@ -1,13 +1,12 @@
 //
-//  ApproversView.swift
-//  Censo
+//  ApproversTab.swift
 //
 //  Created by Brendan Flood on 10/23/23.
 //
 
 import SwiftUI
 
-struct ApproversView: View {
+struct ApproversTab: View {
     var session: Session
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
@@ -92,7 +91,7 @@ struct ApproversView: View {
 
 #if DEBUG
 #Preview("No approvers") {
-    ApproversView(
+    ApproversTab(
         session: .sample,
         ownerState: API.OwnerState.Ready(
             policy: .sample,
@@ -104,7 +103,7 @@ struct ApproversView: View {
 }
 
 #Preview("2 approvers") {
-    ApproversView(
+    ApproversTab(
         session: .sample,
         ownerState: API.OwnerState.Ready(
             policy: .init(

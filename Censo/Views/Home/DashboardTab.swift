@@ -1,20 +1,19 @@
 //
-//  HomeView.swift
-//  Censo
+//  DashboardTab.swift
 //
 //  Created by Brendan Flood on 10/23/23.
 //
 
 import SwiftUI
 
-struct HomeView: View {
+struct DashboardTab: View {
     
     var session: Session
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingAddPhrase = false
-    @Binding var parentTabViewSelectedTab: CensoHomeScreen.TabName
+    @Binding var parentTabViewSelectedTab: HomeScreen.TabId
     
     var body: some View {
         let vault = ownerState.vault
@@ -24,7 +23,7 @@ struct HomeView: View {
             VStack {
                 Spacer()
                 Button {
-                    self.parentTabViewSelectedTab = CensoHomeScreen.TabName.phrases
+                    self.parentTabViewSelectedTab = HomeScreen.TabId.phrases
                 } label: {
                     VStack {
                         Text("\(vault.secrets.count)")
@@ -61,7 +60,7 @@ struct HomeView: View {
                 Divider().padding([.top, .bottom], 10)
                 
                 Button {
-                    self.parentTabViewSelectedTab = CensoHomeScreen.TabName.approvers
+                    self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
                 } label: {
                     VStack {
                         Text("\(policy.externalApproversCount)")
@@ -85,7 +84,7 @@ struct HomeView: View {
                 
                 if policy.externalApproversCount == 0 {
                     Button {
-                        self.parentTabViewSelectedTab = CensoHomeScreen.TabName.approvers
+                        self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
                     } label: {
                         Text("Add approvers")
                             .foregroundColor(.black)
@@ -118,8 +117,8 @@ public extension UIFont {
 
 #Preview {
     VStack {
-        @State var selectedTab = CensoHomeScreen.TabName.home
-        HomeView(
+        @State var selectedTab = HomeScreen.TabId.dashboard
+        DashboardTab(
             session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample,

@@ -1,6 +1,5 @@
 //
-//  PhrasesView.swift
-//  Censo
+//  PhrasesTab.swift
 //
 //  Created by Brendan Flood on 10/23/23.
 //
@@ -8,7 +7,7 @@
 import SwiftUI
 import Moya
 
-struct PhrasesView: View {
+struct PhrasesTab: View {
     
     @Environment(\.apiProvider) var apiProvider
     
@@ -165,7 +164,7 @@ struct PhrasesView: View {
 
 #if DEBUG
 #Preview {
-    PhrasesView(
+    PhrasesTab(
         session: .sample,
         ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
         onOwnerStateUpdated: { _ in }

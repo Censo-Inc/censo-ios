@@ -47,7 +47,7 @@ struct Owner: View {
                             }
                         )
                     case .ready(let ready):
-                        CensoHomeScreen(
+                        HomeScreen(
                             session: session,
                             ownerState: ready,
                             onOwnerStateUpdated: { _ in

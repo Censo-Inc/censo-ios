@@ -1,6 +1,5 @@
 //
-//  SettingsView.swift
-//  Censo
+//  SettingsTab.swift
 //
 //  Created by Brendan Flood on 10/23/23.
 //
@@ -8,7 +7,7 @@
 import SwiftUI
 import Moya
 
-struct SettingsView: View {
+struct SettingsTab: View {
     @Environment(\.apiProvider) var apiProvider
     
     var session: Session
@@ -103,6 +102,6 @@ struct SettingsView: View {
 
 #if DEBUG
 #Preview {
-    SettingsView(session: .sample, onOwnerStateUpdated: {_ in })
+    SettingsTab(session: .sample, onOwnerStateUpdated: {_ in })
 }
 #endif
