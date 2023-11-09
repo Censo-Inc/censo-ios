@@ -43,35 +43,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             raygunClient.enableCrashReporting()
         }
         
-        UNUserNotificationCenter.current().delegate = self
-
         setupAppearance()
 
         return true
     }
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        
-        debugPrint("didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken.toHexString())")
-        if let userCredentials = Keychain.userCredentials, let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
-            provider.request(API(deviceKey: deviceKey, endpoint: .registerPushToken(deviceToken.toHexString()))) { result in
-                switch result {
-                case .failure(let error):
-                    debugPrint("Error submitting push token: \(error.localizedDescription)")
-                case .success(let response) where response.statusCode >= 400:
-                    debugPrint("Could not submit push token: \(String(data: response.data, encoding: .utf8) ?? "")")
-                case .success:
-                    break
-                }
-            }
-        }
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        debugPrint("Failed to register for remote notifications: \(error.localizedDescription)")
-        RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey).send(error: error, tags: ["push-registration"], customData: nil)
-    }
-
     func setupAppearance() {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.Censo.blue)
 
@@ -95,17 +71,4 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().barTintColor = UIColor.white
     }
-    
-}
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound])
-
-        NotificationCenter.default.post(name: .userDidReceiveRemoteNotification, object: notification)
-    }
-}
-
-extension Notification.Name {
-    static let userDidReceiveRemoteNotification = Notification.Name("userDidReceiveRemoteNotification")
 }

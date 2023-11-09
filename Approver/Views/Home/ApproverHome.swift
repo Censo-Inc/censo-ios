@@ -16,8 +16,6 @@ struct ApproverHome: View {
     var session: Session
     var onUrlPasted: (URL) -> Void
     
-    private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
-    
     var body: some View {
         switch user {
         case .idle:
@@ -35,9 +33,6 @@ struct ApproverHome: View {
             .onAppear {
                 handlePushRegistration()
             }                            
-            .onReceive(remoteNotificationPublisher) { _ in
-                reload()
-            }
         case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
             SignIn(session: session, onSuccess: reload) {
                 ProgressView("Signing in...")
