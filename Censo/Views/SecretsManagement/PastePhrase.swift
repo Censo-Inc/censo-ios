@@ -11,11 +11,14 @@ import Moya
 
 enum PhraseValidityError: Error, LocalizedError {
     case invalid(BIP39InvalidReason)
+    case empty
 
     var errorDescription: String? {
         switch self {
         case .invalid(let reason):
             return reason.description
+        case .empty:
+            return "Couldn't find anything in the clipboard"
         }
     }
 }
@@ -140,6 +143,8 @@ struct PastePhrase: View {
 
     private func validatePhrase() {
         guard let phrase = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
+            showingError = true
+            error = PhraseValidityError.empty
             return
         }
         UIPasteboard.general.string = ""
