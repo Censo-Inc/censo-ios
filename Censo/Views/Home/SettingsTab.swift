@@ -45,7 +45,7 @@ struct SettingsTab: View {
                 } else {
                     HStack {
                         Image("arrow.circlepath")
-                        Text("Reset User Data")
+                        Text("Delete User Data")
                             .font(.title2)
                     }.frame(maxWidth: 322)
                 }
@@ -63,7 +63,7 @@ struct SettingsTab: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .alert("Reset User", isPresented: $resetRequested) {
+        .alert("Delete User Data", isPresented: $resetRequested) {
             Button {
                 deleteUser()
             } label: { Text("Confirm") }
