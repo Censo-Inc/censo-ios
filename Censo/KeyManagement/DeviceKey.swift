@@ -41,7 +41,7 @@ extension SecureEnclaveWrapper {
         }
     }
 
-    static func removeDeviceKey(for userIdentifier: String) throws {
+    static func removeDeviceKey(for userIdentifier: String) {
         SecureEnclaveWrapper.removeKey(name: deviceKeyIdentifier(userIdentifier: userIdentifier))
     }
 }

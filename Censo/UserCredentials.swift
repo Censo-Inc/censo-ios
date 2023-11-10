@@ -37,4 +37,8 @@ extension Keychain {
                 }
         }
     }
+    
+    static func removeUserCredentials() {
+        clear(account: userCredentialsService, service: userCredentialsService)
+    }
 }

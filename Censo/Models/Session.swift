@@ -33,4 +33,8 @@ extension Session {
     func deleteApproverKey(participantId: ParticipantId) {
         participantId.deleteEncodedPrivateKey()
     }
+    
+    func deleteDeviceKey() {
+        SecureEnclaveWrapper.removeDeviceKey(for: userCredentials.userIdentifier)
+    }
 }

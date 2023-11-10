@@ -9,6 +9,10 @@ import SwiftUI
 import AuthenticationServices
 import raygun4apple
 
+extension Notification.Name {
+    static let deleteUserDataNotification = Notification.Name("DeleteUserDataNotification")
+}
+
 struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutContent : View, LoggedInContent : View {
     @State private var credentialState: ASAuthorizationAppleIDProvider.CredentialState?
     @State private var session: Result<Session, Error>?
@@ -29,6 +33,11 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
                 Text("No DeviceKey")
             case .success(let session):
                 loggedInContent(session)
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.deleteUserDataNotification)) { _ in
+                    session.deleteDeviceKey()
+                    Keychain.removeUserCredentials()
+                    self.credentialState = .notFound
+                }
             case .failure:
                 Text("There was an error generating a device key")
             }

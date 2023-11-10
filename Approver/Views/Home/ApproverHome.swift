@@ -15,27 +15,34 @@ struct ApproverHome: View {
     
     var session: Session
     var onUrlPasted: (URL) -> Void
+    @Binding var reloadNeeded: Bool
     
     var body: some View {
-        switch user {
-        case .idle:
-            ProgressView()
-                .onAppear(perform: reload)
-        case .loading:
-            ProgressView()
-        case .success(let user):
-            LoggedInPasteLinkScreen(
-                session: session,
-                user: user,
-                onUrlPasted: onUrlPasted,
-                onDeleted: reload
-            )
-        case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
-            SignIn(session: session, onSuccess: reload) {
-                ProgressView("Signing in...")
+        if reloadNeeded {
+            ProgressView().onAppear {
+                reloadNeeded = false
+                reload()
             }
-        case .failure(let error):
-            RetryView(error: error, action: reload)
+        } else {
+            switch user {
+            case .idle:
+                ProgressView()
+                    .onAppear(perform: reload)
+            case .loading:
+                ProgressView()
+            case .success(let user):
+                LoggedInPasteLinkScreen(
+                    session: session,
+                    user: user,
+                    onUrlPasted: onUrlPasted
+                )
+            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
+                SignIn(session: session, onSuccess: reload) {
+                    ProgressView("Signing in...")
+                }
+            case .failure(let error):
+                RetryView(error: error, action: reload)
+            }
         }
     }
     

@@ -11,6 +11,7 @@ struct SettingsTab: View {
     @Environment(\.apiProvider) var apiProvider
     
     var session: Session
+    var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
@@ -79,7 +80,13 @@ struct SettingsTab: View {
             resetInProgress = false
             switch result {
             case .success:
-                onOwnerStateUpdated(.initial)
+                if let ownerTrustedApprover = ownerState.policy.guardians.first(where: { $0.isOwner }) {
+                    session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
+                }
+                if let ownerProspectApprover = ownerState.policySetup?.owner {
+                    session.deleteApproverKey(participantId: ownerProspectApprover.participantId)
+                }
+                NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
             case .failure(let error):
                 self.showingError = true
                 self.error = error
@@ -102,6 +109,9 @@ struct SettingsTab: View {
 
 #if DEBUG
 #Preview {
-    SettingsTab(session: .sample, onOwnerStateUpdated: {_ in })
+    SettingsTab(session: .sample, 
+                ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+                onOwnerStateUpdated: {_ in }
+    )
 }
 #endif

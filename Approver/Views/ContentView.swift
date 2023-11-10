@@ -22,6 +22,7 @@ struct ContentView: View {
     @State private var currentError: Error?
     @State private var url: URL?
     @State private var navigateToRoute = false
+    @State private var reloadNeeded = false
     
     var body: some View {
         Authentication(
@@ -52,7 +53,8 @@ struct ContentView: View {
                             } else {
                                 ApproverHome(
                                     session: session,
-                                    onUrlPasted: { url in openURL(url) }
+                                    onUrlPasted: { url in openURL(url) },
+                                    reloadNeeded: $reloadNeeded
                                 )
                             }
                             
@@ -65,6 +67,7 @@ struct ContentView: View {
                                         onSuccess: {
                                             navigateToRoute = false
                                             self.route = nil
+                                            self.reloadNeeded = true
                                         }
                                     )
                                 case .access(let participantId):

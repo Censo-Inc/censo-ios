@@ -12,7 +12,6 @@ struct LoggedInPasteLinkScreen: View {
     var session: Session
     var user: API.GuardianUser
     var onUrlPasted: (URL) -> Void
-    var onDeleted: () -> Void
     
     @GestureState var accountPress = false
     @State var showDeactivateAndDelete = false
@@ -95,7 +94,7 @@ struct LoggedInPasteLinkScreen: View {
                     showDeactivateAndDelete = false
                     switch result {
                     case .success:
-                        onDeleted()
+                        NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
                     case .failure(let error):
                         self.showingError = true
                         self.error = error
@@ -121,8 +120,7 @@ struct LoggedInPasteLinkScreen: View {
     LoggedInPasteLinkScreen(
         session: .sample,
         user: API.GuardianUser(guardianStates: []),
-        onUrlPasted: { _ in },
-        onDeleted: {}
+        onUrlPasted: { _ in }
     )
 }
 
@@ -135,8 +133,7 @@ struct LoggedInPasteLinkScreen: View {
                 phase: .complete
             )
         ]),
-        onUrlPasted: { _ in },
-        onDeleted: {}
+        onUrlPasted: { _ in }
     )
 }
 

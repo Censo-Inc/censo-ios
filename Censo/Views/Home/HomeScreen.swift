@@ -13,7 +13,6 @@ struct HomeScreen: View {
     var session: Session
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
-    //var onUserReset: () -> Void
     
     enum TabId {
         case dashboard
@@ -80,6 +79,7 @@ struct HomeScreen: View {
                 VStack {
                     SettingsTab(
                         session: session,
+                        ownerState: ownerState,
                         onOwnerStateUpdated: onOwnerStateUpdated
                     )
                     tabDivider()
