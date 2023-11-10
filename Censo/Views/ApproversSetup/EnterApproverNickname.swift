@@ -180,7 +180,8 @@ struct EnterApproverNickname: View {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                guardianSetup: nil
+                guardianSetup: nil,
+                authType: .facetec
             ),
             onOwnerStateUpdated: { _ in }
         )

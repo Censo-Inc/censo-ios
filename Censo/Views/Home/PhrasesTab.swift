@@ -166,7 +166,7 @@ struct PhrasesTab: View {
 #Preview {
     PhrasesTab(
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
         onOwnerStateUpdated: { _ in }
     )
 }

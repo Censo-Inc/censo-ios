@@ -102,7 +102,8 @@ struct ApproversTab: View {
         ownerState: API.OwnerState.Ready(
             policy: .sample,
             vault: .sample,
-            recovery: nil
+            recovery: nil,
+            authType: .facetec
         ),
         onOwnerStateUpdated: { _ in }
     )
@@ -120,7 +121,8 @@ struct ApproversTab: View {
                 intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
             ),
             vault: .sample,
-            recovery: nil
+            recovery: nil,
+            authType: .facetec
         ),
         onOwnerStateUpdated: { _ in }
     )

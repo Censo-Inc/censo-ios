@@ -109,21 +109,39 @@ struct ApproversSetup: View {
                     Text(error.localizedDescription)
                 }
         case .retrievingShards:
-            FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
-                session: session,
-                onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                    return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
-                        biometryVerificationId: biomentryVerificationId,
-                        biometryData: biometryData
-                    ))
-                },
-                onSuccess: { response in
-                    replacePolicy(response.encryptedShards)
-                },
-                onCancelled: {
+            switch ownerState.authType {
+            case .none:
+                EmptyView().onAppear {
                     dismiss()
                 }
-            )
+            case .facetec:
+                FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
+                    session: session,
+                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                        return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
+                            biometryVerificationId: biomentryVerificationId,
+                            biometryData: biometryData
+                        ))
+                    },
+                    onSuccess: { response in
+                        replacePolicy(response.encryptedShards)
+                    },
+                    onCancelled: {
+                        dismiss()
+                    }
+                )
+            case .password:
+                GetPassword { cryptedPassword in
+                    apiProvider.decodableRequest(with: session, endpoint: .retrieveRecoveredShardsWithPassword(API.RetrieveRecoveryShardsWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
+                        switch result {
+                        case .failure:
+                            dismiss()
+                        case .success(let response):
+                            replacePolicy(response.encryptedShards)
+                        }
+                    }
+                }
+            }
         case .done:
             SavedAndSharded(
                 secrets: ownerState.vault.secrets,
@@ -188,7 +206,7 @@ struct ApproversSetup: View {
         })
     }
     
-    private func replacePolicy(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard]) {
+    private func replacePolicy(_ encryptedShards: [API.EncryptedShard]) {
         self.step = .replacingPolicy
         deleteRecoveryIfExists(onSuccess: {
             do {
@@ -305,7 +323,8 @@ struct ApproversSetup: View {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                guardianSetup: policySetup
+                guardianSetup: policySetup,
+                authType: .facetec
             ),
             onOwnerStateUpdated: { _ in }
         )

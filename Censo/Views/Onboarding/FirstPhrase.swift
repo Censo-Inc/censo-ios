@@ -81,6 +81,6 @@ struct FirstPhrase: View {
 
 #if DEBUG
 #Preview {
-    FirstPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample), session: .sample, onComplete: {_ in })
+    FirstPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec), session: .sample, onComplete: {_ in })
 }
 #endif

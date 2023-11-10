@@ -24,6 +24,7 @@ struct API {
         case rejectGuardianVerification(ParticipantId)
 
         case createPolicy(CreatePolicyApiRequest)
+        case createPolicyWithPassword(CreatePolicyWithPasswordApiRequest)
         case setupPolicy(SetupPolicyApiRequest)
         case replacePolicy(ReplacePolicyApiRequest)
 
@@ -31,6 +32,7 @@ struct API {
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
         
         case unlock(UnlockApiRequest)
+        case unlockWithPassword(UnlockWithPasswordApiRequest)
         case prolongUnlock
         case lock
         
@@ -41,6 +43,7 @@ struct API {
         case deleteRecovery
         case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
         case retrieveRecoveredShards(RetrieveRecoveryShardsApiRequest)
+        case retrieveRecoveredShardsWithPassword(RetrieveRecoveryShardsWithPasswordApiRequest)
     }
 }
 
@@ -58,6 +61,8 @@ extension API: TargetType {
             return "v1/user"
         case .createPolicy:
             return "v1/policy"
+        case .createPolicyWithPassword:
+            return "v1/policy-password"
         case .setupPolicy:
             return "v1/policy-setup"
         case .replacePolicy:
@@ -74,6 +79,8 @@ extension API: TargetType {
             return "v1/biometry-verifications/\(verificationId)/biometry"
         case .unlock:
             return "v1/unlock"
+        case .unlockWithPassword:
+            return "v1/unlock-password"
         case .prolongUnlock:
             return "v1/unlock-prolongation"
         case .lock:
@@ -90,6 +97,8 @@ extension API: TargetType {
             return "v1/recovery/\(participantId.value)/totp-verification"
         case .retrieveRecoveredShards:
             return "v1/recovery/retrieval"
+        case .retrieveRecoveredShardsWithPassword:
+            return "v1/recovery/retrieval-password"
         }
     }
 
@@ -102,18 +111,21 @@ extension API: TargetType {
         case .signIn,
              .registerPushToken,
              .createPolicy,
+             .createPolicyWithPassword,
              .setupPolicy,
              .confirmGuardian,
              .rejectGuardianVerification,
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
+             .unlockWithPassword,
              .prolongUnlock,
              .lock,
              .storeSecret,
              .requestRecovery,
              .submitRecoveryTotpVerification,
-             .retrieveRecoveredShards:
+             .retrieveRecoveredShards,
+             .retrieveRecoveredShardsWithPassword:
             return .post
         case .replacePolicy:
             return .put
@@ -147,6 +159,8 @@ extension API: TargetType {
             #endif
         case .createPolicy(let request):
             return .requestJSONEncodable(request)
+        case .createPolicyWithPassword(let request):
+            return .requestJSONEncodable(request)
         case .setupPolicy(let request):
             return .requestJSONEncodable(request)
         case .replacePolicy(let request):
@@ -158,6 +172,8 @@ extension API: TargetType {
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
             )
         case .unlock(let request):
+            return .requestJSONEncodable(request)
+        case .unlockWithPassword(let request):
             return .requestJSONEncodable(request)
         case .prolongUnlock:
             return .requestPlain
@@ -174,6 +190,8 @@ extension API: TargetType {
         case .submitRecoveryTotpVerification(_, let payload):
             return .requestJSONEncodable(payload)
         case .retrieveRecoveredShards(let request):
+            return .requestJSONEncodable(request)
+        case .retrieveRecoveredShardsWithPassword(let request):
             return .requestJSONEncodable(request)
         }
     }

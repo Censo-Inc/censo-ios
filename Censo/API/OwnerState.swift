@@ -296,10 +296,20 @@ extension API {
             }
         }
     }
-        
+
+    enum AuthType: String, Codable {
+        case none = "None"
+        case facetec = "FaceTec"
+        case password = "Password"
+    }
+    
     enum OwnerState: Codable {
-        case initial
+        case initial(Initial)
         case ready(Ready)
+        
+        struct Initial: Codable {
+            var authType: AuthType
+        }
         
         struct Ready: Codable {
             var policy: Policy
@@ -307,7 +317,8 @@ extension API {
             var unlockedForSeconds: UnlockedDuration?
             var guardianSetup: PolicySetup?
             var recovery: Recovery?
-            
+            var authType: AuthType
+
             var policySetup: PolicySetup? {
                 get {
                     return guardianSetup
@@ -324,7 +335,7 @@ extension API {
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "Initial":
-                self = .initial
+                self = .initial(try Initial(from: decoder))
             case "Ready":
                 self = .ready(try Ready(from: decoder))
             default:
@@ -343,5 +354,13 @@ extension API {
             }
         }
         
+        func getAuthType() -> AuthType {
+            switch self {
+            case .initial(let initial):
+                return initial.authType
+            case .ready(let ready):
+                return ready.authType
+            }
+        }
     }
 }

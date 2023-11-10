@@ -100,7 +100,8 @@ public extension UIFont {
             session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
-                vault: .sample
+                vault: .sample,
+                authType: .facetec
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab

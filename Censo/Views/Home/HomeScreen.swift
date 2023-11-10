@@ -224,7 +224,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                recovery: nil
+                recovery: nil,
+                authType: .facetec
             ),
             onOwnerStateUpdated: { _ in }
         )

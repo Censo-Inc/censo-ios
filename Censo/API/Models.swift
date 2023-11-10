@@ -19,7 +19,11 @@ extension API {
         var auditTrailImage: String
         var lowQualityAuditTrailImage: String
     }
-
+    
+    struct Password: Encodable {
+        var cryptedPassword: Base64EncodedString
+    }
+    
     struct InitBiometryVerificationApiResponse: Decodable {
         var id: String
         var sessionToken: String
@@ -27,13 +31,13 @@ extension API {
         var deviceKeyId: String
         var biometryEncryptionPublicKey: String
     }
-
+    
     struct ConfirmBiometryVerificationApiRequest: Encodable {
         var faceScan: String
         var auditTrailImage: String
         var lowQualityAuditTrailImage: String
     }
-
+    
     struct ConfirmBiometryVerificationApiResponse: Decodable {
         var ownerState: OwnerState
         var scanResultBlob: String
@@ -42,23 +46,23 @@ extension API {
     enum GuardianSetup: Encodable, Decodable {
         case implicitlyOwner(ImplicitlyOwner)
         case externalApprover(ExternalApprover)
-
+        
         struct ImplicitlyOwner: Encodable, Decodable {
             var participantId: ParticipantId
             var label: String
             var guardianPublicKey: Base58EncodedPublicKey
         }
-
+        
         struct ExternalApprover: Encodable, Decodable {
             var participantId: ParticipantId
             var label: String
             var deviceEncryptedTotpSecret: Base64EncodedString
         }
-
+        
         enum GuardianSetupCodingKeys: String, CodingKey {
             case type
         }
-
+        
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: GuardianSetupCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
@@ -71,7 +75,7 @@ extension API {
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Approver Setup")
             }
         }
-
+        
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: GuardianSetupCodingKeys.self)
             switch self {
@@ -84,16 +88,16 @@ extension API {
             }
         }
     }
-
+    
     struct GuardianShard: Encodable {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
     }
-
+    
     struct OwnerStateResponse: Decodable {
         var ownerState: OwnerState
     }
-
+    
     struct CreatePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
         var encryptedMasterPrivateKey: Base64EncodedString
@@ -104,10 +108,24 @@ extension API {
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
-
+    
     struct CreatePolicyApiResponse: BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
+    }
+    
+    struct CreatePolicyWithPasswordApiRequest: Encodable {
+        var intermediatePublicKey: Base58EncodedPublicKey
+        var encryptedMasterPrivateKey: Base64EncodedString
+        var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var participantId: ParticipantId
+        var encryptedShard: Base64EncodedString
+        var guardianPublicKey: Base58EncodedPublicKey
+        var password: Password
+    }
+    
+    struct CreatePolicyWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
     }
     
     struct SetupPolicyApiRequest: Encodable {
@@ -118,7 +136,7 @@ extension API {
     struct SetupPolicyApiResponse {
         var ownerState: OwnerState
     }
-
+    
     struct ReplacePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
         var guardianShards: [GuardianShard]
@@ -148,6 +166,14 @@ extension API {
         var scanResultBlob: String
     }
     
+    struct UnlockWithPasswordApiRequest: Encodable {
+        var password: Password
+    }
+    
+    struct UnlockWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
     struct ProlongUnlockApiResponse: Decodable {
         var ownerState: OwnerState
     }
@@ -173,7 +199,7 @@ extension API {
     struct RequestRecoveryApiRequest : Encodable {
         var intent: Recovery.Intent
     }
-
+    
     struct RequestRecoveryApiResponse : Decodable {
         var ownerState: OwnerState
     }
@@ -197,15 +223,24 @@ extension API {
         var biometryData: FacetecBiometry
     }
     
+    struct EncryptedShard : Decodable {
+        var participantId: ParticipantId
+        var encryptedShard: Base64EncodedString
+        var isOwnerShard: Bool
+    }
+    
     struct RetrieveRecoveryShardsApiResponse : BiometryVerificationResponse {
         var ownerState: OwnerState
         var encryptedShards: [EncryptedShard]
         var scanResultBlob: String
-        
-        struct EncryptedShard : Decodable {
-            var participantId: ParticipantId
-            var encryptedShard: Base64EncodedString
-            var isOwnerShard: Bool
-        }
+    }
+    
+    struct RetrieveRecoveryShardsWithPasswordApiRequest: Encodable {
+        var password: Password
+    }
+
+    struct RetrieveRecoveryShardsWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
+        var encryptedShards: [EncryptedShard]
     }
 }

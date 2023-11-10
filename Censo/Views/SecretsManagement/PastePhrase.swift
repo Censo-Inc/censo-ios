@@ -166,7 +166,7 @@ struct PastePhrase: View {
     PastePhrase(
         onComplete: {_ in},
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
         isFirstTime: true
     )
 }
