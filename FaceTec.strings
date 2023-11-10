@@ -3,49 +3,49 @@
 //
 
 "FaceTec_accessibility_cancel_button" = "Cancel";
-"FaceTec_accessibility_torch_button" = "Toggle Light";
+"FaceTec_accessibility_torch_button" = "Toggle light";
 "FaceTec_accessibility_tap_guidance" = "Double tap anywhere on the screen for face alignment guidance.";
 
-"FaceTec_accessibility_feedback_move_phone_away" = "Face Too Close";
-"FaceTec_accessibility_feedback_move_phone_closer" = "Face Too Far Away";
-"FaceTec_accessibility_feedback_face_too_far_left" = "Face Too Far Left";
-"FaceTec_accessibility_feedback_face_too_far_right" = "Face Too Far Right";
-"FaceTec_accessibility_feedback_face_too_low" = "Face Too Low";
-"FaceTec_accessibility_feedback_face_too_high" = "Face Too High";
-"FaceTec_accessibility_feedback_face_rotated_too_far_left" = "Face Rotated Too Far Left";
-"FaceTec_accessibility_feedback_face_rotated_too_far_right" = "Face Rotated Too Far Right";
+"FaceTec_accessibility_feedback_move_phone_away" = "Face too close";
+"FaceTec_accessibility_feedback_move_phone_closer" = "Face too far away";
+"FaceTec_accessibility_feedback_face_too_far_left" = "Face too far left";
+"FaceTec_accessibility_feedback_face_too_far_right" = "Face too far right";
+"FaceTec_accessibility_feedback_face_too_low" = "Face too low";
+"FaceTec_accessibility_feedback_face_too_high" = "Face too high";
+"FaceTec_accessibility_feedback_face_rotated_too_far_left" = "Face rotated too far left";
+"FaceTec_accessibility_feedback_face_rotated_too_far_right" = "Face rotated too far right";
 "FaceTec_accessibility_feedback_face_pointing_too_far_left" = "Face Pointing Too Far Left";
-"FaceTec_accessibility_feedback_face_pointing_too_far_right" = "Face Pointing Too Far Right";
-"FaceTec_accessibility_feedback_face_not_on_camera" = "Face Not On Camera or Too Far Away";
-"FaceTec_accessibility_feedback_hold_device_to_eye_level" = "Hold Device At Eye Level";
+"FaceTec_accessibility_feedback_face_pointing_too_far_right" = "Face pointing too far right";
+"FaceTec_accessibility_feedback_face_not_on_camera" = "Face not on camera or too far away";
+"FaceTec_accessibility_feedback_hold_device_to_eye_level" = "Hold device at eye level";
 
 "FaceTec_action_ok" = "OK";
-"FaceTec_action_im_ready" = "I'M READY";
-"FaceTec_action_try_again" = "TRY AGAIN";
-"FaceTec_action_continue" = "CONTINUE";
-"FaceTec_action_take_photo" = "TAKE PHOTO";
-"FaceTec_action_retake_photo" = "RETAKE";
-"FaceTec_action_accept_photo" = "ACCEPT";
-"FaceTec_action_confirm" = "CONFIRM INFO";
+"FaceTec_action_im_ready" = "I'm ready";
+"FaceTec_action_try_again" = "Try again";
+"FaceTec_action_continue" = "Continue";
+"FaceTec_action_take_photo" = "Take photo";
+"FaceTec_action_retake_photo" = "Retake";
+"FaceTec_action_accept_photo" = "Accept";
+"FaceTec_action_confirm" = "Confirm Info";
 "FaceTec_action_scan_nfc" = "SCAN ePASSPORT";
 "FaceTec_action_scan_nfc_card" = "SCAN ID CARD";
-"FaceTec_action_skip_nfc" = "SKIP THIS STEP";
+"FaceTec_action_skip_nfc" = "Skip this step";
 
-"FaceTec_camera_permission_header" = "Enable Camera";
+"FaceTec_camera_permission_header" = "Enable camera";
 "FaceTec_camera_permission_message_enroll" = "Please tap the button below to enable your selfie camera.";
 "FaceTec_camera_permission_message_auth" = "Your camera is disabled. Tap below to edit your settings.";
 "FaceTec_camera_permission_enable_camera" = "Continue";
 "FaceTec_camera_permission_launch_settings" = "Continue";
 
-"FaceTec_feedback_center_face" = "Center Your Face";
-"FaceTec_feedback_face_not_found" = "Frame Your Face";
-"FaceTec_feedback_face_not_looking_straight_ahead" = "Look Straight Ahead";
-"FaceTec_feedback_face_not_upright" = "Hold Your Head Straight";
-"FaceTec_feedback_hold_steady" = "Hold Steady";
-"FaceTec_feedback_move_phone_away" = "Move Away";
-"FaceTec_feedback_move_phone_closer" = "Move Closer";
-"FaceTec_feedback_move_phone_to_eye_level" = "Move Camera To Eye Level";
-"FaceTec_feedback_use_even_lighting" = "Light Face More Evenly";
+"FaceTec_feedback_center_face" = "Center your face";
+"FaceTec_feedback_face_not_found" = "Frame your face";
+"FaceTec_feedback_face_not_looking_straight_ahead" = "Look straight ahead";
+"FaceTec_feedback_face_not_upright" = "Hold your head straight";
+"FaceTec_feedback_hold_steady" = "Hold steady";
+"FaceTec_feedback_move_phone_away" = "Move away";
+"FaceTec_feedback_move_phone_closer" = "Move closer";
+"FaceTec_feedback_move_phone_to_eye_level" = "Move camera to eye level";
+"FaceTec_feedback_use_even_lighting" = "Light face more evenly";
 
 "FaceTec_idscan_type_selection_header" = "Prepare to Scan\nYour ID Document";
 "FaceTec_idscan_capture_tap_to_focus_message" = "Tap Screen To Focus";
@@ -69,24 +69,24 @@
 "FaceTec_idscan_nfc_status_skipped_message" = "NFC Scan\nSkipped";
 "FaceTec_idscan_additional_review_message" = "Additional Review\nRequired";
 
-"FaceTec_initializing_camera" = "Securing Camera Feed";
+"FaceTec_initializing_camera" = "Securing camera feed";
 
-"FaceTec_instructions_header_ready_1" = "Get Ready For";
-"FaceTec_instructions_header_ready_2" = "Your Video Selfie";
-"FaceTec_instructions_message_ready_1" = "Frame Your Face in the Oval,";
-"FaceTec_instructions_message_ready_2" = "Press I'm Ready & Move Closer";
+"FaceTec_instructions_header_ready_1" = "Get ready for";
+"FaceTec_instructions_header_ready_2" = "your video selfie";
+"FaceTec_instructions_message_ready_1" = "Frame your face in the oval,";
+"FaceTec_instructions_message_ready_2" = "Press I'm ready & move closer";
 
-"FaceTec_presession_frame_your_face" = "Frame Your Face In The Oval";
-"FaceTec_presession_position_face_straight_in_oval" = "Look Straight Ahead";
-"FaceTec_presession_hold_steady_3" = "Hold Steady For: 3";
-"FaceTec_presession_hold_steady_2" = "Hold Steady For: 2";
-"FaceTec_presession_hold_steady_1" = "Hold Steady For: 1";
-"FaceTec_presession_remove_dark_glasses" = "Remove Dark Glasses";
-"FaceTec_presession_neutral_expression" = "Neutral Expression, No Smiling";
-"FaceTec_presession_conditions_too_bright" = "Conditions Too Bright";
-"FaceTec_presession_brighten_your_environment" = "Brighten Your Environment";
+"FaceTec_presession_frame_your_face" = "Frame your face in the oval";
+"FaceTec_presession_position_face_straight_in_oval" = "Look straight ahead";
+"FaceTec_presession_hold_steady_3" = "Hold steady for: 3";
+"FaceTec_presession_hold_steady_2" = "Hold steady for: 2";
+"FaceTec_presession_hold_steady_1" = "Hold steady for: 1";
+"FaceTec_presession_remove_dark_glasses" = "Remove dark glasses";
+"FaceTec_presession_neutral_expression" = "Neutral expression, no smiling";
+"FaceTec_presession_conditions_too_bright" = "Conditions too bright";
+"FaceTec_presession_brighten_your_environment" = "Brighten your environment";
 
-"FaceTec_result_facescan_upload_message" = "Uploading\nEncrypted\n3D FaceScan";
+"FaceTec_result_facescan_upload_message" = "Uploading\nencrypted\n3D face scan";
 "FaceTec_result_success_message" = "Success";
 "FaceTec_result_idscan_upload_message" = "Uploading\nEncrypted\nID Scan";
 "FaceTec_result_nfc_upload_message" = "Uploading\nEncrypted\nNFC Details";
@@ -108,11 +108,11 @@
 "FaceTec_result_idscan_retry_id_type_not_supported_message" = "ID Type Not Supported\nPlease Use a Different ID";
 "FaceTec_result_idscan_retry_barcode_not_read_message" = "Barcode Failed To Scan\nPlease Try Again";
 
-"FaceTec_retry_header" = "Let's Try That Again";
-"FaceTec_retry_subheader_message" = "We Need a Clearer Video Selfie";
-"FaceTec_retry_instruction_message_1" = "Neutral Expression, No Smiling";
-"FaceTec_retry_instruction_message_2" = "Please Use Ideal Pose & Lighting";
-"FaceTec_retry_instruction_message_3" = "Too Blurry, Clean Camera";
-"FaceTec_retry_your_image_label" = "Your Selfie";
-"FaceTec_retry_ideal_image_label" = "Ideal Pose";
+"FaceTec_retry_header" = "Let's try that again";
+"FaceTec_retry_subheader_message" = "We need a clearer video selfie";
+"FaceTec_retry_instruction_message_1" = "Neutral expression, no smiling";
+"FaceTec_retry_instruction_message_2" = "Please use ideal pose & lighting";
+"FaceTec_retry_instruction_message_3" = "Too blurry, clean camera";
+"FaceTec_retry_your_image_label" = "Your selfie";
+"FaceTec_retry_ideal_image_label" = "Ideal pose";
 
