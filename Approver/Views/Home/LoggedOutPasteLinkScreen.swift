@@ -52,11 +52,14 @@ struct LoggedOutPasteLinkScreen: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding(30)
                 
-                Text("If instead you’re interested in using Censo to securely manage your own seed phrases, please follow **[this link](\(Configuration.ownerAppURL))** to download the Censo app.")
+                Text(try! AttributedString(markdown: "If instead you’re interested in using Censo to securely manage your own seed phrases, please follow **[this link](\(Configuration.ownerAppURL))** to download the Censo app."))
                     .font(.title3)
                     .tint(.black)
                     .padding(30)
                     .multilineTextAlignment(.center)
+                    .environment(\.openURL, OpenURLAction { url in
+                        return .systemAction
+                    })
                 Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)

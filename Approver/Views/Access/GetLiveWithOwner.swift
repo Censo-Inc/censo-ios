@@ -29,7 +29,7 @@ struct GetLiveWithOwner: View {
                     .bold()
                     .padding(.vertical)
                 
-                Text("Approving a request will take about 2 minutes. This approval should take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
+                Text("Approving a request will take about 2 minutes. This approval should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
                     .font(.subheadline)
         
                 Spacer()
