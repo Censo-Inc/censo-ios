@@ -33,6 +33,8 @@ struct LoggedInPasteLinkScreen: View {
                     .font(.title3)
                     .padding(30)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 
                 PasteLinkButton {url in
                     continuePressed = false
@@ -47,6 +49,7 @@ struct LoggedInPasteLinkScreen: View {
                     .font(.title3)
                     .padding(30)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 Button {
                     continuePressed = true
                 } label: {
