@@ -28,5 +28,7 @@
 	<false/>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <string>NO</string>
 </dict>
 </plist>

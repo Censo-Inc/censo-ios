@@ -17,5 +17,7 @@
 	<string>$(MIN_VERSION_URL)</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Censo uses the camera for biometry</string>
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <string>NO</string>
 </dict>
 </plist>
