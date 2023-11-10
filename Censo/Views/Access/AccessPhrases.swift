@@ -256,6 +256,7 @@ struct AvailableRecovery: View {
             .navigationTitle(Text(label))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
+            .interactiveDismissDisabled()
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
