@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import raygun4apple
 
 enum ApproverRoute : Hashable {
     case onboard(inviteCode: String)
@@ -106,7 +107,7 @@ struct ContentView: View {
               url.pathComponents.count > 1,
               let action = url.host,
               ["invite", "access"].contains(action) else {
-            showError(CensoError.invalidUrl)
+            showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
         
@@ -117,6 +118,7 @@ struct ContentView: View {
                 self.route = .onboard(inviteCode: identifier)
                 self.navigateToRoute = true
             } else {
+                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Invite Link Paste"], customData: nil)
                 showError(CensoError.invalidIdentifier)
             }
         } else {
@@ -124,6 +126,7 @@ struct ContentView: View {
                 self.route = .access(participantId: participantId)
                 self.navigateToRoute = true
             } else {
+                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
                 showError(CensoError.invalidIdentifier)
             }
         }

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import raygun4apple
 
 struct PasteLinkButton: View {
     var onUrlPasted: (URL) -> Void
@@ -29,9 +30,11 @@ struct PasteLinkButton: View {
     private func handlePastedInfo() {
         guard let pastedInfo = UIPasteboard.general.string,
               let url = URL(string: pastedInfo) else {
-            showError(CensoError.invalidUrl)
+            let err = CensoError.invalidUrl(url: UIPasteboard.general.string ?? "")
+            RaygunClient.sharedInstance().send(error: err, tags: ["Approver Paste"], customData: nil)
+
+            showError(err)
             return
-            
         }
         onUrlPasted(url)
     }

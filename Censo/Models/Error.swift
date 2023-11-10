@@ -28,7 +28,7 @@ enum CensoError: Swift.Error {
     case failedToCancelAlternateApproverSetup
     case failedToReplacePolicy
     case recoveryAlreadyOnAnotherDevice
-    case invalidUrl
+    case invalidUrl(url: String)
     case cannotVerifyKeyConfirmationSignature
 }
 

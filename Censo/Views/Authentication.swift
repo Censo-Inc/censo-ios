@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
+import raygun4apple
 
 struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutContent : View, LoggedInContent : View {
     @State private var credentialState: ASAuthorizationAppleIDProvider.CredentialState?
@@ -43,6 +44,12 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
         }
 
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userCredentials.userIdentifier) { state, error in
+            switch error {
+            case .some(let error):
+                RaygunClient.sharedInstance().send(error: error, tags: ["Authentication"], customData: nil)
+            case .none:
+                break
+            }
             if let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
                 self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
             } else {
@@ -50,6 +57,7 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
                     let deviceKey = try SecureEnclaveWrapper.generateDeviceKey(userIdentifier: userCredentials.userIdentifier)
                     self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
                 } catch {
+                    RaygunClient.sharedInstance().send(error: error, tags: ["Generate Device Key"], customData: nil)
                     self.session = .failure(error)
                 }
             }
