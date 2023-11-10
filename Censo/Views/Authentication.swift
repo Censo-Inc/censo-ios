@@ -14,6 +14,7 @@ extension Notification.Name {
 }
 
 struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutContent : View, LoggedInContent : View {
+    @Environment(\.scenePhase) var scenePhase
     @State private var credentialState: ASAuthorizationAppleIDProvider.CredentialState?
     @State private var session: Result<Session, Error>?
 
@@ -37,6 +38,14 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
                     session.deleteDeviceKey()
                     Keychain.removeUserCredentials()
                     self.credentialState = .notFound
+                }
+                .onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .active:
+                        fetchCredentialState()
+                    default:
+                        break
+                    }
                 }
             case .failure:
                 Text("There was an error generating a device key")
