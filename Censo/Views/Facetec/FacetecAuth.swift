@@ -77,6 +77,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                                 onReadyToUploadResults: onReadyToUploadResults,
                                 onSuccess: onSuccess
                             )
+                            .interactiveDismissDisabled()
                         }
                     }
 #endif

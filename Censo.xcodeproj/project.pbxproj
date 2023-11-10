@@ -233,6 +233,7 @@
 		E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376882AE839C6005809F7 /* ActivateApprover.swift */; };
 		E4D3768B2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768A2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift */; };
 		E4D3768D2AE83A24005809F7 /* SavedAndSharded.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768C2AE83A24005809F7 /* SavedAndSharded.swift */; };
+		E4EFFAF42AFE62A100AA1FA0 /* FaceTec.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -408,6 +409,7 @@
 		E4D376882AE839C6005809F7 /* ActivateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateApprover.swift; sourceTree = "<group>"; };
 		E4D3768A2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProposeToAddAlternateApprover.swift; sourceTree = "<group>"; };
 		E4D3768C2AE83A24005809F7 /* SavedAndSharded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedAndSharded.swift; sourceTree = "<group>"; };
+		E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = FaceTec.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,6 +462,7 @@
 				3D0C1EB22A83DF5B00AB3A48 /* CensoUITests */,
 				3D23ACD82AB22C9200F55C5D /* Approver */,
 				3D0C1E752A83A79400AB3A48 /* Products */,
+				E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */,
 				6CC60F722AA12F21001A4454 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -981,6 +984,7 @@
 			files = (
 				3D0C1E9D2A83B53900AB3A48 /* Theme.xcassets in Resources */,
 				3D0C1E7F2A83A79600AB3A48 /* Preview Assets.xcassets in Resources */,
+				E4EFFAF42AFE62A100AA1FA0 /* FaceTec.strings in Resources */,
 				3D0C1E7C2A83A79600AB3A48 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
