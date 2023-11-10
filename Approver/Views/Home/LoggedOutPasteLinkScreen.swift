@@ -21,6 +21,8 @@ struct LoggedOutPasteLinkScreen: View {
                     .font(.title3)
                     .padding(30)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 NavigationLink {
                     VStack(spacing: 30) {
                         Spacer()
@@ -33,6 +35,8 @@ struct LoggedOutPasteLinkScreen: View {
                         Text("To continue, the person you are assisting must send you a link.\n\nOnce you receive it, you can tap on it to continue.\n\nOr, simply copy the link to the clipboard and paste using the button below.")
                             .font(.title3)
                             .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+
                         
                         PasteLinkButton(onUrlPasted: onUrlPasted)
                         
