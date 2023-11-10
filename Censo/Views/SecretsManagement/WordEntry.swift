@@ -16,6 +16,7 @@ struct WordEntry: View {
     @State private var word = ""
 
     @FocusState private var focused: Bool
+    private let wordList = BIP39.wordlists[.english] ?? []
 
     var body: some View {
         NavigationStack {
@@ -29,10 +30,14 @@ struct WordEntry: View {
                 .focused($focused)
                 .submitLabel(.done)
                 .onSubmit {
-                    onSubmit(word)
+                    if wordList.contains(word) {
+                        onSubmit(word)
+                    } else {
+                        focused = true // prevent keyboard from hiding
+                    }
                 }
 
-                let filteredList = BIP39.wordlists[.english]!.filter {
+                let filteredList = wordList.filter {
                     $0.starts(with: word.lowercased())
                 }
 
