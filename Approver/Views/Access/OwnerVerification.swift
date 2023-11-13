@@ -139,6 +139,8 @@ struct OwnerVerification: View {
                 switch result {
                 case .success(let success):
                     onGuardianStatesUpdated(success.guardianStates)
+                case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                    showError(CensoError.accessRequestNotFound)
                 case .failure(let error):
                     showError(error)
                 }
@@ -154,6 +156,8 @@ struct OwnerVerification: View {
                     case .success(let success):
                         wrongCode = true
                         onGuardianStatesUpdated(success.guardianStates)
+                    case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                        showError(CensoError.accessRequestNotFound)
                     case .failure(let error):
                         showError(error)
                     }

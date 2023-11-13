@@ -36,7 +36,7 @@ struct ApproverHome: View {
                     user: user,
                     onUrlPasted: onUrlPasted
                 )
-            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
+            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 SignIn(session: session, onSuccess: reload) {
                     ProgressView("Signing in...")
                 }

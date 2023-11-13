@@ -68,7 +68,7 @@ struct AccessApproval: View {
             } else {
                 InvalidLinkView()
             }
-        case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
+        case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
             SignIn(session: session, onSuccess: reload) {
                 ProgressView("Signing in...")
             }
@@ -108,6 +108,8 @@ struct AccessApproval: View {
                 switch result {
                 case .success(let success):
                     replaceGuardianStates(newGuardianStates: success.guardianStates)
+                case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                    showError(CensoError.accessRequestNotFound)
                 case .failure(let error):
                     showError(error)
                 }

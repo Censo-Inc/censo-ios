@@ -19,12 +19,12 @@ struct ErrorResponsePlugin: Moya.PluginType {
             debugPrint(response)
             return .failure(MoyaError.underlying(CensoError.underMaintenance, nil))
         case (.success(let response), _) where response.statusCode == 403:
-            debugPrint(response)
             return .failure(MoyaError.underlying(CensoError.unauthorized, nil))
+        case (.success(let response), _) where response.statusCode == 404:
+            return .failure(MoyaError.underlying(CensoError.resourceNotFound, nil))
         case (.success(let response), _) where response.statusCode == 401:
             return result
         case (.success(let response), _) where response.statusCode >= 400:
-            debugPrint(response)
             return .failure(MoyaError.statusCode(response))
         default:
             return result

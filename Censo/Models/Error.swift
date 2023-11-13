@@ -30,6 +30,10 @@ enum CensoError: Swift.Error {
     case recoveryAlreadyOnAnotherDevice
     case invalidUrl(url: String)
     case cannotVerifyKeyConfirmationSignature
+    case resourceNotFound
+    case invitationNotFound
+    case invitationAlreadyAccepted
+    case accessRequestNotFound
 }
 
 extension CensoError: LocalizedError {
@@ -79,6 +83,14 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("The link provided is not valid for this app", comment: "Invalid url")
         case .cannotVerifyKeyConfirmationSignature:
             return NSLocalizedString("Cannot verify key confirmation signature", comment: "Invalid signature")
+        case .resourceNotFound:
+            return NSLocalizedString("Resource not found", comment: "Not found")
+        case .invitationNotFound:
+            return NSLocalizedString("Invitation not found", comment: "Not found")
+        case .invitationAlreadyAccepted:
+            return NSLocalizedString("Invitation already accepted", comment: "Already accepted")
+        case .accessRequestNotFound:
+            return NSLocalizedString("Access request not found", comment: "Not found")
         }
     }
 }
