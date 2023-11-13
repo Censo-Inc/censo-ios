@@ -60,7 +60,7 @@ struct Onboarding: View {
                 default:
                     EmptyView()
                 }
-            case .failure(MoyaError.statusCode(let response)) where response.statusCode == 404:
+            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 SignIn(session: session, onSuccess: reload) {
                     ProgressView("Signing in...")
                 }
@@ -92,6 +92,10 @@ struct Onboarding: View {
             switch result {
             case .success(let response):
                 guardianState = response.guardianState
+            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                showError(CensoError.invitationNotFound)
+            case .failure(MoyaError.underlying(CensoError.unauthorized, nil)):
+                showError(CensoError.invitationAlreadyAccepted)
             case .failure(let error):
                 showError(error)
             }

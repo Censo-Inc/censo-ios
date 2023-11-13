@@ -106,6 +106,8 @@ struct SubmitVerification: View {
             switch result {
             case .success(let response):
                 onSuccess(response.guardianState)
+            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                showError(CensoError.invitationNotFound)
             case .failure(let error):
                showError(error)
             }
