@@ -8,6 +8,7 @@
 import Foundation
 import Moya
 import SwiftUI
+import CryptoKit
 
 typealias InvitationId = String
 
@@ -192,7 +193,11 @@ extension API: TargetType {
              .rejectOwnerVerification:
             return .requestPlain
         case .signIn(let credentials):
-            return .requestJSONEncodable(credentials)
+            return .requestJSONEncodable([
+                "jwtToken": "",
+                "identityToken": Data(SHA256.hash(
+                    data: Data(credentials.userIdentifier.data(using: .utf8)!)
+                )).toHexString()])
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
         case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):

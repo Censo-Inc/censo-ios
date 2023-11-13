@@ -148,7 +148,7 @@ extension Session {
 
 extension UserCredentials {
     static var sample: Self {
-        .init(idToken: "012345".hexData()!, userIdentifier: "identifier")
+        .init(idToken: Data() , userIdentifier: "identifier")
     }
 }
 
