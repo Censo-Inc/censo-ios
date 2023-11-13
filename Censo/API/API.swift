@@ -8,6 +8,7 @@
 import Foundation
 import Moya
 import UIKit
+import CryptoKit
 
 struct API {
     var deviceKey: DeviceKey
@@ -127,7 +128,11 @@ extension API: TargetType {
              .rejectGuardianVerification:
             return .requestPlain
         case .signIn(let credentials):
-            return .requestJSONEncodable(credentials)
+            return .requestJSONEncodable([
+                "jwtToken": "",
+                "identityToken": Data(SHA256.hash(
+                    data: Data(credentials.userIdentifier.data(using: .utf8)!)
+                )).toHexString()])
         case .registerPushToken(let token):
             #if DEBUG
             return .requestJSONEncodable([
