@@ -11,39 +11,9 @@ import raygun4apple
 
 @main
 struct CensoApp: App {
-    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-
     var body: some Scene {
         WindowGroup {
-            #if DEBUG
-            if appDelegate.testing {
-                ContentView()
-            } else {
-                ContentView()
-                    .onAppear(perform: handlePushRegistration)
-            }
-            #else
             ContentView()
-                .onAppear(perform: handlePushRegistration)
-            #endif
-        }
-    }
-    
-    private func handlePushRegistration() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                if settings.authorizationStatus == .notDetermined {
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
-                        if result {
-                            DispatchQueue.main.async {
-                                UIApplication.shared.registerForRemoteNotifications()
-                            }
-                        }
-                    }
-                } else if settings.authorizationStatus == .authorized {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
         }
     }
 }
