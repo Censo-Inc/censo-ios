@@ -45,7 +45,7 @@ struct SettingsTab: View {
                 } else {
                     HStack {
                         Image("arrow.circlepath")
-                        Text("Delete User Data")
+                        Text("Delete Data")
                             .font(.title2)
                     }.frame(maxWidth: 322)
                 }
@@ -63,14 +63,14 @@ struct SettingsTab: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .alert("Delete User Data", isPresented: $resetRequested) {
+        .alert("Delete Data", isPresented: $resetRequested) {
             Button {
                 deleteUser()
             } label: { Text("Confirm") }
             Button {
             } label: { Text("Cancel") }
         } message: {
-            Text("You are about to delete your user and associated data. This action cannot be reversed. \nAre you sure?")
+            Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nAre you sure?")
         }
     }
     

@@ -42,7 +42,6 @@ struct LoggedInPasteLinkScreen: View {
                 }
                     .padding(30)
             } else {
-                
                 Text("Hello Approver!")
                     .font(.largeTitle)
                 Text("You’re helping someone who trusts you keep their crypto safe.\n\n Please tap the continue button when they contact you.")
@@ -62,36 +61,42 @@ struct LoggedInPasteLinkScreen: View {
             }
             Spacer()
             
-            if user.guardianStates.countExternalApprovers() > 0 {
-                VStack(spacing: 12) {
+            VStack(spacing: 12) {
+                if user.guardianStates.countExternalApprovers() > 0 {
                     Image("TwoPeople")
                         .frame(width: 32, height: 32)
-                    
                     Text("Active approver")
                         .font(.system(size: 14))
                         .bold()
+                } else {
+                    Image("TwoPeople")
+                        .frame(width: 32, height: 32)
+                        .opacity(0.2)
+                    Text("Not an active approver")
+                        .font(.system(size: 14))
+                        .bold()
                 }
-                .gesture(
-                    LongPressGesture(minimumDuration: 0.5)
-                        .updating($accountPress) { currentState, gestureState, transaction in
-                            gestureState = currentState
-                        }
-                        .onEnded {_ in
-                            showDeactivateAndDelete = true
-                        }
-                )
             }
+            .gesture(
+                LongPressGesture(minimumDuration: 0.5)
+                    .updating($accountPress) { currentState, gestureState, transaction in
+                        gestureState = currentState
+                    }
+                    .onEnded {_ in
+                        showDeactivateAndDelete = true
+                    }
+            )
         }
         .padding()
         .confirmationDialog(
-            Text("Deactivate and delete?"),
+            Text("Delete Data?"),
             isPresented: $showDeactivateAndDelete
         ) {
-            Button("Deactivate & Delete", role: .destructive) {
+            Button("Delete Data", role: .destructive) {
                 showDeactivateAndDeleteConfirmation = true
             }
         }
-        .alert("Deactivate & Delete", isPresented: $showDeactivateAndDeleteConfirmation) {
+        .alert("Delete Data", isPresented: $showDeactivateAndDeleteConfirmation) {
             Button {
                 apiProvider.request(with: session, endpoint: .deleteUser) {result in
                     showDeactivateAndDelete = false
