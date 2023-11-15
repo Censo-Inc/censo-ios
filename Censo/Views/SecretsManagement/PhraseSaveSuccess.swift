@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PhraseSaveSuccess: View {
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+
     var isFirstTime: Bool
     var onFinish: () -> Void
 
@@ -30,10 +32,19 @@ struct PhraseSaveSuccess: View {
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .padding(30)
-                
+                    .fixedSize(horizontal: false, vertical: true)                
             }
             Spacer()
             Button() {
+#if DEBUG
+                if isFirstTime && !appDelegate.testing {
+                    handlePushRegistration()
+                }
+#else
+                if isFirstTime {
+                    handlePushRegistration()
+                }
+#endif
                 onFinish()
             } label: {
                 Text("OK")
@@ -57,7 +68,27 @@ struct PhraseSaveSuccess: View {
             }
         })
     }
+    
+    
+    private func handlePushRegistration() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .notDetermined {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
+                        if result {
+                            DispatchQueue.main.async {
+                                UIApplication.shared.registerForRemoteNotifications()
+                            }
+                        }
+                    }
+                } else if settings.authorizationStatus == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
+    }
 }
+
 
 #if DEBUG
 struct PhraseSaveSuccess_Previews: PreviewProvider {
