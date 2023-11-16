@@ -78,7 +78,7 @@ struct WebView: UIViewRepresentable {
 }
 
 extension TermsOfUse {
-    static let v0_1: String = """
+    static let v0_2: String = """
 <h1 id="acceptance-of-terms">ACCEPTANCE OF TERMS</h1>
 <h2
 id="censo-inc.-censo-provides-access-to-and-use-of-its-websites-and-certain-solutions-for-storage-and-management-of-seed-phrases-used-by-crypto-wallet-owners-and-related-services-collectively-the-service-subject-to-the-terms-and-conditions-in-these-terms-of-use-the-tou.-censo-may-in-its-sole-discretion-update-the-tou-at-any-time.-you-can-access-and-review-the-most-current-version-of-the-tou-at-the-url-for-this-page-or-by-clicking-on-the-terms-of-use-link-within-the-service-or-as-otherwise-made-available-by-censo.">Censo,
@@ -228,18 +228,25 @@ your Owner App, in which case you may not be able to access Digital
 Assets stored within Wallets protected using the applicable Seed
 Phrases.</h2>
 <h2
-id="access-to-and-use-of-the-owner-app-requires-that-you-authenticate-your-identity-through-3d-liveness-verification-which-may-include-the-use-of-face-scans-performed-using-your-mobile-device-liveness-verification.-if-you-do-not-set-up-or-use-the-liveness-verification-functionality-properly-you-will-not-be-able-to-access-or-use-your-owner-app-or-the-seed-phrases-stored-using-your-owner-app-in-which-case-you-may-not-be-able-to-access-digital-assets-stored-within-wallets-protected-using-the-applicable-seed-phrases.">Access
-to and use of the Owner App requires that you authenticate your identity
-through 3D liveness verification, which may include the use of face
-scans performed using your mobile device (“<u>Liveness
+id="access-to-and-use-of-the-owner-app-requires-that-you-authenticate-your-identity-i-through-3d-liveness-verification-which-may-include-the-use-of-face-scans-performed-using-your-mobile-device-liveness-verification-or-ii-by-setting-up-a-password-password-verification.-if-you-do-not-set-up-or-use-the-liveness-verification-or-password-verification-functionality-properly-you-will-not-be-able-to-access-or-use-your-owner-app-or-the-seed-phrases-stored-using-your-owner-app-in-which-case-you-may-not-be-able-to-access-digital-assets-stored-within-wallets-protected-using-the-applicable-seed-phrases.-with-respect-to-your-use-of-password-verification-a-if-you-lose-your-password-your-password-cannot-be-reset-or-recovered-by-censo-and-b-you-are-solely-responsible-for-keeping-remembering-and-safeguarding-your-password-and-any-losses-including-loss-of-digital-assets-arising-from-your-failure-to-keep-remember-or-safeguard-your-password.">Access
+to and use of the Owner App requires that you authenticate your
+identity: (i) through 3D liveness verification, which may include the
+use of face scans performed using your mobile device (“<u>Liveness
+Verification</u>”); or (ii) by setting up a password (“<u>Password
 Verification</u>”). If you do not set up or use the Liveness
-Verification functionality properly, you will not be able to access or
-use your Owner App or the Seed Phrases stored using your Owner App, in
-which case you may not be able to access Digital Assets stored within
-Wallets protected using the applicable Seed Phrases.</h2>
+Verification or Password Verification functionality properly, you will
+not be able to access or use your Owner App or the Seed Phrases stored
+using your Owner App, in which case you may not be able to access
+Digital Assets stored within Wallets protected using the applicable Seed
+Phrases. With respect to your use of Password Verification: (A) if you
+lose your password, your password cannot be reset or recovered by Censo;
+and (B) you are solely responsible for keeping, remembering and
+safeguarding your password and any losses, including loss of Digital
+Assets, arising from your failure to keep, remember or safeguard your
+password.</h2>
 <h2
-id="if-you-access-our-use-an-owner-app-to-manage-store-or-access-seed-phrases-you-represent-and-warrant-that-you-have-proper-authorization-from-all-parties-with-a-legal-interest-in-the-seed-phrases-and-the-digital-assets-stored-within-wallets-protected-using-the-applicable-seed-phrases-to-manage-store-or-access-such-seed-phrases.">If
-you access our use an Owner App to manage, store or access Seed Phrases,
+id="if-you-access-or-use-an-owner-app-to-manage-store-or-access-seed-phrases-you-represent-and-warrant-that-you-have-proper-authorization-from-all-parties-with-a-legal-interest-in-the-seed-phrases-and-the-digital-assets-stored-within-wallets-protected-using-the-applicable-seed-phrases-to-manage-store-or-access-such-seed-phrases.">If
+you access or use an Owner App to manage, store or access Seed Phrases,
 you represent and warrant that you have proper authorization from all
 parties with a legal interest in the Seed Phrases and the Digital Assets
 stored within Wallets protected using the applicable Seed Phrases to
@@ -279,7 +286,7 @@ other third-party license terms (collectively, “<u>Third-Party
 Components</u>”). Third-Party Components are subject to separate terms
 and conditions set forth in the respective license agreements relating
 to such components. For more information about Third-Party Components,
-please see <a href="https://censo.co/legal/3rd-party">https://censo.co/legal/3rd-party</a>.</p>
+please see <span>https://censo.co/legal/3rd-party</span>.</p>
 <h1 id="external-materials-and-third-party-services">External Materials
 and Third-Party Services</h1>
 <p>The Service or users of the Service may provide links or other
@@ -828,7 +835,7 @@ such prevention or delay.</p>
 
 #if DEBUG
 #Preview {
-    TermsOfUse(text: TermsOfUse.v0_1, onAccept: {
+    TermsOfUse(text: TermsOfUse.v0_2, onAccept: {
         debugPrint("Accepted!")
     })
 }
