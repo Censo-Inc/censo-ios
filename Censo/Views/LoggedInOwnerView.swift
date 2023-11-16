@@ -24,7 +24,7 @@ struct LoggedInOwnerView: View {
         case .loading:
             ProgressView()
         case .success(let ownerState):
-            if (acceptedTermsOfUseVersion != "") {
+            if (acceptedTermsOfUseVersion == "v0.2") {
                 let ownerStateBinding = Binding<API.OwnerState>(
                     get: { ownerState },
                     set: { replaceOwnerState(newOwnerState: $0) }
@@ -57,9 +57,9 @@ struct LoggedInOwnerView: View {
             } else {
                 NavigationStack {
                     TermsOfUse(
-                        text: TermsOfUse.v0_1,
+                        text: TermsOfUse.v0_2,
                         onAccept: {
-                            acceptedTermsOfUseVersion = "v0.1"
+                            acceptedTermsOfUseVersion = "v0.2"
                         }
                     )
                     .navigationTitle("Terms of Use")
