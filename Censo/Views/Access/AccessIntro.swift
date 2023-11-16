@@ -25,8 +25,13 @@ struct AccessIntro: View {
 
                 VStack(alignment: .leading) {
                     SetupStep(image: Image("PrivatePlace"), heading: "Go to a private place", content: "Make sure you are alone in your home or a secure area.")
-                    SetupStep(
-                        image: Image("FaceScan"), heading: "Scan your face", content: "Start your access with a face scan. If you leave the app you will need to scan your face again.")
+                    if ownerState.authType == .password {
+                        SetupStep(
+                            image: Image("PhraseEntry"), heading: "Enter your password", content: "Start your access by entering your password. If you leave the app you will need to enter your password again.")
+                    } else {
+                        SetupStep(
+                            image: Image("FaceScan"), heading: "Scan your face", content: "Start your access with a face scan. If you leave the app you will need to scan your face again.")
+                    }
                     SetupStep(
                         image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 minutes to access your seed phrase. If you need more time, you will have to scan your face again.")
                 }
@@ -53,7 +58,7 @@ struct AccessIntro: View {
 #Preview {
     NavigationView {
         AccessIntro(
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
             session: .sample,
             onReadyToGetStarted: {}
         )

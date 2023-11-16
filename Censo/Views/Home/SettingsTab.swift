@@ -110,7 +110,7 @@ struct SettingsTab: View {
 #if DEBUG
 #Preview {
     SettingsTab(session: .sample, 
-                ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+                ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
                 onOwnerStateUpdated: {_ in }
     )
 }

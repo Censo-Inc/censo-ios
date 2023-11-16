@@ -9,15 +9,15 @@ import SwiftUI
 import Moya
 
 struct InitialPlanSetup: View {
+    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
     var session: Session
     var onComplete: (API.OwnerState) -> Void
     
-    var participantId: ParticipantId = .random()
-    
     @State private var showingError = false
     @State private var error: Error?
+    @State private var needBiometricConsent = true
 
     struct CreatePolicyParams {
         var guardianPublicKey: Base58EncodedPublicKey
@@ -25,32 +25,61 @@ struct InitialPlanSetup: View {
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var encryptedMasterPrivateKey: Base64EncodedString
         var encryptedShard: Base64EncodedString
+        var participantId: ParticipantId
     }
     
     @State private var createPolicyParams: CreatePolicyParams?
+    @State private var usePasswordAuth = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if let createPolicyParams {
-                FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
-                        .createPolicy(
-                            API.CreatePolicyApiRequest(
-                                intermediatePublicKey: createPolicyParams.intermediatePublicKey,
-                                encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
-                                masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
-                                participantId: participantId,
-                                encryptedShard: createPolicyParams.encryptedShard,
-                                guardianPublicKey: createPolicyParams.guardianPublicKey,
-                                biometryVerificationId: verificationId,
-                                biometryData: facetecBiometry
+                if (usePasswordAuth) {
+                    CreatePassword { cryptedPassword in
+                        apiProvider.decodableRequest(
+                            with: session,
+                            endpoint: .createPolicyWithPassword(
+                                API.CreatePolicyWithPasswordApiRequest(
+                                    intermediatePublicKey: createPolicyParams.intermediatePublicKey,
+                                    encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
+                                    masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
+                                    participantId: createPolicyParams.participantId,
+                                    encryptedShard: createPolicyParams.encryptedShard,
+                                    guardianPublicKey: createPolicyParams.guardianPublicKey,
+                                    password: API.Password(cryptedPassword: cryptedPassword)
+                                )
                             )
-                        )
-                } onSuccess: { response in
-                    onComplete(response.ownerState)
-                } onCancelled: {
-                    dismiss()
+                        ) { (result: Result<API.CreatePolicyWithPasswordApiResponse, MoyaError>) in
+                            switch result {
+                            case .failure:
+                                dismiss()
+                            case .success(let response):
+                                onComplete(response.ownerState)
+                            }
+                        }
+                    }
+                } else {
+                    FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
+                            .createPolicy(
+                                API.CreatePolicyApiRequest(
+                                    intermediatePublicKey: createPolicyParams.intermediatePublicKey,
+                                    encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
+                                    masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
+                                    participantId: createPolicyParams.participantId,
+                                    encryptedShard: createPolicyParams.encryptedShard,
+                                    guardianPublicKey: createPolicyParams.guardianPublicKey,
+                                    biometryVerificationId: verificationId,
+                                    biometryData: facetecBiometry
+                                )
+                            )
+                    } onSuccess: { response in
+                        onComplete(response.ownerState)
+                    } onCancelled: {
+                        dismiss()
+                    }
                 }
             } else {
+                Spacer()
                 Image("LargeFaceScan")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -63,19 +92,41 @@ struct InitialPlanSetup: View {
                     Text("Scan your face")
                         .font(.title2)
                         .bold()
-                        .padding()
+                        .padding([.horizontal])
                     
                     VStack(alignment: .leading) {
                         Text("Your face scan ensures that only you have access to your seed phrase.")
                             .font(.subheadline)
                             .padding(.bottom, 4)
+                            .fixedSize(horizontal: false, vertical: true)
                         
                         Text("You will capture and store an anonymous 3D map of your face to confirm your live physical presence.")
                             .font(.subheadline)
                             .padding(.bottom, 1)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding()
-                    
+
+                    Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
+                        .font(.caption)
+                        .italic()
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding([.horizontal])
+
+                    Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
+                        .font(.caption)
+                        .italic()
+                        .tint(.black)
+                        .multilineTextAlignment(.leading)
+                        .padding([.top, .horizontal])
+                        .fixedSize(horizontal: false, vertical: true)
+                        .environment(\.openURL, OpenURLAction { url in
+                            usePasswordAuth = true
+                            startPolicyCreation()
+                            return .handled
+                        })
+
                     Button {
                         startPolicyCreation()
                     } label: {
@@ -93,6 +144,7 @@ struct InitialPlanSetup: View {
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
                     .frame(maxWidth: .infinity)
+
                 }
                 .padding()
             }
@@ -126,6 +178,7 @@ struct InitialPlanSetup: View {
     
     private func startPolicyCreation() {
         do {
+            let participantId: ParticipantId = .random()
             let ownerApproverPublicKey = try session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation()
             let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
             let masterEncryptionKey = try EncryptionKey.generateRandomKey()
@@ -138,7 +191,8 @@ struct InitialPlanSetup: View {
                 encryptedShard: try intermediateEncryptionKey.shard(
                     threshold: 1,
                     participants: [(participantId, ownerApproverPublicKey)]
-                ).first(where: { $0.participantId == participantId })!.encryptedShard
+                ).first(where: { $0.participantId == participantId })!.encryptedShard,
+                participantId: participantId
             )
         } catch {
             showError(error)

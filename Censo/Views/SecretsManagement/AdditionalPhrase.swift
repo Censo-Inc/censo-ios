@@ -108,7 +108,7 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample), session: .sample, onComplete: {_ in })
+        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec), session: .sample, onComplete: {_ in })
     }
 }
 #endif

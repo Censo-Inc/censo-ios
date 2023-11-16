@@ -71,7 +71,7 @@ struct SaveSeedPhrase: View {
                 }
                 .disabled(!label.isValid || inProgress)
             }
-            .padding(50)
+            .padding(30)
             .buttonStyle(RoundedButtonStyle())
             .navigationTitle(Text("Add Seed Phrase"))
             .navigationBarTitleDisplayMode(.inline)

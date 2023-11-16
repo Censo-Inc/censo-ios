@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LockScreen: View {
     
-    var onReadyToStartFaceScan: () -> Void
+    var onReadyToAuthenticate: () -> Void
 
     var body: some View {
         VStack(alignment: .center) {
@@ -25,7 +25,7 @@ struct LockScreen: View {
                 .bold()
 
             Button {
-                onReadyToStartFaceScan()
+                onReadyToAuthenticate()
             } label: {
                 HStack {
                     Spacer()
@@ -49,7 +49,7 @@ struct LockScreen: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        LockScreen(onReadyToStartFaceScan: {})
+        LockScreen(onReadyToAuthenticate: {})
     }
 }
 #endif

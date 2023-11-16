@@ -18,7 +18,7 @@ struct BiometryGatedScreen<Content: View>: View {
     var onUnlockExpired: () -> Void
     @ViewBuilder var content: () -> Content
     
-    @State private var showFacetec = false
+    @State private var showAuthentication = false
     
     private let prolongationThreshold: TimeInterval = 600
     @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -41,7 +41,7 @@ struct BiometryGatedScreen<Content: View>: View {
                             }
                         }
                         .onAppear {
-                            showFacetec = false
+                            showAuthentication = false
                         }
                         .onReceive(timer) { _ in
                             if (Date.now >= unlockedDuration.locksAt) {
@@ -53,23 +53,42 @@ struct BiometryGatedScreen<Content: View>: View {
                             }
                         }
                 } else {
-                    if showFacetec {
-                        FacetecAuth<API.UnlockApiResponse>(
-                            session: session,
-                            onReadyToUploadResults: { biometryVerificationId, biometryData in
-                                return .unlock(API.UnlockApiRequest(biometryVerificationId: biometryVerificationId, biometryData: biometryData))
-                            },
-                            onSuccess: { response in
-                                ownerState = response.ownerState
-                            },
-                            onCancelled: {
-                                showFacetec = false
+                    if showAuthentication {
+                        switch ownerState.authType {
+                        case .facetec:
+                            FacetecAuth<API.UnlockApiResponse>(
+                                session: session,
+                                onReadyToUploadResults: { biometryVerificationId, biometryData in
+                                    return .unlock(API.UnlockApiRequest(biometryVerificationId: biometryVerificationId, biometryData: biometryData))
+                                },
+                                onSuccess: { response in
+                                    ownerState = response.ownerState
+                                },
+                                onCancelled: {
+                                    showAuthentication = false
+                                }
+                            )
+                        case .password:
+                            GetPassword { cryptedPassword in
+                                apiProvider.decodableRequest(with: session, endpoint: .unlockWithPassword(API.UnlockWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) {
+                                    (result: Result<API.UnlockWithPasswordApiResponse, MoyaError>) in
+                                    switch result {
+                                    case .failure:
+                                        showAuthentication = false
+                                    case .success(let response):
+                                        ownerState = response.ownerState
+                                    }
+                                }
                             }
-                        )
+                        case .none:
+                            EmptyView().onAppear {
+                                showAuthentication = false
+                            }
+                        }
                     } else {
                         LockScreen(
-                            onReadyToStartFaceScan: {
-                                showFacetec = true
+                            onReadyToAuthenticate: {
+                                showAuthentication = true
                             }
                         )
                     }
@@ -97,7 +116,7 @@ struct BiometryGatedScreen<Content: View>: View {
 #Preview("ReadyUnlocked") {
     let session = Session.sample
     
-    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600)))
+    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600), authType: .facetec))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState1,
@@ -111,7 +130,7 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #Preview("ReadyLocked") {
     let session = Session.sample
-    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil))
+    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil, authType: .facetec))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState2,
@@ -125,7 +144,7 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #Preview("Initial") {
     let session = Session.sample
-    @State var ownerState3 = API.OwnerState.initial
+    @State var ownerState3 = API.OwnerState.initial(API.OwnerState.Initial(authType: .facetec))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState3,

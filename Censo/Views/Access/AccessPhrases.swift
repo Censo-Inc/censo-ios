@@ -221,26 +221,50 @@ struct AvailableRecovery: View {
                 }
             })
         case .retrievingShards(let phraseIndex):
-            FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
-                session: session,
-                onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                    return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
-                        biometryVerificationId: biomentryVerificationId,
-                        biometryData: biometryData
-                    ))
-                },
-                onSuccess: { response in
-                    do {
-                        self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
-                    } catch {
-                        self.step = .showingList
-                        showError(CensoError.failedToDecryptSecrets)
-                    }
-                },
-                onCancelled: {
+            switch ownerState.authType {
+            case .none:
+                EmptyView().onAppear {
                     self.step = .showingList
                 }
-            )
+            case .facetec:
+                FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
+                    session: session,
+                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                        return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
+                            biometryVerificationId: biomentryVerificationId,
+                            biometryData: biometryData
+                        ))
+                    },
+                    onSuccess: { response in
+                        do {
+                            self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
+                        } catch {
+                            self.step = .showingList
+                            showError(CensoError.failedToDecryptSecrets)
+                        }
+                    },
+                    onCancelled: {
+                        self.step = .showingList
+                    }
+                )
+            case .password:
+                GetPassword { cryptedPassword in
+                    apiProvider.decodableRequest(with: session, endpoint: .retrieveRecoveredShardsWithPassword(API.RetrieveRecoveryShardsWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
+                        switch result {
+                        case .success(let response):
+                            do {
+                                self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
+                            } catch {
+                                self.step = .showingList
+                                showError(CensoError.failedToDecryptSecrets)
+                            }
+                        case .failure:
+                            self.step = .showingList
+                        }
+                    }
+                    
+                }
+            }
         case .showingSeedPhrase(let phraseIndex, let phrase):
             let label = ownerState.vault.secrets[phraseIndex].label
             ShowPhrase(
@@ -275,7 +299,7 @@ struct AvailableRecovery: View {
         self.error = error
     }
     
-    private func recoverSecret(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard], _ phraseIndex: Int) throws -> [String] {
+    private func recoverSecret(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int) throws -> [String] {
         do {
             let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
@@ -292,7 +316,7 @@ struct AvailableRecovery: View {
 #Preview {
     AccessPhrases(
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
         onOwnerStateUpdated: {_ in}
     )
 }

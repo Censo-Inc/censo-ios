@@ -90,7 +90,7 @@ struct ShowPhraseList: View {
     NavigationView {
         ShowPhraseList(
             session: .sample,
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
             onOwnerStateUpdated: {_ in },
             viewedPhrases: [1],
             onPhraseSelected: {_ in },

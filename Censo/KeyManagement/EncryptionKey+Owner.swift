@@ -33,7 +33,7 @@ extension EncryptionKey {
         })
     }
     
-    static func recover(_ encryptedShards: [API.RetrieveRecoveryShardsApiResponse.EncryptedShard], _ session: Session) throws -> EncryptionKey {
+    static func recover(_ encryptedShards: [API.EncryptedShard], _ session: Session) throws -> EncryptionKey {
         let points = try encryptedShards.map { encryptedShard in
             let decryptedShard: Data
             
