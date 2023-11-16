@@ -125,12 +125,26 @@ struct ContentView: View {
                 showError(CensoError.invalidIdentifier)
             }
         } else {
-            if let participantId = try? ParticipantId(value: identifier) {
-                self.route = .access(participantId: participantId)
-                self.navigateToRoute = true
+            if identifier == "v2" {
+                if url.pathComponents.count <= 2 {
+                    showError(CensoError.invalidUrl(url: "\(url)"))
+                    return
+                }
+                if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
+                    self.route = .access(participantId: participantId)
+                    self.navigateToRoute = true
+                } else {
+                    RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
+                    showError(CensoError.invalidIdentifier)
+                }
             } else {
-                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
-                showError(CensoError.invalidIdentifier)
+                if let participantId = try? ParticipantId(value: identifier) {
+                    self.route = .access(participantId: participantId)
+                    self.navigateToRoute = true
+                } else {
+                    RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
+                    showError(CensoError.invalidIdentifier)
+                }
             }
         }
     }
