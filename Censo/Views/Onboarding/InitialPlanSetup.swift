@@ -107,14 +107,14 @@ struct InitialPlanSetup: View {
                     }
                     .padding()
 
-                    Text("By clicking Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
+                    Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
                         .font(.caption)
                         .italic()
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding([.horizontal])
 
-                    Text(try! AttributedString(markdown: "To use the Censo App without biometric authentication, **[click here](#)** to use a password instead."))
+                    Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
                         .font(.caption)
                         .italic()
                         .tint(.black)

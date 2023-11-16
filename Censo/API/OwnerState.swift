@@ -354,12 +354,14 @@ extension API {
             }
         }
         
-        func getAuthType() -> AuthType {
-            switch self {
-            case .initial(let initial):
-                return initial.authType
-            case .ready(let ready):
-                return ready.authType
+        var authType: AuthType {
+            get {
+                switch self {
+                case .initial(let initial):
+                    return initial.authType
+                case .ready(let ready):
+                    return ready.authType
+                }
             }
         }
     }

@@ -164,7 +164,7 @@ struct ActivateApprover : View {
                                 .fontWeight(.semibold)
                                 .padding(.bottom)
                             
-                            Text("After \(approver.label) has installed the Censo Approver app, share this invitation link and have \(approver.label) click on it or paste it into the Censo Approver app.")
+                            Text("After \(approver.label) has installed the Censo Approver app, share this invitation link and have \(approver.label) tap on it or paste it into the Censo Approver app.")
                                 .font(.subheadline)
                                 .fixedSize(horizontal: false, vertical: true)
                         }

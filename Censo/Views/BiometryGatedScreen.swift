@@ -54,7 +54,7 @@ struct BiometryGatedScreen<Content: View>: View {
                         }
                 } else {
                     if showAuthentication {
-                        switch ownerState.getAuthType() {
+                        switch ownerState.authType {
                         case .facetec:
                             FacetecAuth<API.UnlockApiResponse>(
                                 session: session,

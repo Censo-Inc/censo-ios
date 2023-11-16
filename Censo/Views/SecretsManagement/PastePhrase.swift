@@ -85,7 +85,7 @@ struct PastePhrase: View {
                             .padding(.trailing)
                         
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("2. Click the button below")
+                            Text("2. Tap the button below")
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .padding(.bottom)

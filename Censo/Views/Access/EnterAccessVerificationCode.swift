@@ -67,7 +67,7 @@ struct EnterAccessVerificationCode : View {
                             .font(.headline)
                             .bold()
                         
-                        Text(try! AttributedString(markdown: "Share this link and have \(approver.label) click on it or paste it into the Censo Approver app. If \(approver.label) no longer has the app installed, it can be **[downloaded here](\(Configuration.approverAppURL))**."))
+                        Text(try! AttributedString(markdown: "Share this link and have \(approver.label) tap on it or paste it into the Censo Approver app. If \(approver.label) no longer has the app installed, it can be **[downloaded here](\(Configuration.approverAppURL))**."))
                             .tint(.black)
                             .font(.subheadline)
                             .fixedSize(horizontal: false, vertical: true)
