@@ -69,14 +69,18 @@ struct BiometryGatedScreen<Content: View>: View {
                                 }
                             )
                         case .password:
-                            GetPassword { cryptedPassword in
+                            GetPassword { cryptedPassword, onComplete in
                                 apiProvider.decodableRequest(with: session, endpoint: .unlockWithPassword(API.UnlockWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) {
                                     (result: Result<API.UnlockWithPasswordApiResponse, MoyaError>) in
                                     switch result {
+                                    case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
+                                        onComplete(false)
                                     case .failure:
                                         showAuthentication = false
+                                        onComplete(true)
                                     case .success(let response):
                                         ownerState = response.ownerState
+                                        onComplete(true)
                                     }
                                 }
                             }
