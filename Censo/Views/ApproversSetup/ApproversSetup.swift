@@ -131,13 +131,25 @@ struct ApproversSetup: View {
                     }
                 )
             case .password:
-                GetPassword { cryptedPassword in
-                    apiProvider.decodableRequest(with: session, endpoint: .retrieveRecoveredShardsWithPassword(API.RetrieveRecoveryShardsWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
+                GetPassword { cryptedPassword, onComplete in
+                    apiProvider.decodableRequest(
+                        with: session,
+                        endpoint: .retrieveRecoveredShardsWithPassword(
+                            API.RetrieveRecoveryShardsWithPasswordApiRequest(
+                                password: API.Password(cryptedPassword: cryptedPassword)
+                            )
+                        )
+                    )
+                    { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
                         switch result {
+                        case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
+                            onComplete(false)
                         case .failure:
                             dismiss()
+                            onComplete(true)
                         case .success(let response):
                             replacePolicy(response.encryptedShards)
+                            onComplete(true)
                         }
                     }
                 }

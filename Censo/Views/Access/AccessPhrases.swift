@@ -248,7 +248,7 @@ struct AvailableRecovery: View {
                     }
                 )
             case .password:
-                GetPassword { cryptedPassword in
+                GetPassword { cryptedPassword, onComplete in
                     apiProvider.decodableRequest(with: session, endpoint: .retrieveRecoveredShardsWithPassword(API.RetrieveRecoveryShardsWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
                         switch result {
                         case .success(let response):
@@ -258,8 +258,12 @@ struct AvailableRecovery: View {
                                 self.step = .showingList
                                 showError(CensoError.failedToDecryptSecrets)
                             }
+                            onComplete(true)
+                        case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
+                            onComplete(false)
                         case .failure:
                             self.step = .showingList
+                            onComplete(true)
                         }
                     }
                     
