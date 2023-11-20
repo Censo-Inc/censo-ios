@@ -89,18 +89,18 @@ struct InitialPlanSetup: View {
                 VStack(alignment: .leading) {
                     Spacer()
                    
-                    Text("Scan your face")
+                    Text("Scan your face (optional)")
                         .font(.title2)
                         .bold()
                         .padding([.horizontal])
                     
                     VStack(alignment: .leading) {
-                        Text("Your face scan ensures that only you have access to your seed phrase.")
+                        Text("A face scan will ensure that only you have access to your seed phrase.")
                             .font(.subheadline)
                             .padding(.bottom, 4)
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        Text("You will capture and store an anonymous 3D map of your face to confirm your live physical presence.")
+                        Text("If you opt in, you can capture and store an anonymous 3D map of your face to confirm your live physical presence.")
                             .font(.subheadline)
                             .padding(.bottom, 1)
                             .fixedSize(horizontal: false, vertical: true)
