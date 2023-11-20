@@ -38,8 +38,8 @@ struct Welcome: View {
                     )
                     SetupStep(
                         image: Image("FaceScan"), 
-                        heading: "Scan your face",
-                        content: "Anonymous biometrics ensure that only you can access your seed phrase.",
+                        heading: "Scan your face (optional)",
+                        content: "Important operations can be secured by anonymous biometrics.",
                         completionText: {
                             if case .ready = ownerState {
                                 return "Completed"
