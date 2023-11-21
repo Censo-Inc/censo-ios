@@ -44,7 +44,7 @@ struct EnterAccessVerificationCode : View {
             VStack(spacing: 24) {
                 
                 HStack(alignment: .top) {
-                    if let link = URL(string: "\(Configuration.approverUrlScheme)://access/\(approver.participantId.value)") {
+                    if let link = URL(string: "\(Configuration.approverUrlScheme)://access/v2/\(approver.participantId.value)/\(approval.approvalId)") {
                         ShareLink(
                             item: link
                         ) {
@@ -226,7 +226,7 @@ struct EnterAccessVerificationCode : View {
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .initial),
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
             approver: approver,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
@@ -244,7 +244,7 @@ struct EnterAccessVerificationCode : View {
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .waitingForVerification),
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
             approver: approver,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
@@ -262,7 +262,7 @@ struct EnterAccessVerificationCode : View {
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .rejected),
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
             approver: approver,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
@@ -280,7 +280,7 @@ struct EnterAccessVerificationCode : View {
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, status: .waitingForApproval),
+            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
             approver: approver,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }

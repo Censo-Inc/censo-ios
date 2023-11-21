@@ -197,6 +197,7 @@ extension API {
             
             struct Approval : Codable {
                 var participantId: ParticipantId
+                var approvalId: String
                 var status: Status
                 
                 enum Status : String, Codable {
