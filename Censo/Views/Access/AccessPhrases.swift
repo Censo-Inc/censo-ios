@@ -181,16 +181,8 @@ struct AvailableRecovery: View {
             )
             .navigationTitle(Text("Access"))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onFinished()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.black)
-                    }
-                }
-            })
+            .navigationBarBackButtonHidden()
+            .interactiveDismissDisabled()
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button {
                 } label: {

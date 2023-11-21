@@ -17,6 +17,7 @@ struct ShowPhraseList: View {
     var viewedPhrases: [Int]
     var onPhraseSelected: (Int) -> Void
     var onFinished: () -> Void
+    @State private var confirmExit = false
     
     var body: some View {
         VStack {
@@ -71,7 +72,11 @@ struct ShowPhraseList: View {
             Spacer()
             
             Button {
-                onFinished()
+                if ownerState.policy.externalApproversCount > 0 {
+                    confirmExit = true
+                } else {
+                    onFinished()
+                }
             } label: {
                 Text("Exit accessing phrases")
                     .font(.headline)
@@ -80,6 +85,15 @@ struct ShowPhraseList: View {
             .buttonStyle(RoundedButtonStyle())
         }
         .padding()
+        .alert("Exit accessing phrases", isPresented: $confirmExit) {
+            Button {
+                onFinished()
+            } label: { Text("Confirm") }
+            Button {
+            } label: { Text("Cancel") }
+        } message: {
+            Text("Are you all finished accessing phrases? If you exit you will need to request approval to access your phrases again.")
+        }
     }
 }
 
