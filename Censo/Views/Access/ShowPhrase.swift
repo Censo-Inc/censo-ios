@@ -12,12 +12,14 @@ struct ShowPhrase: View {
     var label: String
     var words: [String]
     var onComplete: (Bool) -> Void
+    var start: Date
     
     var body: some View {
         VStack {
             HStack {
                 Image("HourGlass")
                 AccessExpirationCountdown(
+                    expiresAt: start.addingTimeInterval(TimeInterval(900)),
                     onExpired: {
                         onComplete(false)
                     },
@@ -59,7 +61,8 @@ struct ShowPhrase: View {
         ShowPhrase(
             label: "Testing",
             words: ["hello", "goodbye", "three", "four"],
-            onComplete: {_ in}
+            onComplete: {_ in},
+            start: Date.now
         )
         .navigationTitle(Text("Access"))
         .navigationBarTitleDisplayMode(.inline)
