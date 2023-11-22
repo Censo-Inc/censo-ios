@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Base32
 
 struct RotatingTotpPinView: View {
     var session: Session
@@ -125,7 +126,7 @@ extension String {
         RotatingTotpPinView(
             session: session,
             deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
-                data: generateBase32().decodeBase32()
+                data: base32DecodeToData(generateBase32())!
             ),
             style: .owner
         )
@@ -138,7 +139,7 @@ extension String {
         RotatingTotpPinView(
             session: session,
             deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
-                data: generateBase32().decodeBase32()
+                data: base32DecodeToData(generateBase32())!
             ),
             style: .approver
         )

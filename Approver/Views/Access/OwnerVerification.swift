@@ -11,6 +11,7 @@ import SwiftUI
 import Moya
 import BigInt
 import raygun4apple
+import Base32
 
 struct OwnerVerification: View {
     @Environment(\.apiProvider) var apiProvider
@@ -198,7 +199,7 @@ struct OwnerVerification: View {
                         createdAt: Date(),
                         recoveryPublicKey: .sample,
                         encryptedTotpSecret: try! session.deviceKey.encrypt(
-                            data: generateBase32().decodeBase32()
+                            data: base32DecodeToData(generateBase32())!
                         )
                     )
                 )
