@@ -79,8 +79,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Failed to replace policy", comment: "policy replacement")
         case .recoveryAlreadyOnAnotherDevice:
             return NSLocalizedString("There is already a recovery on another device", comment: "another device recovery")
-        case .invalidUrl:
-            return NSLocalizedString("The link provided is not valid for this app", comment: "Invalid url")
+        case .invalidUrl(let url):
+            return NSLocalizedString("The link provided is not valid for this app: \(url)", comment: "Invalid url")
         case .cannotVerifyKeyConfirmationSignature:
             return NSLocalizedString("Cannot verify key confirmation signature", comment: "Invalid signature")
         case .resourceNotFound:
