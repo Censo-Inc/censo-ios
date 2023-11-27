@@ -28,7 +28,7 @@ struct PasteLinkButton: View {
     }
     
     private func handlePastedInfo() {
-        guard let pastedInfo = UIPasteboard.general.string,
+        guard let pastedInfo = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines),
               let url = URL(string: pastedInfo) else {
             let err = CensoError.invalidUrl(url: UIPasteboard.general.string ?? "")
             RaygunClient.sharedInstance().send(error: err, tags: ["Approver Paste"], customData: nil)
