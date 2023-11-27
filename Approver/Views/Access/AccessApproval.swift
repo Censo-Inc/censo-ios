@@ -14,6 +14,7 @@ struct AccessApproval: View {
     
     var session: Session
     var participantId: ParticipantId
+    var approvalId: String?
     var onSuccess: () -> Void
 
     @RemoteResult<[API.GuardianState], API> private var guardianStates
@@ -51,6 +52,7 @@ struct AccessApproval: View {
                     OwnerVerification(
                         session: session,
                         guardianState: guardianState,
+                        approvalId: approvalId,
                         onGuardianStatesUpdated: replaceGuardianStates
                     )
                     .onReceive(refreshStatePublisher) { firedDate in
@@ -100,8 +102,11 @@ struct AccessApproval: View {
 
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .storeRecoveryTotpSecret(
+                endpoint: approvalId == nil ? .storeRecoveryTotpSecret(
                     participantId,
+                    encryptedTotpSecret
+                ) : .storeAccessTotpSecret(
+                    approvalId!,
                     encryptedTotpSecret
                 )
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in

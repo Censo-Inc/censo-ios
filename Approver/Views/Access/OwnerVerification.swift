@@ -30,6 +30,7 @@ struct OwnerVerification: View {
     
     var session: Session
     var guardianState: API.GuardianState
+    var approvalId: String?
     var onGuardianStatesUpdated: ([API.GuardianState]) -> Void
     
     var body: some View {
@@ -131,8 +132,11 @@ struct OwnerVerification: View {
             wrongCode = false
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .approveOwnerVerification(
+                endpoint: approvalId == nil ? .approveOwnerVerification(
                     participantId,
+                    encryptedShard
+                ) : .approveAccessVerification(
+                    approvalId!,
                     encryptedShard
                 )
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
@@ -150,7 +154,7 @@ struct OwnerVerification: View {
             inProgress = true
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .rejectOwnerVerification(participantId)
+                endpoint: approvalId == nil ? .rejectOwnerVerification(participantId) : .rejectAccessVerification(approvalId!)
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
                 inProgress = false
                     switch result {

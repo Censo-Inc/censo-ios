@@ -28,6 +28,10 @@ struct API {
         case storeRecoveryTotpSecret(ParticipantId, Base64EncodedString)
         case approveOwnerVerification(ParticipantId, Base64EncodedString)
         case rejectOwnerVerification(ParticipantId)
+        
+        case storeAccessTotpSecret(String, Base64EncodedString)
+        case approveAccessVerification(String, Base64EncodedString)
+        case rejectAccessVerification(String)
     }
     
     enum GuardianPhase: Codable {
@@ -164,6 +168,12 @@ extension API: TargetType {
             return "v1/recovery/\(id.value)/approval"
         case .rejectOwnerVerification(let id):
             return "v1/recovery/\(id.value)/rejection"
+        case .storeAccessTotpSecret(let id, _):
+            return "v1/access/\(id)/totp"
+        case .approveAccessVerification(let id, _):
+            return "v1/access/\(id)/approval"
+        case .rejectAccessVerification(let id):
+            return "v1/access/\(id)/rejection"
         }
     }
 
@@ -175,7 +185,10 @@ extension API: TargetType {
              .submitVerification,
              .storeRecoveryTotpSecret,
              .approveOwnerVerification,
-             .rejectOwnerVerification:
+             .rejectOwnerVerification,
+             .storeAccessTotpSecret,
+             .approveAccessVerification,
+             .rejectAccessVerification:
             return .post
         case .user:
             return .get
@@ -190,7 +203,8 @@ extension API: TargetType {
              .deleteUser,
              .declineInvitation,
              .acceptInvitation,
-             .rejectOwnerVerification:
+             .rejectOwnerVerification,
+             .rejectAccessVerification:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -205,6 +219,14 @@ extension API: TargetType {
                 "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
             ])
         case .approveOwnerVerification(_, let encryptedShard):
+            return .requestJSONEncodable([
+                "encryptedShard": encryptedShard
+            ])
+        case .storeAccessTotpSecret(_, let deviceEncryptedTotpSecret):
+            return .requestJSONEncodable([
+                "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
+            ])
+        case .approveAccessVerification(_, let encryptedShard):
             return .requestJSONEncodable([
                 "encryptedShard": encryptedShard
             ])
