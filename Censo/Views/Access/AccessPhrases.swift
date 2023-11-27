@@ -158,7 +158,7 @@ struct AvailableRecovery: View {
         case showingList
         case intro(phraseIndex: Int)
         case retrievingShards(phraseIndex: Int)
-        case showingSeedPhrase(phraseIndex: Int, phrase: [String])
+        case showingSeedPhrase(phraseIndex: Int, phrase: [String], start: Date)
     }
     
     @State private var step: Step = .showingList
@@ -229,7 +229,7 @@ struct AvailableRecovery: View {
                     },
                     onSuccess: { response in
                         do {
-                            self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
+                            self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex), start: Date.now)
                         } catch {
                             self.step = .showingList
                             showError(CensoError.failedToDecryptSecrets)
@@ -245,7 +245,7 @@ struct AvailableRecovery: View {
                         switch result {
                         case .success(let response):
                             do {
-                                self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex))
+                                self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(response.encryptedShards, phraseIndex), start: Date.now)
                             } catch {
                                 self.step = .showingList
                                 showError(CensoError.failedToDecryptSecrets)
@@ -261,7 +261,7 @@ struct AvailableRecovery: View {
                     
                 }
             }
-        case .showingSeedPhrase(let phraseIndex, let phrase):
+        case .showingSeedPhrase(let phraseIndex, let phrase, let start):
             let label = ownerState.vault.secrets[phraseIndex].label
             ShowPhrase(
                 label: label,
@@ -271,7 +271,8 @@ struct AvailableRecovery: View {
                         viewedPhrases.append(phraseIndex)
                     }
                     self.step = .showingList
-                }
+                },
+                start: start
             )
             .navigationTitle(Text(label))
             .navigationBarTitleDisplayMode(.inline)
