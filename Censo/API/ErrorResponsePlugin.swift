@@ -24,6 +24,8 @@ struct ErrorResponsePlugin: Moya.PluginType {
             return .failure(MoyaError.underlying(CensoError.resourceNotFound, nil))
         case (.success(let response), _) where response.statusCode == 401:
             return result
+        case (.success(let response), _) where response.statusCode == 426:
+            return .failure(MoyaError.underlying(CensoError.upgradeRequired, nil))
         case (.success(let response), _) where response.statusCode >= 400:
             return .failure(MoyaError.statusCode(response))
         default:

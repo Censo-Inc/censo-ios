@@ -203,7 +203,8 @@ extension API: TargetType {
             "X-Censo-OS-Version": UIDevice.current.systemVersion,
             "X-Censo-Device-Type": UIDevice.current.systemName,
             "X-Censo-App-Version": Bundle.main.shortVersionString,
-            "X-Censo-App-Identifier": Bundle.main.bundleIdentifier ?? "Unknown"
+            "X-Censo-App-Identifier": Bundle.main.bundleIdentifier ?? "Unknown",
+            "X-Censo-App-Platform": "ios"
         ]
     }
 }
