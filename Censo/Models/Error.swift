@@ -34,6 +34,7 @@ enum CensoError: Swift.Error {
     case invitationNotFound
     case invitationAlreadyAccepted
     case accessRequestNotFound
+    case upgradeRequired
 }
 
 extension CensoError: LocalizedError {
@@ -91,7 +92,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Invitation already accepted", comment: "Already accepted")
         case .accessRequestNotFound:
             return NSLocalizedString("Access request not found", comment: "Not found")
+        case .upgradeRequired:
+            return NSLocalizedString("App is out-of-date, you must upgrade to continue", comment: "Upgrade required")
         }
+        
     }
 }
 
