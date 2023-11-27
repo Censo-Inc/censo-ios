@@ -7,6 +7,7 @@
 
 import Foundation
 import CryptoKit
+import Base32
 
 struct TotpUtils {
 
@@ -59,5 +60,14 @@ extension String {
     
     func addDashToTotpCode() -> String {
         return self.dropLast(self.count / 2) + "-" + self.dropFirst(self.count / 2)
+    }
+}
+
+extension Base64EncodedString {
+    static func encryptedTotpSecret(deviceKey: DeviceKey) throws -> Base64EncodedString {
+        guard let secret = base32DecodeToData(generateBase32()) else {
+            throw CensoError.cannotCreateTotpSecret
+        }
+        return try deviceKey.encrypt(data: secret)
     }
 }
