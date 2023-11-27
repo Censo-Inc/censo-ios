@@ -37,6 +37,7 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name.deleteUserDataNotification)) { _ in
                     session.deleteDeviceKey()
                     Keychain.removeUserCredentials()
+                    UserDefaults.standard.removeObject(forKey: "attestKey-\(session.userCredentials.userIdentifier)")
                     self.credentialState = .notFound
                 }
                 .onChange(of: scenePhase) { newPhase in

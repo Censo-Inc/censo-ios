@@ -16,7 +16,9 @@ struct ContentView: View {
             }, 
             loggedInContent: { session in
                 CloudCheck {
-                    LoggedInOwnerView(session: session)
+                    AppAttest(session: session) {
+                        LoggedInOwnerView(session: session)
+                    }
                 }
             }
         )

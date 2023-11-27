@@ -243,4 +243,8 @@ extension API {
         var ownerState: OwnerState
         var encryptedShards: [EncryptedShard]
     }
+
+    struct AttestationChallenge: Decodable {
+        var challenge: Base64EncodedString
+    }
 }

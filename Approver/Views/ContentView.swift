@@ -42,57 +42,59 @@ struct ContentView: View {
             },
             loggedInContent: { session in
                 CloudCheck {
-                    NavigationView {
-                        VStack {
-                            if let url {
-                                ProgressView()
-                                    .onAppear {
-                                        self.url = nil
-                                        openURL(url)
-                                    }
-                            } else {
-                                ApproverHome(
-                                    session: session,
-                                    onUrlPasted: { url in openURL(url) },
-                                    reloadNeeded: $reloadNeeded
-                                )
-                            }
-                            
-                            NavigationLink(isActive: $navigateToRoute) {
-                                switch (route) {
-                                case .onboard(let inviteCode):
-                                    Onboarding(
-                                        session: session,
-                                        inviteCode: inviteCode,
-                                        onSuccess: {
-                                            navigateToRoute = false
-                                            self.route = nil
-                                            self.reloadNeeded = true
-                                        }
-                                    )
-                                case .access(let participantId, let approvalId):
-                                    AccessApproval(
-                                        session: session,
-                                        participantId: participantId,
-                                        approvalId: approvalId,
-                                        onSuccess: {
-                                            navigateToRoute = false
-                                            self.route = nil
-                                        }
-                                    )
-                                case nil:
+                    AppAttest(session: session) {
+                        NavigationView {
+                            VStack {
+                                if let url {
                                     ProgressView()
                                         .onAppear {
-                                            navigateToRoute = false
-                                            self.route = nil
+                                            self.url = nil
+                                            openURL(url)
                                         }
+                                } else {
+                                    ApproverHome(
+                                        session: session,
+                                        onUrlPasted: { url in openURL(url) },
+                                        reloadNeeded: $reloadNeeded
+                                    )
                                 }
-                            } label: {
-                                EmptyView()
+
+                                NavigationLink(isActive: $navigateToRoute) {
+                                    switch (route) {
+                                    case .onboard(let inviteCode):
+                                        Onboarding(
+                                            session: session,
+                                            inviteCode: inviteCode,
+                                            onSuccess: {
+                                                navigateToRoute = false
+                                                self.route = nil
+                                                self.reloadNeeded = true
+                                            }
+                                        )
+                                    case .access(let participantId, let approvalId):
+                                        AccessApproval(
+                                            session: session,
+                                            participantId: participantId,
+                                            approvalId: approvalId,
+                                            onSuccess: {
+                                                navigateToRoute = false
+                                                self.route = nil
+                                            }
+                                        )
+                                    case nil:
+                                        ProgressView()
+                                            .onAppear {
+                                                navigateToRoute = false
+                                                self.route = nil
+                                            }
+                                    }
+                                } label: {
+                                    EmptyView()
+                                }
                             }
                         }
+                        .onOpenURL(perform: openURL)
                     }
-                    .onOpenURL(perform: openURL)
                 }
             }
         )

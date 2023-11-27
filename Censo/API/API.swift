@@ -15,6 +15,9 @@ struct API {
     var endpoint: Endpoint
 
     enum Endpoint {
+        case attestationChallenge
+        case registerAttestationObject(challenge: String, attestation: String, keyId: String)
+
         case user
         case deleteUser
         case signIn(UserCredentials)
@@ -54,6 +57,10 @@ extension API: TargetType {
 
     var path: String {
         switch endpoint {
+        case .attestationChallenge:
+            return "v1/attestation-challenge"
+        case .registerAttestationObject:
+            return "v1/apple-attestation"
         case .signIn:
             return "v1/sign-in"
         case .user,
@@ -125,7 +132,9 @@ extension API: TargetType {
              .requestRecovery,
              .submitRecoveryTotpVerification,
              .retrieveRecoveredShards,
-             .retrieveRecoveredShardsWithPassword:
+             .retrieveRecoveredShardsWithPassword,
+             .registerAttestationObject,
+             .attestationChallenge:
             return .post
         case .replacePolicy:
             return .put
@@ -137,7 +146,8 @@ extension API: TargetType {
         case .user,
              .deleteUser,
              .initBiometryVerification,
-             .rejectGuardianVerification:
+             .rejectGuardianVerification,
+             .attestationChallenge:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -155,6 +165,22 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "deviceType": "Ios",
                 "token": token,
+            ])
+            #endif
+        case .registerAttestationObject(let challenge, let attestation, let keyId):
+            #if DEBUG
+            return .requestJSONEncodable([
+                "deviceType": "IosDebug",
+                "challenge": challenge,
+                "attestationObject": attestation,
+                "keyId": keyId
+            ])
+            #else
+            return .requestJSONEncodable([
+                "deviceType": "Ios",
+                "challenge": challenge,
+                "attestationObject": attestation,
+                "keyId": keyId
             ])
             #endif
         case .createPolicy(let request):
@@ -206,6 +232,35 @@ extension API: TargetType {
             "X-Censo-App-Identifier": Bundle.main.bundleIdentifier ?? "Unknown",
             "X-Censo-App-Platform": "ios"
         ]
+    }
+
+    var requiresAssertion: Bool {
+        switch endpoint {
+        case .user,
+             .attestationChallenge,
+             .registerAttestationObject,
+             .registerPushToken,
+             .rejectGuardianVerification,
+             .setupPolicy,
+             .initBiometryVerification,
+             .confirmBiometryVerification,
+             .unlock,
+             .prolongUnlock,
+             .lock,
+             .storeSecret,
+             .deleteRecovery:
+            return false
+        case .signIn,
+             .deleteUser,
+             .createPolicy,
+             .replacePolicy,
+             .requestRecovery,
+             .submitRecoveryTotpVerification,
+             .retrieveRecoveredShards,
+             .deleteSecret,
+             .confirmGuardian:
+            return true
+        }
     }
 }
 

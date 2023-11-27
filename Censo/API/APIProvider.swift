@@ -22,5 +22,8 @@ extension EnvironmentValues {
         get {
             self[APIProviderEnvironmentKey.self]
         }
+        set {
+            self[APIProviderEnvironmentKey.self] = newValue
+        }
     }
 }

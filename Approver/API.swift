@@ -17,6 +17,9 @@ struct API {
     var endpoint: Endpoint
 
     enum Endpoint {
+        case attestationChallenge
+        case registerAttestationObject(challenge: String, attestation: String, keyId: String)
+
         case user
         case deleteUser
         case signIn(UserCredentials)
@@ -142,6 +145,10 @@ struct API {
     struct OwnerVerificationApiResponse: Codable {
         var guardianStates: [GuardianState]
     }
+
+    struct AttestationChallenge: Decodable {
+        var challenge: Base64EncodedString
+    }
 }
 
 extension API: TargetType {
@@ -151,6 +158,10 @@ extension API: TargetType {
 
     var path: String {
         switch endpoint {
+        case .attestationChallenge:
+            return "v1/attestation-challenge"
+        case .registerAttestationObject:
+            return "v1/apple-attestation"
         case .signIn:
             return "v1/sign-in"
         case .user,
@@ -188,7 +199,9 @@ extension API: TargetType {
              .rejectOwnerVerification,
              .storeAccessTotpSecret,
              .approveAccessVerification,
-             .rejectAccessVerification:
+             .rejectAccessVerification,
+             .registerAttestationObject,
+             .attestationChallenge:
             return .post
         case .user:
             return .get
@@ -204,8 +217,25 @@ extension API: TargetType {
              .declineInvitation,
              .acceptInvitation,
              .rejectOwnerVerification,
-             .rejectAccessVerification:
+             .rejectAccessVerification,
+             .attestationChallenge:
             return .requestPlain
+        case .registerAttestationObject(let challenge, let attestation, let keyId):
+            #if DEBUG
+            return .requestJSONEncodable([
+                "deviceType": "IosDebug",
+                "challenge": challenge,
+                "attestationObject": attestation,
+                "keyId": keyId
+            ])
+            #else
+            return .requestJSONEncodable([
+                "deviceType": "Ios",
+                "challenge": challenge,
+                "attestationObject": attestation,
+                "keyId": keyId
+            ])
+            #endif
         case .signIn(let credentials):
             return .requestJSONEncodable([
                 "jwtToken": "",
@@ -244,6 +274,27 @@ extension API: TargetType {
             "X-Censo-App-Platform": "ios"
         ]
     }
+
+    var requiresAssertion: Bool {
+        switch endpoint {
+        case .user,
+             .declineInvitation,
+             .acceptInvitation,
+             .storeRecoveryTotpSecret,
+             .rejectOwnerVerification,
+             .attestationChallenge,
+             .registerAttestationObject,
+             .storeAccessTotpSecret,
+             .rejectAccessVerification:
+            return false
+        case .deleteUser,
+             .submitVerification,
+             .approveOwnerVerification,
+             .signIn,
+             .approveAccessVerification:
+            return true
+        }
+    }
 }
 
 extension Data {
@@ -271,6 +322,9 @@ extension EnvironmentValues {
     var apiProvider: MoyaProvider<API> {
         get {
             self[APIProviderEnvironmentKey.self]
+        }
+        set {
+            self[APIProviderEnvironmentKey.self] = newValue
         }
     }
 }
