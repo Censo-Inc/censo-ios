@@ -11,6 +11,7 @@ import raygun4apple
 
 struct SubmitVerification: View {
     @Environment(\.apiProvider) var apiProvider
+    
     var invitationId: InvitationId
     var session: Session
     var guardianState: API.GuardianState
@@ -22,7 +23,7 @@ struct SubmitVerification: View {
 
     var onSuccess: (API.GuardianState?) -> Void
 
-    private let waitingForVerification = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+    @State private var waitingForVerification = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
@@ -37,9 +38,8 @@ struct SubmitVerification: View {
                     label: {
                         Text("Waiting for the code to be verified...")
                     }
-                ).onReceive(waitingForVerification) { _ in
-                    reload()
-                }
+                )
+                .modifier(RefreshOnTimer(timer: $waitingForVerification, interval: 3, refresh: reload))
             case .waitingForCode:
                 Text("The person you are assisting will give you a 6-digit code. Enter it below.")
                     .font(.headline)

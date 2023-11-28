@@ -55,9 +55,7 @@ struct AccessApproval: View {
                         approvalId: approvalId,
                         onGuardianStatesUpdated: replaceGuardianStates
                     )
-                    .onReceive(refreshStatePublisher) { firedDate in
-                        reload()
-                    }
+                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 3, refresh: reload))
                 case .complete:
                     OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)

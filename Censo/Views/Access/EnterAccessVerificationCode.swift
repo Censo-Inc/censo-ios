@@ -138,10 +138,8 @@ struct EnterAccessVerificationCode : View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 32)
+        .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 5, refresh: refreshState))
         .onReceive(remoteNotificationPublisher) { _ in
-            refreshState()
-        }
-        .onReceive(refreshStatePublisher) { _ in
             refreshState()
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in

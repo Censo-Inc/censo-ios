@@ -49,7 +49,8 @@ struct LoggedInOwnerView: View {
                             HomeScreen(
                                 session: session,
                                 ownerState: ready,
-                                onOwnerStateUpdated: { _ in
+                                onOwnerStateUpdated: { ownerState in
+                                    replaceOwnerState(newOwnerState: ownerState)
                                     reload()
                                 }
                             )
