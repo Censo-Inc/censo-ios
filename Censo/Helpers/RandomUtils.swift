@@ -23,7 +23,7 @@ func generateRandomHex(lenght: Int) -> String {
 }
 
 func generateBase32() -> String {
-    return generateRandom(letters: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length: 10)
+    return generateRandom(letters: "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", length: 16)
 }
 
 func generateRandom(letters: String, length: Int) -> String {
