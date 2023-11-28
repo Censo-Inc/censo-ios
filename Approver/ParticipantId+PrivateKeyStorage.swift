@@ -7,6 +7,7 @@
 
 import Foundation
 import CryptoKit
+import SwiftKeccak
 
 extension ParticipantId {
     func persistEncodedPrivateKey(encodedPrivateKey: String) {
@@ -18,7 +19,7 @@ extension ParticipantId {
     }
     
     func privateKey(userIdentifier: String) -> EncryptionKey? {
-        let symmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
+        let symmetricKey = SymmetricKey(data: keccak256(userIdentifier))
 
         guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value)?.hexData(),
               let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKey),
@@ -35,7 +36,7 @@ func generatePrivateKey() throws -> Data {
 
 func encryptPrivateKey(privateKey: Data, userIdentifier: String) -> String? {
     return try? SymmetricKey(
-        data: SHA256.hash(data: userIdentifier.data(using: .utf8)!)
+        data: keccak256(userIdentifier)
     ).encrypt(message: privateKey).toHexString()
 }
 
