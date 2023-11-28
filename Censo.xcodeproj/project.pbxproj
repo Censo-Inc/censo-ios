@@ -63,6 +63,7 @@
 		3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8214662AC22D6E00AC2598 /* BorderedButtonStyle.swift */; };
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DA2B7192B16429B001A0775 /* SwiftKeccak in Frameworks */ = {isa = PBXBuildFile; productRef = 3DA2B7182B16429B001A0775 /* SwiftKeccak */; };
+		3DA2B71B2B16A60B001A0775 /* SwiftKeccak in Frameworks */ = {isa = PBXBuildFile; productRef = 3DA2B71A2B16A60B001A0775 /* SwiftKeccak */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		3DE0B9772ABA2ECD0001F3A3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
@@ -448,6 +449,7 @@
 				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D3796922A8C225D00913581 /* Moya in Frameworks */,
 				6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */,
+				3DA2B71B2B16A60B001A0775 /* SwiftKeccak in Frameworks */,
 				6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -906,6 +908,7 @@
 				3D3796912A8C225D00913581 /* Moya */,
 				6CC60F6C2AA12AF2001A4454 /* BigInt */,
 				BD43BCA92B0E71FE000091E9 /* Base32 */,
+				3DA2B71A2B16A60B001A0775 /* SwiftKeccak */,
 			);
 			productName = Censo;
 			productReference = 3D0C1E742A83A79400AB3A48 /* Censo.app */;
@@ -2521,6 +2524,11 @@
 			productName = Moya;
 		};
 		3DA2B7182B16429B001A0775 /* SwiftKeccak */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DA2B7172B16429B001A0775 /* XCRemoteSwiftPackageReference "SwiftKeccak" */;
+			productName = SwiftKeccak;
+		};
+		3DA2B71A2B16A60B001A0775 /* SwiftKeccak */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3DA2B7172B16429B001A0775 /* XCRemoteSwiftPackageReference "SwiftKeccak" */;
 			productName = SwiftKeccak;
