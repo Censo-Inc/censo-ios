@@ -432,7 +432,7 @@
 		E4D3768C2AE83A24005809F7 /* SavedAndSharded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedAndSharded.swift; sourceTree = "<group>"; };
 		E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = FaceTec.strings; sourceTree = "<group>"; };
 		E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallGatedScreen.swift; sourceTree = "<group>"; };
-		E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = file; name = Subscriptions.storekit; path = Censo/Subscriptions.storekit; sourceTree = SOURCE_ROOT; };
+		E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Subscriptions.storekit; path = Censo/Subscriptions.storekit; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1333,6 +1333,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://api.censo.co";
 				APPROVER_URL_SCHEME = censo;
+				APP_STORE_PRODUCT_ID = co.censo.prod.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1398,6 +1399,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://api.censo.co";
 				APPROVER_URL_SCHEME = censo;
+				APP_STORE_PRODUCT_ID = co.censo.prod.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1779,6 +1781,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://integration.censo.dev";
 				APPROVER_URL_SCHEME = "censo-integration";
+				APP_STORE_PRODUCT_ID = co.censo.integration.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1905,6 +1908,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://staging.censo.dev";
 				APPROVER_URL_SCHEME = "censo-staging";
+				APP_STORE_PRODUCT_ID = co.censo.staging.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2032,6 +2036,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://integration.censo.dev";
 				APPROVER_URL_SCHEME = "censo-integration";
+				APP_STORE_PRODUCT_ID = co.censo.integration.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2152,6 +2157,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://staging.censo.dev";
 				APPROVER_URL_SCHEME = "censo-staging";
+				APP_STORE_PRODUCT_ID = co.censo.staging.standard.1month;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

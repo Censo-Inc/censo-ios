@@ -11,7 +11,7 @@
     "_askToBuyEnabled" : false,
     "_developerTeamID" : "VN5U64MGYX",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 721762244.04568899,
+    "_lastSynchronizedDate" : 722877868.01610601,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -79,10 +79,10 @@
           ],
           "displayPrice" : "1.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "6471999467",
+          "groupNumber" : 2,
+          "internalID" : "6473281503",
           "introductoryOffer" : {
-            "internalID" : "2F07AF7B",
+            "internalID" : "758F4194",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P1W"
@@ -94,7 +94,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "co.censo.standard.1month",
+          "productID" : "co.censo.integration.standard.1month",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Standard - 1 Month - Integration",
           "subscriptionGroupID" : "21412008",

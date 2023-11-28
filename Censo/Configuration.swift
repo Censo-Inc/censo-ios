@@ -18,6 +18,7 @@ struct Configuration {
     static let raygunEnabled: Bool = stringValue(for: "RAYGUN_ENABLED").lowercased() == "yes"
     static let censoAuthBaseURL: URL = URLValue(for: "CENSO_AUTH_BASE_URL")
     static let minVersionURL: URL = URLValue(for: "MIN_VERSION_URL")
+    static let appStoreProductId: String = stringValue(for: "APP_STORE_PRODUCT_ID")
 }
 
 extension Configuration {

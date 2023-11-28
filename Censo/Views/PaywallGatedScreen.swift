@@ -19,7 +19,7 @@ struct PaywallGatedScreen<Content: View>: View {
     @Binding var ownerState: API.OwnerState
     @ViewBuilder var content: () -> Content
     
-    private let productIds = ["co.censo.standard.1month"]
+    private let productIds = [Configuration.appStoreProductId]
     
     @State private var offer: Paywall.Offer?
     
