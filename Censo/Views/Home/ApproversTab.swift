@@ -103,7 +103,8 @@ struct ApproversTab: View {
             policy: .sample,
             vault: .sample,
             recovery: nil,
-            authType: .facetec
+            authType: .facetec,
+            subscriptionStatus: .active
         ),
         onOwnerStateUpdated: { _ in }
     )
@@ -122,7 +123,8 @@ struct ApproversTab: View {
             ),
             vault: .sample,
             recovery: nil,
-            authType: .facetec
+            authType: .facetec,
+            subscriptionStatus: .active
         ),
         onOwnerStateUpdated: { _ in }
     )

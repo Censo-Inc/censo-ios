@@ -181,7 +181,8 @@ struct EnterApproverNickname: View {
                 policy: .sample,
                 vault: .sample,
                 guardianSetup: nil,
-                authType: .facetec
+                authType: .facetec,
+                subscriptionStatus: .active
             ),
             onOwnerStateUpdated: { _ in }
         )

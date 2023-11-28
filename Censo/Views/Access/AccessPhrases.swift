@@ -313,7 +313,7 @@ struct AvailableRecovery: View {
 #Preview {
     AccessPhrases(
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
         onOwnerStateUpdated: {_ in}
     )
 }

@@ -126,6 +126,6 @@ struct SetupStep: View {
 
 #if DEBUG
 #Preview {
-    Welcome(session: .sample, ownerState: .constant(API.OwnerState.initial(API.OwnerState.Initial(authType: .none))))
+    Welcome(session: .sample, ownerState: .constant(API.OwnerState.initial(API.OwnerState.Initial(authType: .none, subscriptionStatus: .active))))
 }
 #endif

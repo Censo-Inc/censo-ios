@@ -104,7 +104,7 @@ struct ShowPhraseList: View {
     NavigationView {
         ShowPhraseList(
             session: .sample,
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
             onOwnerStateUpdated: {_ in },
             viewedPhrases: [1],
             onPhraseSelected: {_ in },

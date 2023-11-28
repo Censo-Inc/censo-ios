@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 struct UserCredentials: Codable {
     var idToken: Data
@@ -14,6 +15,12 @@ struct UserCredentials: Codable {
     enum CodingKeys: String, CodingKey {
         case idToken = "jwtToken"
         case userIdentifier = "identityToken"
+    }
+    
+    func userIdentifierHash() -> String {
+        return Data(SHA256.hash(
+            data: Data(userIdentifier.data(using: .utf8)!)
+        )).toHexString()
     }
 }
 

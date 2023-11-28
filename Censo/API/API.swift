@@ -47,6 +47,7 @@ struct API {
         case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
         case retrieveRecoveredShards(RetrieveRecoveryShardsApiRequest)
         case retrieveRecoveredShardsWithPassword(RetrieveRecoveryShardsWithPasswordApiRequest)
+        case submitPurchase(SubmitPurchaseApiRequest)
     }
 }
 
@@ -106,6 +107,8 @@ extension API: TargetType {
             return "v1/recovery/retrieval"
         case .retrieveRecoveredShardsWithPassword:
             return "v1/recovery/retrieval-password"
+        case .submitPurchase:
+            return "v1/purchases"
         }
     }
 
@@ -134,7 +137,8 @@ extension API: TargetType {
              .retrieveRecoveredShards,
              .retrieveRecoveredShardsWithPassword,
              .registerAttestationObject,
-             .attestationChallenge:
+             .attestationChallenge,
+             .submitPurchase:
             return .post
         case .replacePolicy:
             return .put
@@ -152,9 +156,8 @@ extension API: TargetType {
         case .signIn(let credentials):
             return .requestJSONEncodable([
                 "jwtToken": "",
-                "identityToken": Data(SHA256.hash(
-                    data: Data(credentials.userIdentifier.data(using: .utf8)!)
-                )).toHexString()])
+                "identityToken": credentials.userIdentifierHash()
+            ])
         case .registerPushToken(let token):
             #if DEBUG
             return .requestJSONEncodable([
@@ -219,6 +222,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .retrieveRecoveredShardsWithPassword(let request):
             return .requestJSONEncodable(request)
+        case .submitPurchase(let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -245,6 +250,7 @@ extension API: TargetType {
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
+             .unlockWithPassword,
              .prolongUnlock,
              .lock,
              .storeSecret,
@@ -253,12 +259,15 @@ extension API: TargetType {
         case .signIn,
              .deleteUser,
              .createPolicy,
+             .createPolicyWithPassword,
              .replacePolicy,
              .requestRecovery,
              .submitRecoveryTotpVerification,
              .retrieveRecoveredShards,
+             .retrieveRecoveredShardsWithPassword,
              .deleteSecret,
-             .confirmGuardian:
+             .confirmGuardian,
+             .submitPurchase:
             return true
         }
     }

@@ -58,7 +58,7 @@ struct AccessIntro: View {
 #Preview {
     NavigationView {
         AccessIntro(
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
             session: .sample,
             onReadyToGetStarted: {}
         )

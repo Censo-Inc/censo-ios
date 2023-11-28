@@ -29,29 +29,31 @@ struct LoggedInOwnerView: View {
                     get: { ownerState },
                     set: { replaceOwnerState(newOwnerState: $0) }
                 )
-                BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                    switch ownerState {
-                    case .initial:
-                        Welcome(
-                            session: session,
-                            ownerState: ownerStateBinding
-                        )
-                    case .ready(let ready) where ready.vault.secrets.isEmpty:
-                        FirstPhrase(
-                            ownerState: ready,
-                            session: session,
-                            onComplete: { ownerState in
-                                replaceOwnerState(newOwnerState: ownerState)
-                            }
-                        )
-                    case .ready(let ready):
-                        HomeScreen(
-                            session: session,
-                            ownerState: ready,
-                            onOwnerStateUpdated: { _ in
-                                reload()
-                            }
-                        )
+                PaywallGatedScreen(session: session, ownerState: ownerStateBinding) {
+                    BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                        switch ownerState {
+                        case .initial:
+                            Welcome(
+                                session: session,
+                                ownerState: ownerStateBinding
+                            )
+                        case .ready(let ready) where ready.vault.secrets.isEmpty:
+                            FirstPhrase(
+                                ownerState: ready,
+                                session: session,
+                                onComplete: { ownerState in
+                                    replaceOwnerState(newOwnerState: ownerState)
+                                }
+                            )
+                        case .ready(let ready):
+                            HomeScreen(
+                                session: session,
+                                ownerState: ready,
+                                onOwnerStateUpdated: { _ in
+                                    reload()
+                                }
+                            )
+                        }
                     }
                 }
             } else {

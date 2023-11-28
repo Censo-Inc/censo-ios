@@ -225,7 +225,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 policy: .sample,
                 vault: .sample,
                 recovery: nil,
-                authType: .facetec
+                authType: .facetec,
+                subscriptionStatus: .active
             ),
             onOwnerStateUpdated: { _ in }
         )

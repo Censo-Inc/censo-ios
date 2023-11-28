@@ -247,4 +247,18 @@ extension API {
     struct AttestationChallenge: Decodable {
         var challenge: Base64EncodedString
     }
+    
+    struct SubmitPurchaseApiRequest: Encodable {
+        var purchase: Purchase
+        
+        struct Purchase: Encodable {
+            var `type`: String = "AppStore"
+            var originalTransactionId: String
+            var environment: String
+        }
+    }
+    
+    struct SubmitPurchaseApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
 }

@@ -12,6 +12,8 @@ extension Error {
         switch self as Error {
         case let facetecError as FacetecError:
             return facetecError.statusMessage
+        case let censoError as CensoError:
+            return censoError.localizedDescription
         default:
             return "Something went wrong"
         }

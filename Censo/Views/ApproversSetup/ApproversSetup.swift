@@ -336,7 +336,8 @@ struct ApproversSetup: View {
                 policy: .sample,
                 vault: .sample,
                 guardianSetup: policySetup,
-                authType: .facetec
+                authType: .facetec,
+                subscriptionStatus: .active
             ),
             onOwnerStateUpdated: { _ in }
         )

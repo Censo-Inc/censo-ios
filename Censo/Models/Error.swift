@@ -35,6 +35,8 @@ enum CensoError: Swift.Error {
     case invitationAlreadyAccepted
     case accessRequestNotFound
     case upgradeRequired
+    case productNotFound
+    case purchaseFailed
 }
 
 extension CensoError: LocalizedError {
@@ -94,6 +96,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Access request not found", comment: "Not found")
         case .upgradeRequired:
             return NSLocalizedString("App is out-of-date, you must upgrade to continue", comment: "Upgrade required")
+        case .purchaseFailed:
+            return NSLocalizedString("Purchase failed", comment: "Error thrown when in-app purchase has failed")
+        case .productNotFound:
+            return NSLocalizedString("Product not found", comment: "Error thrown when IAP-product was not found")
         }
         
     }

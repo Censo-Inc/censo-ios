@@ -239,9 +239,8 @@ extension API: TargetType {
         case .signIn(let credentials):
             return .requestJSONEncodable([
                 "jwtToken": "",
-                "identityToken": Data(SHA256.hash(
-                    data: Data(credentials.userIdentifier.data(using: .utf8)!)
-                )).toHexString()])
+                "identityToken": credentials.userIdentifierHash()
+            ])
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
         case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):

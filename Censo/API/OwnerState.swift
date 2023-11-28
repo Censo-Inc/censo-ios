@@ -303,6 +303,13 @@ extension API {
         case facetec = "FaceTec"
         case password = "Password"
     }
+
+    enum SubscriptionStatus : String, Codable {
+        case none = "None"
+        case pending = "Pending"
+        case active = "Active"
+        case paused = "Paused"
+    }
     
     enum OwnerState: Codable {
         case initial(Initial)
@@ -310,6 +317,7 @@ extension API {
         
         struct Initial: Codable {
             var authType: AuthType
+            var subscriptionStatus: SubscriptionStatus
         }
         
         struct Ready: Codable {
@@ -319,6 +327,7 @@ extension API {
             var guardianSetup: PolicySetup?
             var recovery: Recovery?
             var authType: AuthType
+            var subscriptionStatus: SubscriptionStatus
 
             var policySetup: PolicySetup? {
                 get {
@@ -347,8 +356,9 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
             switch self {
-            case .initial:
+            case .initial(let initial):
                 try container.encode("Initial", forKey: .type)
+                try initial.encode(to: encoder)
             case .ready(let ready):
                 try container.encode("Ready", forKey: .type)
                 try ready.encode(to: encoder)
@@ -362,6 +372,15 @@ extension API {
                     return initial.authType
                 case .ready(let ready):
                     return ready.authType
+                }
+            }
+        }
+
+        var subscriptionStatus: SubscriptionStatus {
+            get {
+                switch (self) {
+                case .initial(let initial): return initial.subscriptionStatus
+                case .ready(let ready): return ready.subscriptionStatus
                 }
             }
         }
