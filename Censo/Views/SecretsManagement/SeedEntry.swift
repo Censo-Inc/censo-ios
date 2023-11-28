@@ -32,10 +32,13 @@ struct SeedEntry: View {
                             words[i]
                         }, set: {
                             words[i] = $0
-                        }))
+                        }), deleteWord: {
+                            words.remove(at: i)
+                            wordIndex = max(0, min(i, words.count - 1))
+                        })
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
                 .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
 
                 Text("\(words.count) word\(words.count == 1 ? "" : "s") total")
