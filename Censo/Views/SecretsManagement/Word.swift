@@ -12,7 +12,10 @@ struct Word: View {
 
     @Binding var word: String
 
+    var deleteWord: () -> Void
+
     @State private var showingEdit = false
+    @State private var confirmDelete = false
 
     var body: some View {
         VStack {
@@ -29,17 +32,31 @@ struct Word: View {
                     .font(.title)
                     .padding()
 
-                Button {
-                    showingEdit = true
-                } label: {
-                    Image(systemName: "pencil")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 25)
-                        .foregroundColor(.gray)
-                        .bold()
+                HStack {
+                    Button {
+                        showingEdit = true
+                    } label: {
+                        Image(systemName: "pencil")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 25)
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                    .padding()
+
+                    Button {
+                        confirmDelete = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 25)
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                    .padding()
                 }
-                .padding()
             }
             .frame(maxWidth: .infinity)
             .background {
@@ -54,6 +71,15 @@ struct Word: View {
                 self.word = newWord
             }
         })
+        .alert("Delete word", isPresented: $confirmDelete) {
+            Button(role: .destructive, action: {
+                deleteWord()
+            }) {
+                Text("Yes")
+            }
+        } message: {
+            Text("Are you sure you want to delete this word?")
+        }
     }
 }
 
@@ -68,7 +94,7 @@ extension NumberFormatter {
 #if DEBUG
 struct Word_Previews: PreviewProvider {
     static var previews: some View {
-        Word(number: 3, word: .constant("sample"))
+        Word(number: 3, word: .constant("sample"), deleteWord: {})
     }
 }
 #endif
