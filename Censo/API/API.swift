@@ -155,7 +155,6 @@ extension API: TargetType {
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
-                "jwtToken": "",
                 "identityToken": credentials.userIdentifierHash()
             ])
         case .registerPushToken(let token):

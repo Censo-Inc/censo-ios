@@ -238,7 +238,6 @@ extension API: TargetType {
             #endif
         case .signIn(let credentials):
             return .requestJSONEncodable([
-                "jwtToken": "",
                 "identityToken": credentials.userIdentifierHash()
             ])
         case .submitVerification(_, let request):
