@@ -8,10 +8,17 @@
 import Foundation
 import CryptoKit
 import SwiftKeccak
+import raygun4apple
+
+enum KeyMigration: Swift.Error {
+    case migrationStarted
+    case migrationFailed
+    case migrationCompleted
+}
 
 extension ParticipantId {
     func persistEncodedPrivateKey(encodedPrivateKey: String) {
-        NSUbiquitousKeyValueStore.default.set(encodedPrivateKey, forKey: self.value)
+        NSUbiquitousKeyValueStore.default.set("|v2|\(encodedPrivateKey)", forKey: self.value)
     }
     
     func deleteEncodedPrivateKey() {
@@ -19,14 +26,30 @@ extension ParticipantId {
     }
     
     func privateKey(userIdentifier: String) -> EncryptionKey? {
-        let symmetricKey = SymmetricKey(data: keccak256(userIdentifier))
-
-        guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value)?.hexData(),
-              let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKey),
-              let encryptionKey = try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData) else {
+        guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value) else {
             return nil
         }
-        return encryptionKey
+        let symmetricKey = SymmetricKey(data: keccak256(userIdentifier))
+        if (encryptedKey.starts(with: "|v2|")) {
+            guard let encryptedKeyData = String(encryptedKey.dropFirst(4)).hexData(),
+                  let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKeyData) else {
+                return nil
+            }
+            return try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData)
+        } else {
+            RaygunClient.sharedInstance().send(error: KeyMigration.migrationStarted, tags: ["Key Migration"], customData: nil)
+
+            let oldSymmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
+            guard let encryptedKeyData = encryptedKey.hexData(),
+                  let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
+                  let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
+                RaygunClient.sharedInstance().send(error: KeyMigration.migrationFailed, tags: ["Key Migration"], customData: nil)
+                return nil
+            }
+            persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString())
+            RaygunClient.sharedInstance().send(error: KeyMigration.migrationCompleted, tags: ["Key Migration"], customData: nil)
+            return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
+        }
     }
 }
 
