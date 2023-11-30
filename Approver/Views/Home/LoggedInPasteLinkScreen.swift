@@ -62,7 +62,7 @@ struct LoggedInPasteLinkScreen: View {
             Spacer()
             
             VStack(spacing: 12) {
-                if user.guardianStates.countExternalApprovers() > 0 {
+                if user.guardianStates.countActiveApprovers() > 0 {
                     Image("TwoPeople")
                         .frame(width: 32, height: 32)
                     Text("Active approver")

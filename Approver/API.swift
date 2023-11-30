@@ -327,6 +327,20 @@ extension EnvironmentValues {
     }
 }
 
+extension API.GuardianPhase {
+    var isActive: Bool {
+        switch self {
+        case .complete,
+             .recoveryConfirmation,
+             .recoveryRequested,
+             .recoveryVerification:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
 extension Array where Element == API.GuardianState {
     func forInvite(_ invitationId: String) -> API.GuardianState? {
         return self.first(where: {$0.invitationId == invitationId})
@@ -336,7 +350,7 @@ extension Array where Element == API.GuardianState {
         return self.first(where: {$0.participantId == participantId})
     }
     
-    func countExternalApprovers() -> Int {
-        self.filter({$0.invitationId != nil}).count
+    func countActiveApprovers() -> Int {
+        self.filter({$0.phase.isActive}).count
     }
 }
