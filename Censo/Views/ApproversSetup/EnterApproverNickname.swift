@@ -98,7 +98,7 @@ struct EnterApproverNickname: View {
                     Button {
                         dismiss()
                     } label: {
-                        Image(systemName: "xmar")
+                        Image(systemName: "xmark")
                             .foregroundColor(.black)
                     }
                 }

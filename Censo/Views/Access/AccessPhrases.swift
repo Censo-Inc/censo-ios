@@ -27,10 +27,13 @@ struct AccessPhrases: View {
                 ProgressView()
                     .alert("Error", isPresented: $showingError, presenting: error) { _ in
                         Button {
+                            refreshState()
                             dismiss()
                         } label: {
                             Text("OK")
                         }
+                    } message: { error in
+                        Text(error.localizedDescription)
                     }
             } else {
                 switch (ownerState.recovery) {
@@ -41,24 +44,29 @@ struct AccessPhrases: View {
                         }
                         .alert("Error", isPresented: $showingError, presenting: error) { _ in
                             Button {
+                                refreshState()
                                 dismiss()
                             } label: {
                                 Text("OK")
                             }
+                        } message: { error in
+                            Text(error.localizedDescription)
                         }
                 case .anotherDevice:
-                    Text("An access request is in progress on another device")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(content: {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    dismiss()
-                                } label: {
-                                    Image(systemName: "xmark")
-                                        .foregroundColor(.black)
-                                }
+                    AccessOnAnotherDevice(
+                        onCancelAccess: deleteRecovery
+                    )
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar(content: {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(.black)
                             }
-                        })
+                        }
+                    })
                 case .thisDevice(let recovery):
                     // delete it in case this is a leftover recovery from a policy replacement
                     if recovery.intent == .replacePolicy {
@@ -114,6 +122,17 @@ struct AccessPhrases: View {
                 onOwnerStateUpdated(response.ownerState)
             case .failure(let error):
                 showError(error)
+            }
+        }
+    }
+    
+    private func refreshState() {
+        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
+            switch result {
+            case .success(let user):
+                onOwnerStateUpdated(user.ownerState)
+            default:
+                break
             }
         }
     }
