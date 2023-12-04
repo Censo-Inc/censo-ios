@@ -12,11 +12,19 @@ struct WordEntry: View {
 
     var number: Int
     var onSubmit: (String) -> Void
-
+    var language: WordListLanguage
+    var wordList: [String]
+    
+    init(number: Int, language: WordListLanguage, onSubmit: @escaping (String) -> Void) {
+        self.number = number
+        self.language = language
+        self.onSubmit = onSubmit
+        self.wordList = BIP39.wordlists[language] ?? []
+    }
+    
     @State private var word = ""
 
     @FocusState private var focused: Bool
-    private let wordList = BIP39.wordlists[.english] ?? []
 
     var body: some View {
         NavigationStack {
@@ -74,7 +82,7 @@ struct WordEntry: View {
 #if DEBUG
 struct WordEntry_Previews: PreviewProvider {
     static var previews: some View {
-        WordEntry(number: 2) { _ in
+        WordEntry(number: 2, language: .english) { _ in
 
         }
     }

@@ -21,7 +21,7 @@ struct PhrasesAccessAvailable: View {
     enum Step {
         case showingList
         case intro(phraseIndex: Int)
-        case retrievingShards(phraseIndex: Int)
+        case retrievingShards(phraseIndex: Int, language: WordListLanguage?)
         case showingSeedPhrase(phraseIndex: Int, phrase: [String], start: Date)
     }
     
@@ -59,8 +59,8 @@ struct PhrasesAccessAvailable: View {
             PhraseAccessIntro(
                 ownerState: ownerState,
                 session: session,
-                onReadyToGetStarted: {
-                    self.step = .retrievingShards(phraseIndex: phraseIndex)
+                onReadyToGetStarted: { language in
+                    self.step = .retrievingShards(phraseIndex: phraseIndex, language: language)
                 }
             )
             .navigationTitle(Text("Access"))
@@ -76,13 +76,16 @@ struct PhrasesAccessAvailable: View {
                     }
                 }
             })
-        case .retrievingShards(let phraseIndex):
+        case .retrievingShards(let phraseIndex, let language):
             RetrieveRecoveredShards(
                 session: session,
                 ownerState: ownerState,
                 onSuccess: { encryptedShards in
                     do {
-                        self.step = .showingSeedPhrase(phraseIndex: phraseIndex, phrase: try recoverSecret(encryptedShards, phraseIndex), start: Date.now)
+                        self.step = .showingSeedPhrase(
+                            phraseIndex: phraseIndex,
+                            phrase: try recoverSecret(encryptedShards, phraseIndex, language),
+                            start: Date.now)
                     } catch {
                         self.step = .showingList
                         showError(CensoError.failedToDecryptSecrets)
@@ -127,12 +130,12 @@ struct PhrasesAccessAvailable: View {
         self.error = error
     }
     
-    private func recoverSecret(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int) throws -> [String] {
+    private func recoverSecret(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int, _ language: WordListLanguage?) throws -> [String] {
         do {
             let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
             let decryptedSecret = try masterKey.decrypt(base64EncodedString:ownerState.vault.secrets[phraseIndex].encryptedSeedPhrase)
-            return try BIP39.binaryDataToWords(binaryData: decryptedSecret)
+            return try BIP39.binaryDataToWords(binaryData: decryptedSecret, language: language)
         } catch {
             RaygunClient.sharedInstance().send(error: error, tags: ["Access"], customData: nil)
             throw error

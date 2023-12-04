@@ -12,6 +12,7 @@ struct FirstPhrase: View {
 
     @State private var showingAddPhrase = false
     @State private var showingPastePhrase = false
+    @State private var languageId: UInt8 = WordListLanguage.english.toId()
 
     var ownerState: API.OwnerState.Ready
     var session: Session
@@ -29,7 +30,14 @@ struct FirstPhrase: View {
                 Text("Your seed phrase will be encrypted so only you can access it.")
                     .font(.subheadline)
                     .padding(.horizontal)
-                    .padding(.bottom)
+                
+                LanguageSelection(
+                    text: Text("For input seed phrase, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
+                     ).font(.subheadline),
+                    languageId: $languageId
+                )
+                .padding(.horizontal)
+                .padding(.bottom)
 
                 Button {
                     showingAddPhrase = true
@@ -67,6 +75,7 @@ struct FirstPhrase: View {
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                 isFirstTime: true,
+                language: currentLanguage(),
                 onSuccess: onComplete
             )
         })
@@ -77,10 +86,17 @@ struct FirstPhrase: View {
             )
         })
     }
+    
+    private func currentLanguage() ->  WordListLanguage {
+        return WordListLanguage.fromId(id: languageId)
+    }
 }
 
 #if DEBUG
 #Preview {
-    FirstPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active), session: .sample, onComplete: {_ in })
+    FirstPhrase(
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+        session: .sample,
+        onComplete: {_ in })
 }
 #endif

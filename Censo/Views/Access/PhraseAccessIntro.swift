@@ -12,7 +12,9 @@ struct PhraseAccessIntro: View {
 
     var ownerState: API.OwnerState.Ready
     var session: Session
-    var onReadyToGetStarted: () -> Void
+    var onReadyToGetStarted: (WordListLanguage?) -> Void
+    
+    @State private var languageId: UInt8 = 0
     
     var body: some View {
         VStack {
@@ -22,7 +24,17 @@ struct PhraseAccessIntro: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding()
-
+                
+                LanguageSelection(
+                    text: Text(
+                        "By default, your seed phrase is displayed in the language it was saved. You may select a different display language **here**"
+                    )
+                    .font(.subheadline),
+                    languageId: $languageId
+                )
+                .padding(.horizontal)
+                .padding(.bottom)
+                
                 VStack(alignment: .leading) {
                     SetupStep(image: Image("PrivatePlace"), heading: "Go to a private place", content: "Make sure you are alone in your home or a secure area.")
                     if ownerState.authType == .password {
@@ -39,7 +51,7 @@ struct PhraseAccessIntro: View {
                 .padding(.vertical, 20)
                 
                 Button {
-                    onReadyToGetStarted()
+                    onReadyToGetStarted(languageId == 0 ? nil : WordListLanguage.fromId(id: languageId))
                 } label: {
                     Text("Get started")
                         .font(.headline)
@@ -60,7 +72,7 @@ struct PhraseAccessIntro: View {
         PhraseAccessIntro(
             ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
             session: .sample,
-            onReadyToGetStarted: {}
+            onReadyToGetStarted: {_ in}
         )
     }
 }

@@ -99,7 +99,7 @@ struct SaveSeedPhrase: View {
 
     private func save() {
         do {
-            let secretData = try BIP39.phraseToBinaryData(phrase: words.joined(separator: " "))
+            let secretData = try BIP39.phraseToBinaryData(words: words)
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: publicMasterEncryptionKey)
                 .encrypt(data: secretData)

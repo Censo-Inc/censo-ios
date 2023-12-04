@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Word: View {
     var number: Int
+    var language: WordListLanguage
 
     @Binding var word: String
 
@@ -66,7 +67,7 @@ struct Word: View {
             .padding(20)
         }
         .sheet(isPresented: $showingEdit, content: {
-            WordEntry(number: number) { newWord in
+            WordEntry(number: number, language: language) { newWord in
                 showingEdit = false
                 self.word = newWord
             }
@@ -94,7 +95,7 @@ extension NumberFormatter {
 #if DEBUG
 struct Word_Previews: PreviewProvider {
     static var previews: some View {
-        Word(number: 3, word: .constant("sample"), deleteWord: {})
+        Word(number: 3, language: .english, word: .constant("sample"), deleteWord: {})
     }
 }
 #endif

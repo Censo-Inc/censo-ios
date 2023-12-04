@@ -40,6 +40,41 @@ final class BIP39Tests: XCTestCase {
         XCTAssertNil(BIP39.validateSeedPhrase(phrase:"lizard   size  puppy  joke venue census need net produce age\nall proof opinion promote setup flight tortoise multiply   blanket problem defy arrest switch also"))
     }
     
+    func testLanguageDetermination() {
+        for language in WordListLanguage.allCases {
+            XCTAssertEqual(BIP39.determineLanguage(phrase: languageCases[language]!), language)
+        }
+    }
+    
+    func testLanguages() throws {
+        for language in WordListLanguage.allCases {
+            print(language.displayName())
+            let phrase = languageCases[language]!
+            let words = BIP39.splitToWords(phrase: phrase)
+            XCTAssertNil(BIP39.validateSeedPhrase(phrase: phrase))
+            let binaryData = try BIP39.phraseToBinaryData(words: words)
+            
+            // verify the ID and recons
+            XCTAssertEqual(
+                UInt8(binaryData[0]),
+                language.toId()
+            )
+            // verify the words match
+            XCTAssertEqual(
+                try BIP39.binaryDataToWords(binaryData: binaryData),
+                words
+            )
+            // convert to every other language and make sure its as expected
+            for otherLanguage in WordListLanguage.allCases {
+                print("     - \(otherLanguage.displayName())")
+                XCTAssertEqual(
+                    try BIP39.binaryDataToWords(binaryData: binaryData, language: otherLanguage),
+                    BIP39.splitToWords(phrase: languageCases[otherLanguage]!)
+                )
+            }
+        }
+    }
+    
     func testValid() {
         cases.forEach { phrase in
             XCTAssertNil(BIP39.validateSeedPhrase(phrase: phrase))
@@ -49,11 +84,27 @@ final class BIP39Tests: XCTestCase {
     func testBinaryEntropyRoundTrip() {
         cases.forEach { phrase in
             XCTAssertEqual(
-                try! BIP39.binaryDataToWords(binaryData: try! BIP39.phraseToBinaryData(phrase: phrase)).joined(separator: " "),
+                try! BIP39.binaryDataToWords(
+                    binaryData: try! BIP39.phraseToBinaryData(words: phrase.split(separator: " ").map({String($0)})),
+                    language: WordListLanguage.english
+                ).joined(separator: " "),
                 phrase
             )
         }
     }
+    let languageCases: [WordListLanguage: String] = [
+        .english: "donor tower topic path obey intact lyrics list hair slice cluster grunt glare trap appear immense vibrant vendor document cushion arrow same link tissue",
+        .spanish: "derecho tetera teoría odisea nasal jarra macho llorar guerra roble caspa grito género tigre altura imitar usar unidad delfín collar anciano pupila llegar tazón",
+        .french: "déglutir syntaxe surmener muséum maximal grenat isoler innocent flairer remarque cendrier filmer farceur tambour alourdir géranium union tuyau déductif compact analyse potager inhiber strict",
+        .italian: "duna tifare teorema pilifero palazzina luminoso multiplo mondina india serraglio ciottolo incanto guaio titolo ammenda letterale vagabondo usanza dovuto custode anello salasso molosso tariffa",
+        .portugese: "cozinha tagarela surpresa moeda manequim goiaba intriga infinito ficheiro rebelde cadastro feriado externo tapar alameda gasoduto tutelar trunfo corvo chefe alienar poeira inerente subtrair",
+        .czech: "jepice vlnovka vjezd popel placenta nastat odsun odcizit metoda subtropy fond mazurka lucifer vojna bodlina nadobro zakoupit zadusit jednatel honitba brambora skluz odboj veselka",
+        .japanese: "けおとす　みもと　みつける　てはい　ちんもく　せっきゃく　だいたい　そんかい　しゃうん　ひそむ　かほう　しまう　しごと　むえん　いそがしい　すべて　ようちえん　ゆでる　けいこ　きまる　いっち　のりゆき　そよかぜ　まんが",
+        .korean: "문득 판단 특수 유난히 옥수수 스물 알루미늄 아스팔트 선풍기 지점 단어 선거 상업 팬티 결혼 수면 해당 함부로 무엇 마음 계곡 정장 아드님 통과",
+        .chineseSimplified: "望 枯 络 障 筒 屋 毒 伸 乎 彼 元 攻 医 欣 物 振 骑 诺 罪 称 把 辆 纳 钉",
+        .chineseTraditional: "望 枯 絡 障 筒 屋 毒 伸 乎 彼 元 攻 醫 欣 物 振 騎 諾 罪 稱 把 輛 納 釘"
+        
+    ]
 
     let cases = [
         "media squirrel pass doll leg across modify candy dash glass amused scorpion",

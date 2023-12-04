@@ -131,7 +131,7 @@ struct PastePhrase: View {
             }
             .navigationDestination(isPresented: $showingVerification, destination: {
                 SeedVerification(
-                    words: pastedPhrase.split(separator: " ").map(String.init),
+                    words: BIP39.splitToWords(phrase: pastedPhrase),
                     session: session,
                     publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                     isFirstTime: isFirstTime

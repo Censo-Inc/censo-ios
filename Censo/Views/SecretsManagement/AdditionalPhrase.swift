@@ -18,6 +18,7 @@ struct AdditionalPhrase: View {
     }
     
     @State private var step: Step = .intro
+    @State private var languageId: UInt8 = WordListLanguage.english.toId()
 
     var ownerState: API.OwnerState.Ready
     var session: Session
@@ -38,6 +39,14 @@ struct AdditionalPhrase: View {
                         .font(.subheadline)
                         .padding(.horizontal)
                         .padding(.bottom)
+                    
+                    LanguageSelection(
+                        text: Text("For input seed phrase, the current language is \(currentLanguage().displayName()). You may change it **here**"
+                         ).font(.subheadline),
+                        languageId: $languageId
+                    )
+                    .padding(.horizontal)
+                    .padding(.bottom)
                     
                     Button {
                         step = .addPhrase
@@ -87,6 +96,7 @@ struct AdditionalPhrase: View {
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                 isFirstTime: false,
+                language: currentLanguage(),
                 onSuccess: { ownerState in
                     onComplete(ownerState)
                     dismiss()
@@ -102,6 +112,10 @@ struct AdditionalPhrase: View {
                 isFirstTime: false
             )
         }
+    }
+    
+    private func currentLanguage() ->  WordListLanguage {
+        return WordListLanguage.fromId(id: languageId)
     }
 }
 
