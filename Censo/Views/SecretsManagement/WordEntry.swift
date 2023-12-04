@@ -19,7 +19,7 @@ struct WordEntry: View {
         self.number = number
         self.language = language
         self.onSubmit = onSubmit
-        self.wordList = BIP39.wordlists[language] ?? []
+        self.wordList = BIP39.wordlists(language)
     }
     
     @State private var word = ""
