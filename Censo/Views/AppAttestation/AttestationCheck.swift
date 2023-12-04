@@ -25,7 +25,7 @@ struct AttestationCheck<Content>: View where Content : View {
                 .onAppear(perform: reload)
         case .loading:
             ProgressView()
-        case .success(let key) where key.keyIdentifier == keyId:
+        case .success(let key) where key.keyId == keyId:
             content()
         case .success:
             ProgressView()

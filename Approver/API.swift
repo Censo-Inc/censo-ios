@@ -152,7 +152,7 @@ struct API {
     }
 
     struct AttestationKey: Decodable {
-        var keyIdentifier: String
+        var keyId: String
     }
 }
 
