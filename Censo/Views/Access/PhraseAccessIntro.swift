@@ -1,5 +1,5 @@
 //
-//  AccessIntro.swift
+//  PhraseAccessIntro.swift
 //  Censo
 //
 //  Created by Brendan Flood on 10/25/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AccessIntro: View {
+struct PhraseAccessIntro: View {
     @Environment(\.apiProvider) var apiProvider
 
     var ownerState: API.OwnerState.Ready
@@ -57,7 +57,7 @@ struct AccessIntro: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AccessIntro(
+        PhraseAccessIntro(
             ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
             session: .sample,
             onReadyToGetStarted: {}

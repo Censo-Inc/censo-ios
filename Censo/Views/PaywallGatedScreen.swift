@@ -143,12 +143,16 @@ struct PaywallGatedScreen<Content: View>: View {
                     continue
                 }
 
+#if INTEGRATION
+                await transaction.finish()
+#else
                 do {
                     try await submitPurchaseToBackend(session, String(transaction.originalID), transaction.environment)
                     await transaction.finish()
                 } catch {
                     showError(error)
                 }
+#endif
             }
         }
     }

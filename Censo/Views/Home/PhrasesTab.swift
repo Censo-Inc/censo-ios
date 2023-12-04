@@ -126,7 +126,7 @@ struct PhrasesTab: View {
                 )
             })
             .sheet(isPresented: $showingAccess, content: {
-                AccessPhrases(
+                InitPhrasesAccessFlow(
                     session: session,
                     ownerState: ownerState,
                     onOwnerStateUpdated: onOwnerStateUpdated

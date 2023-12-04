@@ -12,6 +12,7 @@ struct ApproversTab: View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showApproversSetup = false
+    @State private var showApproversRemoval = false
     
     var body: some View {
         NavigationView {
@@ -36,13 +37,6 @@ struct ApproversTab: View {
                             .font(.subheadline)
                             .padding(.vertical)
                             .fixedSize(horizontal: false, vertical: true)
-                            
-                            Text("Note: during the beta, approvers can only be added once, and cannot be changed.")
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
-                                .bold()
-                                .fixedSize(horizontal: false, vertical: true)
-                            
                             
                             Button {
                                 showApproversSetup = true
@@ -73,7 +67,33 @@ struct ApproversTab: View {
                         ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
                           ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
                         }
-                        Spacer()
+                        
+                        VStack(spacing: 5) {
+                            Button {
+                                showApproversRemoval = true
+                            } label: {
+                                HStack {
+                                    Spacer()
+                                    Image("TwoPeopleWhite")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                    Text(
+                                        "Remove approver\(approvers.count > 1 ? "s" : "")"
+                                    )
+                                    .font(.title3)
+                                    Spacer()
+                                }
+                            }
+                            .buttonStyle(RoundedButtonStyle())
+                            
+                            Text(
+                                "An appproval from current approver\(approvers.count > 1 ? "s" : "") is required"
+                            )
+                            .font(.footnote)
+                        }
+                        .padding(.top)
+                        
+                        Spacer(minLength: 0)
                     }
                     .padding([.top], 30)
                     .padding([.leading, .trailing], 30)
@@ -90,6 +110,13 @@ struct ApproversTab: View {
                         onOwnerStateUpdated: onOwnerStateUpdated
                     )
                 }
+            })
+            .sheet(isPresented: $showApproversRemoval, content: {
+                InitApproversRemovalFlow(
+                    session: session,
+                    ownerState: ownerState,
+                    onOwnerStateUpdated: onOwnerStateUpdated
+                )
             })
         }
     }

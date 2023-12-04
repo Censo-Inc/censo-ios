@@ -23,8 +23,6 @@ struct ApproversSetup: View {
         case proposeAlternate
         case setupAlternate
         case cancellingAlternate
-        case requestingRecovery
-        case retrievingShards
         case replacingPolicy
         case done
         
@@ -78,7 +76,7 @@ struct ApproversSetup: View {
                     step = .setupAlternate
                 },
                 onSkip: {
-                    initPolicyReplacement()
+                    step = .replacingPolicy
                 }
             )
         case .setupAlternate:
@@ -87,14 +85,14 @@ struct ApproversSetup: View {
                 policySetup: ownerState.policySetup,
                 isPrimary: false,
                 onComplete: {
-                    initPolicyReplacement()
+                    step = .replacingPolicy
                 },
                 onOwnerStateUpdated: onOwnerStateUpdated,
                 onBack: {
                     cancelAlternateApproverSetup()
                 }
             )
-        case .cancellingAlternate, .requestingRecovery, .replacingPolicy:
+        case .cancellingAlternate:
             ProgressView()
                 .navigationBarTitleDisplayMode(.inline)
                 .alert("Error", isPresented: $showingError, presenting: error) { _ in
@@ -108,184 +106,33 @@ struct ApproversSetup: View {
                 } message: { error in
                     Text(error.localizedDescription)
                 }
-        case .retrievingShards:
-            switch ownerState.authType {
-            case .none:
-                EmptyView().onAppear {
+        case .replacingPolicy:
+            ReplacePolicy(
+                session: session,
+                ownerState: ownerState,
+                onOwnerStateUpdated: onOwnerStateUpdated,
+                onSuccess: { ownerState in
+                    onOwnerStateUpdated(ownerState)
+                    self.step = .done
+                },
+                onCanceled: {
                     dismiss()
-                }
-            case .facetec:
-                FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
-                    session: session,
-                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                        return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
-                            biometryVerificationId: biomentryVerificationId,
-                            biometryData: biometryData
-                        ))
-                    },
-                    onSuccess: { response in
-                        replacePolicy(response.encryptedShards)
-                    },
-                    onCancelled: {
+                },
+                intent: .setupApprovers
+            )
+        case .done:
+            ApproversSetupDone(text: "Activated")
+                .onAppear(perform: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                         dismiss()
                     }
-                )
-            case .password:
-                GetPassword { cryptedPassword, onComplete in
-                    apiProvider.decodableRequest(
-                        with: session,
-                        endpoint: .retrieveRecoveredShardsWithPassword(
-                            API.RetrieveRecoveryShardsWithPasswordApiRequest(
-                                password: API.Password(cryptedPassword: cryptedPassword)
-                            )
-                        )
-                    )
-                    { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
-                        switch result {
-                        case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
-                            onComplete(false)
-                        case .failure:
-                            dismiss()
-                            onComplete(true)
-                        case .success(let response):
-                            replacePolicy(response.encryptedShards)
-                            onComplete(true)
-                        }
-                    }
-                }
-            }
-        case .done:
-            SavedAndSharded(
-                secrets: ownerState.vault.secrets,
-                approvers: ownerState.policy.guardians
-            )
-            .onAppear(perform: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    dismiss()
-                }
-            })
+                })
         }
     }
     
     private func showError(_ error: Error) {
         self.showingError = true
         self.error = error
-    }
-    
-    private func requestRecovery(onSuccess: @escaping () -> Void) {
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(intent: .replacePolicy))
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-            switch result {
-            case .success(let success):
-                onOwnerStateUpdated(success.ownerState)
-                onSuccess()
-            case .failure(let error):
-                showError(error)
-            }
-        }
-    }
-    
-    private func deleteRecoveryIfExists(onSuccess: @escaping () -> Void) {
-        if ownerState.recovery != nil {
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .deleteRecovery
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                switch result {
-                case .success(let success):
-                    onOwnerStateUpdated(success.ownerState)
-                    onSuccess()
-                case .failure(let error):
-                    showError(error)
-                }
-            }
-        } else {
-            onSuccess()
-        }
-    }
-    
-    private func initPolicyReplacement() {
-        self.step = .requestingRecovery
-        
-        // delete an ongoing recovery first if any
-        // this is needed to allow a retry in case any subsequent API calls fail
-        deleteRecoveryIfExists(onSuccess: {
-            requestRecovery(onSuccess: {
-                self.step = .retrievingShards
-            })
-        })
-    }
-    
-    private func replacePolicy(_ encryptedShards: [API.EncryptedShard]) {
-        self.step = .replacingPolicy
-        deleteRecoveryIfExists(onSuccess: {
-            do {
-                let policySetup = ownerState.policySetup!
-                
-                if !policySetup.guardians.allSatisfy( { verifyKeyConfirmationSignature(guardian: $0) } ) {
-                    throw CensoError.cannotVerifyKeyConfirmationSignature
-                }
-
-                let ownerOldParticipantId = ownerState.policy.guardians.first!.participantId
-        
-                let newIntermediateKey = try EncryptionKey.generateRandomKey()
-                let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
-                let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
-                
-                apiProvider.decodableRequest(
-                    with: session,
-                    endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
-                        intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
-                        guardianShards: try newIntermediateKey.shard(
-                            threshold: 2,
-                            participants: policySetup.guardians.map({ approver in
-                                return (approver.participantId, approver.publicKey!)
-                            })
-                        ),
-                        encryptedMasterPrivateKey: try newIntermediateKey.encrypt(data: masterKey.privateKeyRaw()),
-                        masterEncryptionPublicKey: try masterKey.publicExternalRepresentation(),
-                        signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData())
-                    ))
-                ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                    switch result {
-                    case .success(let response):
-                        session.deleteApproverKey(participantId: ownerOldParticipantId)
-                        self.step = .done
-                        onOwnerStateUpdated(response.ownerState)
-                    case .failure(let error):
-                        showError(error)
-                    }
-                }
-            } catch {
-                RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
-                showError(CensoError.failedToReplacePolicy)
-            }
-        })
-    }
-    
-    private func verifyKeyConfirmationSignature(guardian: API.ProspectGuardian) -> Bool {
-        switch guardian.status {
-        case .confirmed(let confirmed):
-            do {
-                guard let participantIdData = guardian.participantId.value.data(using: .hexadecimal),
-                      let timeMillisData = String(confirmed.timeMillis).data(using: .utf8),
-                      let base58DevicePublicKey = (try? session.deviceKey.publicExternalRepresentation())?.base58EncodedPublicKey(),
-                      let devicePublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: base58DevicePublicKey) else {
-                    return false
-                }
-                
-                return try devicePublicKey.verifySignature(for: confirmed.guardianPublicKey.data + participantIdData + timeMillisData, signature: confirmed.guardianKeySignature)
-            } catch {
-                RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
-            }
-            return false
-        case .implicitlyOwner:
-            return true
-        default:
-            return false
-        }
     }
     
     func cancelAlternateApproverSetup() {

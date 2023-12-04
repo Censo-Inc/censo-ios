@@ -36,16 +36,22 @@ struct AccessApproval : View {
     }
     
     var body: some View {
+        let navigationTitle: String = switch (recovery.intent) {
+        case .accessPhrases: "Access"
+        case .replacePolicy: "Remove approvers"
+        }
+        
         switch(step) {
         case .chooseApprover(let selected):
             ChooseAccessApprover(
+                intent: recovery.intent,
                 policy: policy,
                 selectedApprover: selected,
                 onContinue: { approver in
                     step = .enterTotp(approver: approver)
                 }
             )
-            .navigationTitle(Text("Access"))
+            .navigationTitle(Text(navigationTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -64,12 +70,13 @@ struct AccessApproval : View {
                 policy: policy,
                 approval: approval,
                 approver: approver,
+                intent: recovery.intent,
                 onOwnerStateUpdated: onOwnerStateUpdated,
                 onSuccess: { ownerState in
                     step = .approved(ownerState: ownerState)
                 }
             )
-            .navigationTitle(Text("Access"))
+            .navigationTitle(Text(navigationTitle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

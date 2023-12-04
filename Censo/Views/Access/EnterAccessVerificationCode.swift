@@ -17,6 +17,7 @@ struct EnterAccessVerificationCode : View {
     var policy: API.Policy
     var approval: API.Recovery.ThisDevice.Approval
     var approver: API.TrustedGuardian
+    var intent: API.Recovery.Intent
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onSuccess: (API.OwnerState) -> Void
     
@@ -31,7 +32,12 @@ struct EnterAccessVerificationCode : View {
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                Text("Request access")
+                let title = switch (intent) {
+                case .accessPhrases: "Request access"
+                case .replacePolicy: "Request approval"
+                }
+                
+                Text(title)
                     .font(.title)
                     .bold()
                 
@@ -226,6 +232,7 @@ struct EnterAccessVerificationCode : View {
             policy: policy,
             approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
             approver: approver,
+            intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
         )
@@ -244,6 +251,7 @@ struct EnterAccessVerificationCode : View {
             policy: policy,
             approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
             approver: approver,
+            intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
         )
@@ -262,6 +270,7 @@ struct EnterAccessVerificationCode : View {
             policy: policy,
             approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
             approver: approver,
+            intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
         )
@@ -280,6 +289,7 @@ struct EnterAccessVerificationCode : View {
             policy: policy,
             approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
             approver: approver,
+            intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
         )
