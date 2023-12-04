@@ -261,4 +261,8 @@ extension API {
     struct SubmitPurchaseApiResponse : Decodable {
         var ownerState: OwnerState
     }
+
+    struct AttestationKey: Decodable {
+        var keyIdentifier: String
+    }
 }

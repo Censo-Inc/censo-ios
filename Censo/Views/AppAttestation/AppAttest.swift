@@ -31,12 +31,16 @@ struct AppAttest<Content>: View where Content : View {
     var body: some View {
         if let attestKey = attestKey {
             if attestKey.verified {
-                content()
-                    .environment(\.apiProvider, MoyaProvider(
-                        endpointClosure: assertedEndpointClosure(),
-                        requestClosure: assertedRequestClosure(keyId: attestKey.keyId),
-                        plugins: apiProvider.plugins)
-                    )
+                AttestationCheck(session: session, keyId: attestKey.keyId) {
+                    self.attestKey = nil
+                } content: {
+                    content()
+                        .environment(\.apiProvider, MoyaProvider(
+                            endpointClosure: assertedEndpointClosure(),
+                            requestClosure: assertedRequestClosure(keyId: attestKey.keyId),
+                            plugins: apiProvider.plugins)
+                        )
+                }
             } else {
                 AttestKeyVerification(session: session, keyId: attestKey.keyId) {
                     self.attestKey?.verified = true

@@ -19,6 +19,7 @@ struct API {
     enum Endpoint {
         case attestationChallenge
         case registerAttestationObject(challenge: String, attestation: String, keyId: String)
+        case attestationKey
 
         case user
         case deleteUser
@@ -149,6 +150,10 @@ struct API {
     struct AttestationChallenge: Decodable {
         var challenge: Base64EncodedString
     }
+
+    struct AttestationKey: Decodable {
+        var keyIdentifier: String
+    }
 }
 
 extension API: TargetType {
@@ -185,6 +190,8 @@ extension API: TargetType {
             return "v1/access/\(id)/approval"
         case .rejectAccessVerification(let id):
             return "v1/access/\(id)/rejection"
+        case .attestationKey:
+            return "v1/apple-attestation"
         }
     }
 
@@ -203,7 +210,8 @@ extension API: TargetType {
              .registerAttestationObject,
              .attestationChallenge:
             return .post
-        case .user:
+        case .user,
+             .attestationKey:
             return .get
         case .deleteUser:
             return .delete
@@ -218,7 +226,8 @@ extension API: TargetType {
              .acceptInvitation,
              .rejectOwnerVerification,
              .rejectAccessVerification,
-             .attestationChallenge:
+             .attestationChallenge,
+             .attestationKey:
             return .requestPlain
         case .registerAttestationObject(let challenge, let attestation, let keyId):
             #if DEBUG
@@ -283,7 +292,8 @@ extension API: TargetType {
              .attestationChallenge,
              .registerAttestationObject,
              .storeAccessTotpSecret,
-             .rejectAccessVerification:
+             .rejectAccessVerification,
+             .attestationKey:
             return false
         case .deleteUser,
              .submitVerification,

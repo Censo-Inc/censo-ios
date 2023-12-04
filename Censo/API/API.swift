@@ -17,6 +17,7 @@ struct API {
     enum Endpoint {
         case attestationChallenge
         case registerAttestationObject(challenge: String, attestation: String, keyId: String)
+        case attestationKey
 
         case user
         case deleteUser
@@ -61,6 +62,8 @@ extension API: TargetType {
         case .attestationChallenge:
             return "v1/attestation-challenge"
         case .registerAttestationObject:
+            return "v1/apple-attestation"
+        case .attestationKey:
             return "v1/apple-attestation"
         case .signIn:
             return "v1/sign-in"
@@ -114,7 +117,8 @@ extension API: TargetType {
 
     var method: Moya.Method {
         switch endpoint {
-        case .user:
+        case .user,
+             .attestationKey:
             return .get
         case .deleteUser, .deleteSecret, .deleteRecovery:
             return .delete
@@ -151,7 +155,8 @@ extension API: TargetType {
              .deleteUser,
              .initBiometryVerification,
              .rejectGuardianVerification,
-             .attestationChallenge:
+             .attestationChallenge,
+             .attestationKey:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -253,7 +258,8 @@ extension API: TargetType {
              .prolongUnlock,
              .lock,
              .storeSecret,
-             .deleteRecovery:
+             .deleteRecovery,
+             .attestationKey:
             return false
         case .signIn,
              .deleteUser,

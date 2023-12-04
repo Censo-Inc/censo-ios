@@ -64,6 +64,8 @@
 		3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		3DA2B7192B16429B001A0775 /* SwiftKeccak in Frameworks */ = {isa = PBXBuildFile; productRef = 3DA2B7182B16429B001A0775 /* SwiftKeccak */; };
 		3DA2B71B2B16A60B001A0775 /* SwiftKeccak in Frameworks */ = {isa = PBXBuildFile; productRef = 3DA2B71A2B16A60B001A0775 /* SwiftKeccak */; };
+		3DA2B71D2B195661001A0775 /* AttestationCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA2B71C2B195661001A0775 /* AttestationCheck.swift */; };
+		3DA2B71E2B1956A1001A0775 /* AttestationCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA2B71C2B195661001A0775 /* AttestationCheck.swift */; };
 		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		3DE0B9772ABA2ECD0001F3A3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
@@ -338,6 +340,7 @@
 		3D3E64D02AE6B76A0000C56C /* WordEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordEntry.swift; sourceTree = "<group>"; };
 		3D8214662AC22D6E00AC2598 /* BorderedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedButtonStyle.swift; sourceTree = "<group>"; };
 		3D9817532AA15265003A4CD0 /* AuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPlugin.swift; sourceTree = "<group>"; };
+		3DA2B71C2B195661001A0775 /* AttestationCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationCheck.swift; sourceTree = "<group>"; };
 		3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		3DE0B9762ABA2ECD0001F3A3 /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -681,6 +684,7 @@
 				3D28C0092B06715800E261AA /* AppAttest.swift */,
 				3D28C00B2B06717500E261AA /* AttestKeyVerification.swift */,
 				3D28C00D2B0671B200E261AA /* AttestKeyGeneration.swift */,
+				3DA2B71C2B195661001A0775 /* AttestationCheck.swift */,
 			);
 			path = AppAttestation;
 			sourceTree = "<group>";
@@ -1149,6 +1153,7 @@
 				BD89A3FC2AEB3FA50035B094 /* ApproverPill.swift in Sources */,
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */,
+				3DA2B71D2B195661001A0775 /* AttestationCheck.swift in Sources */,
 				6C4D5E8D2AEB069E001DCDA6 /* AccessExpirationCountdown.swift in Sources */,
 				BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
@@ -1257,6 +1262,7 @@
 				E417AB8B2AFA8B6C0091CFDA /* PasteLinkButton.swift in Sources */,
 				6C5307712ADF0A9000E20F1E /* RoundedButtonStyle.swift in Sources */,
 				BD50261B2AE8B0E400B727C4 /* AppSpecificError.swift in Sources */,
+				3DA2B71E2B1956A1001A0775 /* AttestationCheck.swift in Sources */,
 				6C0AF9642ACC66A2009A9B54 /* TotpUtils.swift in Sources */,
 				E4716FD82ACEB9A400BC2AA7 /* VerificationCodeEntry.swift in Sources */,
 				BD89A3FA2AE989F20035B094 /* TermsOfUse.swift in Sources */,
