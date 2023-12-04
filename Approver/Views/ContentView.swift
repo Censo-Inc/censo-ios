@@ -108,8 +108,22 @@ struct ContentView: View {
     }
 
     private func openURL(_ url: URL) {
-        guard let scheme = url.scheme,
-              scheme.starts(with: "censo"),
+        guard let scheme = url.scheme else {
+            showError(CensoError.invalidUrl(url: "\(url)"))
+            return
+        }
+        if scheme.starts(with: "https") {
+            guard let query = url.query(),
+                  query.hasPrefix("l="),
+                  let link = String(query.trimmingPrefix("l=")).removingPercentEncoding,
+                  let newUrl = URL(string: link) else {
+                showError(CensoError.invalidUrl(url: "\(url)"))
+                return
+            }
+            openURL(newUrl)
+            return
+        }
+        guard scheme.starts(with: "censo"),
               url.pathComponents.count > 1,
               let action = url.host,
               ["invite", "access"].contains(action) else {
