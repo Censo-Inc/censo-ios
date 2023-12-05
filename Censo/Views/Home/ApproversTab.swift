@@ -87,7 +87,7 @@ struct ApproversTab: View {
                             .buttonStyle(RoundedButtonStyle())
                             
                             Text(
-                                "An appproval from current approver\(approvers.count > 1 ? "s" : "") is required"
+                                "An approval from current approver\(approvers.count > 1 ? "s" : "") is required"
                             )
                             .font(.footnote)
                         }
