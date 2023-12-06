@@ -27,11 +27,9 @@ struct ApproversTab: View {
                                 .padding(.vertical)
                             
                             Text("""
-                            Adding approvers makes you more secure. An approver is someone you choose and trust, and will help you when you need to access your seed phrase. Access to your seed phrase will **require** their approval, in addition to yours.
-                            
-                            Adding a **first approver** ensures that your seed phrase is split into two fragments and encrypted for more security.
-                            
-                            Adding a **second approver** ensures access to your seed phrase even if your first approver is unavailable. It also ensures that you can access your seed phrase in the event you cannot login with your Apple ID or your face scan fails.
+                            Adding approvers makes you more secure. An approver is someone you choose and trust, and will help you when you need to access your seed phrase. Access to your seed phrase will **require** an approval from one of your approvers, in addition to yours.
+
+                            Adding approvers ensures that your seed phrase is split into multiple fragments and encrypted for more security. It also ensures that you can access your seed phrase in the event you cannot login with your Google account or your face scan fails.     
                             """
                             )
                             .font(.subheadline)

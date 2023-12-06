@@ -74,9 +74,6 @@ struct ApproversSetup: View {
             ProposeToAddAlternateApprover(
                 onAccept: {
                     step = .setupAlternate
-                },
-                onSkip: {
-                    step = .replacingPolicy
                 }
             )
         case .setupAlternate:
