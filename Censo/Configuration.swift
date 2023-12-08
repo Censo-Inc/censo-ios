@@ -14,6 +14,7 @@ struct Configuration {
     static let ownerAppURL: URL = URL(string: "https://censo.co")!
     static let apiBaseURL: URL = URLValue(for: "API_BASE_URL")
     static let approverUrlScheme: URL = URLValue(for: "APPROVER_URL_SCHEME")
+    static let ownerUrlScheme: URL = URLValue(for: "OWNER_URL_SCHEME")
     static let raygunApiKey: String = stringValue(for: "RAYGUN_API_KEY")
     static let raygunEnabled: Bool = stringValue(for: "RAYGUN_ENABLED").lowercased() == "yes"
     static let censoAuthBaseURL: URL = URLValue(for: "CENSO_AUTH_BASE_URL")

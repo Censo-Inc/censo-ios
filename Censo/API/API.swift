@@ -49,6 +49,9 @@ struct API {
         case retrieveAccessShards(RetrieveAccessShardsApiRequest)
         case retrieveAccessShardsWithPassword(RetrieveAccessShardsWithPasswordApiRequest)
         case submitPurchase(SubmitPurchaseApiRequest)
+
+        case acceptImport(channel: String, ownerProof: OwnerProof)
+        case getImportEncryptedData(channel: String)
     }
 }
 
@@ -112,13 +115,18 @@ extension API: TargetType {
             return "v1/access/retrieval-password"
         case .submitPurchase:
             return "v1/purchases"
+        case .acceptImport(let channel, _):
+            return "v1/import/\(channel)/accept"
+        case .getImportEncryptedData(let channel):
+            return "v1/import/\(channel)/encrypted"
         }
     }
 
     var method: Moya.Method {
         switch endpoint {
         case .user,
-             .attestationKey:
+             .attestationKey,
+             .getImportEncryptedData:
             return .get
         case .deleteUser, .deleteSeedPhrase, .deleteAccess:
             return .delete
@@ -142,7 +150,8 @@ extension API: TargetType {
              .retrieveAccessShardsWithPassword,
              .registerAttestationObject,
              .attestationChallenge,
-             .submitPurchase:
+             .submitPurchase,
+             .acceptImport:
             return .post
         case .replacePolicy:
             return .put
@@ -156,7 +165,8 @@ extension API: TargetType {
              .initBiometryVerification,
              .rejectApproverVerification,
              .attestationChallenge,
-             .attestationKey:
+             .attestationKey,
+             .getImportEncryptedData:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -228,6 +238,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .submitPurchase(let request):
             return .requestJSONEncodable(request)
+        case .acceptImport(_, let ownerProof):
+            return .requestJSONEncodable(ownerProof)
         }
     }
 
@@ -259,7 +271,8 @@ extension API: TargetType {
              .lock,
              .storeSeedPhrase,
              .deleteAccess,
-             .attestationKey:
+             .attestationKey,
+             .getImportEncryptedData:
             return false
         case .signIn,
              .deleteUser,
@@ -272,7 +285,8 @@ extension API: TargetType {
              .retrieveAccessShardsWithPassword,
              .deleteSeedPhrase,
              .confirmApprover,
-             .submitPurchase:
+             .submitPurchase,
+             .acceptImport:
             return true
         }
     }
