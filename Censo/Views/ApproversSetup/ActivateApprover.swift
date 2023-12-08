@@ -15,7 +15,7 @@ struct ActivateApprover : View {
     
     var session: Session
     var policySetup: API.PolicySetup
-    var approver: API.ProspectGuardian
+    var approver: API.ProspectApprover
     var onComplete: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
@@ -285,7 +285,7 @@ struct ActivateApprover : View {
         }
     }
     
-    private func confirmApprover(participantId: ParticipantId, status: API.GuardianStatus.VerificationSubmitted) {
+    private func confirmApprover(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) {
         var confirmationSucceeded = false
         do {
             confirmationSucceeded = try verifyApproverSignature(participantId: participantId, status: status)
@@ -297,14 +297,14 @@ struct ActivateApprover : View {
             let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
             guard let participantIdData = participantId.value.data(using: .hexadecimal),
                   let timeMillisData = String(timeMillis).data(using: .utf8),
-                  let signature = try? session.deviceKey.signature(for: status.guardianPublicKey.data + participantIdData + timeMillisData) else {
+                  let signature = try? session.deviceKey.signature(for: status.approverPublicKey.data + participantIdData + timeMillisData) else {
                 confirmationSucceeded = false
                 return
             }
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .confirmGuardian(
-                    API.ConfirmGuardianApiRequest(
+                endpoint: .confirmApprover(
+                    API.ConfirmApproverApiRequest(
                         participantId: participantId,
                         keyConfirmationSignature: signature,
                         keyConfirmationTimeMillis: timeMillis
@@ -325,10 +325,10 @@ struct ActivateApprover : View {
         }
     }
 
-    private func verifyApproverSignature(participantId: ParticipantId, status: API.GuardianStatus.VerificationSubmitted) throws -> Bool {
+    private func verifyApproverSignature(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) throws -> Bool {
         guard let totpSecret = try? session.deviceKey.decrypt(data: status.deviceEncryptedTotpSecret.data),
               let timeMillisBytes = String(status.timeMillis).data(using: .utf8),
-              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.guardianPublicKey) else {
+              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.approverPublicKey) else {
             return false
         }
 
@@ -347,7 +347,7 @@ struct ActivateApprover : View {
     private func rejectApproverVerification(participantId: ParticipantId) {
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .rejectGuardianVerification(participantId)
+            endpoint: .rejectApproverVerification(participantId)
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -363,30 +363,30 @@ struct ActivateApprover : View {
 
 #if DEBUG
 let policySetup = API.PolicySetup(
-    guardians: [
-        API.ProspectGuardian(
+    approvers: [
+        API.ProspectApprover(
             invitationId: try! InvitationId(value: ""),
             label: "Me",
             participantId: .random(),
-            status: API.GuardianStatus.initial(.init(
+            status: API.ApproverStatus.initial(.init(
                 deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
             ))
         ),
-        API.ProspectGuardian(
+        API.ProspectApprover(
             invitationId: try! InvitationId(value: ""),
             label: "Neo",
             participantId: .random(),
-            status: API.GuardianStatus.initial(.init(
+            status: API.ApproverStatus.initial(.init(
                 deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
             ))
         ),
-        API.ProspectGuardian(
+        API.ProspectApprover(
             invitationId: try! InvitationId(value: ""),
             label: "John Wick",
             participantId: .random(),
-            status: API.GuardianStatus.confirmed(.init(
-                guardianKeySignature: .sample,
-                guardianPublicKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
+            status: API.ApproverStatus.confirmed(.init(
+                approverKeySignature: .sample,
+                approverPublicKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
                 timeMillis: 123,
                 confirmedAt: Date.now
             ))
@@ -402,7 +402,7 @@ let policySetup = API.PolicySetup(
         ActivateApprover(
             session: session,
             policySetup: policySetup,
-            approver: policySetup.guardians[1],
+            approver: policySetup.approvers[1],
             onComplete: { },
             onOwnerStateUpdated: { _ in }
         )
@@ -415,7 +415,7 @@ let policySetup = API.PolicySetup(
         ActivateApprover(
             session: session,
             policySetup: policySetup,
-            approver: policySetup.guardians[1],
+            approver: policySetup.approvers[1],
             onComplete: { },
             onOwnerStateUpdated: { _ in }
         )

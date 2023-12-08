@@ -29,9 +29,9 @@ struct OwnerVerification: View {
     @State private var wrongCode = false
     
     var session: Session
-    var guardianState: API.GuardianState
+    var approverState: API.ApproverState
     var approvalId: String?
-    var onGuardianStatesUpdated: ([API.GuardianState]) -> Void
+    var onApproverStatesUpdated: ([API.ApproverState]) -> Void
     
     var body: some View {
         switch (step) {
@@ -51,14 +51,14 @@ struct OwnerVerification: View {
                     .font(.subheadline)
                     .padding()
 
-                switch (guardianState.phase) {
-                case .recoveryVerification(let phase):
+                switch (approverState.phase) {
+                case .accessVerification(let phase):
                     RotatingTotpPinView(
                         session: session,
                         deviceEncryptedTotpSecret: phase.encryptedTotpSecret,
                         style: .approver
                     )
-                case .recoveryConfirmation(let status):
+                case .accessConfirmation(let status):
                     RotatingTotpPinView(
                         session: session,
                         deviceEncryptedTotpSecret: status.encryptedTotpSecret,
@@ -66,7 +66,7 @@ struct OwnerVerification: View {
                     )
                     .onAppear {
                         confirmOrRejectOwner(
-                            participantId: guardianState.participantId,
+                            participantId: approverState.participantId,
                             status: status
                         )
                     }
@@ -113,17 +113,17 @@ struct OwnerVerification: View {
         self.showingError = true
     }
     
-    private func confirmOrRejectOwner(participantId: ParticipantId, status: API.GuardianPhase.RecoveryConfirmation) {
+    private func confirmOrRejectOwner(participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation) {
         if (try? verifyOwnerSignature(participantId: participantId, status: status)) ?? false {
-            guard let guardianPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
-                  let guardianPublicKey = try? guardianPrivateKey.publicExternalRepresentation(),
-                  guardianPublicKey == status.recoveryPublicKey else {
+            guard let approverPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
+                  let approverPublicKey = try? approverPrivateKey.publicExternalRepresentation(),
+                  approverPublicKey == status.accessPublicKey else {
                 RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverPrivateKey, tags: ["Verification"], customData: nil)
                 showError(CensoError.failedToRecoverPrivateKey)
                 return
             }
             guard let ownerPublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.ownerPublicKey),
-                  let encryptedShard = try? ownerPublicKey.encrypt(data: guardianPrivateKey.decrypt(base64EncodedString: status.guardianEncryptedShard)) else {
+                  let encryptedShard = try? ownerPublicKey.encrypt(data: approverPrivateKey.decrypt(base64EncodedString: status.approverEncryptedShard)) else {
                 RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverShard, tags: ["Verification"], customData: nil)
                 showError(CensoError.failedToRecoverShard)
                 return
@@ -143,7 +143,7 @@ struct OwnerVerification: View {
                 inProgress = false
                 switch result {
                 case .success(let success):
-                    onGuardianStatesUpdated(success.guardianStates)
+                    onApproverStatesUpdated(success.approverStates)
                 case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                     showError(CensoError.accessRequestNotFound)
                 case .failure(let error):
@@ -160,7 +160,7 @@ struct OwnerVerification: View {
                     switch result {
                     case .success(let success):
                         wrongCode = true
-                        onGuardianStatesUpdated(success.guardianStates)
+                        onApproverStatesUpdated(success.approverStates)
                     case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                         showError(CensoError.accessRequestNotFound)
                     case .failure(let error):
@@ -170,7 +170,7 @@ struct OwnerVerification: View {
         }
     }
     
-    private func verifyOwnerSignature(participantId: ParticipantId, status: API.GuardianPhase.RecoveryConfirmation) throws -> Bool {
+    private func verifyOwnerSignature(participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation) throws -> Bool {
         guard let totpSecret = try? session.deviceKey.decrypt(data: status.encryptedTotpSecret.data),
               let timeMillisBytes = String(status.ownerKeySignatureTimeMillis).data(using: .utf8),
               let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.ownerPublicKey) else {
@@ -196,19 +196,19 @@ struct OwnerVerification: View {
         let session = Session.sample
         OwnerVerification(
             session: session,
-            guardianState: .init(
+            approverState: .init(
                 participantId: .random(),
-                phase: .recoveryVerification(
+                phase: .accessVerification(
                     .init(
                         createdAt: Date(),
-                        recoveryPublicKey: .sample,
+                        accessPublicKey: .sample,
                         encryptedTotpSecret: try! session.deviceKey.encrypt(
                             data: base32DecodeToData(generateBase32())!
                         )
                     )
                 )
             ),
-            onGuardianStatesUpdated: { _ in }
+            onApproverStatesUpdated: { _ in }
         )
     }
 }

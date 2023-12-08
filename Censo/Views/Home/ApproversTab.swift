@@ -58,7 +58,7 @@ struct ApproversTab: View {
                     }
                 } else {
                     VStack(spacing: 30) {
-                        let approvers = ownerState.policy.guardians
+                        let approvers = ownerState.policy.approvers
                             .filter({ !$0.isOwner })
                             .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
 
@@ -127,7 +127,7 @@ struct ApproversTab: View {
         ownerState: API.OwnerState.Ready(
             policy: .sample,
             vault: .sample,
-            recovery: nil,
+            access: nil,
             authType: .facetec,
             subscriptionStatus: .active
         ),
@@ -141,13 +141,13 @@ struct ApproversTab: View {
         ownerState: API.OwnerState.Ready(
             policy: .init(
                 createdAt: Date(),
-                guardians: [.sampleOwner, .sample2, .sample3],
+                approvers: [.sampleOwner, .sample2, .sample3],
                 threshold: 2,
                 encryptedMasterKey: Base64EncodedString(data: Data()),
                 intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
             ),
             vault: .sample,
-            recovery: nil,
+            access: nil,
             authType: .facetec,
             subscriptionStatus: .active
         ),

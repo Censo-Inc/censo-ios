@@ -14,14 +14,14 @@ struct SubmitVerification: View {
     
     var invitationId: InvitationId
     var session: Session
-    var guardianState: API.GuardianState
+    var approverState: API.ApproverState
 
 
     @State private var currentError: Error?
     @State private var verificationCode: [Int] = []
     @State private var disabled = false
 
-    var onSuccess: (API.GuardianState?) -> Void
+    var onSuccess: (API.ApproverState?) -> Void
 
     @State private var waitingForVerification = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
@@ -32,7 +32,7 @@ struct SubmitVerification: View {
                 .bold()
                 .padding()
             
-            switch guardianState.phase {
+            switch approverState.phase {
             case .waitingForVerification:
                 ProgressView(
                     label: {
@@ -80,9 +80,9 @@ struct SubmitVerification: View {
     }
     
     private func submitVerificaton(code: String) {
-        guard let guardianKey = try? session.getOrCreateApproverKey(participantId: guardianState.participantId),
-              let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: guardianKey),
-              let guardianPublicKey = try? guardianKey.publicExternalRepresentation() 
+        guard let approverKey = try? session.getOrCreateApproverKey(participantId: approverState.participantId),
+              let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: approverKey),
+              let approverPublicKey = try? approverKey.publicExternalRepresentation()
         else {
             RaygunClient.sharedInstance().send(error: CensoError.failedToCreateSignature, tags: ["Verification"], customData: nil)
             showError(CensoError.failedToCreateSignature)
@@ -96,16 +96,16 @@ struct SubmitVerification: View {
             with: session,
             endpoint: .submitVerification(
                 invitationId,
-                API.SubmitGuardianVerificationApiRequest(
+                API.SubmitApproverVerificationApiRequest(
                     signature: signature,
                     timeMillis: timeMillis,
-                    guardianPublicKey: guardianPublicKey
+                    approverPublicKey: approverPublicKey
                 )
             )
-        ) { (result: Result<API.SubmitGuardianVerificationApiResponse, MoyaError>) in
+        ) { (result: Result<API.SubmitApproverVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
-                onSuccess(response.guardianState)
+                onSuccess(response.approverState)
             case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 showError(CensoError.invitationNotFound)
             case .failure(let error):
@@ -115,11 +115,11 @@ struct SubmitVerification: View {
     }
     
     private func reload() {
-        apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.GuardianUser, MoyaError>) in
+        apiProvider.decodableRequest(session.target(for: .user)) {(result: Result<API.ApproverUser, MoyaError>) in
             switch(result) {
             case .success(let user):
                 disabled = false
-                onSuccess(user.guardianStates.forInvite(invitationId))
+                onSuccess(user.approverStates.forInvite(invitationId))
             case .failure:
                 break
             }
@@ -135,11 +135,11 @@ struct SubmitVerification: View {
 #if DEBUG
 #Preview {
     SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,
-                       guardianState: .sampleWaitingForCode,
+                       approverState: .sampleWaitingForCode,
                        onSuccess: {_ in })
 }
 
-extension API.GuardianState {
+extension API.ApproverState {
     static var sampleWaitingForVerification: Self {
         .init(
             participantId: .random(),
@@ -167,7 +167,7 @@ extension API.GuardianState {
 
 #endif
 
-extension API.GuardianPhase {
+extension API.ApproverPhase {
     var isWaitingForVerification: Bool {
         switch self {
         case .waitingForVerification:

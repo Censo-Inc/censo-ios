@@ -80,7 +80,7 @@ struct SettingsTab: View {
             resetInProgress = false
             switch result {
             case .success:
-                if let ownerTrustedApprover = ownerState.policy.guardians.first(where: { $0.isOwner }) {
+                if let ownerTrustedApprover = ownerState.policy.approvers.first(where: { $0.isOwner }) {
                     session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
                 }
                 if let ownerProspectApprover = ownerState.policySetup?.owner {

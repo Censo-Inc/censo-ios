@@ -1,5 +1,5 @@
 //
-//  RetrieveRecoveryShards.swift
+//  RetrieveAccessShards.swift
 //  Censo
 //
 //  Created by Anton Onyshchenko on 30.11.23.
@@ -9,7 +9,7 @@ import SwiftUI
 import Moya
 import raygun4apple
 
-struct RetrieveRecoveredShards: View {
+struct RetrieveAccessShards: View {
     @Environment(\.apiProvider) var apiProvider
     
     var session: Session
@@ -24,10 +24,10 @@ struct RetrieveRecoveredShards: View {
                 onCancelled()
             }
         case .facetec:
-            FacetecAuth<API.RetrieveRecoveryShardsApiResponse>(
+            FacetecAuth<API.RetrieveAccessShardsApiResponse>(
                 session: session,
                 onReadyToUploadResults: { biomentryVerificationId, biometryData in
-                    return .retrieveRecoveredShards(API.RetrieveRecoveryShardsApiRequest(
+                    return .retrieveAccessShards(API.RetrieveAccessShardsApiRequest(
                         biometryVerificationId: biomentryVerificationId,
                         biometryData: biometryData
                     ))
@@ -41,13 +41,13 @@ struct RetrieveRecoveredShards: View {
             GetPassword { cryptedPassword, onComplete in
                 apiProvider.decodableRequest(
                     with: session,
-                    endpoint: .retrieveRecoveredShardsWithPassword(
-                        API.RetrieveRecoveryShardsWithPasswordApiRequest(
+                    endpoint: .retrieveAccessShardsWithPassword(
+                        API.RetrieveAccessShardsWithPasswordApiRequest(
                             password: API.Password(cryptedPassword: cryptedPassword)
                         )
                     )
                 )
-                { (result: Result<API.RetrieveRecoveryShardsWithPasswordApiResponse, MoyaError>) in
+                { (result: Result<API.RetrieveAccessShardsWithPasswordApiResponse, MoyaError>) in
                     switch result {
                     case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
                         onComplete(false)

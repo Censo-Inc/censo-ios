@@ -139,13 +139,13 @@ struct ApproversSetup: View {
             let policySetup = ownerState.policySetup!
             let owner = policySetup.owner!
             let primaryApprover = policySetup.primaryApprover!
-            let guardians: [API.GuardianSetup] = [
-                .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+            let approvers: [API.ApproverSetup] = [
+                .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
                     participantId: owner.participantId,
                     label: "Me",
-                    guardianPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
+                    approverPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
                 )),
-                .externalApprover(API.GuardianSetup.ExternalApprover(
+                .externalApprover(API.ApproverSetup.ExternalApprover(
                     participantId: primaryApprover.participantId,
                     label: primaryApprover.label,
                     deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
@@ -154,7 +154,7 @@ struct ApproversSetup: View {
             
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, guardians: guardians))
+                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -179,7 +179,7 @@ struct ApproversSetup: View {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                guardianSetup: policySetup,
+                policySetup: policySetup,
                 authType: .facetec,
                 subscriptionStatus: .active
             ),

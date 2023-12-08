@@ -10,7 +10,7 @@ import SwiftUI
 struct LoggedInPasteLinkScreen: View {
     @Environment(\.apiProvider) var apiProvider
     var session: Session
-    var user: API.GuardianUser
+    var user: API.ApproverUser
     var onUrlPasted: (URL) -> Void
     
     @GestureState var accountPress = false
@@ -62,7 +62,7 @@ struct LoggedInPasteLinkScreen: View {
             Spacer()
             
             VStack(spacing: 12) {
-                if user.guardianStates.countActiveApprovers() > 0 {
+                if user.approverStates.countActiveApprovers() > 0 {
                     Image("TwoPeople")
                         .frame(width: 32, height: 32)
                     Text("Active approver")
@@ -127,7 +127,7 @@ struct LoggedInPasteLinkScreen: View {
 #Preview("onboarding") {
     LoggedInPasteLinkScreen(
         session: .sample,
-        user: API.GuardianUser(guardianStates: []),
+        user: API.ApproverUser(approverStates: []),
         onUrlPasted: { _ in }
     )
 }
@@ -135,7 +135,7 @@ struct LoggedInPasteLinkScreen: View {
 #Preview("onboarded") {
     LoggedInPasteLinkScreen(
         session: .sample,
-        user: API.GuardianUser(guardianStates: [
+        user: API.ApproverUser(approverStates: [
             .init(
                 participantId: .random(),
                 phase: .complete

@@ -15,12 +15,11 @@ struct PhrasesTab: View {
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
-    @State private var recoveryRequestInProgress = false
     @State private var showingError = false
     @State private var error: Error?
     @State private var showingEditSheet = false
     @State private var editingIndex: Int?
-    @State private var secretsGuidsBeingDeleted: Set<String> = []
+    @State private var phraseGuidsBeingDeleted: Set<String> = []
     @State private var showingDeleteConfirmation = false
     @State private var showingAddPhrase = false
     @State private var showingAccess: Bool = false
@@ -63,7 +62,7 @@ struct PhrasesTab: View {
                 Divider().frame(maxWidth: .infinity)
                 
                 ScrollView {
-                    ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
+                    ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
                         ZStack(alignment: .leading) {
                             Button {
                                 showingEditSheet = true
@@ -75,7 +74,7 @@ struct PhrasesTab: View {
                                 }
                             }
                             
-                            Text(ownerState.vault.secrets[i].label)
+                            Text(ownerState.vault.seedPhrases[i].label)
                                 .font(.system(size: 18, weight: .medium))
                                 .multilineTextAlignment(.leading)
                                 .padding([.bottom, .leading, .top])
@@ -99,7 +98,7 @@ struct PhrasesTab: View {
                         Text("Delete")
                     }
                 } message: { i in
-                    Text(ownerState.vault.secrets[i].label)
+                    Text(ownerState.vault.seedPhrases[i].label)
                 }
                 .confirmationDialog(
                     Text("Are you sure?"),
@@ -107,10 +106,10 @@ struct PhrasesTab: View {
                     presenting: editingIndex
                 ) { i in
                     Button("Yes", role: .destructive) {
-                        deleteSecret(ownerState.vault.secrets[i])
+                        deletePhrase(ownerState.vault.seedPhrases[i])
                     }
                 } message: { i in
-                    Text("You are about to delete \"\(ownerState.vault.secrets[i].label)\".\n Are you sure?")
+                    Text("You are about to delete \"\(ownerState.vault.seedPhrases[i].label)\".\n Are you sure?")
                 }
                 
             }
@@ -143,16 +142,16 @@ struct PhrasesTab: View {
         }
     }
     
-    func deleteSecret(_ secret: API.VaultSecret) {
-        secretsGuidsBeingDeleted.insert(secret.guid)
-        apiProvider.decodableRequest(with: session, endpoint: .deleteSecret(guid: secret.guid)) { (result: Result<API.DeleteSecretApiResponse, MoyaError>) in
+    func deletePhrase(_ seedPhrase: API.SeedPhrase) {
+        phraseGuidsBeingDeleted.insert(seedPhrase.guid)
+        apiProvider.decodableRequest(with: session, endpoint: .deleteSeedPhrase(guid: seedPhrase.guid)) { (result: Result<API.DeleteSeedPhraseApiResponse, MoyaError>) in
             switch result {
             case .success(let payload):
                 onOwnerStateUpdated(payload.ownerState)
             case .failure(let error):
                 showError(error)
             }
-            secretsGuidsBeingDeleted.remove(secret.guid)
+            phraseGuidsBeingDeleted.remove(seedPhrase.guid)
         }
     }
     

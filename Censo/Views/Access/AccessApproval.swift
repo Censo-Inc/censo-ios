@@ -14,29 +14,29 @@ struct AccessApproval : View {
     
     var session: Session
     var policy: API.Policy
-    var recovery: API.Recovery.ThisDevice
+    var access: API.Access.ThisDevice
     var onCancel: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
-        case chooseApprover(selected: API.TrustedGuardian?)
-        case enterTotp(approver: API.TrustedGuardian)
+        case chooseApprover(selected: API.TrustedApprover?)
+        case enterTotp(approver: API.TrustedApprover)
         case approved(ownerState: API.OwnerState)
     }
     
     @State private var step: Step = .chooseApprover(selected: nil)
     
-    init(session: Session, policy: API.Policy, recovery: API.Recovery.ThisDevice, onCancel: @escaping () -> Void, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
+    init(session: Session, policy: API.Policy, access: API.Access.ThisDevice, onCancel: @escaping () -> Void, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
         self.session = session
         self.policy = policy
-        self.recovery = recovery
+        self.access = access
         self.onCancel = onCancel
         self.onOwnerStateUpdated = onOwnerStateUpdated
         self._step = State(initialValue: .chooseApprover(selected: nil))
     }
     
     var body: some View {
-        let navigationTitle: String = switch (recovery.intent) {
+        let navigationTitle: String = switch (access.intent) {
         case .accessPhrases: "Access"
         case .replacePolicy: "Remove approvers"
         }
@@ -44,7 +44,7 @@ struct AccessApproval : View {
         switch(step) {
         case .chooseApprover(let selected):
             ChooseAccessApprover(
-                intent: recovery.intent,
+                intent: access.intent,
                 policy: policy,
                 selectedApprover: selected,
                 onContinue: { approver in
@@ -64,13 +64,13 @@ struct AccessApproval : View {
                 }
             })
         case .enterTotp(let approver):
-            let approval = recovery.approvals.first(where: {$0.participantId == approver.participantId})!
+            let approval = access.approvals.first(where: {$0.participantId == approver.participantId})!
             EnterAccessVerificationCode(
                 session: session,
                 policy: policy,
                 approval: approval,
                 approver: approver,
-                intent: recovery.intent,
+                intent: access.intent,
                 onOwnerStateUpdated: onOwnerStateUpdated,
                 onSuccess: { ownerState in
                     step = .approved(ownerState: ownerState)
@@ -101,14 +101,14 @@ struct AccessApproval : View {
 
 
 extension API.OwnerState {
-    var thisDeviceRecovery: API.Recovery.ThisDevice? {
+    var thisDeviceAccess: API.Access.ThisDevice? {
         get {
             guard case let .ready(ready) = self,
-                  let recovery = ready.recovery,
-                  case let .thisDevice(thisDeviceRecovery) = recovery 
+                  let access = ready.access,
+                  case let .thisDevice(thisDeviceAccess) = access
             else { return nil }
             
-            return thisDeviceRecovery
+            return thisDeviceAccess
         }
     }
 }

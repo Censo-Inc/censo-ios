@@ -11,7 +11,7 @@ import raygun4apple
 
 enum ApproverRoute : Hashable {
     case onboard(inviteCode: String)
-    case access(participantId: ParticipantId, approvalId: String?)
+    case access(participantId: ParticipantId, approvalId: String)
 }
 
 struct ContentView: View {
@@ -142,26 +142,16 @@ struct ContentView: View {
                 showError(CensoError.invalidIdentifier)
             }
         } else {
-            if identifier == "v2" {
-                if url.pathComponents.count <= 3 {
-                    showError(CensoError.invalidUrl(url: "\(url)"))
-                    return
-                }
-                if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
-                    self.route = .access(participantId: participantId, approvalId: url.pathComponents[3])
-                    self.navigateToRoute = true
-                } else {
-                    RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
-                    showError(CensoError.invalidIdentifier)
-                }
+            if url.pathComponents.count <= 3 {
+                showError(CensoError.invalidUrl(url: "\(url)"))
+                return
+            }
+            if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
+                self.route = .access(participantId: participantId, approvalId: url.pathComponents[3])
+                self.navigateToRoute = true
             } else {
-                if let participantId = try? ParticipantId(value: identifier) {
-                    self.route = .access(participantId: participantId, approvalId: nil)
-                    self.navigateToRoute = true
-                } else {
-                    RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
-                    showError(CensoError.invalidIdentifier)
-                }
+                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
+                showError(CensoError.invalidIdentifier)
             }
         }
     }

@@ -77,14 +77,14 @@ struct PhrasesAccessAvailable: View {
                 }
             })
         case .retrievingShards(let phraseIndex, let language):
-            RetrieveRecoveredShards(
+            RetrieveAccessShards(
                 session: session,
                 ownerState: ownerState,
                 onSuccess: { encryptedShards in
                     do {
                         self.step = .showingSeedPhrase(
                             phraseIndex: phraseIndex,
-                            phrase: try recoverSecret(encryptedShards, phraseIndex, language),
+                            phrase: try recoverPhrase(encryptedShards, phraseIndex, language),
                             start: Date.now)
                     } catch {
                         self.step = .showingList
@@ -96,7 +96,7 @@ struct PhrasesAccessAvailable: View {
                 }
             )
         case .showingSeedPhrase(let phraseIndex, let phrase, let start):
-            let label = ownerState.vault.secrets[phraseIndex].label
+            let label = ownerState.vault.seedPhrases[phraseIndex].label
             ShowPhrase(
                 label: label,
                 words: phrase,
@@ -130,12 +130,12 @@ struct PhrasesAccessAvailable: View {
         self.error = error
     }
     
-    private func recoverSecret(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int, _ language: WordListLanguage?) throws -> [String] {
+    private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int, _ language: WordListLanguage?) throws -> [String] {
         do {
             let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
-            let decryptedSecret = try masterKey.decrypt(base64EncodedString:ownerState.vault.secrets[phraseIndex].encryptedSeedPhrase)
-            return try BIP39.binaryDataToWords(binaryData: decryptedSecret, language: language)
+            let decryptedPhraseData = try masterKey.decrypt(base64EncodedString:ownerState.vault.seedPhrases[phraseIndex].encryptedSeedPhrase)
+            return try BIP39.binaryDataToWords(binaryData: decryptedPhraseData, language: language)
         } catch {
             RaygunClient.sharedInstance().send(error: error, tags: ["Access"], customData: nil)
             throw error

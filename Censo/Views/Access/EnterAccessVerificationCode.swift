@@ -15,9 +15,9 @@ struct EnterAccessVerificationCode : View {
     
     var session: Session
     var policy: API.Policy
-    var approval: API.Recovery.ThisDevice.Approval
-    var approver: API.TrustedGuardian
-    var intent: API.Recovery.Intent
+    var approval: API.Access.ThisDevice.Approval
+    var approver: API.TrustedApprover
+    var intent: API.Access.Intent
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onSuccess: (API.OwnerState) -> Void
     
@@ -169,8 +169,8 @@ struct EnterAccessVerificationCode : View {
         apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
             case .success(let user):
-                if let recovery = user.ownerState.thisDeviceRecovery,
-                   let approval = recovery.approvals.first(where: { $0.participantId == approver.participantId }) {
+                if let access = user.ownerState.thisDeviceAccess,
+                   let approval = access.approvals.first(where: { $0.participantId == approver.participantId }) {
                     if approval.status == .approved {
                         onSuccess(user.ownerState)
                     } else {
@@ -201,15 +201,15 @@ struct EnterAccessVerificationCode : View {
         
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .submitRecoveryTotpVerification(
+            endpoint: .submitAccessTotpVerification(
                 participantId: approver.participantId,
-                payload: API.SubmitRecoveryTotpVerificationApiRequest(
+                payload: API.SubmitAccessTotpVerificationApiRequest(
                     signature: signature,
                     timeMillis: timeMillis,
                     ownerDevicePublicKey: devicePublicKey
                 )
             )
-        ) { (result: Result<API.SubmitRecoveryTotpVerificationApiResponse, MoyaError>) in
+        ) { (result: Result<API.SubmitAccessTotpVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
@@ -225,12 +225,12 @@ struct EnterAccessVerificationCode : View {
 #Preview("initial") {
     NavigationView {
         let policy = API.Policy.sample2Approvers
-        let approver = policy.guardians.last!
+        let approver = policy.approvers.last!
         
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
+            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
             approver: approver,
             intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
@@ -244,12 +244,12 @@ struct EnterAccessVerificationCode : View {
 #Preview("entercode") {
     NavigationView {
         let policy = API.Policy.sample2Approvers
-        let approver = policy.guardians.last!
+        let approver = policy.approvers.last!
         
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
+            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
             approver: approver,
             intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
@@ -263,12 +263,12 @@ struct EnterAccessVerificationCode : View {
 #Preview("rejected") {
     NavigationView {
         let policy = API.Policy.sample2Approvers
-        let approver = policy.guardians.last!
+        let approver = policy.approvers.last!
         
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
+            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
             approver: approver,
             intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
@@ -282,12 +282,12 @@ struct EnterAccessVerificationCode : View {
 #Preview("waiting") {
     NavigationView {
         let policy = API.Policy.sample2Approvers
-        let approver = policy.guardians.last!
+        let approver = policy.approvers.last!
         
         EnterAccessVerificationCode(
             session: .sample,
             policy: policy,
-            approval: API.Recovery.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
+            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
             approver: approver,
             intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },

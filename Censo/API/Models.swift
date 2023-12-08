@@ -43,14 +43,14 @@ extension API {
         var scanResultBlob: String
     }
     
-    enum GuardianSetup: Encodable, Decodable {
+    enum ApproverSetup: Encodable, Decodable {
         case implicitlyOwner(ImplicitlyOwner)
         case externalApprover(ExternalApprover)
         
         struct ImplicitlyOwner: Encodable, Decodable {
             var participantId: ParticipantId
             var label: String
-            var guardianPublicKey: Base58EncodedPublicKey
+            var approverPublicKey: Base58EncodedPublicKey
         }
         
         struct ExternalApprover: Encodable, Decodable {
@@ -59,12 +59,12 @@ extension API {
             var deviceEncryptedTotpSecret: Base64EncodedString
         }
         
-        enum GuardianSetupCodingKeys: String, CodingKey {
+        enum ApproverSetupCodingKeys: String, CodingKey {
             case type
         }
         
         init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: GuardianSetupCodingKeys.self)
+            let container = try decoder.container(keyedBy: ApproverSetupCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "ImplicitlyOwner":
@@ -77,7 +77,7 @@ extension API {
         }
         
         func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: GuardianSetupCodingKeys.self)
+            var container = encoder.container(keyedBy: ApproverSetupCodingKeys.self)
             switch self {
             case .implicitlyOwner(let implicitlyOwner):
                 try container.encode("ImplicitlyOwner", forKey: .type)
@@ -89,7 +89,7 @@ extension API {
         }
     }
     
-    struct GuardianShard: Encodable {
+    struct ApproverShard: Encodable {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
     }
@@ -104,7 +104,7 @@ extension API {
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
-        var guardianPublicKey: Base58EncodedPublicKey
+        var approverPublicKey: Base58EncodedPublicKey
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
@@ -120,7 +120,7 @@ extension API {
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
-        var guardianPublicKey: Base58EncodedPublicKey
+        var approverPublicKey: Base58EncodedPublicKey
         var password: Password
     }
     
@@ -130,7 +130,7 @@ extension API {
     
     struct SetupPolicyApiRequest: Encodable {
         var threshold: Int
-        var guardians: [GuardianSetup]
+        var approvers: [ApproverSetup]
     }
     
     struct SetupPolicyApiResponse {
@@ -139,7 +139,7 @@ extension API {
     
     struct ReplacePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
-        var guardianShards: [GuardianShard]
+        var approverShards: [ApproverShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var signatureByPreviousIntermediateKey: Base64EncodedString
@@ -150,7 +150,7 @@ extension API {
         var scanResultBlob: String
     }
     
-    struct ConfirmGuardianApiRequest: Encodable {
+    struct ConfirmApproverApiRequest: Encodable {
         var participantId: ParticipantId
         var keyConfirmationSignature: Base64EncodedString
         var keyConfirmationTimeMillis: UInt64
@@ -182,43 +182,43 @@ extension API {
         var ownerState: OwnerState
     }
     
-    struct StoreSecretApiRequest : Encodable {
+    struct StoreSeedPhraseApiRequest : Encodable {
         var encryptedSeedPhrase: Base64EncodedString
         var seedPhraseHash: String
         var label: String
     }
     
-    struct StoreSecretApiResponse : Decodable {
+    struct StoreSeedPhraseApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
-    struct DeleteSecretApiResponse : Decodable {
+    struct DeleteSeedPhraseApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
-    struct RequestRecoveryApiRequest : Encodable {
-        var intent: Recovery.Intent
+    struct RequestAccessApiRequest : Encodable {
+        var intent: Access.Intent
     }
     
-    struct RequestRecoveryApiResponse : Decodable {
+    struct RequestAccessApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
-    struct DeleteRecoveryApiResponse : Decodable {
+    struct DeleteAccessApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
-    struct SubmitRecoveryTotpVerificationApiRequest : Encodable {
+    struct SubmitAccessTotpVerificationApiRequest : Encodable {
         var signature: Base64EncodedString
         var timeMillis: UInt64
         var ownerDevicePublicKey: Base58EncodedPublicKey
     }
     
-    struct SubmitRecoveryTotpVerificationApiResponse : Decodable {
+    struct SubmitAccessTotpVerificationApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
-    struct RetrieveRecoveryShardsApiRequest: Encodable {
+    struct RetrieveAccessShardsApiRequest: Encodable {
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
@@ -229,17 +229,17 @@ extension API {
         var isOwnerShard: Bool
     }
     
-    struct RetrieveRecoveryShardsApiResponse : BiometryVerificationResponse {
+    struct RetrieveAccessShardsApiResponse : BiometryVerificationResponse {
         var ownerState: OwnerState
         var encryptedShards: [EncryptedShard]
         var scanResultBlob: String
     }
     
-    struct RetrieveRecoveryShardsWithPasswordApiRequest: Encodable {
+    struct RetrieveAccessShardsWithPasswordApiRequest: Encodable {
         var password: Password
     }
 
-    struct RetrieveRecoveryShardsWithPasswordApiResponse: Decodable {
+    struct RetrieveAccessShardsWithPasswordApiResponse: Decodable {
         var ownerState: OwnerState
         var encryptedShards: [EncryptedShard]
     }

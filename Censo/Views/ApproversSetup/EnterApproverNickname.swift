@@ -117,22 +117,22 @@ struct EnterApproverNickname: View {
             
         do {
             let newApproverParticipantId = ParticipantId.random()
-            let guardians: [API.GuardianSetup]
+            let approvers: [API.ApproverSetup]
             
-            if let owner = policySetup?.guardians.first,
-               let primaryApprover = policySetup?.guardians.last {
-                guardians = [
-                    .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+            if let owner = policySetup?.approvers.first,
+               let primaryApprover = policySetup?.approvers.last {
+                approvers = [
+                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
                         participantId: owner.participantId,
                         label: "Me",
-                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
+                        approverPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
                     )),
-                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                    .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: primaryApprover.participantId,
                         label: primaryApprover.label,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
                     )),
-                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                    .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
                         label: nickname.value,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
@@ -140,13 +140,13 @@ struct EnterApproverNickname: View {
                 ]
             } else {
                 let ownerParticipantId = ParticipantId.random()
-                guardians = [
-                    .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                approvers = [
+                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
                         participantId: ownerParticipantId,
                         label: "Me",
-                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
+                        approverPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
                     )),
-                    .externalApprover(API.GuardianSetup.ExternalApprover(
+                    .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
                         label: nickname.value,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
@@ -156,7 +156,7 @@ struct EnterApproverNickname: View {
             
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, guardians: guardians))
+                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -180,7 +180,7 @@ struct EnterApproverNickname: View {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                guardianSetup: nil,
+                policySetup: nil,
                 authType: .facetec,
                 subscriptionStatus: .active
             ),

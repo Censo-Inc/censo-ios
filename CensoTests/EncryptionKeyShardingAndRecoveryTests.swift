@@ -69,7 +69,7 @@ final class EncryptionKeyShardingAndRecoveryTests: XCTestCase {
         }
     }
     
-    func getPoint(_ shards: [API.GuardianShard], _ index: Int, _ participantKey: EncryptionKey) throws -> Point {
+    func getPoint(_ shards: [API.ApproverShard], _ index: Int, _ participantKey: EncryptionKey) throws -> Point {
         let participantShard = shards[index]
         let decryptedData = try participantKey.decrypt(base64EncodedString: participantShard.encryptedShard).toHexString()
         return Point(x: participantShard.participantId.bigInt, y: BigInt(decryptedData, radix: 16)!)

@@ -11,7 +11,7 @@ import Moya
 struct ApproverHome: View {
     @Environment(\.apiProvider) var apiProvider
     
-    @RemoteResult<API.GuardianUser, API> private var user
+    @RemoteResult<API.ApproverUser, API> private var user
     
     var session: Session
     var onUrlPasted: (URL) -> Void

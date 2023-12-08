@@ -24,8 +24,8 @@ struct API {
         case signIn(UserCredentials)
         case registerPushToken(String)
 
-        case confirmGuardian(ConfirmGuardianApiRequest)
-        case rejectGuardianVerification(ParticipantId)
+        case confirmApprover(ConfirmApproverApiRequest)
+        case rejectApproverVerification(ParticipantId)
 
         case createPolicy(CreatePolicyApiRequest)
         case createPolicyWithPassword(CreatePolicyWithPasswordApiRequest)
@@ -40,14 +40,14 @@ struct API {
         case prolongUnlock
         case lock
         
-        case storeSecret(StoreSecretApiRequest)
-        case deleteSecret(guid: String)
+        case storeSeedPhrase(StoreSeedPhraseApiRequest)
+        case deleteSeedPhrase(guid: String)
         
-        case requestRecovery(RequestRecoveryApiRequest)
-        case deleteRecovery
-        case submitRecoveryTotpVerification(participantId: ParticipantId, payload: SubmitRecoveryTotpVerificationApiRequest)
-        case retrieveRecoveredShards(RetrieveRecoveryShardsApiRequest)
-        case retrieveRecoveredShardsWithPassword(RetrieveRecoveryShardsWithPasswordApiRequest)
+        case requestAccess(RequestAccessApiRequest)
+        case deleteAccess
+        case submitAccessTotpVerification(participantId: ParticipantId, payload: SubmitAccessTotpVerificationApiRequest)
+        case retrieveAccessShards(RetrieveAccessShardsApiRequest)
+        case retrieveAccessShardsWithPassword(RetrieveAccessShardsWithPasswordApiRequest)
         case submitPurchase(SubmitPurchaseApiRequest)
     }
 }
@@ -78,10 +78,10 @@ extension API: TargetType {
             return "v1/policy-setup"
         case .replacePolicy:
             return "v1/policy"
-        case .confirmGuardian(let request):
-            return "v1/guardians/\(request.participantId.value)/confirmation"
-        case .rejectGuardianVerification(let id):
-            return "v1/guardians/\(id.value)/verification/reject"
+        case .confirmApprover(let request):
+            return "v1/approvers/\(request.participantId.value)/confirmation"
+        case .rejectApproverVerification(let id):
+            return "v1/approvers/\(id.value)/verification/reject"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .initBiometryVerification:
@@ -96,20 +96,20 @@ extension API: TargetType {
             return "v1/unlock-prolongation"
         case .lock:
             return "v1/lock"
-        case .storeSecret:
-            return "v1/vault/secrets"
-        case .deleteSecret(let guid):
-            return "v1/vault/secrets/\(guid)"
-        case .requestRecovery:
-            return "v1/recovery"
-        case .deleteRecovery:
-            return "v1/recovery"
-        case .submitRecoveryTotpVerification(let participantId, _):
-            return "v1/recovery/\(participantId.value)/totp-verification"
-        case .retrieveRecoveredShards:
-            return "v1/recovery/retrieval"
-        case .retrieveRecoveredShardsWithPassword:
-            return "v1/recovery/retrieval-password"
+        case .storeSeedPhrase:
+            return "v1/vault/seed-phrases"
+        case .deleteSeedPhrase(let guid):
+            return "v1/vault/seed-phrases/\(guid)"
+        case .requestAccess:
+            return "v1/access"
+        case .deleteAccess:
+            return "v1/access"
+        case .submitAccessTotpVerification(let participantId, _):
+            return "v1/access/\(participantId.value)/totp-verification"
+        case .retrieveAccessShards:
+            return "v1/access/retrieval"
+        case .retrieveAccessShardsWithPassword:
+            return "v1/access/retrieval-password"
         case .submitPurchase:
             return "v1/purchases"
         }
@@ -120,26 +120,26 @@ extension API: TargetType {
         case .user,
              .attestationKey:
             return .get
-        case .deleteUser, .deleteSecret, .deleteRecovery:
+        case .deleteUser, .deleteSeedPhrase, .deleteAccess:
             return .delete
         case .signIn,
              .registerPushToken,
              .createPolicy,
              .createPolicyWithPassword,
              .setupPolicy,
-             .confirmGuardian,
-             .rejectGuardianVerification,
+             .confirmApprover,
+             .rejectApproverVerification,
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
              .unlockWithPassword,
              .prolongUnlock,
              .lock,
-             .storeSecret,
-             .requestRecovery,
-             .submitRecoveryTotpVerification,
-             .retrieveRecoveredShards,
-             .retrieveRecoveredShardsWithPassword,
+             .storeSeedPhrase,
+             .requestAccess,
+             .submitAccessTotpVerification,
+             .retrieveAccessShards,
+             .retrieveAccessShardsWithPassword,
              .registerAttestationObject,
              .attestationChallenge,
              .submitPurchase:
@@ -154,7 +154,7 @@ extension API: TargetType {
         case .user,
              .deleteUser,
              .initBiometryVerification,
-             .rejectGuardianVerification,
+             .rejectApproverVerification,
              .attestationChallenge,
              .attestationKey:
             return .requestPlain
@@ -198,7 +198,7 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .replacePolicy(let request):
             return .requestJSONEncodable(request)
-        case .confirmGuardian(let request):
+        case .confirmApprover(let request):
             return .requestJSONEncodable(request)
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
@@ -212,19 +212,19 @@ extension API: TargetType {
             return .requestPlain
         case .lock:
             return .requestPlain
-        case .storeSecret(let request):
+        case .storeSeedPhrase(let request):
             return .requestJSONEncodable(request)
-        case .deleteSecret:
+        case .deleteSeedPhrase:
             return .requestPlain
-        case .requestRecovery(let request):
+        case .requestAccess(let request):
             return .requestJSONEncodable(request)
-        case .deleteRecovery:
+        case .deleteAccess:
             return .requestPlain
-        case .submitRecoveryTotpVerification(_, let payload):
+        case .submitAccessTotpVerification(_, let payload):
             return .requestJSONEncodable(payload)
-        case .retrieveRecoveredShards(let request):
+        case .retrieveAccessShards(let request):
             return .requestJSONEncodable(request)
-        case .retrieveRecoveredShardsWithPassword(let request):
+        case .retrieveAccessShardsWithPassword(let request):
             return .requestJSONEncodable(request)
         case .submitPurchase(let request):
             return .requestJSONEncodable(request)
@@ -249,7 +249,7 @@ extension API: TargetType {
              .attestationChallenge,
              .registerAttestationObject,
              .registerPushToken,
-             .rejectGuardianVerification,
+             .rejectApproverVerification,
              .setupPolicy,
              .initBiometryVerification,
              .confirmBiometryVerification,
@@ -257,8 +257,8 @@ extension API: TargetType {
              .unlockWithPassword,
              .prolongUnlock,
              .lock,
-             .storeSecret,
-             .deleteRecovery,
+             .storeSeedPhrase,
+             .deleteAccess,
              .attestationKey:
             return false
         case .signIn,
@@ -266,12 +266,12 @@ extension API: TargetType {
              .createPolicy,
              .createPolicyWithPassword,
              .replacePolicy,
-             .requestRecovery,
-             .submitRecoveryTotpVerification,
-             .retrieveRecoveredShards,
-             .retrieveRecoveredShardsWithPassword,
-             .deleteSecret,
-             .confirmGuardian,
+             .requestAccess,
+             .submitAccessTotpVerification,
+             .retrieveAccessShards,
+             .retrieveAccessShardsWithPassword,
+             .deleteSeedPhrase,
+             .confirmApprover,
              .submitPurchase:
             return true
         }

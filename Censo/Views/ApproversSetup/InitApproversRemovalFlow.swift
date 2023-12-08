@@ -76,11 +76,11 @@ struct InitApproversRemovalFlow: View {
             let ownerParticipantId = ParticipantId.random()
             let setupPolicyRequest = API.SetupPolicyApiRequest(
                 threshold: 1,
-                guardians: [
-                    .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                approvers: [
+                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
                         participantId: ownerParticipantId,
                         label: "Me",
-                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
+                        approverPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
                     ))
                 ]
             )

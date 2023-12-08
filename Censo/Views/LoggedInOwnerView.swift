@@ -37,7 +37,7 @@ struct LoggedInOwnerView: View {
                                 session: session,
                                 ownerState: ownerStateBinding
                             )
-                        case .ready(let ready) where ready.vault.secrets.isEmpty:
+                        case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
                             FirstPhrase(
                                 ownerState: ready,
                                 session: session,
@@ -91,10 +91,10 @@ struct LoggedInOwnerView: View {
     }
 }
 
-extension Array where Element == API.ProspectGuardian {
+extension Array where Element == API.ProspectApprover {
     var allConfirmed: Bool {
-        !contains { guardian in
-            if case .confirmed = guardian.status {
+        !contains { approver in
+            if case .confirmed = approver.status {
                 return false
             } else {
                 return true
@@ -124,11 +124,11 @@ extension UserCredentials {
 
 extension API.PolicySetup {
     static var sample: Self {
-        .init(guardians: [.sample], threshold: 2)
+        .init(approvers: [.sample], threshold: 2)
     }
 }
 
-extension API.ProspectGuardian {
+extension API.ProspectApprover {
     static var sample: Self {
         .init(invitationId: try! InvitationId(value: ""), label: "Jerry", participantId: .random(), status: .declined)
     }

@@ -14,7 +14,7 @@ extension EncryptionKey {
         case badParticipantId
     }
 
-    func shard(threshold: Int, participants: [(ParticipantId, Base58EncodedPublicKey)]) throws -> [API.GuardianShard] {
+    func shard(threshold: Int, participants: [(ParticipantId, Base58EncodedPublicKey)]) throws -> [API.ApproverShard] {
         let sharer = try SecretSharer(
             secret: BigInt(privateKeyRaw().toHexString(), radix: 16)!,
             threshold: threshold,
@@ -24,7 +24,7 @@ extension EncryptionKey {
             guard let shard = sharer.shards.first(where: {$0.x == participantId.bigInt}) else {
                 throw ShardingError.badParticipantId
             }
-            return API.GuardianShard(
+            return API.ApproverShard(
                 participantId: participantId,
                 encryptedShard: try EncryptionKey
                     .generateFromPublicExternalRepresentation(base58PublicKey: participantPublicKey)

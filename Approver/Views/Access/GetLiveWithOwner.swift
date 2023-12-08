@@ -74,17 +74,17 @@ extension Base58EncodedPublicKey {
         try! .init(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
     }
 }
-extension API.GuardianPhase.RecoveryRequested {
+extension API.ApproverPhase.AccessRequested {
     static var sample: Self {
-        .init(createdAt: Date(), recoveryPublicKey: .sample)
+        .init(createdAt: Date(), accessPublicKey: .sample)
     }
 }
 
-extension API.GuardianState {
+extension API.ApproverState {
     static var sample: Self {
         .init(
             participantId: .random(),
-            phase: .recoveryRequested(.sample)
+            phase: .accessRequested(.sample)
         )
     }
 }

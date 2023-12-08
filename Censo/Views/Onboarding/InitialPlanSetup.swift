@@ -20,7 +20,7 @@ struct InitialPlanSetup: View {
     @State private var needBiometricConsent = true
 
     struct CreatePolicyParams {
-        var guardianPublicKey: Base58EncodedPublicKey
+        var approverPublicKey: Base58EncodedPublicKey
         var intermediatePublicKey: Base58EncodedPublicKey
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var encryptedMasterPrivateKey: Base64EncodedString
@@ -45,7 +45,7 @@ struct InitialPlanSetup: View {
                                     masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
                                     participantId: createPolicyParams.participantId,
                                     encryptedShard: createPolicyParams.encryptedShard,
-                                    guardianPublicKey: createPolicyParams.guardianPublicKey,
+                                    approverPublicKey: createPolicyParams.approverPublicKey,
                                     password: API.Password(cryptedPassword: cryptedPassword)
                                 )
                             )
@@ -67,7 +67,7 @@ struct InitialPlanSetup: View {
                                     masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
                                     participantId: createPolicyParams.participantId,
                                     encryptedShard: createPolicyParams.encryptedShard,
-                                    guardianPublicKey: createPolicyParams.guardianPublicKey,
+                                    approverPublicKey: createPolicyParams.approverPublicKey,
                                     biometryVerificationId: verificationId,
                                     biometryData: facetecBiometry
                                 )
@@ -186,7 +186,7 @@ struct InitialPlanSetup: View {
             let masterEncryptionKey = try EncryptionKey.generateRandomKey()
             
             createPolicyParams = CreatePolicyParams(
-                guardianPublicKey: ownerApproverPublicKey,
+                approverPublicKey: ownerApproverPublicKey,
                 intermediatePublicKey: try intermediateEncryptionKey.publicExternalRepresentation(),
                 masterEncryptionPublicKey: try masterEncryptionKey.publicExternalRepresentation(),
                 encryptedMasterPrivateKey: try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw()),

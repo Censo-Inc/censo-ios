@@ -30,12 +30,12 @@ struct ShowPhraseList: View {
                 .padding()
             
             ScrollView {
-                ForEach(0..<ownerState.vault.secrets.count, id: \.self) { i in
+                ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
                     Button {
                         onPhraseSelected(i)
                     } label: {
                         HStack {
-                            Text(ownerState.vault.secrets[i].label)
+                            Text(ownerState.vault.seedPhrases[i].label)
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .padding([.leading])

@@ -8,8 +8,8 @@
 import SwiftUI
 
 enum Approver {
-    case prospect(API.ProspectGuardian)
-    case trusted(API.TrustedGuardian)
+    case prospect(API.ProspectApprover)
+    case trusted(API.TrustedApprover)
 
     func label() -> String {
         switch (self) {
@@ -26,7 +26,7 @@ struct ApproverPill: View {
     var approver: Approver
     var isSelected: Bool?
     var onEdit: (() -> Void)?
-    var onVerificationSubmitted: ((API.GuardianStatus.VerificationSubmitted) -> Void)?
+    var onVerificationSubmitted: ((API.ApproverStatus.VerificationSubmitted) -> Void)?
     
     var body: some View {
         HStack(spacing: 0) {
@@ -109,7 +109,7 @@ struct ApproverPill: View {
 #if DEBUG
 #Preview("without selection") {
     VStack {
-        let trustedApprover = API.TrustedGuardian(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date()))
+        let trustedApprover = API.TrustedApprover(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedApprover.Attributes(onboardedAt: Date()))
         ApproverPill(isPrimary: true, approver: .trusted(trustedApprover))
         ApproverPill(isPrimary: false, approver: .trusted(trustedApprover))
     }
@@ -118,10 +118,10 @@ struct ApproverPill: View {
 struct ApproverPillsWithSelection_Previews: PreviewProvider {
     struct ContainerView: View {
         let approvers = [
-            API.TrustedGuardian(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date())),
-            API.TrustedGuardian(label: "John Wick", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedGuardian.Attributes(onboardedAt: Date())),
+            API.TrustedApprover(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedApprover.Attributes(onboardedAt: Date())),
+            API.TrustedApprover(label: "John Wick", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedApprover.Attributes(onboardedAt: Date())),
         ]
-        @State var selectedApprover: API.TrustedGuardian? = nil
+        @State var selectedApprover: API.TrustedApprover? = nil
             
         var body: some View {
             VStack {

@@ -14,10 +14,10 @@ struct AccessApproval: View {
     
     var session: Session
     var participantId: ParticipantId
-    var approvalId: String?
+    var approvalId: String
     var onSuccess: () -> Void
 
-    @RemoteResult<[API.GuardianState], API> private var guardianStates
+    @RemoteResult<[API.ApproverState], API> private var approverStates
     @State private var inProgress = false
     @State private var showLinkAccepted = true
     @State private var showGetLive = true
@@ -27,19 +27,19 @@ struct AccessApproval: View {
     @State private var refreshStatePublisher = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        switch guardianStates {
+        switch approverStates {
         case .idle:
             ProgressView()
                 .onAppear(perform: reload)
         case .loading:
             ProgressView()
-        case .success(let guardianStates):
-            if let guardianState = guardianStates.forParticipantId(participantId) {
-                switch guardianState.phase {
-                case .recoveryRequested:
+        case .success(let approverStates):
+            if let approverState = approverStates.forParticipantId(participantId) {
+                switch approverState.phase {
+                case .accessRequested:
                     ProgressView()
                         .onAppear {
-                            startOwnerVerification(participantId: guardianState.participantId)
+                            startOwnerVerification(participantId: approverState.participantId)
                         }
                         .alert("Error", isPresented: $showingError, presenting: error) { _ in
                             Button {
@@ -48,12 +48,12 @@ struct AccessApproval: View {
                         } message: { error in
                             Text(error.localizedDescription)
                         }
-                case .recoveryVerification, .recoveryConfirmation:
+                case .accessVerification, .accessConfirmation:
                     OwnerVerification(
                         session: session,
-                        guardianState: guardianState,
+                        approverState: approverState,
                         approvalId: approvalId,
-                        onGuardianStatesUpdated: replaceGuardianStates
+                        onApproverStatesUpdated: replaceApproverStates
                     )
                     .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 3, refresh: reload))
                 case .complete:
@@ -78,15 +78,15 @@ struct AccessApproval: View {
     }
 
     private func reload() {
-        _guardianStates.reload(
+        _approverStates.reload(
             with: apiProvider,
             target: session.target(for: .user),
-            adaptSuccess: { (user: API.GuardianUser) in user.guardianStates }
+            adaptSuccess: { (user: API.ApproverUser) in user.approverStates }
         )
     }
     
-    private func replaceGuardianStates(newGuardianStates: [API.GuardianState]) {
-        _guardianStates.replace(newGuardianStates)
+    private func replaceApproverStates(newApproverStates: [API.ApproverState]) {
+        _approverStates.replace(newApproverStates)
     }
     
     private func showError(_ error: Error) {
@@ -100,17 +100,14 @@ struct AccessApproval: View {
 
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: approvalId == nil ? .storeRecoveryTotpSecret(
-                    participantId,
-                    encryptedTotpSecret
-                ) : .storeAccessTotpSecret(
-                    approvalId!,
+                endpoint: .storeAccessTotpSecret(
+                    approvalId,
                     encryptedTotpSecret
                 )
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
                 switch result {
                 case .success(let success):
-                    replaceGuardianStates(newGuardianStates: success.guardianStates)
+                    replaceApproverStates(newApproverStates: success.approverStates)
                 case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                     showError(CensoError.accessRequestNotFound)
                 case .failure(let error):

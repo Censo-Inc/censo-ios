@@ -18,9 +18,9 @@ struct Onboarding: View {
     @State private var showingError = false
     @State private var currentError: Error?
     
-    @RemoteResult<API.GuardianUser, API> private var user
+    @RemoteResult<API.ApproverUser, API> private var user
 
-    @State var guardianState: API.GuardianState?
+    @State var approverState: API.ApproverState?
 
     var session: Session
     var inviteCode: String
@@ -36,7 +36,7 @@ struct Onboarding: View {
             case .loading:
                 ProgressView()
             case .success(let user):
-                let currentState = guardianState ?? user.guardianStates.forInvite(inviteCode)
+                let currentState = approverState ?? user.approverStates.forInvite(inviteCode)
                 switch currentState?.phase {
                 case .none:
                     ProgressView()
@@ -49,8 +49,8 @@ struct Onboarding: View {
                     SubmitVerification(
                         invitationId: inviteCode, 
                         session: session,
-                        guardianState: currentState!,
-                        onSuccess: {newState in guardianState = newState}
+                        approverState: currentState!,
+                        onSuccess: {newState in approverState = newState}
                     )
                     .navigationBarBackButtonHidden(true)
                 case .complete:
@@ -91,7 +91,7 @@ struct Onboarding: View {
         apiProvider.decodableRequest(with: session, endpoint: .acceptInvitation(invitationId)) { (result: Result<API.AcceptInvitationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
-                guardianState = response.guardianState
+                approverState = response.approverState
             case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 showError(CensoError.invitationNotFound)
             case .failure(MoyaError.underlying(CensoError.unauthorized, nil)):
@@ -103,7 +103,7 @@ struct Onboarding: View {
     }
 
     private func reload() {
-        guardianState = nil
+        approverState = nil
         _user.reload(with: apiProvider, target: session.target(for: .user))
     }
     

@@ -27,9 +27,8 @@ struct API {
 
         case declineInvitation(InvitationId)
         case acceptInvitation(InvitationId)
-        case submitVerification(InvitationId, SubmitGuardianVerificationApiRequest)
+        case submitVerification(InvitationId, SubmitApproverVerificationApiRequest)
         
-        case storeRecoveryTotpSecret(ParticipantId, Base64EncodedString)
         case approveOwnerVerification(ParticipantId, Base64EncodedString)
         case rejectOwnerVerification(ParticipantId)
         
@@ -38,42 +37,42 @@ struct API {
         case rejectAccessVerification(String)
     }
     
-    enum GuardianPhase: Codable {
+    enum ApproverPhase: Codable {
         case waitingForCode
         case waitingForVerification
         case verificationRejected
         case complete
-        case recoveryRequested(RecoveryRequested)
-        case recoveryVerification(RecoveryVerification)
-        case recoveryConfirmation(RecoveryConfirmation)
+        case accessRequested(AccessRequested)
+        case accessVerification(AccessVerification)
+        case accessConfirmation(AccessConfirmation)
         
-        struct RecoveryRequested: Codable {
+        struct AccessRequested: Codable {
             var createdAt: Date
-            var recoveryPublicKey: Base58EncodedPublicKey
+            var accessPublicKey: Base58EncodedPublicKey
         }
         
-        struct RecoveryVerification: Codable {
+        struct AccessVerification: Codable {
             var createdAt: Date
-            var recoveryPublicKey: Base58EncodedPublicKey
+            var accessPublicKey: Base58EncodedPublicKey
             var encryptedTotpSecret: Base64EncodedString
         }
         
-        struct RecoveryConfirmation: Codable {
+        struct AccessConfirmation: Codable {
             var createdAt: Date
-            var recoveryPublicKey: Base58EncodedPublicKey
+            var accessPublicKey: Base58EncodedPublicKey
             var encryptedTotpSecret: Base64EncodedString
             var ownerKeySignature: Base64EncodedString
             var ownerKeySignatureTimeMillis: UInt64
             var ownerPublicKey: Base58EncodedPublicKey
-            var guardianEncryptedShard: Base64EncodedString
+            var approverEncryptedShard: Base64EncodedString
         }
         
-        enum GuardianPhaseCodingKeys: String, CodingKey {
+        enum ApproverPhaseCodingKeys: String, CodingKey {
             case type
         }
         
         init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: GuardianPhaseCodingKeys.self)
+            let container = try decoder.container(keyedBy: ApproverPhaseCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "WaitingForCode":
@@ -84,19 +83,19 @@ struct API {
                 self = .verificationRejected
             case "Complete":
                 self = .complete
-            case "RecoveryRequested":
-                self = .recoveryRequested(try RecoveryRequested(from: decoder))
-            case "RecoveryVerification":
-                self = .recoveryVerification(try RecoveryVerification(from: decoder))
-            case "RecoveryConfirmation":
-                self = .recoveryConfirmation(try RecoveryConfirmation(from: decoder))
+            case "AccessRequested":
+                self = .accessRequested(try AccessRequested(from: decoder))
+            case "AccessVerification":
+                self = .accessVerification(try AccessVerification(from: decoder))
+            case "AccessConfirmation":
+                self = .accessConfirmation(try AccessConfirmation(from: decoder))
             default:
-                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid GuardianStatus")
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
             }
         }
         
         func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: GuardianPhaseCodingKeys.self)
+            var container = encoder.container(keyedBy: ApproverPhaseCodingKeys.self)
             switch self {
             case .waitingForCode:
                 try container.encode("WaitingForCode", forKey: .type)
@@ -106,45 +105,45 @@ struct API {
                 try container.encode("VerificationRejected", forKey: .type)
             case .complete:
                 try container.encode("Complete", forKey: .type)
-            case .recoveryRequested(let phase):
-                try container.encode("RecoveryRequested", forKey: .type)
+            case .accessRequested(let phase):
+                try container.encode("AccessRequested", forKey: .type)
                 try phase.encode(to: encoder)
-            case .recoveryVerification(let phase):
-                try container.encode("RecoveryVerification", forKey: .type)
+            case .accessVerification(let phase):
+                try container.encode("AccessVerification", forKey: .type)
                 try phase.encode(to: encoder)
-            case .recoveryConfirmation(let phase):
-                try container.encode("RecoveryConfirmation", forKey: .type)
+            case .accessConfirmation(let phase):
+                try container.encode("AccessConfirmation", forKey: .type)
                 try phase.encode(to: encoder)
             }
         }
     }
     
-    struct GuardianState: Codable {
+    struct ApproverState: Codable {
         var participantId: ParticipantId
-        var phase: GuardianPhase
+        var phase: ApproverPhase
         var invitationId: String?
     }
     
-    struct GuardianUser: Decodable {
-        var guardianStates: [GuardianState]
+    struct ApproverUser: Decodable {
+        var approverStates: [ApproverState]
     }
     
     struct AcceptInvitationApiResponse: Codable {
-        var guardianState: GuardianState
+        var approverState: ApproverState
     }
     
-    struct SubmitGuardianVerificationApiRequest: Codable {
+    struct SubmitApproverVerificationApiRequest: Codable {
         var signature: Base64EncodedString
         var timeMillis: UInt64
-        var guardianPublicKey: Base58EncodedPublicKey
+        var approverPublicKey: Base58EncodedPublicKey
     }
     
-    struct SubmitGuardianVerificationApiResponse: Codable {
-        var guardianState: GuardianState
+    struct SubmitApproverVerificationApiResponse: Codable {
+        var approverState: ApproverState
     }
     
     struct OwnerVerificationApiResponse: Codable {
-        var guardianStates: [GuardianState]
+        var approverStates: [ApproverState]
     }
 
     struct AttestationChallenge: Decodable {
@@ -173,17 +172,15 @@ extension API: TargetType {
              .deleteUser:
             return "v1/user"
         case .declineInvitation(let id):
-            return "v1/guardianship-invitations/\(id)/decline"
+            return "v1/approvership-invitations/\(id)/decline"
         case .acceptInvitation(let id):
-            return "v1/guardianship-invitations/\(id)/accept"
+            return "v1/approvership-invitations/\(id)/accept"
         case .submitVerification(let id, _):
-            return "v1/guardianship-invitations/\(id)/verification"
-        case .storeRecoveryTotpSecret(let id, _):
-            return "v1/recovery/\(id.value)/totp"
+            return "v1/approvership-invitations/\(id)/verification"
         case .approveOwnerVerification(let id, _):
-            return "v1/recovery/\(id.value)/approval"
+            return "v1/access/\(id.value)/approval"
         case .rejectOwnerVerification(let id):
-            return "v1/recovery/\(id.value)/rejection"
+            return "v1/access/\(id.value)/rejection"
         case .storeAccessTotpSecret(let id, _):
             return "v1/access/\(id)/totp"
         case .approveAccessVerification(let id, _):
@@ -201,7 +198,6 @@ extension API: TargetType {
              .declineInvitation,
              .acceptInvitation,
              .submitVerification,
-             .storeRecoveryTotpSecret,
              .approveOwnerVerification,
              .rejectOwnerVerification,
              .storeAccessTotpSecret,
@@ -251,10 +247,6 @@ extension API: TargetType {
             ])
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
-        case .storeRecoveryTotpSecret(_, let deviceEncryptedTotpSecret):
-            return .requestJSONEncodable([
-                "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
-            ])
         case .approveOwnerVerification(_, let encryptedShard):
             return .requestJSONEncodable([
                 "encryptedShard": encryptedShard
@@ -287,7 +279,6 @@ extension API: TargetType {
         case .user,
              .declineInvitation,
              .acceptInvitation,
-             .storeRecoveryTotpSecret,
              .rejectOwnerVerification,
              .attestationChallenge,
              .registerAttestationObject,
@@ -337,13 +328,13 @@ extension EnvironmentValues {
     }
 }
 
-extension API.GuardianPhase {
+extension API.ApproverPhase {
     var isActive: Bool {
         switch self {
         case .complete,
-             .recoveryConfirmation,
-             .recoveryRequested,
-             .recoveryVerification:
+             .accessConfirmation,
+             .accessRequested,
+             .accessVerification:
             return true
         default:
             return false
@@ -351,12 +342,12 @@ extension API.GuardianPhase {
     }
 }
 
-extension Array where Element == API.GuardianState {
-    func forInvite(_ invitationId: String) -> API.GuardianState? {
+extension Array where Element == API.ApproverState {
+    func forInvite(_ invitationId: String) -> API.ApproverState? {
         return self.first(where: {$0.invitationId == invitationId})
     }
     
-    func forParticipantId(_ participantId: ParticipantId) -> API.GuardianState? {
+    func forParticipantId(_ participantId: ParticipantId) -> API.ApproverState? {
         return self.first(where: {$0.participantId == participantId})
     }
     

@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 struct ChooseAccessApprover : View {
-    var intent: API.Recovery.Intent
+    var intent: API.Access.Intent
     var policy: API.Policy
-    var onContinue: (API.TrustedGuardian) -> Void
+    var onContinue: (API.TrustedApprover) -> Void
     
-    @State private var selectedApprover: API.TrustedGuardian?
+    @State private var selectedApprover: API.TrustedApprover?
     
-    init(intent: API.Recovery.Intent, policy: API.Policy, selectedApprover: API.TrustedGuardian? = nil, onContinue: @escaping (API.TrustedGuardian) -> Void) {
+    init(intent: API.Access.Intent, policy: API.Policy, selectedApprover: API.TrustedApprover? = nil, onContinue: @escaping (API.TrustedApprover) -> Void) {
         self.intent = intent
         self.policy = policy
         self.onContinue = onContinue
@@ -27,7 +27,7 @@ struct ChooseAccessApprover : View {
             Spacer()
             
             VStack(alignment: .leading, spacing: 20) {
-                let approvers = policy.guardians
+                let approvers = policy.approvers
                     .filter({ !$0.isOwner })
                     .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
 

@@ -44,7 +44,7 @@ struct ReplacePolicy: View {
                     onOwnerStateUpdated: onOwnerStateUpdated,
                     intent: .replacePolicy,
                     accessAvailableView: { _ in
-                        RetrieveRecoveredShards(
+                        RetrieveAccessShards(
                             session: session,
                             ownerState: ownerState,
                             onSuccess: { encryptedShards in
@@ -60,7 +60,7 @@ struct ReplacePolicy: View {
                 Group {
                     switch (intent) {
                     case .setupApprovers:
-                        ProgressView("Activating approver\(policySetup.guardians.count > 2 ? "s" : "")")
+                        ProgressView("Activating approver\(policySetup.approvers.count > 2 ? "s" : "")")
                     case .removeApprovers:
                         ProgressView("Removing approvers")
                     }
@@ -71,7 +71,7 @@ struct ReplacePolicy: View {
             case .cleanup:
                 ProgressView()
                     .onAppear {
-                        deleteRecoveryIfExists(onSuccess: onCanceled)
+                        deleteAccessIfExists(onSuccess: onCanceled)
                     }
             }
         } else {
@@ -83,15 +83,15 @@ struct ReplacePolicy: View {
     }
     
     private func replacePolicy(_ encryptedShards: [API.EncryptedShard]) {
-        deleteRecoveryIfExists(onSuccess: {
+        deleteAccessIfExists(onSuccess: {
             do {
                 let policySetup = ownerState.policySetup!
                 
-                if !policySetup.guardians.allSatisfy( { verifyKeyConfirmationSignature(guardian: $0) } ) {
+                if !policySetup.approvers.allSatisfy( { verifyKeyConfirmationSignature(approver: $0) } ) {
                     throw CensoError.cannotVerifyKeyConfirmationSignature
                 }
 
-                let ownerOldParticipantId = ownerState.policy.guardians.first!.participantId
+                let ownerOldParticipantId = ownerState.policy.approvers.first!.participantId
         
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
@@ -101,9 +101,9 @@ struct ReplacePolicy: View {
                     with: session,
                     endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
                         intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
-                        guardianShards: try newIntermediateKey.shard(
+                        approverShards: try newIntermediateKey.shard(
                             threshold: policySetup.threshold,
-                            participants: policySetup.guardians.map({ approver in
+                            participants: policySetup.approvers.map({ approver in
                                 return (approver.participantId, approver.publicKey!)
                             })
                         ),
@@ -127,18 +127,18 @@ struct ReplacePolicy: View {
         })
     }
     
-    private func verifyKeyConfirmationSignature(guardian: API.ProspectGuardian) -> Bool {
-        switch guardian.status {
+    private func verifyKeyConfirmationSignature(approver: API.ProspectApprover) -> Bool {
+        switch approver.status {
         case .confirmed(let confirmed):
             do {
-                guard let participantIdData = guardian.participantId.value.data(using: .hexadecimal),
+                guard let participantIdData = approver.participantId.value.data(using: .hexadecimal),
                       let timeMillisData = String(confirmed.timeMillis).data(using: .utf8),
                       let base58DevicePublicKey = (try? session.deviceKey.publicExternalRepresentation())?.base58EncodedPublicKey(),
                       let devicePublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: base58DevicePublicKey) else {
                     return false
                 }
                 
-                return try devicePublicKey.verifySignature(for: confirmed.guardianPublicKey.data + participantIdData + timeMillisData, signature: confirmed.guardianKeySignature)
+                return try devicePublicKey.verifySignature(for: confirmed.approverPublicKey.data + participantIdData + timeMillisData, signature: confirmed.approverKeySignature)
             } catch {
                 RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
             }
@@ -150,11 +150,11 @@ struct ReplacePolicy: View {
         }
     }
     
-    private func deleteRecoveryIfExists(onSuccess: @escaping () -> Void) {
-        if ownerState.recovery != nil {
+    private func deleteAccessIfExists(onSuccess: @escaping () -> Void) {
+        if ownerState.access != nil {
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .deleteRecovery
+                endpoint: .deleteAccess
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let success):

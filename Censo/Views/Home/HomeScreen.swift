@@ -108,13 +108,13 @@ struct HomeScreen: View {
 
 
 #if DEBUG
-extension API.TrustedGuardian {
+extension API.TrustedApprover {
     static var sample: Self {
         .init(
             label: "Ben",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: false,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -124,7 +124,7 @@ extension API.TrustedGuardian {
             label: "Brendan",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: false,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -134,7 +134,7 @@ extension API.TrustedGuardian {
             label: "Ievgen",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: false,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -145,7 +145,7 @@ extension API.TrustedGuardian {
             label: "Ata",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: false,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -156,7 +156,7 @@ extension API.TrustedGuardian {
             label: "Sam",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: false,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -167,7 +167,7 @@ extension API.TrustedGuardian {
             label: "Me",
             participantId: ParticipantId(bigInt: generateParticipantId()),
             isOwner: true,
-            attributes: API.TrustedGuardian.Attributes(
+            attributes: API.TrustedApprover.Attributes(
                 onboardedAt: Date()
             )
         )
@@ -178,7 +178,7 @@ extension API.Policy {
     static var sample: Self {
         .init(
             createdAt: Date(),
-            guardians: [.sampleOwner],
+            approvers: [.sampleOwner],
             threshold: 1,
             encryptedMasterKey: Base64EncodedString(data: Data()),
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
@@ -188,7 +188,7 @@ extension API.Policy {
     static var sample2Approvers: Self {
         .init(
             createdAt: Date(),
-            guardians: [.sample, .sample2],
+            approvers: [.sample, .sample2],
             threshold: 2,
             encryptedMasterKey: Base64EncodedString(data: Data()),
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
@@ -199,13 +199,13 @@ extension API.Policy {
 extension API.Vault {
     static var sample: Self {
         .init(
-            secrets: [.sample, .sample2, .sample3],
+            seedPhrases: [.sample, .sample2, .sample3],
             publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
 }
 
-extension API.VaultSecret {
+extension API.SeedPhrase {
     static var sample: Self {
         .init(guid: "guid1", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", createdAt: Date())
     }
@@ -224,7 +224,7 @@ struct CensoHomeScreen_Previews: PreviewProvider {
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
                 vault: .sample,
-                recovery: nil,
+                access: nil,
                 authType: .facetec,
                 subscriptionStatus: .active
             ),

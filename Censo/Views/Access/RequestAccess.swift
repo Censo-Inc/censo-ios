@@ -20,16 +20,16 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     var session: Session
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
-    var intent: API.Recovery.Intent
+    var intent: API.Access.Intent
     
     @ViewBuilder var accessAvailableView: (AccessAvailableViewParams) -> AccessAvailableView
     
-    @State private var deletingRecovery = false
+    @State private var deletingAccess = false
     @State private var showingError = false
     @State private var error: Error?
     
     var body: some View {
-        if deletingRecovery {
+        if deletingAccess {
             ProgressView()
                 .alert("Error", isPresented: $showingError, presenting: error) { _ in
                     Button {
@@ -41,11 +41,11 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                     Text(error.localizedDescription)
                 }
         } else {
-            switch (ownerState.recovery) {
+            switch (ownerState.access) {
             case nil:
                 ProgressView()
                     .onAppear {
-                        requestRecovery()
+                        requestAccess()
                     }
                     .alert("Error", isPresented: $showingError, presenting: error) { _ in
                         Button {
@@ -56,7 +56,7 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                     }
             case .anotherDevice:
                 AccessOnAnotherDevice(
-                    onCancelAccess: deleteRecoveryAndDismiss
+                    onCancelAccess: deleteAccessAndDismiss
                 )
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {
@@ -69,22 +69,22 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                         }
                     }
                 })
-            case .thisDevice(let recovery):
-                // delete it in case this is a leftover recovery with other intent
-                if recovery.intent != intent {
+            case .thisDevice(let access):
+                // delete it in case this is a leftover access with other intent
+                if access.intent != intent {
                     ProgressView()
                         .onAppear {
-                            deleteRecovery()
+                            deleteAccess()
                         }
                 } else {
-                    switch (recovery.status) {
+                    switch (access.status) {
                     case .requested:
                         AccessApproval(
                             session: session,
                             policy: ownerState.policy,
-                            recovery: recovery,
+                            access: access,
                             onCancel: {
-                                deleteRecovery(onSuccess: { dismiss() })
+                                deleteAccess(onSuccess: { dismiss() })
                             },
                             onOwnerStateUpdated: onOwnerStateUpdated
                         )
@@ -103,7 +103,7 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                             })
                     case .available:
                         accessAvailableView(AccessAvailableViewParams(
-                            onFinished: deleteRecoveryAndDismiss
+                            onFinished: deleteAccessAndDismiss
                         ))
                     }
                 }
@@ -111,10 +111,10 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
         }
     }
     
-    private func requestRecovery() {
+    private func requestAccess() {
         apiProvider.decodableRequest(
             with: session,
-            endpoint: .requestRecovery(API.RequestRecoveryApiRequest(intent: intent))
+            endpoint: .requestAccess(API.RequestAccessApiRequest(intent: intent))
         ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
             switch result {
             case .success(let response):
@@ -125,15 +125,15 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
         }
     }
     
-    private func deleteRecoveryAndDismiss() {
-        deleteRecovery(onSuccess: {
+    private func deleteAccessAndDismiss() {
+        deleteAccess(onSuccess: {
             dismiss()
         })
     }
     
-    private func deleteRecovery(onSuccess: @escaping () -> Void = {}) {
-        self.deletingRecovery = true
-        apiProvider.decodableRequest(with: session, endpoint: .deleteRecovery) { (result: Result<API.DeleteRecoveryApiResponse, MoyaError>) in
+    private func deleteAccess(onSuccess: @escaping () -> Void = {}) {
+        self.deletingAccess = true
+        apiProvider.decodableRequest(with: session, endpoint: .deleteAccess) { (result: Result<API.DeleteAccessApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
@@ -173,14 +173,14 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
             ownerState: API.OwnerState.Ready(
                 policy: policy,
                 vault: .sample,
-                recovery: .thisDevice(API.Recovery.ThisDevice(
+                access: .thisDevice(API.Access.ThisDevice(
                     guid: "",
-                    status: API.Recovery.Status.requested,
+                    status: API.Access.Status.requested,
                     createdAt: Date(),
                     unlocksAt: Date(),
                     expiresAt: Date(),
-                    approvals: policy.guardians.map({
-                        API.Recovery.ThisDevice.Approval(
+                    approvals: policy.approvers.map({
+                        API.Access.ThisDevice.Approval(
                             participantId: $0.participantId,
                             approvalId: "",
                             status: .initial

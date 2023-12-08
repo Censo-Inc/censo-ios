@@ -27,7 +27,7 @@ enum CensoError: Swift.Error {
     case failedToSaveApproversName
     case failedToCancelAlternateApproverSetup
     case failedToReplacePolicy
-    case recoveryAlreadyOnAnotherDevice
+    case accessAlreadyOnAnotherDevice
     case invalidUrl(url: String)
     case cannotVerifyKeyConfirmationSignature
     case resourceNotFound
@@ -80,8 +80,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Failed to cancel second approver setup", comment: "approver setup")
         case .failedToReplacePolicy:
             return NSLocalizedString("Failed to replace policy", comment: "policy replacement")
-        case .recoveryAlreadyOnAnotherDevice:
-            return NSLocalizedString("There is already a recovery on another device", comment: "another device recovery")
+        case .accessAlreadyOnAnotherDevice:
+            return NSLocalizedString("There is already an access on another device", comment: "another device access")
         case .invalidUrl(let url):
             return NSLocalizedString("The link provided is not valid for this app: \(url)", comment: "Invalid url")
         case .cannotVerifyKeyConfirmationSignature:

@@ -99,20 +99,20 @@ struct SaveSeedPhrase: View {
 
     private func save() {
         do {
-            let secretData = try BIP39.phraseToBinaryData(words: words)
+            let phraseData = try BIP39.phraseToBinaryData(words: words)
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: publicMasterEncryptionKey)
-                .encrypt(data: secretData)
+                .encrypt(data: phraseData)
 
-            let payload = API.StoreSecretApiRequest(
+            let payload = API.StoreSeedPhraseApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
-                seedPhraseHash: SHA256.hash(data: secretData).compactMap { String(format: "%02x", $0) }.joined(),
+                seedPhraseHash: SHA256.hash(data: phraseData).compactMap { String(format: "%02x", $0) }.joined(),
                 label: label.value
             )
 
             inProgress = true
 
-            apiProvider.decodableRequest(with: session, endpoint: .storeSecret(payload)) { (result: Result<API.StoreSecretApiResponse, MoyaError>) in
+            apiProvider.decodableRequest(with: session, endpoint: .storeSeedPhrase(payload)) { (result: Result<API.StoreSeedPhraseApiResponse, MoyaError>) in
                 inProgress = false
 
                 switch result {

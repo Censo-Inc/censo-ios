@@ -16,7 +16,7 @@ struct RenameApprover: View {
     
     var session: Session
     var policySetup: API.PolicySetup
-    var approver: API.ProspectGuardian
+    var approver: API.ProspectApprover
     var onComplete: (API.OwnerState) -> Void
     
     @StateObject private var newName = ApproverNickname()
@@ -24,7 +24,7 @@ struct RenameApprover: View {
     @State private var showingError = false
     @State private var error: Error?
     
-    init(session: Session, policySetup: API.PolicySetup, approver: API.ProspectGuardian, onComplete: @escaping (API.OwnerState) -> Void) {
+    init(session: Session, policySetup: API.PolicySetup, approver: API.ProspectApprover, onComplete: @escaping (API.OwnerState) -> Void) {
         self.session = session
         self.policySetup = policySetup
         self.approver = approver
@@ -98,15 +98,15 @@ struct RenameApprover: View {
         let approverToRename = approver
             
         do {
-            let guardians: [API.GuardianSetup] = try policySetup.guardians.enumerated().map({ (index, approver) in
+            let approvers: [API.ApproverSetup] = try policySetup.approvers.enumerated().map({ (index, approver) in
                 if index == 0 {
-                    return .implicitlyOwner(API.GuardianSetup.ImplicitlyOwner(
+                    return .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
                         participantId: approver.participantId,
                         label: "Me",
-                        guardianPublicKey: try session.getOrCreateApproverKey(participantId: approver.participantId).publicExternalRepresentation()
+                        approverPublicKey: try session.getOrCreateApproverKey(participantId: approver.participantId).publicExternalRepresentation()
                     ))
                 } else {
-                    return .externalApprover(API.GuardianSetup.ExternalApprover(
+                    return .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: approver.participantId,
                         label: approver.participantId == approverToRename.participantId ? newName.value : approver.label,
                         deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
@@ -116,7 +116,7 @@ struct RenameApprover: View {
             
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, guardians: guardians))
+                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
             ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                 switch result {
                 case .success(let response):
@@ -138,7 +138,7 @@ struct RenameApprover: View {
         RenameApprover(
             session: .sample,
             policySetup: policySetup,
-            approver: policySetup.guardians[1],
+            approver: policySetup.approvers[1],
             onComplete: { _ in }
         )
         .navigationTitle(Text("Activate Neo"))
