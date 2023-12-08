@@ -24,7 +24,7 @@
 		<string>Approver AppStore</string>
 	</dict>
 	<key>signingCertificate</key>
-	<string>1B5AD483C0DF4E0E45BAABCEB1D571B3639228A2</string>
+	<string>74AD7501143651D6D56E0E06AFD29150FBACDF5A</string>
 	<key>signingStyle</key>
 	<string>manual</string>
 	<key>stripSwiftSymbols</key>
