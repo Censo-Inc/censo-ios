@@ -92,6 +92,12 @@ final class BIP39Tests: XCTestCase {
             )
         }
     }
+    
+    func testGeneratePhrase() {
+        let phrase = try! BIP39.generatePhrase(wordCount: .twelve, language: WordListLanguage.english)
+        XCTAssertNil(BIP39.validateSeedPhrase(words: phrase))
+    }
+    
     let languageCases: [WordListLanguage: String] = [
         .english: "donor tower topic path obey intact lyrics list hair slice cluster grunt glare trap appear immense vibrant vendor document cushion arrow same link tissue",
         .spanish: "derecho tetera teoría odisea nasal jarra macho llorar guerra roble caspa grito género tigre altura imitar usar unidad delfín collar anciano pupila llegar tazón",

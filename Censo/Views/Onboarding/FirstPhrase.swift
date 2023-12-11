@@ -12,6 +12,7 @@ struct FirstPhrase: View {
 
     @State private var showingAddPhrase = false
     @State private var showingPastePhrase = false
+    @State private var showingGeneratePhrase = false
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
 
     var ownerState: API.OwnerState.Ready
@@ -32,7 +33,7 @@ struct FirstPhrase: View {
                     .padding(.horizontal)
                 
                 LanguageSelection(
-                    text: Text("For input seed phrase, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
+                    text: Text("For seed phrase input/generation, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
                      ).font(.subheadline),
                     languageId: $languageId
                 )
@@ -43,7 +44,10 @@ struct FirstPhrase: View {
                     showingAddPhrase = true
                 } label: {
                     HStack(spacing: 20) {
-                        Image("PhraseEntry").colorInvert()
+                        Image("PhraseEntry")
+                            .resizable()
+                            .frame(width: 42, height: 36)
+                            .colorInvert()
                         Text("Input seed phrase")
                             .font(.title2)
                             .fontWeight(.semibold)
@@ -58,7 +62,25 @@ struct FirstPhrase: View {
                 } label: {
                     HStack(spacing: 20) {
                         Image("ClipboardText")
+                            .resizable()
+                            .frame(width: 36, height: 36)
                         Text("Paste seed phrase")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding(.horizontal)
+                
+                Button {
+                    showingGeneratePhrase = true
+                } label: {
+                    HStack(spacing: 20) {
+                        Image(systemName: "wand.and.stars")
+                            .resizable()
+                            .frame(width: 36, height: 36)
+                        Text("Generate phrase")
                             .font(.title2)
                             .fontWeight(.semibold)
                     }
@@ -81,6 +103,13 @@ struct FirstPhrase: View {
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
+                onComplete: onComplete, session: session,
+                ownerState: ownerState, isFirstTime: true
+            )
+        })
+        .sheet(isPresented: $showingGeneratePhrase, content: {
+            GeneratePhrase(
+                language: currentLanguage(),
                 onComplete: onComplete, session: session,
                 ownerState: ownerState, isFirstTime: true
             )

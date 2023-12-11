@@ -15,6 +15,7 @@ struct AdditionalPhrase: View {
         case intro
         case addPhrase
         case pastePhrase
+        case generatePhrase
     }
     
     @State private var step: Step = .intro
@@ -41,7 +42,7 @@ struct AdditionalPhrase: View {
                         .padding(.bottom)
                     
                     LanguageSelection(
-                        text: Text("For input seed phrase, the current language is \(currentLanguage().displayName()). You may change it **here**"
+                        text: Text("For seed phrase input/generation, the current language is \(currentLanguage().displayName()). You may change it **here**"
                          ).font(.subheadline),
                         languageId: $languageId
                     )
@@ -52,7 +53,10 @@ struct AdditionalPhrase: View {
                         step = .addPhrase
                     } label: {
                         HStack(spacing: 20) {
-                            Image("PhraseEntry").colorInvert()
+                            Image("PhraseEntry")
+                                .resizable()
+                                .frame(width: 42, height: 36)
+                                .colorInvert()
                             Text("Input seed phrase")
                                 .font(.title2)
                                 .fontWeight(.semibold)
@@ -67,6 +71,8 @@ struct AdditionalPhrase: View {
                     } label: {
                         HStack(spacing: 20) {
                             Image("ClipboardText")
+                                .resizable()
+                                .frame(width: 36, height: 36)
                             Text("Paste seed phrase")
                                 .font(.title2)
                                 .fontWeight(.semibold)
@@ -76,6 +82,21 @@ struct AdditionalPhrase: View {
                     .buttonStyle(RoundedButtonStyle())
                     .padding(.horizontal)
                     
+                    Button {
+                        step = .generatePhrase
+                    } label: {
+                        HStack(spacing: 20) {
+                            Image(systemName: "wand.and.stars")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                            Text("Generate phrase")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    .padding(.horizontal)
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {
@@ -104,6 +125,16 @@ struct AdditionalPhrase: View {
             )
         case .pastePhrase:
             PastePhrase(
+                onComplete: { ownerState in
+                    onComplete(ownerState)
+                    dismiss()
+                }, session: session,
+                ownerState: ownerState,
+                isFirstTime: false
+            )
+        case .generatePhrase:
+            GeneratePhrase(
+                language: currentLanguage(),
                 onComplete: { ownerState in
                     onComplete(ownerState)
                     dismiss()

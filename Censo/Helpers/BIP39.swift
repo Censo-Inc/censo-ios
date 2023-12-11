@@ -81,6 +81,14 @@ Please check your seed phrase and try again.
     }
 }
 
+public enum WordCount: Int {
+    case twelve = 12
+    case fifteen = 15
+    case eighteen = 18
+    case twentyOne = 21
+    case twentyFour = 24
+}
+
 extension BIP39 {
     // 1-of-2048 is 11 bits
     static var bitsPerWord = 11
@@ -203,6 +211,15 @@ extension BIP39 {
         }
 
         return Data([language.toId()]) + entropyBinary
+    }
+    
+    static func generatePhrase(wordCount: WordCount, language: WordListLanguage) throws -> [String] {
+        let entropyBitsCount = wordCount.rawValue / 3 * 32
+        var entropy = [UInt8](repeating: 0, count: entropyBitsCount / 8)
+        if SecRandomCopyBytes(kSecRandomDefault, entropy.count, &entropy) != 0 {
+            throw CensoError.failedToGenerateSeedPhrase
+        }
+        return try binaryDataToWords(binaryData: Data([language.toId()] + entropy))
     }
     
     static func binaryDataToWords(binaryData: Data, language: WordListLanguage? = nil) throws -> [String] {

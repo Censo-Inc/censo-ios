@@ -231,6 +231,7 @@
 		E417AB872AFA71BF0091CFDA /* LoggedInPasteLinkScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB862AFA71BF0091CFDA /* LoggedInPasteLinkScreen.swift */; };
 		E417AB892AFA72070091CFDA /* LoggedOutPasteLinkScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB882AFA72070091CFDA /* LoggedOutPasteLinkScreen.swift */; };
 		E417AB8B2AFA8B6C0091CFDA /* PasteLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */; };
+		E43C67DC2B2740BD0063188F /* GeneratePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */; };
 		E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */; };
 		E463C5A12AE1359100AFDFBB /* ApproversSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */; };
 		E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */; };
@@ -435,6 +436,7 @@
 		E417AB862AFA71BF0091CFDA /* LoggedInPasteLinkScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInPasteLinkScreen.swift; sourceTree = "<group>"; };
 		E417AB882AFA72070091CFDA /* LoggedOutPasteLinkScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutPasteLinkScreen.swift; sourceTree = "<group>"; };
 		E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteLinkButton.swift; sourceTree = "<group>"; };
+		E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePhrase.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometryGatedScreen.swift; sourceTree = "<group>"; };
 		E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetup.swift; sourceTree = "<group>"; };
 		E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldStyle.swift; sourceTree = "<group>"; };
@@ -872,6 +874,7 @@
 				3D3E64D02AE6B76A0000C56C /* WordEntry.swift */,
 				6C4A053C2AE8335800484F6A /* AdditionalPhrase.swift */,
 				6C86F2152AECB71B00E73EA1 /* WordList.swift */,
+				E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */,
 			);
 			path = SeedPhrasesManagement;
 			sourceTree = "<group>";
@@ -1237,6 +1240,7 @@
 				6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				3D28C0122B06723600E261AA /* MoyaProvider+Async.swift in Sources */,
 				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
+				E43C67DC2B2740BD0063188F /* GeneratePhrase.swift in Sources */,
 				3DE0B9832ABA5F4A0001F3A3 /* Session.swift in Sources */,
 				3D3E64D42AE6B76A0000C56C /* SeedEntry.swift in Sources */,
 				6C4D5E8B2AEAF104001DCDA6 /* ShowPhrase.swift in Sources */,

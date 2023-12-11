@@ -37,6 +37,7 @@ enum CensoError: Swift.Error {
     case upgradeRequired
     case productNotFound
     case purchaseFailed
+    case failedToGenerateSeedPhrase
 }
 
 extension CensoError: LocalizedError {
@@ -100,6 +101,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Purchase failed", comment: "Error thrown when in-app purchase has failed")
         case .productNotFound:
             return NSLocalizedString("Product not found", comment: "Error thrown when IAP-product was not found")
+        case .failedToGenerateSeedPhrase:
+            return NSLocalizedString("Failed to genrate seed phrase", comment: "Failed to genrate seed phrase")
         }
         
     }
