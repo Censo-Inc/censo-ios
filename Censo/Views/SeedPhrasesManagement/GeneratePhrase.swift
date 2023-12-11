@@ -97,7 +97,8 @@ struct GeneratePhrase: View {
                     words: phrase,
                     session: session,
                     publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                    isFirstTime: isFirstTime
+                    isFirstTime: isFirstTime,
+                    isGeneratedPhrase: true
                 ) { ownerState in
                     onComplete(ownerState)
                     dismiss()

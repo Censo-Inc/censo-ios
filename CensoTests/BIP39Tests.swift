@@ -96,6 +96,7 @@ final class BIP39Tests: XCTestCase {
     func testGeneratePhrase() {
         let phrase = try! BIP39.generatePhrase(wordCount: .twelve, language: WordListLanguage.english)
         XCTAssertNil(BIP39.validateSeedPhrase(words: phrase))
+        XCTAssertEqual(12, phrase.count)
     }
     
     let languageCases: [WordListLanguage: String] = [

@@ -17,6 +17,7 @@ struct SeedVerification: View {
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
     var isFirstTime: Bool
+    var isGeneratedPhrase: Bool = false
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
@@ -32,12 +33,17 @@ struct SeedVerification: View {
 
             Spacer()
 
-            Text("Seed phrase validated")
-                .font(.title)
-
-            Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
-                .fixedSize(horizontal: false, vertical: true)
-                .padding()
+            if isGeneratedPhrase {
+                Text("Seed phrase generated")
+                    .font(.title)
+            } else {
+                Text("Seed phrase validated")
+                    .font(.title)
+                
+                Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+            }
 
             WordList(words: words)
                 .padding(.horizontal)
@@ -86,6 +92,9 @@ struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true) { _ in }
+        }
+        NavigationStack {
+            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true, isGeneratedPhrase: true) { _ in }
         }
     }
 }
