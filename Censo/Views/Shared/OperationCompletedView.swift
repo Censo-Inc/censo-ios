@@ -37,8 +37,7 @@ struct OperationCompletedView: View {
             Spacer()
         }
         .frame(maxHeight: .infinity)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
+        .navigationBarHidden(true)
         .onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .inactive, .background:

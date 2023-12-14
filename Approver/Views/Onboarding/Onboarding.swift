@@ -28,35 +28,34 @@ struct Onboarding: View {
 
     var body: some View {
         NavigationStack {
-            
             switch user {
             case .idle:
                 ProgressView()
+                    .navigationBarHidden(true)
                     .onAppear(perform: reload)
             case .loading:
                 ProgressView()
+                    .navigationBarHidden(true)
             case .success(let user):
                 let currentState = approverState ?? user.approverStates.forInvite(inviteCode)
                 switch currentState?.phase {
                 case .none:
                     ProgressView()
+                        .navigationBarHidden(true)
                         .onAppear {
                             acceptInvitation(invitationId: inviteCode)
                         }
-                case .waitingForCode,
-                     .waitingForVerification,
-                    . verificationRejected:
+                case .waitingForCode, .waitingForVerification, .verificationRejected:
                     SubmitVerification(
-                        invitationId: inviteCode, 
+                        invitationId: inviteCode,
                         session: session,
                         approverState: currentState!,
                         onSuccess: {newState in approverState = newState}
                     )
-                    .navigationBarBackButtonHidden(true)
+                    .navigationBarHidden(true)
                 case .complete:
                     OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)
-                        
                 default:
                     EmptyView()
                 }
@@ -72,6 +71,7 @@ struct Onboarding: View {
         .navigationTitle(Text(""))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(isComplete)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButton()
@@ -83,6 +83,17 @@ struct Onboarding: View {
             }
         } message: { error in
             Text(error.localizedDescription)
+        }
+    }
+    
+    private var isComplete: Bool {
+        get {
+            if let approverState = approverState {
+                return .complete == approverState.phase
+            } else if case let .success(user) = user {
+                return .complete == user.approverStates.forInvite(inviteCode)?.phase
+            }
+            return false
         }
     }
     

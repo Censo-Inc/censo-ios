@@ -37,7 +37,7 @@ struct API {
         case rejectAccessVerification(String)
     }
     
-    enum ApproverPhase: Codable {
+    enum ApproverPhase: Codable, Equatable {
         case waitingForCode
         case waitingForVerification
         case verificationRejected
@@ -46,18 +46,18 @@ struct API {
         case accessVerification(AccessVerification)
         case accessConfirmation(AccessConfirmation)
         
-        struct AccessRequested: Codable {
+        struct AccessRequested: Codable, Equatable {
             var createdAt: Date
             var accessPublicKey: Base58EncodedPublicKey
         }
         
-        struct AccessVerification: Codable {
+        struct AccessVerification: Codable, Equatable {
             var createdAt: Date
             var accessPublicKey: Base58EncodedPublicKey
             var encryptedTotpSecret: Base64EncodedString
         }
         
-        struct AccessConfirmation: Codable {
+        struct AccessConfirmation: Codable, Equatable {
             var createdAt: Date
             var accessPublicKey: Base58EncodedPublicKey
             var encryptedTotpSecret: Base64EncodedString

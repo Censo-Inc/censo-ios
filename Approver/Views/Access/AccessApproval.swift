@@ -30,14 +30,17 @@ struct AccessApproval: View {
         switch approverStates {
         case .idle:
             ProgressView()
+                .navigationBarHidden(true)
                 .onAppear(perform: reload)
         case .loading:
             ProgressView()
+                .navigationBarHidden(true)
         case .success(let approverStates):
             if let approverState = approverStates.forParticipantId(participantId) {
                 switch approverState.phase {
                 case .accessRequested:
                     ProgressView()
+                        .navigationBarHidden(true)
                         .onAppear {
                             startOwnerVerification(participantId: approverState.participantId)
                         }
