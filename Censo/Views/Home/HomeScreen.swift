@@ -17,7 +17,6 @@ struct HomeScreen: View {
     enum TabId {
         case dashboard
         case phrases
-        case approvers
         case settings
     }
     
@@ -59,22 +58,6 @@ struct HomeScreen: View {
                     }
                 }
                 .tag(TabId.phrases)
-                
-                VStack {
-                    ApproversTab(
-                        session: session,
-                        ownerState: ownerState,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
-                    tabDivider()
-                }
-                .tabItem {
-                    VStack {
-                        Text("Approvers")
-                        Image("UserGroup").renderingMode(.template)
-                    }
-                }
-                .tag(TabId.approvers)
                 
                 VStack {
                     SettingsTab(
@@ -223,6 +206,18 @@ struct CensoHomeScreen_Previews: PreviewProvider {
             session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
+                vault: .sample,
+                access: nil,
+                authType: .facetec,
+                subscriptionStatus: .active
+            ),
+            onOwnerStateUpdated: { _ in }
+        )
+        
+        HomeScreen(
+            session: .sample,
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
                 vault: .sample,
                 access: nil,
                 authType: .facetec,

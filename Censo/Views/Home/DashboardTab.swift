@@ -13,13 +13,16 @@ struct DashboardTab: View {
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingAddPhrase = false
+    @State private var showingApproversSetup = false
     @Binding var parentTabViewSelectedTab: HomeScreen.TabId
     
     var body: some View {
         let vault = ownerState.vault
         let policy = ownerState.policy
         
-        VStack {
+        ScrollView {
+            Spacer()
+            
             VStack {
                 Spacer()
                 Button {
@@ -47,7 +50,7 @@ struct DashboardTab: View {
                     Text("Add seed phrase")
                         .font(.headline)
                         .fontWeight(.regular)
-                        .frame(maxWidth: 322, maxHeight: 4)
+                        .frame(maxWidth: 322, minHeight: 24)
                 }
                 .padding([.top], 10)
                 .buttonStyle(RoundedButtonStyle())
@@ -58,16 +61,34 @@ struct DashboardTab: View {
                         .fontWeight(.semibold)
                         .multilineTextAlignment(.center)
                     Button {
-                        self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
+                        self.showingApproversSetup = true
                     } label: {
                         Text("Add approvers")
                             .font(.headline)
                             .fontWeight(.regular)
-                            .frame(maxWidth: 322, maxHeight: 4)
+                            .frame(maxWidth: 322, minHeight: 24)
                     }
                     .padding([.top], 10)
                     .buttonStyle(RoundedButtonStyle())
+                } else {
+                    Text("\nYour security is increased by your approvers.")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .multilineTextAlignment(.center)
+                    
+                    VStack(spacing: 30) {
+                        let approvers = ownerState.policy.approvers
+                            .filter({ !$0.isOwner })
+                            .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
+
+                        ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
+                          ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
+                        }
+                    }
+                    .padding([.top], 10)
+                    .padding([.leading, .trailing], 30)
                 }
+                
                 Spacer()
             }.frame(maxWidth: 322)
         }
@@ -77,6 +98,15 @@ struct DashboardTab: View {
                 session: session,
                 onComplete: onOwnerStateUpdated
             )
+        })
+        .sheet(isPresented: $showingApproversSetup, content: {
+            NavigationView {
+                ApproversSetup(
+                    session: session,
+                    ownerState: ownerState,
+                    onOwnerStateUpdated: onOwnerStateUpdated
+                )
+            }
         })
     }
 }
@@ -88,7 +118,6 @@ public extension UIFont {
 }
 
 #if DEBUG
-
 #Preview {
     VStack {
         @State var selectedTab = HomeScreen.TabId.dashboard
@@ -96,6 +125,24 @@ public extension UIFont {
             session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .active
+            ),
+            onOwnerStateUpdated: { _ in },
+            parentTabViewSelectedTab: $selectedTab
+        )
+        .foregroundColor(Color.Censo.primaryForeground)
+    }
+}
+
+#Preview {
+    VStack {
+        @State var selectedTab = HomeScreen.TabId.dashboard
+        DashboardTab(
+            session: .sample,
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
                 vault: .sample,
                 authType: .facetec,
                 subscriptionStatus: .active

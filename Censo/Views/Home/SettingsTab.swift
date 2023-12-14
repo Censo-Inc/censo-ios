@@ -18,6 +18,7 @@ struct SettingsTab: View {
     @State private var error: Error?
     @State private var resetRequested = false
     @State private var resetInProgress = false
+    @State private var showApproversRemoval = false
     
     var body: some View {
         VStack {
@@ -37,6 +38,37 @@ struct SettingsTab: View {
             .buttonStyle(RoundedButtonStyle())
             .padding()
             
+            let externalApprovers = ownerState.policy.approvers
+                .filter({ !$0.isOwner })
+            
+            if externalApprovers.count > 0 {
+                VStack(spacing: 5) {
+                    Button {
+                        showApproversRemoval = true
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Image("TwoPeopleWhite")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 32, height: 32)
+                            Text(
+                                "Remove approver\(externalApprovers.count > 1 ? "s" : "")"
+                            )
+                            .font(.title3)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    
+                    Text(
+                        "An approval from current approver\(externalApprovers.count > 1 ? "s" : "") is required"
+                    )
+                    .font(.footnote)
+                }
+                .padding(.horizontal)
+            }
+            
             Button {
                 resetRequested = true
             } label: {
@@ -55,6 +87,13 @@ struct SettingsTab: View {
             
             Spacer()
         }
+        .sheet(isPresented: $showApproversRemoval, content: {
+            InitApproversRemovalFlow(
+                session: session,
+                ownerState: ownerState,
+                onOwnerStateUpdated: onOwnerStateUpdated
+            )
+        })
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
                 showingError = false
