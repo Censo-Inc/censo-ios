@@ -10,5 +10,4 @@ import SwiftUI
 enum ButtonStyleTint {
     case light
     case dark
-    case gray95
 }

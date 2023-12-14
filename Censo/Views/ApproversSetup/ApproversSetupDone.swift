@@ -21,7 +21,6 @@ struct ApproversSetupDone : View {
                 Image(systemName: "checkmark.circle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.black)
                     .frame(maxWidth: 162, maxHeight: 162)
                 
                 Spacer()
@@ -44,5 +43,6 @@ struct ApproversSetupDone : View {
     NavigationView {
         ApproversSetupDone(text: "Activated")
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

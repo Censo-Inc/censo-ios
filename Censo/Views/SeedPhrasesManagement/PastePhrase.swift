@@ -120,7 +120,6 @@ struct PastePhrase: View {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
                     }
                 }
             }
@@ -169,5 +168,6 @@ struct PastePhrase: View {
         ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
         isFirstTime: true
     )
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

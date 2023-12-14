@@ -92,14 +92,12 @@ struct EnterApproverNickname: View {
                         onBack()
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 } else {
                     Button {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
                     }
                 }
             }
@@ -186,6 +184,7 @@ struct EnterApproverNickname: View {
             ),
             onOwnerStateUpdated: { _ in }
         )
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

@@ -59,7 +59,6 @@ struct AccessApproval : View {
                         onCancel()
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -84,7 +83,6 @@ struct AccessApproval : View {
                         step = .chooseApprover(selected: approver)
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             })

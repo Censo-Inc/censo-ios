@@ -14,15 +14,23 @@ struct PhraseSaveSuccess: View {
     var onFinish: () -> Void
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 0) {
             Spacer()
-            Image(systemName: "checkmark.circle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding(.horizontal, 100)
-
+            ZStack(alignment: .top) {
+                Image("CenteredCongrats")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                GeometryReader { geometry in
+                    Text("Congrats!")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.top, geometry.size.height * 0.17)
+                        .padding(.leading, geometry.size.width * 0.3)
+                }
+            }.multilineTextAlignment(.center)
+            
             if isFirstTime {
-                Text("Congratulations!\n\nYou'll never have to worry about losing access to your valuable crypto again.")
+                Text("You'll never have to worry about losing access to your valuable crypto again.")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .padding(30)
@@ -32,9 +40,8 @@ struct PhraseSaveSuccess: View {
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
                     .padding(30)
-                    .fixedSize(horizontal: false, vertical: true)                
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Spacer()
             Button() {
 #if DEBUG
                 if isFirstTime && !appDelegate.testing {
@@ -63,7 +70,6 @@ struct PhraseSaveSuccess: View {
                     onFinish()
                 } label: {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
                 }
             }
         })
@@ -96,6 +102,8 @@ struct PhraseSaveSuccess_Previews: PreviewProvider {
         NavigationStack {
             PhraseSaveSuccess(isFirstTime: true) {}
         }
+        .foregroundColor(Color.Censo.primaryForeground)
     }
+    
 }
 #endif

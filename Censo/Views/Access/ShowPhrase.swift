@@ -18,6 +18,7 @@ struct ShowPhrase: View {
         VStack {
             HStack {
                 Image("HourGlass")
+                    .renderingMode(.template)
                 AccessExpirationCountdown(
                     expiresAt: start.addingTimeInterval(TimeInterval(900)),
                     onExpired: {
@@ -71,9 +72,8 @@ struct ShowPhrase: View {
                 Button {
                 } label: {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
                 }
             }
         })
-    }
+    }.foregroundColor(Color.Censo.primaryForeground)
 }

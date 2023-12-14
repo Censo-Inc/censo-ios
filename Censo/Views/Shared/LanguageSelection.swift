@@ -21,7 +21,6 @@ struct LanguageSelection: View {
         } label: {
             text
             .multilineTextAlignment(.leading)
-            .foregroundColor(.black)
         }
     }
 }

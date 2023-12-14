@@ -138,41 +138,43 @@ extension FaceTecSDKProtocol {
     func customizations() {
         let customization = FaceTecCustomization()
          
-        customization.frameCustomization.borderColor = UIColor.black
+        customization.frameCustomization.borderColor = UIColor.Censo.primaryForeground
         
         customization.overlayCustomization.showBrandingImage = false
         
         let solidBlackGradient = CAGradientLayer()
-        solidBlackGradient.colors = [UIColor.black.cgColor, UIColor.black.cgColor]
+        solidBlackGradient.colors = [UIColor.Censo.darkBlue.cgColor, UIColor.Censo.darkBlue.cgColor]
         solidBlackGradient.startPoint = CGPoint(x: 0.0, y: 0.0)
         solidBlackGradient.endPoint = CGPoint(x: 1, y: 0)
         solidBlackGradient.cornerRadius = 20
         customization.feedbackCustomization.backgroundColor = solidBlackGradient
-        customization.feedbackCustomization.textColor = UIColor.white
+        customization.feedbackCustomization.textColor = UIColor.Censo.aquaBlue
         
-        customization.guidanceCustomization.buttonBackgroundNormalColor = UIColor.black
+        customization.guidanceCustomization.buttonBackgroundNormalColor = UIColor.Censo.darkBlue
+        customization.guidanceCustomization.buttonTextNormalColor = UIColor.Censo.buttonTextColor
+        customization.guidanceCustomization.buttonTextHighlightColor = UIColor.Censo.buttonTextColor
         customization.guidanceCustomization.buttonTextDisabledColor = UIColor.darkGray
-        customization.guidanceCustomization.foregroundColor = UIColor.black
-        customization.guidanceCustomization.retryScreenImageBorderColor = UIColor.black
+        customization.guidanceCustomization.foregroundColor = UIColor.Censo.primaryForeground
+        customization.guidanceCustomization.retryScreenImageBorderColor = UIColor.Censo.primaryForeground
         customization.guidanceCustomization.cameraPermissionsScreenImage = UIImage(named: "Camera")?.resized(to: CGSize(width: 80, height: 60))
         
-        customization.ovalCustomization.strokeColor = UIColor.black
-        customization.ovalCustomization.progressColor1 = UIColor.black
-        customization.ovalCustomization.progressColor2 = UIColor.black
+        customization.ovalCustomization.strokeColor = UIColor.Censo.darkBlue
+        customization.ovalCustomization.progressColor1 = UIColor.Censo.darkBlue
+        customization.ovalCustomization.progressColor2 = UIColor.Censo.aquaBlue
         
-        customization.resultScreenCustomization.foregroundColor = UIColor.black
-        customization.resultScreenCustomization.uploadProgressFillColor = UIColor.black
+        customization.resultScreenCustomization.foregroundColor = UIColor.Censo.darkBlue
+        customization.resultScreenCustomization.uploadProgressFillColor = UIColor.Censo.darkBlue
         customization.resultScreenCustomization.uploadProgressTrackColor = UIColor.darkGray
-        customization.resultScreenCustomization.activityIndicatorColor = UIColor.black
-        customization.resultScreenCustomization.resultAnimationBackgroundColor = UIColor.black
-        customization.resultScreenCustomization.resultAnimationForegroundColor = UIColor.white
+        customization.resultScreenCustomization.activityIndicatorColor = UIColor.Censo.darkBlue
+        customization.resultScreenCustomization.resultAnimationBackgroundColor = UIColor.Censo.buttonBackgroundColor
+        customization.resultScreenCustomization.resultAnimationForegroundColor = UIColor.Censo.buttonTextColor
         
         customization.cancelButtonCustomization.customImage = UIImage(
             systemName: "xmark"
         )?.resized(
             to: CGSize(width: 20, height: 20)
         ).withTintColor(
-            UIColor.black
+            UIColor.Censo.primaryForeground
         )
         customization.cancelButtonCustomization.location = .custom
         customization.cancelButtonCustomization.customLocation = CGRect(x: 12, y: 12, width: 20, height: 20)

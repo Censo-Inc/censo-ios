@@ -221,15 +221,10 @@ struct Paywall: View {
             
             Spacer()
             
-            Image("Logo")
+            Image("CensoLogo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 124)
-            
-            Image("CensoText")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 208)
             
             Spacer()
             
@@ -282,31 +277,27 @@ struct Paywall: View {
                     Text("Terms")
                         .font(.headline)
                         .fontWeight(.semibold)
-                        .tint(.black)
                 })
                 
                 Text("|")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .tint(.black)
                 
                 Link(destination: Configuration.privacyPolicyURL, label: {
                     Text("Privacy")
                         .fontWeight(.semibold)
-                        .tint(.black)
                 })
                 
                 Text("|")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .tint(.black)
                 
                 Button {
                     restorePurchases()
                 } label: {
                     Text("Restore Purchases")
                         .fontWeight(.semibold)
-                        .tint(.black)
+
                 }
             }
         }
@@ -370,6 +361,6 @@ import Moya
         ownerState: $ownerState
     ) {
         Text("Behind the paywall")
-    }
+    }.foregroundColor(.Censo.primaryForeground)
 }
 #endif

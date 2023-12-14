@@ -14,14 +14,12 @@ struct LoginBottomLinks: View {
                 Text("Terms")
                     .padding()
                     .fontWeight(.bold)
-                    .tint(.black)
                     .frame(maxWidth: .infinity)
             })
             Link(destination: Configuration.privacyPolicyURL, label: {
                 Text("Privacy")
                     .padding()
                     .fontWeight(.bold)
-                    .tint(.black)
                     .frame(maxWidth: .infinity)
             })
         }
@@ -32,7 +30,7 @@ struct LoginBottomLinks: View {
 #Preview {
     VStack {
         Spacer()
-        LoginBottomLinks()
+        LoginBottomLinks().foregroundColor(.Censo.primaryForeground)
     }
 }
 #endif

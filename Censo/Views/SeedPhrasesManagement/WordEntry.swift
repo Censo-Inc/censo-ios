@@ -68,7 +68,6 @@ struct WordEntry: View {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -85,6 +84,7 @@ struct WordEntry_Previews: PreviewProvider {
         WordEntry(number: 2, language: .english) { _ in
 
         }
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

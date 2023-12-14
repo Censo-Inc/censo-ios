@@ -52,14 +52,12 @@ struct ActivateApprover : View {
                             onBack()
                         } label: {
                             Image(systemName: "chevron.left")
-                                .foregroundColor(.black)
                         }
                     } else {
                         Button {
                             dismiss()
                         } label: {
                             Image(systemName: "xmark")
-                                .foregroundColor(.black)
                         }
                     }
                 }
@@ -82,7 +80,6 @@ struct ActivateApprover : View {
                         mode = .activate
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -101,9 +98,10 @@ struct ActivateApprover : View {
                             ZStack(alignment: .topLeading) {
                                 Text("1")
                                     .font(.system(size: 12))
-                                    .tint(.black)
+                                    .tint(.Censo.primaryForeground)
                                     .padding(7)
                                 Image("Export")
+                                    .renderingMode(.template)
                                     .resizable()
                                     .frame(width: 48, height: 48)
                                     .padding(8)
@@ -139,9 +137,10 @@ struct ActivateApprover : View {
                                 ZStack(alignment: .topLeading) {
                                     Text("2")
                                         .font(.system(size: 12))
-                                        .tint(.black)
+                                        .tint(.Censo.primaryForeground)
                                         .padding(7)
                                     Image("Export")
+                                        .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .padding(8)
@@ -258,7 +257,6 @@ struct ActivateApprover : View {
                         mode = .getLive
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -406,6 +404,7 @@ let policySetup = API.PolicySetup(
             onComplete: { },
             onOwnerStateUpdated: { _ in }
         )
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 
@@ -420,5 +419,6 @@ let policySetup = API.PolicySetup(
             onOwnerStateUpdated: { _ in }
         )
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

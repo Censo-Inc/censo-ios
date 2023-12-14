@@ -55,7 +55,6 @@ private extension ButtonStyleTint {
         switch (self) {
         case .dark: return Color.Censo.darkBlue
         case .light: return Color.white
-        case .gray95: return Color.Censo.gray95
         }
     }
 }

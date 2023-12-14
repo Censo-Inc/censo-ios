@@ -11,9 +11,11 @@ import raygun4apple
 
 @main
 struct CensoApp: App {
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .foregroundColor(Color.Censo.primaryForeground)
         }
     }
 }
@@ -69,16 +71,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func setupAppearance() {
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.Censo.blue)
-
-        UITableView.appearance().backgroundColor = .clear
-        UITableViewCell.appearance().backgroundColor = .clear
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.Censo.primaryForeground]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.Censo.primaryForeground]
         appearance.shadowImage = UIImage()
         appearance.shadowColor = .clear
         let buttonAppearance = UIBarButtonItemAppearance()
@@ -87,9 +84,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
-
-        UINavigationBar.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().barTintColor = UIColor.white
     }
 }
 

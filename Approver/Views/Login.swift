@@ -16,6 +16,7 @@ struct Login: View {
 
             HStack {
                 Image("CensoText")
+                    .renderingMode(.template)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 104)
@@ -32,9 +33,6 @@ struct Login: View {
                 Text("To continue, you need to Sign in with Apple.")
                     .font(.subheadline)
                     .padding(.horizontal)
-            }
-            .onAppear {
-                setupAppearance()
             }
             
             VStack {
@@ -54,44 +52,14 @@ struct Login: View {
         }
         
     }
-    
-    private func setupAppearance() {
-        UIPageControl.appearance().currentPageIndicatorTintColor = .black
-        UIPageControl.appearance().pageIndicatorTintColor = UIColor.black.withAlphaComponent(0.2)
-        UIPageControl.appearance().backgroundStyle = UIPageControl.BackgroundStyle.minimal
-    }
-    
-    private func imageWithOverlay(imageName: String) -> some View {
-        ZStack {
-            Rectangle()
-                .fill(.gray)
-                .opacity(0.3)
-                .cornerRadius(18)
-            Image(imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 42, height: 42)
-        }.frame(width: 64, height: 64)
-    }
-    
-    private func imageAndTextView(_ imageView: some View, _ textLine1: String, _ textLine2: String) -> some View {
-        VStack {
-            imageView
-            Text(textLine1)
-                .font(.caption2)
-                .fontWeight(.regular)
-            Text(textLine2)
-                .font(.caption2)
-                .fontWeight(.regular)
-        }
-    }
 }
 
 #if DEBUG
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
-        Login() {}
+        Login() {}.foregroundColor(.Censo.primaryForeground)
     }
+
 }
 #endif
 

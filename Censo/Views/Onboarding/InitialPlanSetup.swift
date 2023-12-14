@@ -79,75 +79,84 @@ struct InitialPlanSetup: View {
                     }
                 }
             } else {
-                ScrollView {
-                    Spacer()
-                    Image("LargeFaceScan")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: 298, maxHeight: 200)
-                        .saturation(0.0)
-                    
-                    VStack(alignment: .leading) {
-                        Spacer()
-                        
-                        Text("Scan your face (optional)")
-                            .font(.title2)
-                            .bold()
-                            .padding([.horizontal])
-                        
-                        VStack(alignment: .leading) {
-                            Text("A face scan will ensure that only you have access to your seed phrase.")
-                                .font(.subheadline)
-                                .padding(.bottom, 4)
-                                .fixedSize(horizontal: false, vertical: true)
-                            
-                            Text("If you opt in, you can capture and store an anonymous 3D map of your face to confirm your live physical presence.")
-                                .font(.subheadline)
-                                .padding(.bottom, 1)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .padding()
-                        
-                        Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
-                            .font(.caption)
-                            .italic()
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .padding([.horizontal])
-                        
-                        Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
-                            .font(.caption)
-                            .italic()
-                            .tint(.black)
-                            .multilineTextAlignment(.leading)
-                            .padding([.top, .horizontal])
-                            .fixedSize(horizontal: false, vertical: true)
-                            .environment(\.openURL, OpenURLAction { url in
-                                usePasswordAuth = true
-                                startPolicyCreation()
-                                return .handled
-                            })
-                        
-                        Button {
-                            startPolicyCreation()
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Image("FaceScanBW")
+                GeometryReader { geometry in
+                    ScrollView {
+                        ZStack(alignment: .bottom) {
+                            VStack {
+                                Image("FaceScanHandWithPhone")
                                     .resizable()
-                                    .frame(width: 36, height: 36)
-                                Text("Begin face scan")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.9)
                                 Spacer()
                             }
+                            .padding(.leading, geometry.size.width * 0.1)
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                Spacer()
+                                    .frame(width: geometry.size.width,
+                                           height: geometry.size.height * 0.45)
+                                
+                                Text("Scan your face (optional)")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding([.horizontal])
+                                
+                                VStack(alignment: .leading) {
+                                    Text("A face scan will ensure that only you have access to your seed phrase.")
+                                        .font(.subheadline)
+                                        .padding(.bottom, 4)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    
+                                    Text("If you opt in, you can capture and store an anonymous 3D map of your face to confirm your live physical presence.")
+                                        .font(.subheadline)
+                                        .padding(.bottom, 1)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                .padding()
+                                
+                                Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
+                                    .font(.caption)
+                                    .italic()
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding([.horizontal])
+                                
+                                Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
+                                    .font(.caption)
+                                    .italic()
+                                    .tint(Color.Censo.primaryForeground)
+                                    .multilineTextAlignment(.leading)
+                                    .padding([.top, .horizontal])
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .environment(\.openURL, OpenURLAction { url in
+                                        usePasswordAuth = true
+                                        startPolicyCreation()
+                                        return .handled
+                                    })
+                                
+                                Button {
+                                    startPolicyCreation()
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        Image("FaceScanBW")
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .frame(width: 36, height: 36)
+                                        Text("Begin face scan")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                    }
+                                }
+                                .buttonStyle(RoundedButtonStyle())
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                
+                            }
+                            .padding()
+                            .padding(.trailing)
                         }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        
                     }
-                    .padding()
                 }
             }
         }
@@ -207,5 +216,6 @@ struct InitialPlanSetup: View {
     NavigationView {
         InitialPlanSetup(session: .sample, onComplete: {_ in})
     }
+    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

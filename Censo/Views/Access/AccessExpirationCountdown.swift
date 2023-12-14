@@ -28,7 +28,6 @@ struct AccessExpirationCountdown: View {
         let formattedTime = formatter.string(from: timeRemaining)
         Text(formattedTime != nil ? "Access ends in: **\(timeRemaining.isLess(than: TimeInterval(119)) ? "less than 1 minute" : formattedTime!)**" : "")
         .font(.system(size: 16))
-        .foregroundStyle(.black)
         .onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
@@ -56,7 +55,7 @@ struct AccessExpirationCountdown: View {
 }
 
 #Preview {
-    AccessExpirationCountdown(expiresAt: Date.now.addingTimeInterval(TimeInterval(900)), onExpired: {}, onBackgrounded: {})
+    AccessExpirationCountdown(expiresAt: Date.now.addingTimeInterval(TimeInterval(900)), onExpired: {}, onBackgrounded: {}).foregroundColor(.Censo.primaryForeground)
 }
 
 

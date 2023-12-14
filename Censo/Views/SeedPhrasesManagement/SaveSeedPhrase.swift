@@ -32,6 +32,7 @@ struct SaveSeedPhrase: View {
                 onSuccess(newOwnerState)
             }
             .navigationTitle(Text("Add Seed Phrase"))
+            .navigationBarTitleDisplayMode(.inline)
         } else {
             VStack(alignment: .leading, spacing: 20) {
                 Spacer()
@@ -142,6 +143,7 @@ struct SaveSeedPhrase_Preview: PreviewProvider {
         NavigationStack {
             SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true, onSuccess: { _ in })
         }
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

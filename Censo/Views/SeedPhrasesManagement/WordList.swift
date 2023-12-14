@@ -30,8 +30,12 @@ struct WordList: View {
                         }
                         .frame(maxWidth: .infinity)
                         .background {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(lineWidth: 1)
+                            RoundedRectangle(cornerRadius: 20)
+                                    .stroke(lineWidth: 1)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(Color.white)
+                                    )
                         }
                         .padding([.top, .leading, .trailing], 20)
                         Spacer()

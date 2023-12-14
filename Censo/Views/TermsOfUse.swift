@@ -24,6 +24,7 @@ struct TermsOfUse: View {
             } else {
 
                 Image("Files")
+                    .renderingMode(.template)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 130)
@@ -837,6 +838,6 @@ such prevention or delay.</p>
 #Preview {
     TermsOfUse(text: TermsOfUse.v0_2, onAccept: {
         debugPrint("Accepted!")
-    })
+    }).foregroundColor(.Censo.primaryForeground)
 }
 #endif

@@ -148,10 +148,10 @@ struct RenameApprover: View {
                 Button {
                 } label: {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
                 }
             }
         })
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

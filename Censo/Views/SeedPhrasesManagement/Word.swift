@@ -95,7 +95,7 @@ extension NumberFormatter {
 #if DEBUG
 struct Word_Previews: PreviewProvider {
     static var previews: some View {
-        Word(number: 3, language: .english, word: .constant("sample"), deleteWord: {})
+        Word(number: 3, language: .english, word: .constant("sample"), deleteWord: {}).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

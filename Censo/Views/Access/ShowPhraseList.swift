@@ -39,7 +39,7 @@ struct ShowPhraseList: View {
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .padding([.leading])
-                                .foregroundColor(viewedPhrases.contains(i) ? .green : .black)
+                                .foregroundColor(viewedPhrases.contains(i) ? .green : .Censo.primaryForeground)
                                 .frame(maxWidth: 300, minHeight: 107, alignment: .leading)
                                 .background(
                                     RoundedRectangle(cornerRadius: 10)
@@ -58,7 +58,6 @@ struct ShowPhraseList: View {
                                 } else {
                                     Image(systemName: "chevron.forward")
                                         .symbolRenderingMode(.palette)
-                                        .foregroundColor(.black)
                                         .font(.system(size: 28))
                                 }
                             }.frame(minWidth: 40)
@@ -110,6 +109,7 @@ struct ShowPhraseList: View {
             onPhraseSelected: {_ in },
             onFinished: {}
         )
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

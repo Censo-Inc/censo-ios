@@ -56,6 +56,7 @@ struct EnterAccessVerificationCode : View {
                         ) {
                             
                             Image("Export")
+                                .renderingMode(.template)
                                 .resizable()
                                 .frame(width: 48, height: 48)
                                 .padding(8)
@@ -74,8 +75,8 @@ struct EnterAccessVerificationCode : View {
                             .bold()
                         
                         Text(try! AttributedString(markdown: "Share this link and have \(approver.label) tap on it or paste it into the Censo Approver app. If \(approver.label) no longer has the app installed, it can be **[downloaded here](\(Configuration.approverAppURL))**."))
-                            .tint(.black)
                             .font(.subheadline)
+                            .tint(.Censo.primaryForeground)
                             .fixedSize(horizontal: false, vertical: true)
                             .environment(\.openURL, OpenURLAction { url in
                                 return .systemAction
@@ -87,6 +88,7 @@ struct EnterAccessVerificationCode : View {
                 
                 HStack(alignment: .top) {
                     Image("PhraseEntry")
+                        .renderingMode(.template)
                         .resizable()
                         .frame(width: 48, height: 32)
                         .padding(.horizontal, 8)
@@ -235,7 +237,7 @@ struct EnterAccessVerificationCode : View {
             intent: .accessPhrases,
             onOwnerStateUpdated: { _ in },
             onSuccess: { _ in }
-        )
+        ).foregroundColor(.Censo.primaryForeground)
         .navigationTitle(Text("Access"))
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -257,7 +259,7 @@ struct EnterAccessVerificationCode : View {
         )
         .navigationTitle(Text("Access"))
         .navigationBarTitleDisplayMode(.inline)
-    }
+    }.foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("rejected") {
@@ -276,7 +278,7 @@ struct EnterAccessVerificationCode : View {
         )
         .navigationTitle(Text("Access"))
         .navigationBarTitleDisplayMode(.inline)
-    }
+    }.foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("waiting") {
@@ -295,6 +297,6 @@ struct EnterAccessVerificationCode : View {
         )
         .navigationTitle(Text("Access"))
         .navigationBarTitleDisplayMode(.inline)
-    }
+    }.foregroundColor(.Censo.primaryForeground)
 }
 #endif

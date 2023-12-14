@@ -23,7 +23,7 @@ struct RoundedButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .padding()
-                .foregroundColor(isEnabled ? tint.foregroundColor : tint.foregroundColor.opacity(0.35))
+                .foregroundColor(isEnabled ? tint.foregroundColor : tint.foregroundColorDisabled)
                 .background(isEnabled ? (configuration.isPressed ? tint.backgroundColor.opacity(0.7) : tint.backgroundColor) : tint.backgroundColor.opacity(0.5))
                 .clipShape(Capsule())
         }
@@ -33,16 +33,22 @@ struct RoundedButtonStyle: ButtonStyle {
 private extension ButtonStyleTint {
     var backgroundColor: Color {
         switch (self) {
-        case .dark: return Color.black
+        case .dark: return Color.Censo.buttonBackgroundColor
         case .light: return Color.white
-        case .gray95: return Color.Censo.gray95
         }
     }
     
     var foregroundColor: Color {
         switch (self) {
+        case .dark: return Color.Censo.buttonTextColor
+        case .light: return Color.Censo.darkBlue
+        }
+    }
+    
+    var foregroundColorDisabled: Color {
+        switch (self) {
         case .dark: return Color.white
-        case .light, .gray95: return Color.black
+        case .light: return foregroundColor.opacity(0.35)
         }
     }
 }

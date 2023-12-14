@@ -74,6 +74,7 @@ struct PhraseAccessIntro: View {
             session: .sample,
             onReadyToGetStarted: {_ in}
         )
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

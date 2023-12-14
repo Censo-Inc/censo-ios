@@ -34,7 +34,11 @@ struct ApproversSetup: View {
                     return .setupPrimary
                 }
             } else {
-                return .setupAlternate
+                if ownerState.policySetup?.alternateApprover?.isConfirmed == true {
+                    return .replacingPolicy
+                } else {
+                    return .setupAlternate
+                }
             }
         }
     }
@@ -118,7 +122,7 @@ struct ApproversSetup: View {
                 intent: .setupApprovers
             )
         case .done:
-            ApproversSetupDone(text: "Activated")
+            Activated()
                 .onAppear(perform: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                         dismiss()

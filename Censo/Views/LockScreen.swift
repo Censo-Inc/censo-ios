@@ -14,10 +14,10 @@ struct LockScreen: View {
     var body: some View {
         VStack(alignment: .center) {
             Image("LockLaminated")
+                .renderingMode(.template)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 200)
-                .saturation(0.0)
             
             Text("Locked")
                 .font(.system(size: 24))
@@ -30,6 +30,7 @@ struct LockScreen: View {
                 HStack {
                     Spacer()
                     Image("FaceScanBW")
+                        .renderingMode(.template)
                         .resizable()
                         .frame(width: 36, height: 36)
                     Text("Unlock")
@@ -51,5 +52,6 @@ struct LockScreen: View {
     NavigationView {
         LockScreen(onReadyToAuthenticate: {})
     }
+    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

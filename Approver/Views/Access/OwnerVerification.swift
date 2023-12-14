@@ -93,7 +93,6 @@ struct OwnerVerification: View {
                         step = .getLive
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             }

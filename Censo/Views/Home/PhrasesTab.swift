@@ -44,8 +44,8 @@ struct PhrasesTab: View {
                     } label: {
                         HStack {
                             Image("LockLaminated")
+                                .renderingMode(.template)
                                 .resizable()
-                                .colorInvert()
                                 .frame(width: 26, height: 20)
                             Text("Access")
                                 .font(.headline)
@@ -70,7 +70,8 @@ struct PhrasesTab: View {
                             } label: {
                                 HStack {
                                     Spacer()
-                                    Image("Pencil").padding([.trailing], 4)
+                                    Image("Pencil")
+                                        .renderingMode(.template).padding([.trailing], 4)
                                 }
                             }
                             
@@ -84,7 +85,7 @@ struct PhrasesTab: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                .foregroundColor(.Censo.lightGray)
+                                .foregroundColor(.Censo.gray224)
                         )
                         .padding(.horizontal)
                         .padding(.top)
@@ -113,6 +114,7 @@ struct PhrasesTab: View {
                 }
                 
             }
+            .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Seed Phrases"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
@@ -168,5 +170,6 @@ struct PhrasesTab: View {
         ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
         onOwnerStateUpdated: { _ in }
     )
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

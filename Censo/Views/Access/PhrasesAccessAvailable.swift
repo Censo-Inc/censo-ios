@@ -72,7 +72,6 @@ struct PhrasesAccessAvailable: View {
                         self.step = .showingList
                     } label: {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -118,7 +117,6 @@ struct PhrasesAccessAvailable: View {
                         self.step = .showingList
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
                     }
                 }
             })

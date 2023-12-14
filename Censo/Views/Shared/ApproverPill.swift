@@ -35,7 +35,6 @@ struct ApproverPill: View {
                     Image(systemName: "checkmark")
                         .resizable()
                         .symbolRenderingMode(.palette)
-                        .foregroundColor(.black)
                         .frame(width: 12, height: 12)
                         .padding([.trailing], 24)
                 } else {
@@ -47,12 +46,10 @@ struct ApproverPill: View {
             VStack(alignment: .leading) {
                 Text("Approver")
                     .font(.system(size: 14))
-                    .foregroundColor(.black)
                     .bold()
                 
                 Text(approver.label())
                     .font(.system(size: 24))
-                    .foregroundColor(.black)
                     .bold()
                 
                 switch approver {
@@ -92,6 +89,7 @@ struct ApproverPill: View {
                     onEdit?()
                 } label: {
                     Image("Pencil")
+                        .renderingMode(.template)
                         .resizable()
                         .frame(width: 32, height: 32)
                 }
@@ -101,7 +99,7 @@ struct ApproverPill: View {
         .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 16.0)
-                .stroke(isSelected == true ? Color.black : Color.gray, lineWidth: 1)
+                .stroke(isSelected == true ? Color.Censo.primaryForeground : Color.gray, lineWidth: 1)
         )
     }
 }
@@ -113,6 +111,7 @@ struct ApproverPill: View {
         ApproverPill(isPrimary: true, approver: .trusted(trustedApprover))
         ApproverPill(isPrimary: false, approver: .trusted(trustedApprover))
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 
 struct ApproverPillsWithSelection_Previews: PreviewProvider {
@@ -136,7 +135,7 @@ struct ApproverPillsWithSelection_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        ContainerView()
+        ContainerView().foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

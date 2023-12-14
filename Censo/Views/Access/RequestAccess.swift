@@ -65,7 +65,6 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                             dismiss()
                         } label: {
                             Image(systemName: "xmark")
-                                .foregroundColor(.black)
                         }
                     }
                 })
@@ -97,7 +96,6 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                                         dismiss()
                                     } label: {
                                         Image(systemName: "xmark")
-                                            .foregroundColor(.black)
                                     }
                                 }
                             })
@@ -196,7 +194,7 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
             accessAvailableView: { _ in
                 Text("Access available")
             }
-        )
+        ).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

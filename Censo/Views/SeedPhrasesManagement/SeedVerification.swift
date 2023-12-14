@@ -22,43 +22,47 @@ struct SeedVerification: View {
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
-        VStack {
-            Spacer()
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
 
-            Image(systemName: "checkmark.circle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(minWidth: 64, minHeight: 64)
-                .frame(maxWidth: 128, maxHeight: 128)
-                .padding(.top)
-
-            Spacer()
-
-            if isGeneratedPhrase {
-                Text("Seed phrase generated")
-                    .font(.title)
-            } else {
-                Text("Seed phrase validated")
-                    .font(.title)
-
-                Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding()
+                if isGeneratedPhrase {
+                    Text("Generated!")
+                        .font(.title)
+                } else {
+                    Text("Validated!")
+                        .font(.title)
+                    
+                    Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding()
+                }
+            
+                Spacer()
+                
+                WordList(words: words)
+                    .padding(.horizontal)
+                    .frame(height: geometry.size.height * 0.38)
+                
+                Button {
+                    showingSave = true
+                } label: {
+                    Text("Next")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding()
             }
-
-            WordList(words: words)
-                .padding(.horizontal)
-                .frame(height: 250)
-
-            Button {
-                showingSave = true
-            } label: {
-                Text("Next")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(RoundedButtonStyle())
-            .padding()
         }
+        .background(
+            GeometryReader { geometry in
+                VStack {
+                    Spacer(minLength: geometry.size.height * (isGeneratedPhrase ? 0.05 : 0.16))
+                    Image("SeedPhraseValidated")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
+            }
+        )
         .multilineTextAlignment(.center)
         .navigationTitle(Text("Add Seed Phrase"))
         .navigationBarTitleDisplayMode(.inline)
@@ -105,7 +109,7 @@ struct SeedVerification: View {
 struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true) { _ in }
+            SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
         }
         NavigationStack {
             SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true, isGeneratedPhrase: true) { _ in }

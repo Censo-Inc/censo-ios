@@ -68,7 +68,6 @@ struct RotatingTotpPinView: View {
             Stack(style) {
                 Text(pin.splittingCharacters(by: " "))
                     .font(.system(size: style.pinFontSize, weight: .semibold))
-                    .foregroundColor(.black)
                     .padding(.horizontal)
                 
                 ZStack {
@@ -131,6 +130,7 @@ extension String {
             style: .owner
         )
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 
 #Preview("approver style") {
@@ -144,5 +144,6 @@ extension String {
             style: .approver
         )
     }
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

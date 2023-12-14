@@ -13,15 +13,10 @@ struct Login: View {
     var body: some View {
             VStack {
                 Spacer()
-                Image("Logo")
+                Image("CensoLogo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124)
-                
-                Image("CensoText")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 208)
                 
                 Text("The Seed Phrase Manager")
                     .font(.title2)
@@ -35,6 +30,7 @@ struct Login: View {
                     HStack(alignment: .top) {
                         VStack {
                             Image("EyeSlash")
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                             Text("No personal info\ncollected, ever.")
@@ -44,6 +40,7 @@ struct Login: View {
                         .frame(maxWidth: .infinity)
                         VStack {
                             Image("Safe")
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                             Text("Multiple layers of \nauthentication.")
@@ -67,7 +64,7 @@ struct Login: View {
 #if DEBUG
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
-        Login() {}
+        Login() {}.foregroundColor(.Censo.primaryForeground)
     }
 }
 #endif

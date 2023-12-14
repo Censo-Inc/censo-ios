@@ -10,29 +10,21 @@ import SwiftUI
 
 struct AccessApproved : View {
     var body: some View {
-        VStack(alignment: .center) {
-            Spacer()
-            
-            HStack {
-                Spacer()
+        VStack {
+            ZStack {
                 
-                Image(systemName: "checkmark.circle")
+                Image("AccessApproved")
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.black)
-                    .frame(maxWidth: 162, maxHeight: 162)
+                    .aspectRatio(contentMode: .fill)
+                    .padding(.top)
                 
-                Spacer()
+                VStack(alignment: .center) {
+                    Spacer()
+                    Text("Approved!")
+                        .font(.system(size: UIFont.textStyleSize(.largeTitle) * 1.5, weight: .medium))
+                    Spacer()
+                }
             }
-            
-            Text("Approved")
-                .font(.system(size: 24))
-                .bold()
-                .padding([.leading, .trailing], 32)
-                .padding([.top], 25)
-                .padding([.bottom], 10)
-            
-            Spacer()
         }
         .frame(maxHeight: .infinity)
         .navigationBarTitleDisplayMode(.inline)
@@ -43,6 +35,6 @@ struct AccessApproved : View {
 #Preview {
     NavigationView {
         AccessApproved()
-    }
+    }.foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

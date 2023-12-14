@@ -46,7 +46,6 @@ struct ProposeToAddAlternateApprover : View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
                 }
             }
         })
@@ -58,5 +57,6 @@ struct ProposeToAddAlternateApprover : View {
     ProposeToAddAlternateApprover(
         onAccept: {}
     )
+    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

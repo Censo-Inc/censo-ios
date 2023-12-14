@@ -39,7 +39,7 @@ struct HomeScreen: View {
                 .tabItem {
                     VStack {
                         Text("Home")
-                        Image("SimpleHomeGray").renderingMode(.template)
+                        Image("HomeFilled").renderingMode(.template)
                     }
                 }
                 .tag(TabId.dashboard)
@@ -55,7 +55,7 @@ struct HomeScreen: View {
                 .tabItem {
                     VStack {
                         Text("My Phrases")
-                        Image("LockSimpleGray").renderingMode(.template)
+                        Image("LockClosed").renderingMode(.template)
                     }
                 }
                 .tag(TabId.phrases)
@@ -71,7 +71,7 @@ struct HomeScreen: View {
                 .tabItem {
                     VStack {
                         Text("Approvers")
-                        Image("TwoUsersGray").renderingMode(.template)
+                        Image("UserGroup").renderingMode(.template)
                     }
                 }
                 .tag(TabId.approvers)
@@ -87,12 +87,12 @@ struct HomeScreen: View {
                 .tabItem {
                     VStack {
                         Text("Settings")
-                        Image("SettingsGray").renderingMode(.template)
+                        Image("SettingsFilled").renderingMode(.template)
                     }
                 }
                 .tag(TabId.settings)
             }
-            .accentColor(.black)
+            .accentColor(.Censo.primaryForeground)
         }
         .padding(.vertical)
     }

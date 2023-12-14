@@ -54,8 +54,8 @@ struct LoggedOutPasteLinkScreen: View {
                 
                 Text(try! AttributedString(markdown: "If instead you’re interested in using Censo to securely manage your own seed phrases, please follow **[this link](\(Configuration.ownerAppURL))** to download the Censo app."))
                     .font(.title3)
-                    .tint(.black)
                     .padding(30)
+                    .tint(.Censo.primaryForeground)
                     .multilineTextAlignment(.center)
                     .environment(\.openURL, OpenURLAction { url in
                         return .systemAction
@@ -72,5 +72,6 @@ struct LoggedOutPasteLinkScreen: View {
     LoggedOutPasteLinkScreen(
         onUrlPasted: { _ in }
     )
+    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

@@ -42,6 +42,7 @@ struct ApproversTab: View {
                                 HStack {
                                     Spacer()
                                     Image("TwoPeopleWhite")
+                                        .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 24, height: 24)
                                     Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
@@ -73,6 +74,7 @@ struct ApproversTab: View {
                                 HStack {
                                     Spacer()
                                     Image("TwoPeopleWhite")
+                                        .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 24, height: 24)
                                     Text(
@@ -133,6 +135,7 @@ struct ApproversTab: View {
         ),
         onOwnerStateUpdated: { _ in }
     )
+    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("2 approvers") {
@@ -153,5 +156,6 @@ struct ApproversTab: View {
         ),
         onOwnerStateUpdated: { _ in }
     )
+    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

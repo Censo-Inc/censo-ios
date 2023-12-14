@@ -55,7 +55,6 @@ struct GetLiveWithOwner: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
                 }
             }
         }

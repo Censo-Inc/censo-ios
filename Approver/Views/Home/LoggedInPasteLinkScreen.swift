@@ -64,6 +64,7 @@ struct LoggedInPasteLinkScreen: View {
             VStack(spacing: 12) {
                 if user.approverStates.countActiveApprovers() > 0 {
                     Image("TwoPeople")
+                        .renderingMode(.template)
                         .frame(width: 32, height: 32)
                     Text("Active approver")
                         .font(.system(size: 14))
@@ -130,6 +131,7 @@ struct LoggedInPasteLinkScreen: View {
         user: API.ApproverUser(approverStates: []),
         onUrlPasted: { _ in }
     )
+    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("onboarded") {
@@ -143,6 +145,7 @@ struct LoggedInPasteLinkScreen: View {
         ]),
         onUrlPasted: { _ in }
     )
+    .foregroundColor(.Censo.primaryForeground)
 }
 
 extension Session {

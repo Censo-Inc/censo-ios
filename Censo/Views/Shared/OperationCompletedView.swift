@@ -22,7 +22,6 @@ struct OperationCompletedView: View {
                 Image(systemName: "checkmark.circle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.black)
                     .frame(maxWidth: 162, maxHeight: 162)
                 
                 Spacer()
@@ -52,5 +51,5 @@ struct OperationCompletedView: View {
 }
 
 #Preview {
-    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}
+    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}.foregroundColor(Color.Censo.primaryForeground)
 }

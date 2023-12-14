@@ -67,15 +67,14 @@ struct SeedEntry: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
             }
-            .navigationTitle(Text("Add Seed Phrase"))
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Text("Add Seed Phrase"))
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         showingDismissAlert = true
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
                     }
                 }
             })
@@ -131,7 +130,7 @@ struct SeedEntry_Previews: PreviewProvider {
             isFirstTime: true,
             language: WordListLanguage.english) { _ in
             
-        }
+        }.foregroundColor(Color.Censo.primaryForeground)
     }
 }
 

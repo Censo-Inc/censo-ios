@@ -29,15 +29,12 @@ struct DashboardTab: View {
                         Text("You have")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.black)
                         Text("\(vault.seedPhrases.count)")
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
                         Text("seed phrase\(vault.seedPhrases.count == 1 ? "" : "s").")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.black)
                     }
                 }
                 Text("\(vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
@@ -59,7 +56,6 @@ struct DashboardTab: View {
                     Text("\nYou can increase security by adding approvers.")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                     Button {
                         self.parentTabViewSelectedTab = HomeScreen.TabId.approvers
@@ -107,6 +103,7 @@ public extension UIFont {
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )
+        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

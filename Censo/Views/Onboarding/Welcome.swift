@@ -93,7 +93,7 @@ struct SetupStep: View {
                     .fill(.gray)
                     .opacity(opacity)
                     .cornerRadius(18)
-                image
+                image.renderingMode(.template)
             }.frame(width: 64, height: 64)
             VStack(alignment: .leading) {
                 Text(heading)
@@ -127,5 +127,6 @@ struct SetupStep: View {
 #if DEBUG
 #Preview {
     Welcome(session: .sample, ownerState: .constant(API.OwnerState.initial(API.OwnerState.Initial(authType: .none, subscriptionStatus: .active))))
+        .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif
