@@ -17,6 +17,7 @@ struct SeedVerification: View {
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
     var isFirstTime: Bool
+    var onClose: (() -> Void)? = nil
     var isGeneratedPhrase: Bool = false
     var onSuccess: (API.OwnerState) -> Void
 
@@ -39,7 +40,7 @@ struct SeedVerification: View {
             } else {
                 Text("Seed phrase validated")
                     .font(.title)
-                
+
                 Text("Censo has verified that this is a valid seed phrase. Please review the words to make sure that you have entered them correctly.")
                     .fixedSize(horizontal: false, vertical: true)
                     .padding()
@@ -64,7 +65,20 @@ struct SeedVerification: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                if (onClose == nil) {
+                    BackButton()
+                } else {
+                    Button {
+                        onClose!()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(.black)
+                            .font(.body.bold())
+                    }
+                }
             }
         })
         .alert("Are you sure?", isPresented: $showingDismissAlert) {

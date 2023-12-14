@@ -38,6 +38,8 @@ enum CensoError: Swift.Error {
     case productNotFound
     case purchaseFailed
     case failedToGenerateSeedPhrase
+    case linkExpired
+    case linkInFuture
 }
 
 extension CensoError: LocalizedError {
@@ -103,6 +105,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Product not found", comment: "Error thrown when IAP-product was not found")
         case .failedToGenerateSeedPhrase:
             return NSLocalizedString("Failed to genrate seed phrase", comment: "Failed to genrate seed phrase")
+        case .linkExpired:
+            return NSLocalizedString("This link has expired", comment: "Expired link")
+        case .linkInFuture:
+            return NSLocalizedString("This link is not yet valid", comment: "Future link")
         }
         
     }

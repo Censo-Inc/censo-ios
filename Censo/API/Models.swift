@@ -265,4 +265,8 @@ extension API {
     struct AttestationKey: Decodable {
         var keyId: String
     }
+    
+    struct OwnerProof: Codable {
+        var signature: Base64EncodedString
+    }
 }
