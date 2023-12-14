@@ -12,38 +12,60 @@ struct LockScreen: View {
     var onReadyToAuthenticate: () -> Void
 
     var body: some View {
-        VStack(alignment: .center) {
-            Image("LockLaminated")
-                .renderingMode(.template)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 200)
+        GeometryReader { geometry in
             
-            Text("Locked")
-                .font(.system(size: 24))
-                .padding(.bottom, 1)
-                .bold()
-
-            Button {
-                onReadyToAuthenticate()
-            } label: {
-                HStack {
+            ZStack {
+                
+                VStack {
                     Spacer()
-                    Image("FaceScanBW")
-                        .renderingMode(.template)
+                    Image("DogSleeping")
                         .resizable()
-                        .frame(width: 36, height: 36)
-                    Text("Unlock")
-                        .font(.system(size: 24, weight: .semibold))
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: geometry.size.width,
+                               height: geometry.size.height * 0.3)
+                        .ignoresSafeArea()
+                }
+                
+                VStack {
+                    Image("CensoLogo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100)
+                    
+                    Text("Welcome back.")
+                        .font(.largeTitle)
+                        .padding(.bottom, 1)
+                        .bold()
+                    
+                    Rectangle()
+                        .fill(Color.Censo.aquaBlue)
+                        .frame(width: 39, height: 6)
+                        .padding(.vertical, 10)
+                    
+                    Text("The Seed Phrase Manager that lets you sleep at night.")
+                        .font(.largeTitle)
+                        .bold()
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom)
+                    
+                    Button {
+                        onReadyToAuthenticate()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("Continue")
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    .frame(maxWidth: 220)
+                    
                     Spacer()
                 }
+                .padding([.horizontal, .top])
+                .multilineTextAlignment(.center)
             }
-            .buttonStyle(RoundedButtonStyle())
-            .padding()
-            .frame(maxWidth: .infinity)
-
         }
-        .multilineTextAlignment(.center)
     }
 }
 
