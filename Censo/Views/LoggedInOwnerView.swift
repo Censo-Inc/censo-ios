@@ -72,7 +72,7 @@ struct LoggedInOwnerView: View {
                             case .completed(let importedPhrase):
                                 switch ownerState {
                                 case .ready(let ownerState):
-                                    if let words = try? BIP39.binaryDataToWords(binaryData: importedPhrase.binaryPhrase.bigInt.serialize()) {
+                                    if let words = try? BIP39.binaryDataToWords(binaryData: importedPhrase.binaryPhrase.bigInt.magnitude.serialize()) {
                                         NavigationStack {
                                             SeedVerification(
                                                 words: words,
