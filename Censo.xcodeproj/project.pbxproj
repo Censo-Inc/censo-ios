@@ -255,7 +255,6 @@
 		E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376842AE83977005809F7 /* EnterApproverNickname.swift */; };
 		E4D376872AE83999005809F7 /* GetLiveWithApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */; };
 		E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376882AE839C6005809F7 /* ActivateApprover.swift */; };
-		E4D3768B2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768A2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift */; };
 		E4D3768D2AE83A24005809F7 /* ApproversSetupDone.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */; };
 		E4EFFAF42AFE62A100AA1FA0 /* FaceTec.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */; };
 		E4EFFAF92B0381E500AA1FA0 /* PaywallGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */; };
@@ -456,7 +455,6 @@
 		E4D376842AE83977005809F7 /* EnterApproverNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterApproverNickname.swift; sourceTree = "<group>"; };
 		E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLiveWithApprover.swift; sourceTree = "<group>"; };
 		E4D376882AE839C6005809F7 /* ActivateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateApprover.swift; sourceTree = "<group>"; };
-		E4D3768A2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProposeToAddAlternateApprover.swift; sourceTree = "<group>"; };
 		E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetupDone.swift; sourceTree = "<group>"; };
 		E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = FaceTec.strings; sourceTree = "<group>"; };
 		E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallGatedScreen.swift; sourceTree = "<group>"; };
@@ -921,7 +919,6 @@
 				E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */,
 				E4D376882AE839C6005809F7 /* ActivateApprover.swift */,
 				E472073A2AEA7746009A06A1 /* RenameApprover.swift */,
-				E4D3768A2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift */,
 				E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */,
 				E4FB35682B18C12700D75E26 /* InitApproversRemovalFlow.swift */,
 				E4FB356C2B19F89E00D75E26 /* ReplacePolicy.swift */,
@@ -1207,7 +1204,6 @@
 				E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */,
 				3DE0B9812ABA5F0C0001F3A3 /* LoggedInOwnerView.swift in Sources */,
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
-				E4D3768B2AE839FD005809F7 /* ProposeToAddAlternateApprover.swift in Sources */,
 				6CB230CA2A9D1373009FAE91 /* Data+Hex.swift in Sources */,
 				6C2392AF2AE6C9A300987A91 /* DashboardTab.swift in Sources */,
 				3DF711312AEABDCF009B18CB /* CloudCheck.swift in Sources */,

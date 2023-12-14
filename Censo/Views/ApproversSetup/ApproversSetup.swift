@@ -21,7 +21,6 @@ struct ApproversSetup: View {
     enum Step {
         case intro
         case setupPrimary
-        case proposeAlternate
         case setupAlternate
         case cancellingAlternate
         case replacingPolicy
@@ -30,7 +29,7 @@ struct ApproversSetup: View {
         static func fromOwnerState(_ ownerState: API.OwnerState.Ready) -> Step {
             if ownerState.policySetup?.alternateApprover == nil {
                 if ownerState.policySetup?.primaryApprover?.isConfirmed == true {
-                    return .proposeAlternate
+                    return .setupAlternate
                 } else {
                     return .setupPrimary
                 }
@@ -45,7 +44,6 @@ struct ApproversSetup: View {
     }
     
     @State private var step: Step
-    @State private var proposeToAddAlternateApprover = false
     @State private var showingError = false
     @State private var error: Error?
     
@@ -123,17 +121,11 @@ struct ApproversSetup: View {
                 policySetup: ownerState.policySetup,
                 isPrimary: true,
                 onComplete: {
-                    step = .proposeAlternate
+                    step = .setupAlternate
                 },
                 onOwnerStateUpdated: onOwnerStateUpdated,
                 onBack: {
                     step = .intro
-                }
-            )
-        case .proposeAlternate:
-            ProposeToAddAlternateApprover(
-                onAccept: {
-                    step = .setupAlternate
                 }
             )
         case .setupAlternate:
@@ -219,7 +211,7 @@ struct ApproversSetup: View {
                 switch result {
                 case .success(let response):
                     onOwnerStateUpdated(response.ownerState)
-                    step = .proposeAlternate
+                    step = .setupAlternate
                 case .failure(let error):
                     showError(error)
                 }
