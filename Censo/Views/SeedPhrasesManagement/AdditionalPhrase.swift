@@ -42,24 +42,18 @@ struct AdditionalPhrase: View {
                         .padding(.leading)
                         .padding(.top)
                         
-                        VStack(alignment: .leading, spacing: 5) {
+                        VStack(alignment: .leading) {
                             Spacer()
                             Text("Add another seed phrase")
                                 .font(.title2)
                                 .fontWeight(.semibold)
-                                .padding()
-                            
-                            Text("Your seed phrase will be encrypted so only you can access it.")
-                                .font(.subheadline)
-                                .padding(.horizontal)
-                                .padding(.bottom)
+                                .padding(.vertical)
                             
                             LanguageSelection(
                                 text: Text("For seed phrase input/generation, the current language is \(currentLanguage().displayName()). You may change it **here**"
                                           ).font(.subheadline),
                                 languageId: $languageId
                             )
-                            .padding(.horizontal)
                             .padding(.bottom)
                             
                             Button {
@@ -75,7 +69,6 @@ struct AdditionalPhrase: View {
                                 .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(RoundedButtonStyle())
-                            .padding(.horizontal)
                             
                             Button {
                                 step = .pastePhrase
@@ -90,7 +83,6 @@ struct AdditionalPhrase: View {
                                 .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(RoundedButtonStyle())
-                            .padding(.horizontal)
                             
                             Button {
                                 step = .generatePhrase
@@ -106,9 +98,10 @@ struct AdditionalPhrase: View {
                                 .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(RoundedButtonStyle())
-                            .padding(.horizontal)
                             .padding(.bottom, 5)
                         }
+                        .padding(.leading)
+                        .padding(.horizontal)
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar(content: {
                             ToolbarItem(placement: .navigationBarLeading) {

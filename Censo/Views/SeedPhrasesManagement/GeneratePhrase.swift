@@ -110,7 +110,7 @@ struct GeneratePhrase: View {
     func generatePhrase() {
         do {
             self.phrase = try BIP39.generatePhrase(wordCount: selectedWordCount, language: language)
-            if let result = BIP39.validateSeedPhrase(words: phrase) {
+            if let result = BIP39.validateSeedPhrase(words: phrase, language: language) {
                 self.showingError = true
                 self.error = PhraseValidityError.invalid(result)
             } else {

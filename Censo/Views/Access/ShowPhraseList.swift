@@ -44,7 +44,7 @@ struct ShowPhraseList: View {
                                 .background(
                                     RoundedRectangle(cornerRadius: 10)
                                         .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                        .foregroundColor(.Censo.lightGray)
+                                        .foregroundColor(.Censo.gray224)
                                 )
                                 .multilineTextAlignment(.leading)
                                 .buttonStyle(PlainButtonStyle())

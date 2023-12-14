@@ -10,10 +10,11 @@ import SwiftUI
 struct FirstPhrase: View {
     @Environment(\.apiProvider) var apiProvider
 
+    @State private var addYourOwnPhrase = false
+    @State private var showingGeneratePhrase = false
     @State private var showingAddPhrase = false
     @State private var showingPastePhrase = false
-    @State private var showingGeneratePhrase = false
-    @State private var languageId: UInt8 = WordListLanguage.english.toId()
+    @State private var language: WordListLanguage = WordListLanguage.english
 
     var ownerState: API.OwnerState.Ready
     var session: Session
@@ -34,70 +35,30 @@ struct FirstPhrase: View {
                     .padding(.leading)
                     .padding(.top)
                     
-                    VStack(alignment: .leading, spacing: 5) {
-                        Spacer()
-                        Text("Add your first seed phrase")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding()
-                        
-                        Text("Your seed phrase will be encrypted so only you can access it.")
-                            .font(.subheadline)
-                            .padding(.horizontal)
-                        
-                        LanguageSelection(
-                            text: Text("For seed phrase input/generation, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
-                                      ).font(.subheadline),
-                            languageId: $languageId
+                    
+                    if addYourOwnPhrase {
+                        AddYourOwnPhrase(
+                            onInputPhrase: { selectedLanguage in
+                                language = selectedLanguage
+                                showingAddPhrase = true
+                            },
+                            onPastePhrase: { showingPastePhrase = true }
                         )
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                        
-                        Button {
-                            showingAddPhrase = true
-                        } label: {
-                            HStack(spacing: 20) {
-                                Image("PhraseEntry").renderingMode(.template)
-                                Text("Input seed phrase")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    addYourOwnPhrase = false
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
                             }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding(.horizontal)
-                        
-                        Button {
-                            showingPastePhrase = true
-                        } label: {
-                            HStack(spacing: 20) {
-                                Image("ClipboardText").renderingMode(.template)
-                                Text("Paste seed phrase")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding(.horizontal)
-                        
-                        
-                        Button {
-                            showingGeneratePhrase = true
-                        } label: {
-                            HStack(spacing: 20) {
-                                Image(systemName: "wand.and.stars")
-                                    .resizable()
-                                    .frame(width: 36, height: 36)
-                                Text("Generate phrase")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding(.horizontal)
-                        .padding(.bottom, 5)
+                        })
+                    } else {
+                        FirstTimePhrase(
+                            onGeneratePhrase: { showingGeneratePhrase = true },
+                            onAddYourOwnPhrase: { addYourOwnPhrase = true }
+                        )
                     }
                 }
             }
@@ -107,7 +68,7 @@ struct FirstPhrase: View {
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                 isFirstTime: true,
-                language: currentLanguage(),
+                language: language,
                 onSuccess: onComplete
             )
         })
@@ -119,11 +80,115 @@ struct FirstPhrase: View {
         })
         .sheet(isPresented: $showingGeneratePhrase, content: {
             GeneratePhrase(
-                language: currentLanguage(),
-                onComplete: onComplete, session: session,
-                ownerState: ownerState, isFirstTime: true
+                language: WordListLanguage.english,
+                onComplete: onComplete, 
+                session: session,
+                ownerState: ownerState, 
+                isFirstTime: true
             )
         })
+    }
+}
+
+struct FirstTimePhrase: View {
+    var onGeneratePhrase: () -> Void
+    var onAddYourOwnPhrase: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Spacer()
+            Text("Time to add your first seed phrase")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .padding(.vertical)
+            
+            Text("You can add one of your own, or if you would like to try Censo first, generate a new seed phrase with Censo and add that.")
+                .font(.subheadline)
+                .padding(.vertical)
+            
+            Button {
+                onGeneratePhrase()
+            } label: {
+                HStack(spacing: 20) {
+                    Image(systemName: "wand.and.stars")
+                        .resizable()
+                        .frame(width: 36, height: 36)
+                    Text("Generate new phrase")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+            
+            Button {
+                onAddYourOwnPhrase()
+            } label: {
+                HStack(spacing: 20) {
+                    Image("ClipboardText").renderingMode(.template)
+                    Text("I have my own")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+
+        }
+        .padding(.leading)
+        .padding()
+    }
+}
+
+struct AddYourOwnPhrase: View {
+    var onInputPhrase: (WordListLanguage) -> Void
+    var onPastePhrase: () -> Void
+    
+    @State private var languageId: UInt8 = WordListLanguage.english.toId()
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Spacer()
+            Text("Time to add your first seed phrase")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .padding(.bottom)
+            
+            LanguageSelection(
+                text: Text("For seed phrase input, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
+                          ).font(.subheadline),
+                languageId: $languageId
+            )
+            .padding(.vertical)
+            
+            Button {
+                onInputPhrase(currentLanguage())
+            } label: {
+                HStack(spacing: 20) {
+                    Image("PhraseEntry").renderingMode(.template)
+                    Text("Input seed phrase")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+            
+            Button {
+                onPastePhrase()
+            } label: {
+                HStack(spacing: 20) {
+                    Image("ClipboardText").renderingMode(.template)
+                    Text("Paste seed phrase")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+        }
+        .padding(.leading)
+        .padding()
     }
     
     private func currentLanguage() ->  WordListLanguage {
@@ -133,10 +198,12 @@ struct FirstPhrase: View {
 
 #if DEBUG
 #Preview {
-    FirstPhrase(
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
-        session: .sample,
-        onComplete: {_ in }
-    ).foregroundColor(.Censo.primaryForeground)
+    NavigationView {
+        FirstPhrase(
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+            session: .sample,
+            onComplete: {_ in }
+        ).foregroundColor(.Censo.primaryForeground)
+    }
 }
 #endif
