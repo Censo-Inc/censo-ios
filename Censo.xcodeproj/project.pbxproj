@@ -221,7 +221,6 @@
 		BDC3FC652ADE1C67008C126B /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC9912ADDC4E100DA979C /* BIP39.swift */; };
 		BDEB3F1A2B2255B600899A5D /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F192B2255B600899A5D /* Import.swift */; };
 		BDEB3F1C2B29F74C00899A5D /* AcceptImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */; };
-		BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */; };
 		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
 		BDFE3C0F2AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */; };
 		BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */; };
@@ -431,7 +430,6 @@
 		BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptImportView.swift; sourceTree = "<group>"; };
 		BDFE3C062AD06177000C76D4 /* Censo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Censo.entitlements; sourceTree = "<group>"; };
 		BDFE3C072AD06A46000C76D4 /* Approver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Approver.entitlements; sourceTree = "<group>"; };
-		BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		BDFE3C0E2AD8707E000C76D4 /* SymmetricEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricEncryption.swift; sourceTree = "<group>"; };
 		BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionTests.swift; sourceTree = "<group>"; };
@@ -862,7 +860,6 @@
 		BDFE3C092AD5DB1D000C76D4 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				BDFE3C0A2AD5DB41000C76D4 /* Welcome.swift */,
 				E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */,
 				BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */,
 				BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */,
@@ -1224,7 +1221,6 @@
 				E4FB35692B18C12700D75E26 /* InitApproversRemovalFlow.swift in Sources */,
 				E4D376832AE8391D005809F7 /* SetupApprover.swift in Sources */,
 				3D3E64D32AE6B76A0000C56C /* Word.swift in Sources */,
-				BDFE3C0B2AD5DB41000C76D4 /* Welcome.swift in Sources */,
 				E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */,
 				BD19AE102B053BB000282B86 /* PBKDF2.swift in Sources */,
 				3D0C1E882A83A89F00AB3A48 /* CensoTheme.swift in Sources */,

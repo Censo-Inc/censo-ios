@@ -47,17 +47,15 @@ struct LoggedInOwnerView: View {
                             case .none:
                                 switch ownerState {
                                 case .initial:
-                                    Welcome(
+                                    InitialPlanSetup(
                                         session: session,
-                                        ownerState: ownerStateBinding
+                                        onComplete: replaceOwnerState                                    
                                     )
                                 case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
                                     FirstPhrase(
                                         ownerState: ready,
                                         session: session,
-                                        onComplete: { ownerState in
-                                            replaceOwnerState(newOwnerState: ownerState)
-                                        }
+                                        onComplete: replaceOwnerState                                    
                                     )
                                 case .ready(let ready):
                                     HomeScreen(

@@ -66,6 +66,50 @@ struct PhraseAccessIntro: View {
     }
 }
 
+struct SetupStep: View {
+    var image: Image
+    var heading: String
+    var content: String
+    var completionText: String?
+    var opacity: Double = 0.3
+    var body: some View {
+        HStack(alignment: .center) {
+            ZStack {
+                Rectangle()
+                    .fill(.gray)
+                    .opacity(opacity)
+                    .cornerRadius(18)
+                image.renderingMode(.template)
+            }.frame(width: 64, height: 64)
+            VStack(alignment: .leading) {
+                Text(heading)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+                    .padding(.vertical, -1)
+                    .fixedSize(horizontal: true, vertical: true)
+                Text(content)
+                    .font(.footnote)
+                    .padding(.leading)
+                    .padding(.top, 1)
+                    .fixedSize(horizontal: false, vertical: true)
+                switch (completionText) {
+                case .some(let text):
+                    Text("✓ " + text)
+                        .font(.footnote)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                        .padding(.leading)
+                        .padding(.top, 1)
+                case .none:
+                    EmptyView()
+                }
+            }
+        }
+        .padding(.bottom)
+    }
+}
+
 #if DEBUG
 #Preview {
     NavigationView {
