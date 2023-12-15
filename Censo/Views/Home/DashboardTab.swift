@@ -63,7 +63,7 @@ struct DashboardTab: View {
                     Button {
                         self.showingApproversSetup = true
                     } label: {
-                        Text("Add approvers")
+                        Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
                             .font(.headline)
                             .fontWeight(.regular)
                             .frame(maxWidth: 322, minHeight: 24)
