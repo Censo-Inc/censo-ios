@@ -96,13 +96,16 @@ struct ReplacePolicy: View {
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
-                
+                let masterPublicKey = try masterKey.publicExternalRepresentation()
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetup.owner!.participantId)
+
+
                 let concatenatedApproverPublicKeys = policySetup
                     .approvers
                     .sorted(using: KeyPathComparator(\.publicKey!.value, order: .forward))
                     .map({ $0.publicKey!.data })
                     .reduce(Data(), +)
-                
+
                 apiProvider.decodableRequest(
                     with: session,
                     endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
@@ -115,8 +118,9 @@ struct ReplacePolicy: View {
                             })
                         ),
                         encryptedMasterPrivateKey: try newIntermediateKey.encrypt(data: masterKey.privateKeyRaw()),
-                        masterEncryptionPublicKey: try masterKey.publicExternalRepresentation(),
-                        signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData())
+                        masterEncryptionPublicKey: masterPublicKey,
+                        signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData()),
+                        masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
                     ))
                 ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
                     switch result {

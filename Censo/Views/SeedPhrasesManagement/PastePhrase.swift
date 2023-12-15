@@ -133,6 +133,8 @@ struct PastePhrase: View {
                     words: BIP39.splitToWords(phrase: pastedPhrase),
                     session: session,
                     publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                    masterKeySignature: ownerState.policy.masterKeySignature,
+                    ownerParticipantId: ownerState.policy.owner?.participantId,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)

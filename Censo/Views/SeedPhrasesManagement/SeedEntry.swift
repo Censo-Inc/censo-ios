@@ -20,6 +20,8 @@ struct SeedEntry: View {
 
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
+    var masterKeySignature: Base64EncodedString?
+    var ownerParticipantId: ParticipantId?
     var isFirstTime: Bool
     var language: WordListLanguage
     var onSuccess: (API.OwnerState) -> Void
@@ -83,6 +85,8 @@ struct SeedEntry: View {
                     words: words,
                     session: session,
                     publicMasterEncryptionKey: publicMasterEncryptionKey,
+                    masterKeySignature: masterKeySignature,
+                    ownerParticipantId: ownerParticipantId,
                     isFirstTime: isFirstTime,
                     onSuccess: onSuccess
                 )
