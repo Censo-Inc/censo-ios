@@ -23,44 +23,51 @@ struct FirstPhrase: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                ZStack(alignment: .bottom) {
-                    VStack {
-                        Image("AddYourSeedPhrase")
-                            .resizable()
-                            .frame(
-                                maxWidth: geometry.size.width,
-                                maxHeight: geometry.size.height * 0.6)
-                        Spacer()
-                    }
-                    .padding(.leading)
-                    .padding(.top)
-                    
-                    
-                    if addYourOwnPhrase {
-                        AddYourOwnPhrase(
-                            onInputPhrase: { selectedLanguage in
-                                language = selectedLanguage
-                                showingAddPhrase = true
-                            },
-                            onPastePhrase: { showingPastePhrase = true }
-                        )
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(content: {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    addYourOwnPhrase = false
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
+                ScrollView {
+                    ZStack(alignment: .bottom) {
+                        HStack {
+                            Spacer()
+                            VStack {
+                                Image("AddYourSeedPhrase")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: geometry.size.width * 0.8)
+                                Spacer()
                             }
-                        })
-                    } else {
-                        FirstTimePhrase(
-                            onGeneratePhrase: { showingGeneratePhrase = true },
-                            onAddYourOwnPhrase: { addYourOwnPhrase = true }
-                        )
+                        }
+                        
+                        VStack {
+                            Spacer()
+                                .frame(width: geometry.size.width,
+                                       height: geometry.size.height * 0.45)
+                            if addYourOwnPhrase {
+                                AddYourOwnPhrase(
+                                    onInputPhrase: { selectedLanguage in
+                                        language = selectedLanguage
+                                        showingAddPhrase = true
+                                    },
+                                    onPastePhrase: { showingPastePhrase = true }
+                                )
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar(content: {
+                                    ToolbarItem(placement: .navigationBarLeading) {
+                                        Button {
+                                            addYourOwnPhrase = false
+                                        } label: {
+                                            Image(systemName: "chevron.left")
+                                        }
+                                    }
+                                })
+                            } else {
+                                FirstTimePhrase(
+                                    onGeneratePhrase: { showingGeneratePhrase = true },
+                                    onAddYourOwnPhrase: { addYourOwnPhrase = true }
+                                )
+                            }
+                        }
                     }
                 }
+                .padding(.vertical)
             }
         }
         .sheet(isPresented: $showingAddPhrase, content: {
@@ -100,16 +107,18 @@ struct FirstTimePhrase: View {
             Text("Time to add your first seed phrase")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .padding(.vertical)
+                .fixedSize(horizontal: false, vertical: true)
             
             Text("You can add one of your own, or if you would like to try Censo first, generate a new seed phrase with Censo and add that.")
                 .font(.subheadline)
-                .padding(.vertical)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            Spacer()
             
             Button {
                 onGeneratePhrase()
             } label: {
-                HStack(spacing: 20) {
+                HStack(spacing: 10) {
                     Image(systemName: "wand.and.stars")
                         .resizable()
                         .frame(width: 36, height: 36)
@@ -124,7 +133,7 @@ struct FirstTimePhrase: View {
             Button {
                 onAddYourOwnPhrase()
             } label: {
-                HStack(spacing: 20) {
+                HStack(spacing: 10) {
                     Image("ClipboardText").renderingMode(.template)
                     Text("I have my own")
                         .font(.title2)
@@ -135,8 +144,8 @@ struct FirstTimePhrase: View {
             .buttonStyle(RoundedButtonStyle())
 
         }
-        .padding(.leading)
-        .padding()
+        .padding(.horizontal)
+        .padding(.horizontal)
     }
 }
 
@@ -152,14 +161,18 @@ struct AddYourOwnPhrase: View {
             Text("Time to add your first seed phrase")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .padding(.bottom)
+                .fixedSize(horizontal: false, vertical: true)
             
             LanguageSelection(
-                text: Text("For seed phrase input, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
-                          ).font(.subheadline),
+                text: Text(
+                    "For seed phrase input, the current language is \(currentLanguage().displayName()). You may select a different language **here**"
+                )
+                .font(.subheadline),
                 languageId: $languageId
             )
-            .padding(.vertical)
+            .padding(.bottom)
+            
+            Spacer()
             
             Button {
                 onInputPhrase(currentLanguage())
@@ -187,8 +200,8 @@ struct AddYourOwnPhrase: View {
             }
             .buttonStyle(RoundedButtonStyle())
         }
-        .padding(.leading)
-        .padding()
+        .padding(.horizontal)
+        .padding(.horizontal)
     }
     
     private func currentLanguage() ->  WordListLanguage {
@@ -198,12 +211,10 @@ struct AddYourOwnPhrase: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        FirstPhrase(
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
-            session: .sample,
-            onComplete: {_ in }
-        ).foregroundColor(.Censo.primaryForeground)
-    }
+    FirstPhrase(
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+        session: .sample,
+        onComplete: {_ in }
+    ).foregroundColor(.Censo.primaryForeground)
 }
 #endif

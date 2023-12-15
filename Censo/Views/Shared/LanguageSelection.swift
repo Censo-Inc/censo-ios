@@ -21,6 +21,7 @@ struct LanguageSelection: View {
         } label: {
             text
             .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

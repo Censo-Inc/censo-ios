@@ -22,7 +22,6 @@ struct ApproversSetup: View {
         case intro
         case setupPrimary
         case setupAlternate
-        case cancellingAlternate
         case replacingPolicy
         case done
         
@@ -136,25 +135,8 @@ struct ApproversSetup: View {
                 onComplete: {
                     step = .replacingPolicy
                 },
-                onOwnerStateUpdated: onOwnerStateUpdated,
-                onBack: {
-                    cancelAlternateApproverSetup()
-                }
+                onOwnerStateUpdated: onOwnerStateUpdated
             )
-        case .cancellingAlternate:
-            ProgressView()
-                .navigationBarTitleDisplayMode(.inline)
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button {
-                        showingError = false
-                        error = nil
-                        self.step = Step.fromOwnerState(ownerState)
-                    } label: {
-                        Text("OK")
-                    }
-                } message: { error in
-                    Text(error.localizedDescription)
-                }
         case .replacingPolicy:
             ReplacePolicy(
                 session: session,
@@ -182,44 +164,6 @@ struct ApproversSetup: View {
     private func showError(_ error: Error) {
         self.showingError = true
         self.error = error
-    }
-    
-    func cancelAlternateApproverSetup() {
-        self.step = .cancellingAlternate
-            
-        do {
-            let policySetup = ownerState.policySetup!
-            let owner = policySetup.owner!
-            let primaryApprover = policySetup.primaryApprover!
-            let approvers: [API.ApproverSetup] = [
-                .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
-                    participantId: owner.participantId,
-                    label: "Me",
-                    approverPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
-                )),
-                .externalApprover(API.ApproverSetup.ExternalApprover(
-                    participantId: primaryApprover.participantId,
-                    label: primaryApprover.label,
-                    deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
-                ))
-            ]
-            
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    onOwnerStateUpdated(response.ownerState)
-                    step = .setupAlternate
-                case .failure(let error):
-                    showError(error)
-                }
-            }
-        } catch {
-            RaygunClient.sharedInstance().send(error: error, tags: ["Setup policy"], customData: nil)
-            showError(CensoError.failedToCancelAlternateApproverSetup)
-        }
     }
 }
 
