@@ -13,7 +13,7 @@ struct Login: View {
     var body: some View {
             VStack {
                 Spacer()
-                Image("CensoLogo")
+                Image("CensoLogoDarkBlueStacked")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 124)

@@ -34,11 +34,6 @@ struct TermsOfUse: View {
                     .fontWeight(.semibold)
                     .padding()
 
-                Text("We built Censo to allow you to secure your seed phrases while maintaining your privacy and control. Our Terms of Use support these principles. Please read and accept to continue.")
-                    .multilineTextAlignment(.center)
-                    .font(.subheadline)
-                    .padding()
-
                 Button {
                     isReview = true
                 } label: {

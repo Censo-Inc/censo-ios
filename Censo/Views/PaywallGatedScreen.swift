@@ -204,38 +204,16 @@ struct Paywall: View {
     
     var body: some View {
         VStack {
-            Text("It’s time for a better way.")
-                .font(.title2)
-                .fontWeight(.medium)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .padding(.bottom)
-            
-            Text("IT’S TIME FOR A SEED PHRASE MANAGER")
-                .font(.title)
-                .fontWeight(.medium)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal)
-                .padding(.bottom)
-            
-            Spacer()
-            
-            Image("CensoLogo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 124)
-            
             Spacer()
             
             Group {
                 if let subscription = offer.product.subscription {
-                    Text("Secure all your seed phrases for only \(offer.product.displayPrice) / \(subscription.subscriptionPeriod.formatted()).")
+                    Text("Secure all your seed phrases for\n\(offer.product.displayPrice) / \(subscription.subscriptionPeriod.formatted()).")
                 } else {
-                    Text("Secure all your seed phrases for only \(offer.product.displayPrice).")
+                    Text("Secure all your seed phrases for \(offer.product.displayPrice).")
                 }
             }
-            .font(.headline)
+            .font(.title)
             .fontWeight(.medium)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
@@ -246,13 +224,22 @@ struct Paywall: View {
             
             if trialPeriod != nil {
                 Text("Try for free, cancel anytime")
-                    .font(.headline)
+                    .font(.title)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
                     .padding(.bottom)
             }
+            
+            Spacer()
+            
+            Image("CensoLogoDarkBlueStacked")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 124)
+            
+            Spacer()
             
             Button {
                 purchase(offer.product)

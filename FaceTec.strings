@@ -86,7 +86,7 @@
 "FaceTec_presession_conditions_too_bright" = "Conditions too bright";
 "FaceTec_presession_brighten_your_environment" = "Brighten your environment";
 
-"FaceTec_result_facescan_upload_message" = "Uploading\nencrypted\n3D face scan";
+"FaceTec_result_facescan_upload_message" = "Uploading\nanonymous\nface scan";
 "FaceTec_result_success_message" = "Success";
 "FaceTec_result_idscan_upload_message" = "Uploading\nEncrypted\nID Scan";
 "FaceTec_result_nfc_upload_message" = "Uploading\nEncrypted\nNFC Details";

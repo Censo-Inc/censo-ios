@@ -94,82 +94,65 @@ struct InitialPlanSetup: View {
                 }
             } else {
                 GeometryReader { geometry in
-                    ScrollView {
-                        ZStack(alignment: .bottom) {
-                            VStack {
-                                Image("FaceScanHandWithPhone")
-                                    .resizable()
-                                    .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.9)
-                                Spacer()
-                            }
-                            .padding(.leading, geometry.size.width * 0.1)
+                    ZStack(alignment: .bottom) {
+                        VStack {
+                            Image("FaceScanHandWithPhone")
+                                .resizable()
+                                .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.9)
+                            Spacer()
+                        }
+                        .padding(.leading, geometry.size.width * 0.1)
+                        
+                        VStack(spacing: 0) {
+                            Spacer()
                             
-                            VStack(spacing: 0) {
-                                Spacer()
-                                    .frame(width: geometry.size.width,
-                                           height: geometry.size.height * 0.45)
+                            VStack(alignment: .leading) {
+                                Text("Anonymously scan your face")
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .font(.title2)
+                                    .bold()
                                 
-                                VStack(alignment: .leading, spacing: 0) {
-                                    Text("Scan your face (optional)")
-                                        .font(.title2)
-                                        .bold()
-                                    
-                                    VStack(alignment: .leading) {
-                                        Text("A face scan will ensure that only you have access to your seed phrase.")
-                                            .font(.subheadline)
-                                            .padding(.bottom, 4)
-                                            .fixedSize(horizontal: false, vertical: true)
-                                        
-                                        Text("If you opt in, you can capture and store an anonymous 3D map of your face to confirm your live physical presence.")
-                                            .font(.subheadline)
-                                            .padding(.bottom, 1)
-                                            .fixedSize(horizontal: false, vertical: true)
-                                    }
-                                    .padding(.vertical)
-                                    
-                                    Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
-                                        .font(.caption)
-                                        .italic()
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                    
-                                    Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
-                                        .font(.caption)
-                                        .italic()
-                                        .tint(Color.Censo.primaryForeground)
-                                        .multilineTextAlignment(.leading)
-                                        .padding([.top])
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .environment(\.openURL, OpenURLAction { url in
-                                            usePasswordAuth = true
-                                            startPolicyCreation()
-                                            return .handled
-                                        })
-                                    
-                                    Spacer()
-                                    
-                                    Button {
+                                Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
+                                    .font(.subheadline)
+                                    .tint(Color.Censo.primaryForeground)
+                                    .multilineTextAlignment(.leading)
+                                    .padding([.top])
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .environment(\.openURL, OpenURLAction { url in
+                                        usePasswordAuth = true
                                         startPolicyCreation()
-                                    } label: {
-                                        HStack {
-                                            Spacer()
-                                            Image("FaceScanBW")
-                                                .renderingMode(.template)
-                                                .resizable()
-                                                .frame(width: 36, height: 36)
-                                            Text("Begin face scan")
-                                                .font(.title2)
-                                                .fontWeight(.semibold)
-                                            Spacer()
-                                        }
+                                        return .handled
+                                    })
+                                    .padding(.bottom)
+                                
+                                Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
+                                    .font(.caption)
+                                    .italic()
+                                    .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(.bottom)
+                                
+                                Button {
+                                    startPolicyCreation()
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        Image("FaceScanBW")
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .frame(width: 36, height: 36)
+                                        Text("Begin face scan")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                        Spacer()
                                     }
-                                    .buttonStyle(RoundedButtonStyle())
-                                    .padding(.vertical)
-                                    .frame(maxWidth: .infinity)
                                 }
-                                .padding(.horizontal)
-                                .padding(.horizontal)
+                                .buttonStyle(RoundedButtonStyle())
+                                .padding(.bottom)
+                                .frame(maxWidth: .infinity)
                             }
+                            .padding(.horizontal)
+                            .padding(.horizontal)
                         }
                     }
                 }
