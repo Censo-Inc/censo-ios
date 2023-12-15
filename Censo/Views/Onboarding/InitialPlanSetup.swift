@@ -35,29 +35,43 @@ struct InitialPlanSetup: View {
         VStack(alignment: .leading, spacing: 10) {
             if let createPolicyParams {
                 if (usePasswordAuth) {
-                    CreatePassword { cryptedPassword in
-                        apiProvider.decodableRequest(
-                            with: session,
-                            endpoint: .createPolicyWithPassword(
-                                API.CreatePolicyWithPasswordApiRequest(
-                                    intermediatePublicKey: createPolicyParams.intermediatePublicKey,
-                                    encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
-                                    masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
-                                    participantId: createPolicyParams.participantId,
-                                    encryptedShard: createPolicyParams.encryptedShard,
-                                    approverPublicKey: createPolicyParams.approverPublicKey,
-                                    password: API.Password(cryptedPassword: cryptedPassword)
+                    NavigationStack {
+                        CreatePassword { cryptedPassword in
+                            apiProvider.decodableRequest(
+                                with: session,
+                                endpoint: .createPolicyWithPassword(
+                                    API.CreatePolicyWithPasswordApiRequest(
+                                        intermediatePublicKey: createPolicyParams.intermediatePublicKey,
+                                        encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
+                                        masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
+                                        participantId: createPolicyParams.participantId,
+                                        encryptedShard: createPolicyParams.encryptedShard,
+                                        approverPublicKey: createPolicyParams.approverPublicKey,
+                                        password: API.Password(cryptedPassword: cryptedPassword)
+                                    )
                                 )
-                            )
-                        ) { (result: Result<API.CreatePolicyWithPasswordApiResponse, MoyaError>) in
-                            switch result {
-                            case .failure:
-                                dismiss()
-                            case .success(let response):
-                                onComplete(response.ownerState)
+                            ) { (result: Result<API.CreatePolicyWithPasswordApiResponse, MoyaError>) in
+                                switch result {
+                                case .failure:
+                                    dismiss()
+                                case .success(let response):
+                                    onComplete(response.ownerState)
+                                }
                             }
                         }
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    self.createPolicyParams = nil
+                                    self.usePasswordAuth = false
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
+                            }
+                        })
                     }
+                    
                 } else {
                     FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
                             .createPolicy(
@@ -159,14 +173,6 @@ struct InitialPlanSetup: View {
                         }
                     }
                 }
-            }
-        }
-        .navigationTitle(Text(""))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
             }
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
