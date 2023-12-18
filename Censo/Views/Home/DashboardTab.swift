@@ -77,11 +77,7 @@ struct DashboardTab: View {
                         .multilineTextAlignment(.center)
                     
                     VStack(spacing: 30) {
-                        let approvers = ownerState.policy.approvers
-                            .filter({ !$0.isOwner })
-                            .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
-
-                        ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
+                        ForEach(Array(ownerState.policy.externalApprovers.enumerated()), id: \.offset) { i, approver in
                           ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
                         }
                     }

@@ -169,8 +169,14 @@ extension API {
         var intermediateKey: Base58EncodedPublicKey
         var approverKeysSignatureByIntermediateKey: Base64EncodedString
         
+        var externalApprovers: [TrustedApprover] {
+            return approvers
+                .filter({ !$0.isOwner })
+                .sorted(using: KeyPathComparator(\.attributes.onboardedAt))
+        }
+        
         var externalApproversCount: Int {
-            return approvers.filter({ !$0.isOwner }).count
+            return externalApprovers.count
         }
     }
     

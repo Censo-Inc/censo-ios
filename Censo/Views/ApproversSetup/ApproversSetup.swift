@@ -152,12 +152,14 @@ struct ApproversSetup: View {
                 intent: .setupApprovers
             )
         case .done:
-            Activated()
-                .onAppear(perform: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        dismiss()
-                    }
-                })
+            Activated(
+                policy: ownerState.policy
+            )
+            .onAppear(perform: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    dismiss()
+                }
+            })
         }
     }
     
