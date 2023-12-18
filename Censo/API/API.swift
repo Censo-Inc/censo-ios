@@ -30,6 +30,7 @@ struct API {
         case createPolicy(CreatePolicyApiRequest)
         case createPolicyWithPassword(CreatePolicyWithPasswordApiRequest)
         case setupPolicy(SetupPolicyApiRequest)
+        case deletePolicySetup
         case replacePolicy(ReplacePolicyApiRequest)
 
         case initBiometryVerification
@@ -78,6 +79,8 @@ extension API: TargetType {
         case .createPolicyWithPassword:
             return "v1/policy-password"
         case .setupPolicy:
+            return "v1/policy-setup"
+        case .deletePolicySetup:
             return "v1/policy-setup"
         case .replacePolicy:
             return "v1/policy"
@@ -128,7 +131,7 @@ extension API: TargetType {
              .attestationKey,
              .getImportEncryptedData:
             return .get
-        case .deleteUser, .deleteSeedPhrase, .deleteAccess:
+        case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup:
             return .delete
         case .signIn,
              .registerPushToken,
@@ -166,7 +169,8 @@ extension API: TargetType {
              .rejectApproverVerification,
              .attestationChallenge,
              .attestationKey,
-             .getImportEncryptedData:
+             .getImportEncryptedData,
+             .deletePolicySetup:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -286,7 +290,8 @@ extension API: TargetType {
              .deleteSeedPhrase,
              .confirmApprover,
              .submitPurchase,
-             .acceptImport:
+             .acceptImport,
+             .deletePolicySetup:
             return true
         }
     }
