@@ -31,7 +31,7 @@ struct EnterAccessVerificationCode : View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 10) {
+            VStack {
                 let title = switch (intent) {
                 case .accessPhrases: "Request access"
                 case .replacePolicy: "Request approval"
@@ -41,70 +41,96 @@ struct EnterAccessVerificationCode : View {
                     .font(.title)
                     .bold()
                 
-                Text("You must do two things:")
-                    .font(.subheadline)
             }
-            .padding([.leading, .trailing], 32)
-            .padding([.bottom], 20)
+            .padding(.bottom)
             
-            VStack(spacing: 24) {
-                
-                HStack(alignment: .top) {
-                    if let link = URL(string: "\(Configuration.approverUrlScheme)://access/v2/\(approver.participantId.value)/\(approval.approvalId)") {
-                        ShareLink(
-                            item: link
-                        ) {
-                            
-                            Image("Export")
-                                .renderingMode(.template)
-                                .resizable()
-                                .frame(width: 48, height: 48)
-                                .padding(8)
-                                .background(.gray.opacity(0.25))
-                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                .overlay(RoundedRectangle(cornerRadius: 16.0).stroke(.black, lineWidth: 1))
-                                .padding([.trailing], 10)
-                        }
-                    } else {
-                        EmptyView()
-                    }
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("1. Share this link")
-                            .font(.headline)
-                            .bold()
+            VStack(spacing: 0) {
+                HStack(alignment: .top, spacing: 20) {
+                    VStack {
+                        Image("CensoLogoDarkBlueStacked")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .padding()
+                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                            .foregroundColor(.Censo.aquaBlue)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16.0)
+                            )
                         
-                        Text(try! AttributedString(markdown: "Share this link and have \(approver.label) tap on it or paste it into the Censo Approver app. If \(approver.label) no longer has the app installed, it can be **[downloaded here](\(Configuration.approverAppURL))**."))
-                            .font(.subheadline)
-                            .tint(.Censo.primaryForeground)
+                        Rectangle()
+                            .fill(Color.Censo.darkBlue)
+                            .frame(maxWidth: 3, maxHeight: .infinity)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Step 1:")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        Text("Share this link")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        Text("Share this link and have \(approver.label) click it or paste into their Approver app.")
+                            .font(.headline)
+                            .fontWeight(.regular)
                             .fixedSize(horizontal: false, vertical: true)
-                            .environment(\.openURL, OpenURLAction { url in
-                                return .systemAction
-                            })
+                            .padding(.bottom, 4)
+                        
+                        if let link = URL(string: "\(Configuration.approverUrlScheme)://access/v2/\(approver.participantId.value)/\(approval.approvalId)") {
+                            ShareLink(
+                                item: link
+                            ) {
+                                HStack(spacing: 0) {
+                                    Image("Export")
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 10)
+                                        .foregroundColor(.Censo.aquaBlue)
+                                        .bold()
+                                    Text("Share")
+                                        .font(.title3)
+                                        .foregroundColor(.Censo.aquaBlue)
+                                        .padding(.trailing)
+                                }
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20.0)
+                                        .frame(width: 128)
+                                )
+                            }
+                            .padding(.bottom)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
-                
+                .padding(.bottom, 8)
+
                 HStack(alignment: .top) {
-                    Image("PhraseEntry")
+                    Image("PhoneWaveform")
                         .renderingMode(.template)
                         .resizable()
-                        .frame(width: 48, height: 32)
+                        .frame(width: 64, height: 64)
                         .padding(.horizontal, 8)
-                        .padding(.vertical, 16)
-                        .background(.gray.opacity(0.25))
-                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                        .padding([.trailing], 10)
+
                     
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("2. Enter the code")
-                            .font(.headline)
-                            .bold()
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Step 2:")
+                            .font(.title3)
+                            .fontWeight(.semibold)
                         
-                        Text("Have \(approver.label) read aloud the 6-digit code from the Censo Approver app and enter it below.")
-                            .font(.subheadline)
-                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Enter the Code")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .padding(.bottom, 2)
+                        
+    
+                            Text("Have \(approver.label) read aloud the 6-digit code from their Approver app and enter it below.")
+                                .font(.headline)
+                                .fontWeight(.regular)
+                                .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

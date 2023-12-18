@@ -59,7 +59,7 @@ struct PinInputFieldWithBackground : View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16.0)
-                .strokeBorder(Color.gray, lineWidth: 1)
+                .strokeBorder(Color.Censo.darkBlue, lineWidth: 1)
                 .background(RoundedRectangle(cornerRadius: 16.0).fill(Color.Censo.gray95))
 
             ScrollViewReader { proxy in

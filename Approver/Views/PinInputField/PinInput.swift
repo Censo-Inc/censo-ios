@@ -100,7 +100,7 @@ class PinInput: UIControl {
             let view = DigitView()
             if i < length - 1 {
                 let separator = UIView()
-                separator.backgroundColor = .gray
+                separator.backgroundColor = UIColor.Censo.darkBlue
                 separator.translatesAutoresizingMaskIntoConstraints = false
                 view.addSubview(separator)
                 let insets: UIEdgeInsets = .zero

@@ -86,112 +86,155 @@ struct ActivateApprover : View {
         case .activate:
             ScrollView {
                 Text("Activate \(approver.label)")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .padding(.bottom)
                 
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 20) {
-                        ShareLink(
-                            item: Configuration.approverAppURL
-                        ) {
-                            ZStack(alignment: .topLeading) {
-                                Text("1")
-                                    .font(.system(size: 12))
-                                    .tint(.Censo.primaryForeground)
-                                    .padding(7)
-                                Image("Export")
-                                    .renderingMode(.template)
-                                    .resizable()
-                                    .frame(width: 48, height: 48)
-                                    .padding(8)
-                                    .background(.gray.opacity(0.25))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16.0)
-                                            .stroke(Color.black, lineWidth: 1)
-                                    )
-                            }
+                        VStack {
+                            Image("CensoLogoDarkBlueStacked")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .padding()
+                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                .foregroundColor(.Censo.aquaBlue)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16.0)
+                                )
+                            
+                            Rectangle()
+                                .fill(Color.Censo.darkBlue)
+                                .frame(maxWidth: 3, maxHeight: .infinity)
                         }
                         
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text("1. Share app link")
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Step 1:")
                                 .font(.title3)
                                 .fontWeight(.semibold)
-                                .padding(.bottom)
+                            Text("Share Approver App")
+                                .font(.title3)
+                                .fontWeight(.semibold)
                             
-                            Text("Share the app link with \(approver.label) and have \(approver.label) download the Censo Approver app from the Apple App store or Google Play store.")
-                                .font(.subheadline)
+                            Text("Share this link so \(approver.label) can download the Censo Approver app")
+                                .font(.headline)
+                                .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.bottom)
-                    
-                    HStack(alignment: .top) {
-                        if let invitationId = approver.invitationId {
+                                .padding(.bottom, 4)
+                            
                             ShareLink(
-                                item: invitationId.url
+                                item: Configuration.approverAppURL
                             ) {
-                                ZStack(alignment: .topLeading) {
-                                    Text("2")
-                                        .font(.system(size: 12))
-                                        .tint(.Censo.primaryForeground)
-                                        .padding(7)
+                                HStack(spacing: 0) {
                                     Image("Export")
                                         .renderingMode(.template)
                                         .resizable()
-                                        .frame(width: 48, height: 48)
-                                        .padding(8)
-                                        .background(.gray.opacity(0.25))
-                                        .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 16.0)
-                                                .stroke(Color.black, lineWidth: 1)
-                                        )
+                                        .frame(width: 28, height: 28)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 10)
+                                        .foregroundColor(.Censo.aquaBlue)
+                                        .bold()
+                                    Text("Share")
+                                        .font(.title3)
+                                        .foregroundColor(.Censo.aquaBlue)
                                         .padding(.trailing)
                                 }
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20.0)
+                                        .frame(width: 128)
+                                    )
                             }
-                        } else {
-                            EmptyView()
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text("2. Share invitation link")
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                                .padding(.bottom)
-                            
-                            Text("After \(approver.label) has installed the Censo Approver app, share this invitation link and have \(approver.label) tap on it or paste it into the Censo Approver app.")
-                                .font(.subheadline)
-                                .fixedSize(horizontal: false, vertical: true)
+                            .padding(.bottom)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical)
+                    .padding(.bottom, 8)
                     
-                    HStack(alignment: .top) {
-                        Image(systemName: "waveform")
-                            .resizable()
-                            .frame(width: 48, height: 32)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 16)
-                            .background(.gray.opacity(0.25))
-                            .clipShape(RoundedRectangle(cornerRadius: 16.0))
-                            .padding(.trailing)
+                    HStack(alignment: .top, spacing: 20) {
+                        VStack {
+                            Image("CensoLogoDarkBlueStacked")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .padding()
+                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
+                                .foregroundColor(.Censo.darkBlue)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16.0)
+                                        .fill(Color.Censo.aquaBlue)
+                                )
+                            Rectangle()
+                                .fill(Color.Censo.darkBlue)
+                                .frame(maxWidth: 3, maxHeight: .infinity)
+                        }
                         
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text("3. Read authentication code")
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Step 2:")
                                 .font(.title3)
                                 .fontWeight(.semibold)
+                            Text("Share Invite Link")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            Text("Share this link and have \(approver.label) click it or paste into their Approver app")
+                                .font(.headline)
+                                .fontWeight(.regular)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.bottom, 4)
+                            
+                            if let invitationId = approver.invitationId {
+                                ShareLink(
+                                    item: invitationId.url
+                                ) {
+                                    HStack(spacing: 0) {
+                                        Image("Export")
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .frame(width: 28, height: 28)
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 8)
+                                            .foregroundColor(.Censo.aquaBlue)
+                                        Text("Invite")
+                                            .font(.title3)
+                                            .foregroundColor(.Censo.aquaBlue)
+                                            .padding(.trailing)
+                                    }
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 20.0)
+                                            .frame(width: 128)
+                                    )
+                                }
                                 .padding(.bottom)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 5)
+                    
+                    
+                    HStack(alignment: .top) {
+                        Image("PhoneWaveform")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 64, height: 64)
+                            .padding(.horizontal, 8)
+
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Step 3:")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            Text("Read Code")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.bottom, 2)
+                            
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret {
-                                Text("Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
-                                    .font(.subheadline)
-                                    .fixedSize(horizontal: false, vertical: true)
                                 
                                 RotatingTotpPinView(
                                     session: session,
@@ -200,11 +243,12 @@ struct ActivateApprover : View {
                                 )
                             } else if approver.isConfirmed {
                                 Text("\(approver.label) is now activated!")
-                                    .font(.subheadline)
+                                    .font(.headline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
-                                Text("As soon as \(approver.label) accepts the invitation, a code will appear here. Read aloud this code and have \(approver.label) enter it into the Censo Approver app to authenticate to you.")
-                                    .font(.subheadline)
+                                Text("Read code that appears here and have \(approver.label) enter it in Approver app")
+                                    .font(.headline)
+                                    .fontWeight(.regular)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
