@@ -43,8 +43,6 @@ struct AcceptImportView: View {
     }
 }
 
-#if DEBUG
 #Preview {
     AcceptImportView(importToAccept: Import(importKey: .sample, timestamp: .max, signature: .sample, name: "Name"), onAccept: {_ in }, onDecline: {})
 }
-#endif
