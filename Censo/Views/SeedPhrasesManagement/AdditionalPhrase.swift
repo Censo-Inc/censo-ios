@@ -119,6 +119,8 @@ struct AdditionalPhrase: View {
             SeedEntry(
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                masterKeySignature: ownerState.policy.masterKeySignature,
+                ownerParticipantId: ownerState.policy.owner?.participantId,
                 isFirstTime: false,
                 language: currentLanguage(),
                 onSuccess: { ownerState in

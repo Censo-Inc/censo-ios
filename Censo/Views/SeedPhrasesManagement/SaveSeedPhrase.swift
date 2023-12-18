@@ -23,6 +23,8 @@ struct SaveSeedPhrase: View {
     var words: [String]
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
+    var masterKeySignature: Base64EncodedString?
+    var ownerParticipantId: ParticipantId?
     var isFirstTime: Bool
     var onSuccess: (API.OwnerState) -> Void
 
@@ -100,6 +102,15 @@ struct SaveSeedPhrase: View {
 
     private func save() {
         do {
+            // first verify the master key signature if it is available
+            if (masterKeySignature != nil) {
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerParticipantId!)
+                let verified = try ownerApproverKey.verifySignature(for: publicMasterEncryptionKey.data, signature: masterKeySignature!)
+                if (!verified) {
+                    showError(CensoError.cannotVerifyMasterKeySignature)
+                    return
+                }
+            }
             let phraseData = try BIP39.phraseToBinaryData(words: words)
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: publicMasterEncryptionKey)

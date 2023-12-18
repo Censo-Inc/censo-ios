@@ -74,6 +74,8 @@ struct FirstPhrase: View {
             SeedEntry(
                 session: session,
                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                masterKeySignature: ownerState.policy.masterKeySignature,
+                ownerParticipantId: ownerState.policy.owner?.participantId,
                 isFirstTime: true,
                 language: language,
                 onSuccess: onComplete

@@ -16,6 +16,8 @@ struct SeedVerification: View {
     var words: [String]
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
+    var masterKeySignature: Base64EncodedString?
+    var ownerParticipantId: ParticipantId?
     var isFirstTime: Bool
     var onClose: (() -> Void)? = nil
     var onSuccess: (API.OwnerState) -> Void
@@ -84,6 +86,8 @@ struct SeedVerification: View {
                 words: words,
                 session: session,
                 publicMasterEncryptionKey: publicMasterEncryptionKey,
+                masterKeySignature: masterKeySignature,
+                ownerParticipantId: ownerParticipantId,
                 isFirstTime: isFirstTime,
                 onSuccess: onSuccess
             )

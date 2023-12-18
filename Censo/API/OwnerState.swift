@@ -168,7 +168,8 @@ extension API {
         var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
         var approverKeysSignatureByIntermediateKey: Base64EncodedString
-        
+        var masterKeySignature: Base64EncodedString?
+
         var externalApprovers: [TrustedApprover] {
             return approvers
                 .filter({ !$0.isOwner })
@@ -177,6 +178,9 @@ extension API {
         
         var externalApproversCount: Int {
             return externalApprovers.count
+        }
+        var owner: TrustedApprover? {
+            return approvers.first { $0.isOwner }
         }
     }
     

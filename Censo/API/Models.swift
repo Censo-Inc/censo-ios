@@ -108,6 +108,7 @@ extension API {
         var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
+        var masterKeySignature: Base64EncodedString
     }
     
     struct CreatePolicyApiResponse: BiometryVerificationResponse {
@@ -124,6 +125,7 @@ extension API {
         var approverPublicKey: Base58EncodedPublicKey
         var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var password: Password
+        var masterKeySignature: Base64EncodedString
     }
     
     struct CreatePolicyWithPasswordApiResponse: Decodable {
@@ -146,6 +148,7 @@ extension API {
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var signatureByPreviousIntermediateKey: Base64EncodedString
+        var masterKeySignature: Base64EncodedString
     }
     
     struct ReplacePolicyApiResponse: BiometryVerificationResponse {

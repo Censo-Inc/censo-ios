@@ -27,6 +27,7 @@ struct InitialPlanSetup: View {
         var encryptedMasterPrivateKey: Base64EncodedString
         var encryptedShard: Base64EncodedString
         var participantId: ParticipantId
+        var masterKeySignature: Base64EncodedString
     }
     
     @State private var createPolicyParams: CreatePolicyParams?
@@ -49,7 +50,8 @@ struct InitialPlanSetup: View {
                                         encryptedShard: createPolicyParams.encryptedShard,
                                         approverPublicKey: createPolicyParams.approverPublicKey,
                                         approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
-                                        password: API.Password(cryptedPassword: cryptedPassword)
+                                        password: API.Password(cryptedPassword: cryptedPassword),
+                                        masterKeySignature: createPolicyParams.masterKeySignature
                                     )
                                 )
                             ) { (result: Result<API.CreatePolicyWithPasswordApiResponse, MoyaError>) in
@@ -86,7 +88,8 @@ struct InitialPlanSetup: View {
                                     approverPublicKey: createPolicyParams.approverPublicKey,
                                     approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
                                     biometryVerificationId: verificationId,
-                                    biometryData: facetecBiometry
+                                    biometryData: facetecBiometry,
+                                    masterKeySignature: createPolicyParams.masterKeySignature
                                 )
                             )
                     } onSuccess: { response in
@@ -182,21 +185,23 @@ struct InitialPlanSetup: View {
     private func startPolicyCreation() {
         do {
             let participantId: ParticipantId = .random()
-            let ownerApproverPublicKey = try session.getOrCreateApproverKey(participantId: participantId).publicExternalRepresentation()
+            let ownerApproverKey = try session.getOrCreateApproverKey(participantId: participantId)
+            let ownerApproverPublicKey = try ownerApproverKey.publicExternalRepresentation()
             let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
             let masterEncryptionKey = try EncryptionKey.generateRandomKey()
-            
+            let masterPublicKey = try masterEncryptionKey.publicExternalRepresentation()
             createPolicyParams = CreatePolicyParams(
                 approverPublicKey: ownerApproverPublicKey,
                 approverPublicKeySignatureByIntermediateKey: try intermediateEncryptionKey.signature(for: ownerApproverPublicKey.data),
                 intermediatePublicKey: try intermediateEncryptionKey.publicExternalRepresentation(),
-                masterEncryptionPublicKey: try masterEncryptionKey.publicExternalRepresentation(),
+                masterEncryptionPublicKey: masterPublicKey,
                 encryptedMasterPrivateKey: try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw()),
                 encryptedShard: try intermediateEncryptionKey.shard(
                     threshold: 1,
                     participants: [(participantId, ownerApproverPublicKey)]
                 ).first(where: { $0.participantId == participantId })!.encryptedShard,
-                participantId: participantId
+                participantId: participantId,
+                masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
             )
         } catch {
             showError(error)

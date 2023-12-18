@@ -76,6 +76,8 @@ struct LoggedInOwnerView: View {
                                                 words: words,
                                                 session: session,
                                                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                                                masterKeySignature: ownerState.policy.masterKeySignature,
+                                                ownerParticipantId: ownerState.policy.owner?.participantId,
                                                 isFirstTime: false,
                                                 onClose: { importPhase = .none }
                                             ) { ownerState in
