@@ -50,9 +50,6 @@ struct API {
         case retrieveAccessShards(RetrieveAccessShardsApiRequest)
         case retrieveAccessShardsWithPassword(RetrieveAccessShardsWithPasswordApiRequest)
         case submitPurchase(SubmitPurchaseApiRequest)
-
-        case acceptImport(channel: String, ownerProof: OwnerProof)
-        case getImportEncryptedData(channel: String)
     }
 }
 
@@ -118,18 +115,13 @@ extension API: TargetType {
             return "v1/access/retrieval-password"
         case .submitPurchase:
             return "v1/purchases"
-        case .acceptImport(let channel, _):
-            return "v1/import/\(channel)/accept"
-        case .getImportEncryptedData(let channel):
-            return "v1/import/\(channel)/encrypted"
         }
     }
 
     var method: Moya.Method {
         switch endpoint {
         case .user,
-             .attestationKey,
-             .getImportEncryptedData:
+             .attestationKey:
             return .get
         case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup:
             return .delete
@@ -153,8 +145,7 @@ extension API: TargetType {
              .retrieveAccessShardsWithPassword,
              .registerAttestationObject,
              .attestationChallenge,
-             .submitPurchase,
-             .acceptImport:
+             .submitPurchase:
             return .post
         case .replacePolicy:
             return .put
@@ -169,7 +160,6 @@ extension API: TargetType {
              .rejectApproverVerification,
              .attestationChallenge,
              .attestationKey,
-             .getImportEncryptedData,
              .deletePolicySetup:
             return .requestPlain
         case .signIn(let credentials):
@@ -242,8 +232,6 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .submitPurchase(let request):
             return .requestJSONEncodable(request)
-        case .acceptImport(_, let ownerProof):
-            return .requestJSONEncodable(ownerProof)
         }
     }
 
@@ -275,8 +263,7 @@ extension API: TargetType {
              .lock,
              .storeSeedPhrase,
              .deleteAccess,
-             .attestationKey,
-             .getImportEncryptedData:
+             .attestationKey:
             return false
         case .signIn,
              .deleteUser,
@@ -290,7 +277,6 @@ extension API: TargetType {
              .deleteSeedPhrase,
              .confirmApprover,
              .submitPurchase,
-             .acceptImport,
              .deletePolicySetup:
             return true
         }

@@ -2,19 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>censo-import</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>$(OWNER_URL_SCHEME)</string>
-			</array>
-		</dict>
-	</array>
 	<key>Configuration</key>
 	<dict>
 		<key>API_BASE_URL</key>
