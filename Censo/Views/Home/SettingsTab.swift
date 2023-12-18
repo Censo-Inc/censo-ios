@@ -19,6 +19,8 @@ struct SettingsTab: View {
     @State private var resetRequested = false
     @State private var resetInProgress = false
     @State private var showApproversRemoval = false
+    @State private var showPushNotificationSettings = false
+    @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
     
     var body: some View {
         VStack {
@@ -85,6 +87,20 @@ struct SettingsTab: View {
             .buttonStyle(RoundedButtonStyle())
             .padding()
             
+            if pushNotificationsEnabled != "true" {
+                Button {
+                    showPushNotificationSettings = true
+                } label: {
+                    HStack {
+                        Image(systemName: "bell")
+                        Text("Allow Push Notifications")
+                            .font(.title2)
+                    }.frame(maxWidth: 322)
+                }
+                .buttonStyle(RoundedButtonStyle())
+                .padding()
+            }
+            
             Spacer()
         }
         .sheet(isPresented: $showApproversRemoval, content: {
@@ -93,6 +109,11 @@ struct SettingsTab: View {
                 ownerState: ownerState,
                 onOwnerStateUpdated: onOwnerStateUpdated
             )
+        })
+        .sheet(isPresented: $showPushNotificationSettings, content: {
+            PushNotificationSettings {
+                showPushNotificationSettings = false
+            }
         })
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
@@ -126,6 +147,7 @@ struct SettingsTab: View {
                     session.deleteApproverKey(participantId: ownerProspectApprover.participantId)
                 }
                 NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
+                pushNotificationsEnabled = nil
             case .failure(let error):
                 self.showingError = true
                 self.error = error

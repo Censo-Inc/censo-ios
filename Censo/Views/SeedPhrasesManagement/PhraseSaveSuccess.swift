@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct PhraseSaveSuccess: View {
-    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
-
     var isFirstTime: Bool
     var onFinish: () -> Void
+    
+    @State private var showPushNotificationSettings = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -43,16 +43,11 @@ struct PhraseSaveSuccess: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             Button() {
-#if DEBUG
-                if isFirstTime && !appDelegate.testing {
-                    handlePushRegistration()
-                }
-#else
                 if isFirstTime {
-                    handlePushRegistration()
+                    showPushNotificationSettings = true
+                } else {
+                    onFinish()
                 }
-#endif
-                onFinish()
             } label: {
                 Text("OK")
                     .font(.title2)
@@ -61,6 +56,12 @@ struct PhraseSaveSuccess: View {
             .buttonStyle(RoundedButtonStyle())
             .padding(30)
         }
+        .sheet(isPresented: $showPushNotificationSettings, content: {
+            PushNotificationSettings {
+                showPushNotificationSettings = false
+                onFinish()
+            }
+        })
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
         .navigationBarBackButtonHidden(true)
@@ -73,25 +74,6 @@ struct PhraseSaveSuccess: View {
                 }
             }
         })
-    }
-    
-    
-    private func handlePushRegistration() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                if settings.authorizationStatus == .notDetermined {
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (result, _) in
-                        if result {
-                            DispatchQueue.main.async {
-                                UIApplication.shared.registerForRemoteNotifications()
-                            }
-                        }
-                    }
-                } else if settings.authorizationStatus == .authorized {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
-        }
     }
 }
 

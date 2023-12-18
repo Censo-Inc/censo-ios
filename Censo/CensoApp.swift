@@ -45,6 +45,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
 
         setupAppearance()
+        
+        handlePushRegistration()
 
         return true
     }
@@ -60,6 +62,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                     debugPrint("Could not submit push token: \(String(data: response.data, encoding: .utf8) ?? "")")
                 case .success:
                     break
+                }
+            }
+        }
+    }
+    private func handlePushRegistration() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
                 }
             }
         }
