@@ -72,39 +72,9 @@ struct ContentView: View {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
-        
-        // signature is in raw uncompressed form, convert to DER
-        func makePositive(_ input: Data) -> Data {
-            if (input[0] > 0x7f) {
-                return Data([0x00] + input)
-            } else {
-                return input
-            }
-        }
-        let r = makePositive(signature.data.subdata(in: 0..<32))
-        let s = makePositive(signature.data.subdata(in: 32..<64))
-        let derSignature: Data = Data([0x30, UInt8(r.count + s.count + 4), 0x02, UInt8(r.count)] + r + [0x02, UInt8(s.count)] + s)
+        // TODO - verify signature and timestamp
 
-        guard let verified = try? EncryptionKey.generateFromPublicExternalRepresentation(
-                base58PublicKey: importKey).verifySignature(
-            for: Data(String(timestamp).utf8),
-            signature: Base64EncodedString(value: derSignature.base64EncodedString())) else {
-            showError(CensoError.invalidUrl(url: "\(url)"))
-            return
-        }
-        if (verified) {
-            let linkCreationTime = Date(timeIntervalSince1970: (Double(timestamp) / 1000))
-            let linkGoodSince = linkCreationTime.addingTimeInterval(-10)
-            let linkExpiredTime = linkCreationTime.addingTimeInterval(60 * 10)
-            let now = Date()
-            if (now > linkExpiredTime || now < linkGoodSince) {
-                showError(CensoError.linkExpired)
-            } else {
-                pendingImport = Import(importKey: importKey, timestamp: timestamp, signature: signature, name: name)
-            }
-        } else {
-            showError(CensoError.invalidUrl(url: "\(url)"))
-        }
+        pendingImport = Import(importKey: importKey, timestamp: timestamp, signature: signature, name: name)
     }
     
     private func showError(_ error: Error) {
