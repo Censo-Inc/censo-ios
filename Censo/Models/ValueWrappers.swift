@@ -13,6 +13,7 @@ enum ValueWrapperError: Error {
     case invalidBase64
     case invalidParticipantId
     case invalidInvitationId
+    case invalidBinaryPhrase
 }
 
 struct Base58EncodedPublicKey: Codable, Equatable {
@@ -34,7 +35,7 @@ struct Base58EncodedPublicKey: Codable, Equatable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.singleValueContainer()
+        let container = try decoder.singleValueContainer()
         do {
             self = try Base58EncodedPublicKey(value: try container.decode(String.self))
         } catch {
@@ -66,7 +67,7 @@ struct Base64EncodedString: Codable, Equatable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.singleValueContainer()
+        let container = try decoder.singleValueContainer()
         do {
             self = try Base64EncodedString(value: try container.decode(String.self))
         } catch {
@@ -104,11 +105,53 @@ struct ParticipantId: Codable, Equatable, Hashable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.singleValueContainer()
+        let container = try decoder.singleValueContainer()
         do {
             self = try ParticipantId(value: try container.decode(String.self))
         } catch {
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid ParticipantId")
+        }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+    
+}
+
+
+struct BinaryPhrase: Codable, Equatable, Hashable {
+    var value: String
+    var bigInt: BigInt
+    
+    init(value: String) throws {
+        guard let data = value.data(using: .hexadecimal),
+              let bigInt = BigInt(value, radix: 16) else {
+            throw ValueWrapperError.invalidBinaryPhrase
+        }
+        if data.count != 32 {
+            throw ValueWrapperError.invalidBinaryPhrase
+        }
+        self.value = value
+        self.bigInt = bigInt
+    }
+    
+    init(bigInt: BigInt) {
+        self.value = bigInt.magnitude.to32PaddedHexString()
+        self.bigInt = bigInt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        do {
+            self = try BinaryPhrase(value: try container.decode(String.self))
+        } catch {
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid BinaryPhrase")
         }
     }
     

@@ -57,7 +57,20 @@ struct SeedVerification: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                if (onClose == nil) {
+                    BackButton()
+                } else {
+                    Button {
+                        onClose!()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(.black)
+                            .font(.body.bold())
+                    }
+                }
             }
         })
         .alert("Are you sure?", isPresented: $showingDismissAlert) {
