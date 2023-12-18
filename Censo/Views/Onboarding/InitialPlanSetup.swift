@@ -21,6 +21,7 @@ struct InitialPlanSetup: View {
 
     struct CreatePolicyParams {
         var approverPublicKey: Base58EncodedPublicKey
+        var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var intermediatePublicKey: Base58EncodedPublicKey
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var encryptedMasterPrivateKey: Base64EncodedString
@@ -47,6 +48,7 @@ struct InitialPlanSetup: View {
                                         participantId: createPolicyParams.participantId,
                                         encryptedShard: createPolicyParams.encryptedShard,
                                         approverPublicKey: createPolicyParams.approverPublicKey,
+                                        approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
                                         password: API.Password(cryptedPassword: cryptedPassword)
                                     )
                                 )
@@ -82,6 +84,7 @@ struct InitialPlanSetup: View {
                                     participantId: createPolicyParams.participantId,
                                     encryptedShard: createPolicyParams.encryptedShard,
                                     approverPublicKey: createPolicyParams.approverPublicKey,
+                                    approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
                                     biometryVerificationId: verificationId,
                                     biometryData: facetecBiometry
                                 )
@@ -185,6 +188,7 @@ struct InitialPlanSetup: View {
             
             createPolicyParams = CreatePolicyParams(
                 approverPublicKey: ownerApproverPublicKey,
+                approverPublicKeySignatureByIntermediateKey: try intermediateEncryptionKey.signature(for: ownerApproverPublicKey.data),
                 intermediatePublicKey: try intermediateEncryptionKey.publicExternalRepresentation(),
                 masterEncryptionPublicKey: try masterEncryptionKey.publicExternalRepresentation(),
                 encryptedMasterPrivateKey: try intermediateEncryptionKey.encrypt(data: masterEncryptionKey.privateKeyRaw()),

@@ -97,10 +97,17 @@ struct ReplacePolicy: View {
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 
+                let concatenatedApproverPublicKeys = policySetup
+                    .approvers
+                    .sorted(using: KeyPathComparator(\.publicKey!.value, order: .forward))
+                    .map({ $0.publicKey!.data })
+                    .reduce(Data(), +)
+                
                 apiProvider.decodableRequest(
                     with: session,
                     endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
                         intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
+                        approverKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
                         approverShards: try newIntermediateKey.shard(
                             threshold: policySetup.threshold,
                             participants: policySetup.approvers.map({ approver in

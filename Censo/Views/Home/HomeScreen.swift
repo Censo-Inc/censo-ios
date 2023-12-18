@@ -164,7 +164,8 @@ extension API.Policy {
             approvers: [.sampleOwner],
             threshold: 1,
             encryptedMasterKey: Base64EncodedString(data: Data()),
-            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"), 
+            approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data())
         )
     }
     
@@ -174,7 +175,8 @@ extension API.Policy {
             approvers: [.sample, .sample2],
             threshold: 2,
             encryptedMasterKey: Base64EncodedString(data: Data()),
-            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
+            approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data())
         )
     }
 }

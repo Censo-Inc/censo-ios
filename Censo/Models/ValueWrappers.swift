@@ -79,6 +79,8 @@ struct Base64EncodedString: Codable, Equatable {
         var container = encoder.singleValueContainer()
         try container.encode(value)
     }
+    
+    static let empty: Base64EncodedString = Base64EncodedString(data: Data())
 }
 
 struct ParticipantId: Codable, Equatable, Hashable {

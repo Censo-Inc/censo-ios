@@ -105,6 +105,7 @@ extension API {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
         var approverPublicKey: Base58EncodedPublicKey
+        var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
     }
@@ -121,6 +122,7 @@ extension API {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
         var approverPublicKey: Base58EncodedPublicKey
+        var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var password: Password
     }
     
@@ -139,6 +141,7 @@ extension API {
     
     struct ReplacePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
+        var approverKeysSignatureByIntermediateKey: Base64EncodedString
         var approverShards: [ApproverShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey

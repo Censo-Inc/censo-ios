@@ -167,6 +167,7 @@ extension API {
         var threshold: UInt
         var encryptedMasterKey: Base64EncodedString
         var intermediateKey: Base58EncodedPublicKey
+        var approverKeysSignatureByIntermediateKey: Base64EncodedString
         
         var externalApproversCount: Int {
             return approvers.filter({ !$0.isOwner }).count
