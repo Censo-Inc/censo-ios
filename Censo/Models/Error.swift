@@ -39,9 +39,7 @@ enum CensoError: Swift.Error {
     case purchaseFailed
     case failedToGenerateSeedPhrase
     case linkExpired
-    case linkInFuture
     case cannotVerifyMasterKeySignature
-
 }
 
 extension CensoError: LocalizedError {
@@ -108,9 +106,7 @@ extension CensoError: LocalizedError {
         case .failedToGenerateSeedPhrase:
             return NSLocalizedString("Failed to genrate seed phrase", comment: "Failed to genrate seed phrase")
         case .linkExpired:
-            return NSLocalizedString("This link has expired", comment: "Expired link")
-        case .linkInFuture:
-            return NSLocalizedString("This link is not yet valid", comment: "Future link")
+            return NSLocalizedString("This link has expired or is not yet valid", comment: "Expired link")
         case .cannotVerifyMasterKeySignature:
             return NSLocalizedString("Cannot verify master key signature", comment: "Invalid signature")
         }

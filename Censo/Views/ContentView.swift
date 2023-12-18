@@ -94,16 +94,11 @@ struct ContentView: View {
         }
         if (verified) {
             let linkCreationTime = Date(timeIntervalSince1970: (Double(timestamp) / 1000))
-            // allow a link which is from up to 10 seconds in the future,
-            // to account for clock drift wherever the SDK is running
-            let linkValidityStart = linkCreationTime.addingTimeInterval(-10)
-            // link should be valid for 10 minutes
-            let linkValidityEnd = linkCreationTime.addingTimeInterval(60 * 10)
+            let linkGoodSince = linkCreationTime.addingTimeInterval(-10)
+            let linkExpiredTime = linkCreationTime.addingTimeInterval(60 * 10)
             let now = Date()
-            if (now > linkValidityEnd) {
+            if (now > linkExpiredTime || now < linkGoodSince) {
                 showError(CensoError.linkExpired)
-            } else if (now < linkValidityStart) {
-                showError(CensoError.linkInFuture)
             } else {
                 pendingImport = Import(importKey: importKey, timestamp: timestamp, signature: signature, name: name)
             }
