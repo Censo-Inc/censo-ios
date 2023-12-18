@@ -38,6 +38,7 @@ enum CensoError: Swift.Error {
     case productNotFound
     case purchaseFailed
     case failedToGenerateSeedPhrase
+    case linkExpired
     case cannotVerifyMasterKeySignature
 }
 
@@ -104,6 +105,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Product not found", comment: "Error thrown when IAP-product was not found")
         case .failedToGenerateSeedPhrase:
             return NSLocalizedString("Failed to genrate seed phrase", comment: "Failed to genrate seed phrase")
+        case .linkExpired:
+            return NSLocalizedString("This link has expired or is not yet valid", comment: "Expired link")
         case .cannotVerifyMasterKeySignature:
             return NSLocalizedString("Cannot verify master key signature", comment: "Invalid signature")
         }
