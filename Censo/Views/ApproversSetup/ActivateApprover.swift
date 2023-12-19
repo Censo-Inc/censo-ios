@@ -72,7 +72,7 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationTitle(Text("Activate \(approver.label)"))
+            .navigationTitle(Text("Verify \(approver.label)"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -85,7 +85,7 @@ struct ActivateApprover : View {
             })
         case .activate:
             ScrollView {
-                Text("Activate \(approver.label)")
+                Text("Verify \(approver.label)")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom)
@@ -242,7 +242,7 @@ struct ActivateApprover : View {
                                     style: .owner
                                 )
                             } else if approver.isConfirmed {
-                                Text("\(approver.label) is now activated!")
+                                Text("\(approver.label) is now verified!")
                                     .font(.headline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {

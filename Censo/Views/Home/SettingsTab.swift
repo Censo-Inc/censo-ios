@@ -7,6 +7,37 @@
 import SwiftUI
 import Moya
 
+struct SettingsItem: View {
+    var title: String
+    var buttonText: String
+    var description: String
+    var onSelected: () -> Void
+
+    var body: some View {
+        VStack {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                Spacer()
+                Button {
+                    onSelected()
+                } label: {
+                    Text(buttonText)
+                        .font(.body.bold())
+                        .padding(.horizontal)
+                        .frame(minWidth: 80)
+                }
+                .buttonStyle(RoundedButtonStyle(tint: .light))
+            }
+            .padding(.horizontal)
+            Text(description)
+                .font(.body)
+                .padding(.horizontal)
+        }
+        .padding()
+    }
+}
+
 struct SettingsTab: View {
     @Environment(\.apiProvider) var apiProvider
     
@@ -24,84 +55,39 @@ struct SettingsTab: View {
     
     var body: some View {
         VStack {
+            Text("Settings")
+                .font(.largeTitle)
             Spacer()
-            
-            Button {
-                lock()
-            } label: {
-                HStack {
-                    Image(systemName: "lock")
-                        .frame(maxWidth: 32, maxHeight: 32)
-                    Text("Lock")
-                        .font(.title2)
+            ScrollView {
+                SettingsItem(title: "Lock App", buttonText: "Lock", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
+                    lock()
                 }
-                .frame(maxWidth: 322)
-            }
-            .buttonStyle(RoundedButtonStyle())
-            .padding()
-            
-            let externalApprovers = ownerState.policy.approvers
-                .filter({ !$0.isOwner })
-            
-            if externalApprovers.count > 0 {
-                VStack(spacing: 5) {
-                    Button {
+
+                let externalApprovers = ownerState.policy.approvers
+                    .filter({ !$0.isOwner })
+                
+                if externalApprovers.count > 0 {
+                    SettingsItem(title: "Remove Approvers", buttonText: "Remove", description: "Remove your approvers and return to yourself as the sole approval required for seed phrase access.  After doing this, you may optionally select new approvers to add.") {
                         showApproversRemoval = true
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Image("TwoPeopleWhite")
-                                .renderingMode(.template)
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                            Text(
-                                "Remove approver\(externalApprovers.count > 1 ? "s" : "")"
-                            )
-                            .font(.title3)
-                            Spacer()
-                        }
                     }
-                    .buttonStyle(RoundedButtonStyle())
-                    
-                    Text(
-                        "An approval from current approver\(externalApprovers.count > 1 ? "s" : "") is required"
-                    )
-                    .font(.footnote)
                 }
-                .padding(.horizontal)
-            }
-            
-            Button {
-                resetRequested = true
-            } label: {
+                
                 if resetInProgress {
                     ProgressView()
                 } else {
-                    HStack {
-                        Image("arrow.circlepath")
-                        Text("Delete Data")
-                            .font(.title2)
-                    }.frame(maxWidth: 322)
+                    SettingsItem(title: "Delete My Data", buttonText: "Delete", description: "This will securely delete all of your information stored in the Censo app.  After completing this, you will no longer have access to any seed phrases you have entered.  This operation cannot be undone.") {
+                        resetRequested = true
+                    }
                 }
-            }
-            .buttonStyle(RoundedButtonStyle())
-            .padding()
-            
-            if pushNotificationsEnabled != "true" {
-                Button {
-                    showPushNotificationSettings = true
-                } label: {
-                    HStack {
-                        Image(systemName: "bell")
-                        Text("Allow Push Notifications")
-                            .font(.title2)
-                    }.frame(maxWidth: 322)
+                
+                if pushNotificationsEnabled != "true" {
+                    SettingsItem(title: "Allow Push Notification", buttonText: "Enable", description: "Enable notifications to receive security and update alerts from Censo.") {
+                        showPushNotificationSettings = true
+                    }
                 }
-                .buttonStyle(RoundedButtonStyle())
-                .padding()
+                
+                Spacer()
             }
-            
-            Spacer()
         }
         .sheet(isPresented: $showApproversRemoval, content: {
             InitApproversRemovalFlow(
@@ -171,7 +157,7 @@ struct SettingsTab: View {
 #if DEBUG
 #Preview {
     SettingsTab(session: .sample, 
-                ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active),
                 onOwnerStateUpdated: {_ in }
     )
 }

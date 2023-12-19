@@ -19,7 +19,7 @@ struct Activated: View {
             
             VStack {
                 Spacer()
-                Text("Activated!")
+                Text("Approvers activated!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.bottom, 40)

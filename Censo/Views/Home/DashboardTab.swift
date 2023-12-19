@@ -44,6 +44,7 @@ struct DashboardTab: View {
                     .font(.title3)
                     .padding()
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 Button {
                     showingAddPhrase = true
                 } label: {
@@ -54,12 +55,15 @@ struct DashboardTab: View {
                 }
                 .padding([.top], 10)
                 .buttonStyle(RoundedButtonStyle())
-                
+
+                Spacer().padding()
+
                 if (policy.externalApproversCount == 0) {
                     Text("\nYou can increase security by adding approvers.")
                         .font(.title2)
                         .fontWeight(.semibold)
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     Button {
                         self.showingApproversSetup = true
                     } label: {
@@ -71,7 +75,7 @@ struct DashboardTab: View {
                     .padding([.top], 10)
                     .buttonStyle(RoundedButtonStyle())
                 } else {
-                    Text("\nYour security is increased by your approvers.")
+                    Text("Your approvers:")
                         .font(.title2)
                         .fontWeight(.semibold)
                         .multilineTextAlignment(.center)

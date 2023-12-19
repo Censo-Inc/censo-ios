@@ -68,60 +68,65 @@ struct ApproversSetup: View {
         } else {
             switch (step) {
             case .intro:
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Spacer()
-                        Text("Increase your security")
-                            .font(.title2)
-                            .bold()
-                            .padding(.vertical)
-                        
-                        Text("""
-                            Securely splitting your seed phrase amongst two Trusted Approvers and you provides increased security through safety in numbers and extra backup should any of the three of you lose your credentials.
+                GeometryReader { geometry in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 0) {
+                            Spacer()
+                            Text("Increase your security")
+                                .font(.title2)
+                                .bold()
+                                .padding(.vertical)
+                            
+                            Text("""
+                            Adding two Trusted Approvers increases your security by eliminating any single point of compromise while providing extra backup should you or your Approvers lose your credentials.
                             
                             Choose approvers who you think are reliable and you can trust.
                             
                             While they can never access your seed phrase (only you can), you will need at least one of the two you choose to help you access it.
                             """
-                        )
-                        .font(.subheadline)
-                        .padding(.vertical)
-                        .fixedSize(horizontal: false, vertical: true)
-                        
-                        Button {
-                            self.step = Step.fromOwnerState(ownerState)
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Image("TwoPeopleWhite")
-                                    .renderingMode(.template)
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
-                                    .font(.title3)
-                                    .fixedSize(horizontal: true, vertical: false)
-                                Spacer()
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(RoundedButtonStyle())
-                        .padding(.top)
-                        
-                        if ownerState.policySetup != nil {
+                            )
+                            .font(.subheadline)
+                            .padding(.vertical)
+                            .fixedSize(horizontal: false, vertical: true)
+                            
+                            Spacer()
+                            
                             Button {
-                                showDeletePolicySetupConfirmation = true
+                                self.step = Step.fromOwnerState(ownerState)
                             } label: {
-                                Text("Cancel")
-                                    .font(.title3)
-                                    .tint(Color.Censo.darkBlue)
-                                    .frame(maxWidth: .infinity)
+                                HStack {
+                                    Spacer()
+                                    Image("TwoPeopleWhite")
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                    Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
+                                        .font(.title3)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
                             }
+                            .buttonStyle(RoundedButtonStyle())
                             .padding(.top)
+                            
+                            if ownerState.policySetup != nil {
+                                Button {
+                                    showDeletePolicySetupConfirmation = true
+                                } label: {
+                                    Text("Cancel")
+                                        .font(.title3)
+                                        .tint(Color.Censo.darkBlue)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .padding(.top)
+                            }
+                            
+                            Spacer(minLength: 0)
                         }
-                        
-                        Spacer(minLength: 0)
+                        .padding([.leading, .trailing], 32)
+                        .frame(minHeight: geometry.size.height)
                     }
-                    .padding([.leading, .trailing], 32)
                 }
                 .alert("Are you sure?", isPresented: $showDeletePolicySetupConfirmation) {
                     Button {

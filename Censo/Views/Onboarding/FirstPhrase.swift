@@ -23,10 +23,26 @@ struct FirstPhrase: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                ScrollView {
-                    ZStack(alignment: .bottom) {
-                        HStack {
+                    
+                        VStack {
                             Spacer()
+                            if addYourOwnPhrase {
+                                AddYourOwnPhrase(
+                                    onInputPhrase: { selectedLanguage in
+                                        language = selectedLanguage
+                                        showingAddPhrase = true
+                                    },
+                                    onPastePhrase: { showingPastePhrase = true },
+                                    onBack: { addYourOwnPhrase = false }
+                                )
+                            } else {
+                                FirstTimePhrase(
+                                    onGeneratePhrase: { showingGeneratePhrase = true },
+                                    onAddYourOwnPhrase: { addYourOwnPhrase = true }
+                                )
+                            }
+                        }
+                        .background {
                             VStack {
                                 Image("AddYourSeedPhrase")
                                     .resizable()
@@ -35,39 +51,6 @@ struct FirstPhrase: View {
                                 Spacer()
                             }
                         }
-                        
-                        VStack {
-                            Spacer()
-                                .frame(width: geometry.size.width,
-                                       height: geometry.size.height * 0.45)
-                            if addYourOwnPhrase {
-                                AddYourOwnPhrase(
-                                    onInputPhrase: { selectedLanguage in
-                                        language = selectedLanguage
-                                        showingAddPhrase = true
-                                    },
-                                    onPastePhrase: { showingPastePhrase = true }
-                                )
-                                .navigationBarTitleDisplayMode(.inline)
-                                .toolbar(content: {
-                                    ToolbarItem(placement: .navigationBarLeading) {
-                                        Button {
-                                            addYourOwnPhrase = false
-                                        } label: {
-                                            Image(systemName: "chevron.left")
-                                        }
-                                    }
-                                })
-                            } else {
-                                FirstTimePhrase(
-                                    onGeneratePhrase: { showingGeneratePhrase = true },
-                                    onAddYourOwnPhrase: { addYourOwnPhrase = true }
-                                )
-                            }
-                        }
-                    }
-                }
-                .padding(.vertical)
             }
         }
         .sheet(isPresented: $showingAddPhrase, content: {
@@ -114,9 +97,7 @@ struct FirstTimePhrase: View {
             Text("You can add one of your own, or if you would like to try Censo first, generate a new seed phrase with Censo and add that.")
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
-            
-            Spacer()
-            
+                .padding(.vertical)
             Button {
                 onGeneratePhrase()
             } label: {
@@ -154,6 +135,7 @@ struct FirstTimePhrase: View {
 struct AddYourOwnPhrase: View {
     var onInputPhrase: (WordListLanguage) -> Void
     var onPastePhrase: () -> Void
+    var onBack: () -> Void
     
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
     
@@ -172,9 +154,7 @@ struct AddYourOwnPhrase: View {
                 .font(.subheadline),
                 languageId: $languageId
             )
-            .padding(.bottom)
-            
-            Spacer()
+            .padding(.vertical)
             
             Button {
                 onInputPhrase(currentLanguage())
@@ -195,6 +175,19 @@ struct AddYourOwnPhrase: View {
                 HStack(spacing: 20) {
                     Image("ClipboardText").renderingMode(.template)
                     Text("Paste seed phrase")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(RoundedButtonStyle())
+            
+            Button {
+                onBack()
+            } label: {
+                HStack(spacing: 20) {
+                    Image(systemName: "arrowshape.backward.fill").renderingMode(.template)
+                    Text("Back")
                         .font(.title2)
                         .fontWeight(.semibold)
                 }

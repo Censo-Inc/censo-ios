@@ -34,21 +34,21 @@ private extension ButtonStyleTint {
     var backgroundColor: Color {
         switch (self) {
         case .dark: return Color.Censo.buttonBackgroundColor
-        case .light: return Color.white
+        case .light: return Color.Censo.buttonTextColor
         }
     }
     
     var foregroundColor: Color {
         switch (self) {
         case .dark: return Color.Censo.buttonTextColor
-        case .light: return Color.Censo.darkBlue
+        case .light: return Color.Censo.buttonBackgroundColor
         }
     }
     
     var foregroundColorDisabled: Color {
         switch (self) {
         case .dark: return Color.white
-        case .light: return foregroundColor.opacity(0.35)
+        case .light: return Color.Censo.buttonBackgroundColor.opacity(0.35)
         }
     }
 }

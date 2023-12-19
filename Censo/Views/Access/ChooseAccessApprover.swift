@@ -48,10 +48,15 @@ struct ChooseAccessApprover : View {
                     """)
                     .font(.subheadline)
                 case .replacePolicy:
-                    Text("Request approval")
+                    Text("Remove approvers")
                         .font(.title2)
                         .bold()
                 
+                    Text("""
+                    This will make you the sole approver when complete, and allow you to optionally add new approvers.
+                    """)
+                    .font(.subheadline)
+                    
                     Text("""
                     Removing approvers requires the assistance of \(
                         approvers.map { $0.label }.joined(separator: " or ")
