@@ -32,13 +32,13 @@ struct GetLiveWithApprover : View {
                     
                     VStack(alignment: .leading, spacing: 0) {
                         
-                        Text("Activate \(approverName)")
+                        Text("Verify \(approverName)")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .padding(.bottom)
                         
                         
-                        Text("Activating \(approverName) as an approver will take about 2 minutes. This activation should preferably take place while you’re on the phone or in-person to ensure that you are activating the proper approver.")
+                        Text("Verifying \(approverName) as an approver will take about 2 minutes. This verification should preferably take place while you’re on the phone or in-person to ensure that you are verifying the proper approver.")
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.subheadline)
                             .padding(.bottom)
@@ -46,7 +46,7 @@ struct GetLiveWithApprover : View {
                         Button {
                             onContinue()
                         } label: {
-                            Text("Activate now")
+                            Text("Verify now")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)

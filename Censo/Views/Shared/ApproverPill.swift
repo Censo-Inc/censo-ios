@@ -59,7 +59,7 @@ struct ApproverPill: View {
                         Text("Declined")
                             .foregroundColor(.red)
                     case .initial:
-                        Text("Not yet active")
+                        Text("Not yet verified")
                             .foregroundColor(.Censo.gray)
                     case .accepted:
                         Text("Opened link in app")
@@ -71,7 +71,7 @@ struct ApproverPill: View {
                                 onVerificationSubmitted?(verificationSubmitted)
                             }
                     case .confirmed:
-                        Text("Active")
+                        Text("Verified")
                             .foregroundColor(.Censo.green)
                     case .implicitlyOwner:
                         Text("")

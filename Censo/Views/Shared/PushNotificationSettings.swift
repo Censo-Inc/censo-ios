@@ -23,7 +23,7 @@ struct PushNotificationSettings: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.vertical, 20)
                 
-                Text("Because Censo is anonymous, and we don’t have your email address or phone number, the only way that Censo can communicate to you is with in-app notifications.")
+                Text("Because you are anonymous, and we don’t have your email address or phone number, the only way that Censo can communicate to you is with in-app notifications.")
                     .font(.title3)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.vertical)

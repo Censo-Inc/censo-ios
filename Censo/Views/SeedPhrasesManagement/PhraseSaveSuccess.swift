@@ -28,20 +28,12 @@ struct PhraseSaveSuccess: View {
                         .padding(.leading, geometry.size.width * 0.3)
                 }
             }.multilineTextAlignment(.center)
-            
-            if isFirstTime {
-                Text("You'll never have to worry about losing access to your valuable crypto again.")
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                    .padding(30)
-                    .fixedSize(horizontal: false, vertical: true)
-            } else {
-                Text("Your seed phrase is securely stored.\n\nIt can be accessed only by you.")
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                    .padding(30)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+
+            Text("Your seed phrase is securely stored.\n\nIt can be accessed only by you.")
+                .font(.title.bold())
+                .multilineTextAlignment(.center)
+                .padding(30)
+                .fixedSize(horizontal: false, vertical: true)
             Button() {
                 if isFirstTime {
                     showPushNotificationSettings = true
