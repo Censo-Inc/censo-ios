@@ -51,7 +51,7 @@ if [[ $APP == 'approver' ]]; then
     export PROVISIONING_PROFILE="Approver Integration AppStore"
     export RAYGUN_APPLICATION_ID="283703j"
   elif [[ $ENVIRONMENT == 'staging' ]]; then
-    export ICON_RIBBON="Staging"
+    export ICON_RIBBON="Preprod"
     export SCHEME="Approver (Staging)"
     export CONFIGURATION="Release (Staging)"
     export PROVISIONING_PROFILE="Approver Staging AppStore"
@@ -73,7 +73,7 @@ else
     export PROVISIONING_PROFILE="Censo Integration AppStore"
     export RAYGUN_APPLICATION_ID="283703j"
   elif [[ $ENVIRONMENT == 'staging' ]]; then
-    export ICON_RIBBON="Staging"
+    export ICON_RIBBON="Preprod"
     export SCHEME="Censo (Staging)"
     export CONFIGURATION="Release (Staging)"
     export PROVISIONING_PROFILE="Censo Staging AppStore"
