@@ -19,23 +19,25 @@ struct BiometryGatedScreen<Content: View>: View {
     @ViewBuilder var content: () -> Content
     
     @State private var showAuthentication = false
+    @State private var checkToggle = false
     
     private let prolongationThreshold: TimeInterval = 600
-    @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
             switch ownerState {
             case .ready(let ready):
-                if let unlockedDuration = ready.unlockedForSeconds {
+                let unlockedDuration = ready.unlockedForSeconds ?? UnlockedDuration(value: 0)
+                if Date.now < unlockedDuration.locksAt  {
                         content()
                         .onChange(of: scenePhase) { newScenePhase in
                             switch newScenePhase {
                             case .active:
-                                timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-                            case .inactive,
-                                 .background:
-                                timer.upstream.connect().cancel()
+                                if (Date.now >= unlockedDuration.locksAt) {
+                                    checkToggle = !checkToggle
+                                    onUnlockExpired()
+                                }
                             default:
                                 break;
                             }
@@ -45,9 +47,12 @@ struct BiometryGatedScreen<Content: View>: View {
                         }
                         .onReceive(timer) { _ in
                             if (Date.now >= unlockedDuration.locksAt) {
-                                onUnlockExpired()
+                                checkToggle = !checkToggle
+                                if scenePhase == .active {
+                                    onUnlockExpired()
+                                }
                             } else {
-                                if unlockedDuration.locksAt.timeIntervalSinceNow < prolongationThreshold {
+                                if scenePhase == .active && unlockedDuration.locksAt.timeIntervalSinceNow < prolongationThreshold {
                                     prolongUnlock()
                                 }
                             }

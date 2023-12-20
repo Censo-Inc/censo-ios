@@ -61,10 +61,7 @@ struct LoggedInOwnerView: View {
                                     HomeScreen(
                                         session: session,
                                         ownerState: ready,
-                                        onOwnerStateUpdated: { ownerState in
-                                            replaceOwnerState(newOwnerState: ownerState)
-                                            reload()
-                                        }
+                                        onOwnerStateUpdated: replaceOwnerState
                                     )
                                 }
                             case .completed(let importedPhrase):
