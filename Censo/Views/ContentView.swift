@@ -73,17 +73,22 @@ struct ContentView: View {
             return
         }
         
-        // signature is in raw uncompressed form, convert to DER
-        func makePositive(_ input: Data) -> Data {
-            if (input[0] > 0x7f) {
-                return Data([0x00] + input)
-            } else {
-                return input
+        // if signature is in raw uncompressed form, convert to DER
+        var derSignature: Data
+        if (signature.data.count > 64) {
+            derSignature = signature.data
+        } else {
+            func makePositive(_ input: Data) -> Data {
+                if (input[0] > 0x7f) {
+                    return Data([0x00] + input)
+                } else {
+                    return input
+                }
             }
+            let r = makePositive(signature.data.subdata(in: 0..<32))
+            let s = makePositive(signature.data.subdata(in: 32..<64))
+            derSignature = Data([0x30, UInt8(r.count + s.count + 4), 0x02, UInt8(r.count)] + r + [0x02, UInt8(s.count)] + s)
         }
-        let r = makePositive(signature.data.subdata(in: 0..<32))
-        let s = makePositive(signature.data.subdata(in: 32..<64))
-        let derSignature: Data = Data([0x30, UInt8(r.count + s.count + 4), 0x02, UInt8(r.count)] + r + [0x02, UInt8(s.count)] + s)
 
         guard let verified = try? EncryptionKey.generateFromPublicExternalRepresentation(
                 base58PublicKey: importKey).verifySignature(
