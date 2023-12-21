@@ -81,6 +81,7 @@ struct Settings: View {
     }
 }
 
+#if DEBUG
 #Preview {
     @State var user = API.ApproverUser(approverStates: [
         .init(
@@ -101,3 +102,4 @@ struct Settings: View {
     }
     .foregroundColor(.Censo.primaryForeground)
 }
+#endif
