@@ -13,22 +13,21 @@ struct LoggedInPasteLinkScreen: View {
     @Binding var user: API.ApproverUser
     var onUrlPasted: (URL) -> Void
     
-    @GestureState var accountPress = false
     @State private var continuePressed = false
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 30) {
+            VStack(spacing: 24) {
                 if continuePressed {
-                    Spacer()
                     Image(systemName: "square.and.arrow.down")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: 100)
+                        .frame(minWidth: 64, minHeight: 64)
+                        .frame(maxWidth: 100, maxHeight: 100)
                     
                     Text("To continue, the person you are assisting must send you a link.\n\nOnce you receive it, you can tap on it to continue.\n\nOr, simply copy the link to the clipboard and paste using the button below.")
                         .font(.title3)
-                        .padding(30)
+                        .padding(.horizontal, 30)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                     
@@ -57,23 +56,21 @@ struct LoggedInPasteLinkScreen: View {
                     .padding()
                 }
                 
-                Group {
-                    ApproverStatus(active: user.approverStates.countActiveApprovers() > 0)
-                    
-                    Spacer()
-                    
-                    NavigationLink {
-                        Settings(session: session, user: $user)
-                    } label: {
-                        HStack {
-                            Image("SettingsFilled").renderingMode(.template)
-                            Text("Settings")
-                                .font(.title3)
-                        }
+                ApproverStatus(active: user.approverStates.countActiveApprovers() > 0)
+                
+                Spacer()
+                
+                NavigationLink {
+                    Settings(session: session, user: $user)
+                } label: {
+                    HStack {
+                        Image("SettingsFilled").renderingMode(.template)
+                        Text("Settings")
+                            .font(.title3)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.bottom)
             }
             .padding()
         }
