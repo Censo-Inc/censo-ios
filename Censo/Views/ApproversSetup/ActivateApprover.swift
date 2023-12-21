@@ -246,7 +246,7 @@ struct ActivateApprover : View {
                                     .font(.headline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
-                                Text("Read code that appears here and have \(approver.label) enter it in Approver app")
+                                Text("Read code that appears here and have \(approver.label) enter it in their Approver app")
                                     .font(.headline)
                                     .fontWeight(.regular)
                                     .fixedSize(horizontal: false, vertical: true)
