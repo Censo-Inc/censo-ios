@@ -35,6 +35,8 @@ struct API {
         case storeAccessTotpSecret(String, Base64EncodedString)
         case approveAccessVerification(String, Base64EncodedString)
         case rejectAccessVerification(String)
+        
+        case labelOwner(ParticipantId, String)
     }
     
     enum ApproverPhase: Codable, Equatable {
@@ -118,10 +120,17 @@ struct API {
         }
     }
     
-    struct ApproverState: Codable {
+    struct ApproverState: Codable, Identifiable {
+        var id: String {
+            get {
+                return participantId.value
+            }
+        }
+        
         var participantId: ParticipantId
         var phase: ApproverPhase
         var invitationId: String?
+        var ownerLabel: String?
     }
     
     struct ApproverUser: Decodable {
@@ -189,6 +198,8 @@ extension API: TargetType {
             return "v1/access/\(id)/rejection"
         case .attestationKey:
             return "v1/apple-attestation"
+        case .labelOwner(let participantId, _):
+            return "v1/approvers/\(participantId.value)/owner-label"
         }
     }
 
@@ -206,6 +217,8 @@ extension API: TargetType {
              .registerAttestationObject,
              .attestationChallenge:
             return .post
+        case .labelOwner:
+            return .put
         case .user,
              .attestationKey:
             return .get
@@ -259,6 +272,10 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "encryptedShard": encryptedShard
             ])
+        case .labelOwner(_, let label):
+            return .requestJSONEncodable([
+                "label": label
+            ])
         }
     }
 
@@ -290,7 +307,8 @@ extension API: TargetType {
              .submitVerification,
              .approveOwnerVerification,
              .signIn,
-             .approveAccessVerification:
+             .approveAccessVerification,
+             .labelOwner:
             return true
         }
     }
@@ -353,5 +371,9 @@ extension Array where Element == API.ApproverState {
     
     func countActiveApprovers() -> Int {
         self.filter({$0.phase.isActive}).count
+    }
+    
+    func hasOther(_ participantId: ParticipantId) -> Bool {
+        return self.filter({$0.participantId != participantId}).count > 0
     }
 }

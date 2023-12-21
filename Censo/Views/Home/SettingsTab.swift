@@ -7,37 +7,6 @@
 import SwiftUI
 import Moya
 
-struct SettingsItem: View {
-    var title: String
-    var buttonText: String
-    var description: String
-    var onSelected: () -> Void
-
-    var body: some View {
-        VStack {
-            HStack {
-                Text(title)
-                    .font(.title2)
-                Spacer()
-                Button {
-                    onSelected()
-                } label: {
-                    Text(buttonText)
-                        .font(.body.bold())
-                        .padding(.horizontal)
-                        .frame(minWidth: 80)
-                }
-                .buttonStyle(RoundedButtonStyle(tint: .light))
-            }
-            .padding(.horizontal)
-            Text(description)
-                .font(.body)
-                .padding(.horizontal)
-        }
-        .padding()
-    }
-}
-
 struct SettingsTab: View {
     @Environment(\.apiProvider) var apiProvider
     
@@ -88,6 +57,7 @@ struct SettingsTab: View {
                 
                 Spacer()
             }
+            .padding(.horizontal)
         }
         .sheet(isPresented: $showApproversRemoval, content: {
             InitApproversRemovalFlow(

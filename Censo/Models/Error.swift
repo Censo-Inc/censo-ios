@@ -41,7 +41,6 @@ enum CensoError: Swift.Error {
     case linkExpired
     case linkInFuture
     case cannotVerifyMasterKeySignature
-
 }
 
 extension CensoError: LocalizedError {

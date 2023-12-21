@@ -31,9 +31,13 @@ struct ApproverHome: View {
             case .loading:
                 ProgressView()
             case .success(let user):
+                let userBinding = Binding<API.ApproverUser>(
+                    get: { user },
+                    set: { self._user.replace($0) }
+                )
                 LoggedInPasteLinkScreen(
                     session: session,
-                    user: user,
+                    user: userBinding,
                     onUrlPasted: onUrlPasted
                 )
             case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):

@@ -37,27 +37,44 @@ struct Onboarding: View {
                 ProgressView()
                     .navigationBarHidden(true)
             case .success(let user):
-                let currentState = approverState ?? user.approverStates.forInvite(inviteCode)
-                switch currentState?.phase {
-                case .none:
+                if let currentState = approverState ?? user.approverStates.forInvite(inviteCode) {
+                    switch currentState.phase {
+                    case .waitingForCode, .waitingForVerification, .verificationRejected:
+                        SubmitVerification(
+                            invitationId: inviteCode,
+                            session: session,
+                            approverState: currentState,
+                            onSuccess: {newState in approverState = newState}
+                        )
+                        .navigationBarHidden(true)
+                    case .complete:
+                        // we require to label the owner unless it is the first owner for this approver
+                        if user.approverStates.hasOther(currentState.participantId) && currentState.ownerLabel == nil {
+                            LabelOwner(
+                                session: session,
+                                participantId: currentState.participantId,
+                                label: currentState.ownerLabel,
+                                onComplete: { newState in
+                                    self.approverState = nil
+                                    self._user.replace(newState)
+                                }
+                            )
+                        } else {
+                            OperationCompletedView(
+                                successText: "Congratulations. You're all done!\n\nThanks for helping \(currentState.ownerLabel ?? "someone") keep their crypto safe.\n\nYou may now close the app.",
+                                onSuccess: onSuccess
+                            )
+                            .navigationBarHidden(true)
+                        }
+                    default:
+                        EmptyView()
+                    }
+                } else {
                     ProgressView()
                         .navigationBarHidden(true)
                         .onAppear {
                             acceptInvitation(invitationId: inviteCode)
                         }
-                case .waitingForCode, .waitingForVerification, .verificationRejected:
-                    SubmitVerification(
-                        invitationId: inviteCode,
-                        session: session,
-                        approverState: currentState!,
-                        onSuccess: {newState in approverState = newState}
-                    )
-                    .navigationBarHidden(true)
-                case .complete:
-                    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
-                        .navigationBarHidden(true)
-                default:
-                    EmptyView()
                 }
             case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 SignIn(session: session, onSuccess: reload) {
