@@ -78,7 +78,7 @@ struct ApproversSetup: View {
                                 .padding(.vertical)
                             
                             Text("""
-                            Adding two Trusted Approvers increases your security by eliminating any single point of compromise while providing extra backup should you or your Approvers lose your credentials.
+                            Adding two trusted approvers increases your security by eliminating any single point of compromise while providing extra backup should you or your approvers lose your credentials.
                             
                             Choose approvers who you think are reliable and you can trust.
                             

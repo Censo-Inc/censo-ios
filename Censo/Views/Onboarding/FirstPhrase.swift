@@ -44,6 +44,8 @@ struct FirstPhrase: View {
                         }
                         .background {
                             VStack {
+                                Spacer()
+                                    .frame(maxHeight: geometry.size.height * 0.05)
                                 Image("AddYourSeedPhrase")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
