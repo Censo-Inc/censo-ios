@@ -43,6 +43,12 @@ struct RotatingTotpPinView: View {
         }
     }
     
+    private func setProgress() {
+        let date = Date()
+        percentDone = TotpUtils.getPercentDone(date: date)
+        secondsRemaining = TotpUtils.getRemainingSeconds(date: date)
+    }
+    
     struct Stack<Content: View>: View {
         let style: Style
         let content: () -> Content
@@ -95,11 +101,12 @@ struct RotatingTotpPinView: View {
                         .foregroundColor(color)
                 }
             }
+            .onAppear {
+                setProgress()
+            }
             .onReceive(timerPublisher) { _ in
                 withAnimation {
-                    let date = Date()
-                    percentDone = TotpUtils.getPercentDone(date: date)
-                    secondsRemaining = TotpUtils.getRemainingSeconds(date: date)
+                    setProgress()
                 }
             }
 
