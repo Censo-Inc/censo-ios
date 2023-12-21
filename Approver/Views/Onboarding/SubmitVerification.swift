@@ -39,7 +39,6 @@ struct SubmitVerification: View {
                         Text("Waiting for the code to be verified...")
                     }
                 )
-                .modifier(RefreshOnTimer(timer: $waitingForVerification, interval: 3, refresh: reload))
             case .waitingForCode:
                 Text("The person you are assisting will give you a 6-digit code. Enter it below.")
                     .font(.headline)
@@ -77,6 +76,7 @@ struct SubmitVerification: View {
             }
         }
         .multilineTextAlignment(.center)
+        .modifier(RefreshOnTimer(timer: $waitingForVerification, refresh: reload, isIdleTimerDisabled: true))
     }
     
     private func submitVerificaton(code: String) {

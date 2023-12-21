@@ -304,7 +304,7 @@ struct ActivateApprover : View {
                     }
                 }
             })
-            .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 5, refresh: refreshState))
+            .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
             .onReceive(remoteNotificationPublisher) { _ in
                 refreshState()
             }

@@ -104,7 +104,7 @@ struct LoggedInOwnerView: View {
                             })
                         }
                     }
-                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 1, refresh: checkForCompletedImport))
+                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: checkForCompletedImport))
                 }
             } else {
                 NavigationStack {

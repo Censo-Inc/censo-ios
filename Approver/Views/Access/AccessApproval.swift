@@ -58,13 +58,10 @@ struct AccessApproval: View {
                         approvalId: approvalId,
                         onApproverStatesUpdated: replaceApproverStates
                     )
-                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 3, refresh: reload))
+                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: reload, isIdleTimerDisabled: true))
                 case .complete:
                     OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)
-                        .onAppear {
-                            refreshStatePublisher.upstream.connect().cancel()
-                        }
                 default:
                     InvalidLinkView()
                 }

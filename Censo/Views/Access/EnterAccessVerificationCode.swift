@@ -172,7 +172,7 @@ struct EnterAccessVerificationCode : View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 32)
-        .modifier(RefreshOnTimer(timer: $refreshStatePublisher, interval: 5, refresh: refreshState))
+        .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
         .onReceive(remoteNotificationPublisher) { _ in
             refreshState()
         }
