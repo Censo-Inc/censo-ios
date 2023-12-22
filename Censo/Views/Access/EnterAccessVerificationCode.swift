@@ -164,7 +164,9 @@ struct EnterAccessVerificationCode : View {
                     }
                     
                     if submitting || approval.status == .waitingForApproval {
-                        ProgressView()
+                        ProgressView(
+                            "Waiting for \(approver.label) to verify the code"
+                        ).multilineTextAlignment(.center)
                     }
                 }
             }
