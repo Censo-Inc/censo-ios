@@ -12,7 +12,6 @@ import CryptoKit
 struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.apiProvider) var apiProvider
-    
     @StateObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
@@ -26,6 +25,7 @@ struct SaveSeedPhrase: View {
     var masterKeySignature: Base64EncodedString?
     var ownerParticipantId: ParticipantId?
     var isFirstTime: Bool
+    var requestedLabel: String?
     var onSuccess: (API.OwnerState) -> Void
 
     var body: some View {
@@ -97,6 +97,11 @@ struct SaveSeedPhrase: View {
                 Text("Failed to save phrase.\n\(error.localizedDescription)")
             }
             .interactiveDismissDisabled()
+            .onAppear {
+                if (requestedLabel != nil && label.value == "") {
+                    label.value = requestedLabel ?? ""
+                }
+            }
         }
     }
 

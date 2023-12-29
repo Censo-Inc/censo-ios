@@ -19,6 +19,7 @@ struct SeedVerification: View {
     var masterKeySignature: Base64EncodedString?
     var ownerParticipantId: ParticipantId?
     var isFirstTime: Bool
+    var requestedLabel: String? = nil
     var onClose: (() -> Void)? = nil
     var onSuccess: (API.OwnerState) -> Void
 
@@ -89,6 +90,7 @@ struct SeedVerification: View {
                 masterKeySignature: masterKeySignature,
                 ownerParticipantId: ownerParticipantId,
                 isFirstTime: isFirstTime,
+                requestedLabel: requestedLabel,
                 onSuccess: onSuccess
             )
         }
