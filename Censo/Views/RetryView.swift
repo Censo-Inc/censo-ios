@@ -53,6 +53,8 @@ extension Error {
             return "Unable to retrieve data from your keychain"
         case MoyaError.underlying(let error, _):
             return error.localizedDescription
+        case AttestationError.notSupported:
+            return "App attestation is not supported"
         default:
             return self.appSpecificMessage
         }
