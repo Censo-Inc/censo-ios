@@ -76,6 +76,7 @@ struct LoggedInOwnerView: View {
                                                 masterKeySignature: ownerState.policy.masterKeySignature,
                                                 ownerParticipantId: ownerState.policy.owner?.participantId,
                                                 isFirstTime: false,
+                                                requestedLabel: importedPhrase.label,
                                                 onClose: { importPhase = .none }
                                             ) { ownerState in
                                                 replaceOwnerState(newOwnerState: ownerState)
