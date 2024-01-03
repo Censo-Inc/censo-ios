@@ -28,7 +28,7 @@ struct Settings: View {
             Spacer()
             
             if user.approverStates.countActiveApprovers() > 1 {
-                SettingsItem(title: "View Owners", buttonText: "View", description: "View people you are helping out as an approver.") {
+                SettingsItem(title: "Who I'm Helping", buttonText: "View", description: "View the people that you are an approver for.") {
                     showOwners = true
                 }
             }
