@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import CryptoKit
 
 struct ContentView: View {
     @State private var url: URL?
@@ -90,9 +91,12 @@ struct ContentView: View {
             derSignature = Data([0x30, UInt8(r.count + s.count + 4), 0x02, UInt8(r.count)] + r + [0x02, UInt8(s.count)] + s)
         }
 
+        var signedData = Data(String(timestamp).utf8)
+        signedData.append(Data(SHA256.hash(data: name.data(using: .utf8)!)))
+
         guard let verified = try? EncryptionKey.generateFromPublicExternalRepresentation(
                 base58PublicKey: importKey).verifySignature(
-            for: Data(String(timestamp).utf8),
+            for: signedData,
             signature: Base64EncodedString(value: derSignature.base64EncodedString())) else {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
