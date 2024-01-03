@@ -18,7 +18,7 @@ struct Owners: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Owners")
+                Text("Who I'm Helping")
                     .font(.title2)
                     .bold()
                     .padding(.vertical)
