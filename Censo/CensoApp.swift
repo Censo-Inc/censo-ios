@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import Sentry
+
 import Moya
-import raygun4apple
 
 @main
 struct CensoApp: App {
@@ -34,12 +35,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             self.testing = true
         }
         #endif
-
-        let raygunClient = RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey)
-        raygunClient.applicationVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-
-        if Configuration.raygunEnabled {
-            raygunClient.enableCrashReporting()
+        
+        if Configuration.sentryEnabled {
+            SentrySDK.start { options in
+                options.dsn = Configuration.sentryDsn
+                options.environment = Configuration.sentryEnvironment
+            }
         }
         
         UNUserNotificationCenter.current().delegate = self
@@ -78,7 +79,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         debugPrint("Failed to register for remote notifications: \(error.localizedDescription)")
-        RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey).send(error: error, tags: ["push-registration"], customData: nil)
+        SentrySDK.captureWithTag(error: error, tagValue: "push-registration")
     }
 
     func setupAppearance() {

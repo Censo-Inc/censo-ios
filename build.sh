@@ -35,49 +35,45 @@ done
 
 # Setup environment
 
-export RAYGUN_ACCESS_TOKEN="YXRhQHBlcHBlcmVkc29mdHdhcmUuY29tOkxLSjEyM3BvaWFzZA=="
 if [[ $APP == 'approver' ]]; then
   export APP="approver"
+  export SENTRY_PROJECT="ios-approver"
 
   if [[ $ENVIRONMENT == 'production' ]]; then
     export SCHEME="Approver"
     export CONFIGURATION="Release"
     export PROVISIONING_PROFILE="Approver AppStore"
-    export RAYGUN_APPLICATION_ID="282j3o2"
   elif [[ $ENVIRONMENT == 'integration' ]]; then
     export ICON_RIBBON="Dev"
     export SCHEME="Approver (Integration)"
     export CONFIGURATION="Release (Integration)"
     export PROVISIONING_PROFILE="Approver Integration AppStore"
-    export RAYGUN_APPLICATION_ID="283703j"
   elif [[ $ENVIRONMENT == 'staging' ]]; then
     export ICON_RIBBON="Preprod"
     export SCHEME="Approver (Staging)"
     export CONFIGURATION="Release (Staging)"
     export PROVISIONING_PROFILE="Approver Staging AppStore"
-    export RAYGUN_APPLICATION_ID="283706g"
   else
     echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
     exit 1
   fi
 else
+  export SENTRY_PROJECT="ios-censo"
+
   if [[ $ENVIRONMENT == 'production' ]]; then
     export SCHEME="Censo"
     export CONFIGURATION="Release"
     export PROVISIONING_PROFILE="Censo AppStore"
-    export RAYGUN_APPLICATION_ID="282j3o2"
   elif [[ $ENVIRONMENT == 'integration' ]]; then
     export ICON_RIBBON="Dev"
     export SCHEME="Censo (Integration)"
     export CONFIGURATION="Release (Integration)"
     export PROVISIONING_PROFILE="Censo Integration AppStore"
-    export RAYGUN_APPLICATION_ID="283703j"
   elif [[ $ENVIRONMENT == 'staging' ]]; then
     export ICON_RIBBON="Preprod"
     export SCHEME="Censo (Staging)"
     export CONFIGURATION="Release (Staging)"
     export PROVISIONING_PROFILE="Censo Staging AppStore"
-    export RAYGUN_APPLICATION_ID="283706g"
   else
     echo "Unknown environment. Use one of 'integration', 'staging', or 'production'"
     exit 1
@@ -111,7 +107,9 @@ fi
 
 ./scripts/archive_app.sh
 
-./scripts/upload_dsyms.sh
+if [[ $PUBLISH == true ]]; then
+   ./scripts/upload_dsyms.sh
+fi
 
 export EXPORT_OPTIONS_PLIST="Censo/ExportOptions.plist"
 ./scripts/export_ipa.sh

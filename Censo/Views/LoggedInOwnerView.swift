@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 enum ImportPhase {
     case none
@@ -146,7 +146,7 @@ struct LoggedInOwnerView: View {
                         break
                     }
                 case .failure(let error):
-                    RaygunClient.sharedInstance().send(error: error, tags: ["Import"], customData: nil)
+                    SentrySDK.captureWithTag(error: error, tagValue: "Import")
                     importPhase = .none
                 }
             }

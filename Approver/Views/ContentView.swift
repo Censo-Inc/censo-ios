@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 enum ApproverRoute : Hashable {
     case onboard(inviteCode: String)
@@ -138,7 +138,7 @@ struct ContentView: View {
                 self.route = .onboard(inviteCode: identifier)
                 self.navigateToRoute = true
             } else {
-                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Invite Link Paste"], customData: nil)
+                SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Invite Link Paste")
                 showError(CensoError.invalidIdentifier)
             }
         } else {
@@ -150,7 +150,7 @@ struct ContentView: View {
                 self.route = .access(participantId: participantId, approvalId: url.pathComponents[3])
                 self.navigateToRoute = true
             } else {
-                RaygunClient.sharedInstance().send(error: CensoError.invalidIdentifier, tags: ["Other Link Paste"], customData: nil)
+                SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Other Link Paste")
                 showError(CensoError.invalidIdentifier)
             }
         }

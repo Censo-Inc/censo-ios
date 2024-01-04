@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Moya
-import raygun4apple
 
 struct ApproversSetup: View {
     @Environment(\.apiProvider) var apiProvider

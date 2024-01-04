@@ -7,13 +7,13 @@
 
 import Foundation
 import FaceTecSDK
-import raygun4apple
+import Sentry
 
 struct FacetecError: Error, Sendable {
     var statusMessage: String
     init(_ message: String) {
         statusMessage = message
-        RaygunClient.sharedInstance().send(error: self, tags: ["FaceTec"], customData: nil)
+        SentrySDK.captureWithTag(error: self, tagValue: "FaceTec")
     }
     init(status: FaceTecSessionStatus) {
         statusMessage = switch (status) {
@@ -48,6 +48,6 @@ struct FacetecError: Error, Sendable {
         default:
             "Unexpected error"
         }
-        RaygunClient.sharedInstance().send(error: self, tags: ["FaceTec"], customData: nil)
+        SentrySDK.captureWithTag(error: self, tagValue: "FaceTec")
     }
 }

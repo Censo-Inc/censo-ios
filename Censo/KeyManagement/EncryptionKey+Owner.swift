@@ -7,7 +7,7 @@
 
 import Foundation
 import BigInt
-import raygun4apple
+import Sentry
 
 extension EncryptionKey {
     enum ShardingError: Error {
@@ -39,7 +39,7 @@ extension EncryptionKey {
             
             if encryptedShard.isOwnerShard {
                 guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier) else {
-                    RaygunClient.sharedInstance().send(error: CensoError.failedToRetrieveApproverKey, tags: ["Approver Key"], customData: nil)
+                    SentrySDK.captureWithTag(error: CensoError.failedToRetrieveApproverKey, tagValue: "Approver Key")
                     throw CensoError.failedToRetrieveApproverKey
                 }
                 decryptedShard = try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)

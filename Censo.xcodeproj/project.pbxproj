@@ -66,7 +66,6 @@
 		3DA2B71B2B16A60B001A0775 /* SwiftKeccak in Frameworks */ = {isa = PBXBuildFile; productRef = 3DA2B71A2B16A60B001A0775 /* SwiftKeccak */; };
 		3DA2B71D2B195661001A0775 /* AttestationCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA2B71C2B195661001A0775 /* AttestationCheck.swift */; };
 		3DA2B71E2B1956A1001A0775 /* AttestationCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA2B71C2B195661001A0775 /* AttestationCheck.swift */; };
-		3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD9C37D2A8BD68F00F1E497 /* raygun4apple */; };
 		3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		3DE0B9772ABA2ECD0001F3A3 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
 		3DE0B9782ABA2ECD0001F3A3 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9762ABA2ECD0001F3A3 /* Login.swift */; };
@@ -126,9 +125,7 @@
 		6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F662AA128E3001A4454 /* SecretSharer.swift */; };
 		6CC60F692AA1292C001A4454 /* BigInt+Access.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F682AA1292C001A4454 /* BigInt+Access.swift */; };
 		6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F6C2AA12AF2001A4454 /* BigInt */; };
-		6CC60F742AA12F21001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F732AA12F21001A4454 /* raygun4apple */; };
 		6CC60F8A2AA134A4001A4454 /* SecretSharerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */; };
-		6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8B2AA134F8001A4454 /* raygun4apple */; };
 		6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC60F8D2AA134FC001A4454 /* BigInt */; };
 		6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */; };
 		6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
@@ -136,6 +133,10 @@
 		6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F992AA7D8A5001A4454 /* Base58.swift */; };
 		6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; };
 		6CD3B04A2AC3517100CE1C18 /* FaceTecSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CD4209F2B44AC6400A4EF73 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD4209E2B44AC6400A4EF73 /* Sentry */; };
+		6CD420A12B44AC6D00A4EF73 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD420A02B44AC6D00A4EF73 /* Sentry */; };
+		6CD420A32B459BB700A4EF73 /* SentrySDK+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD420A22B459BB700A4EF73 /* SentrySDK+Extension.swift */; };
+		6CD420A42B459E4B00A4EF73 /* SentrySDK+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD420A22B459BB700A4EF73 /* SentrySDK+Extension.swift */; };
 		6CD6DAE82ABB4E8000974035 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD6DAE72ABB4E8000974035 /* Onboarding.swift */; };
 		6CD6DAE92ABB509C00974035 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE0B9752ABA2ECD0001F3A3 /* Authentication.swift */; };
 		6CD6DAEB2ABC6C6400974035 /* ValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6575432AB4E7DB00E1D737 /* ValueWrappers.swift */; };
@@ -208,7 +209,6 @@
 		BD5026162AE6F05700B727C4 /* UnlockedDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9397C62AE2BE2E009E8BFB /* UnlockedDuration.swift */; };
 		BD5026182AE8B0A000B727C4 /* AppSpecificError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */; };
 		BD50261B2AE8B0E400B727C4 /* AppSpecificError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD50261A2AE8B0E400B727C4 /* AppSpecificError.swift */; };
-		BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */ = {isa = PBXBuildFile; productRef = BD6485342AC49EA300BC0B1B /* raygun4apple */; };
 		BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */; };
 		BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6485382AC4A2BF00BC0B1B /* SubmitVerification.swift */; };
 		BD89A3F92AE989F20035B094 /* TermsOfUse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD89A3F82AE989F20035B094 /* TermsOfUse.swift */; };
@@ -406,6 +406,7 @@
 		6CC60F992AA7D8A5001A4454 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
 		6CC60F9D2AA90BB0001A4454 /* EncryptionKeyShardingAndRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyShardingAndRecoveryTests.swift; sourceTree = "<group>"; };
 		6CD3B0472AC3516000CE1C18 /* FaceTecSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FaceTecSDK.xcframework; sourceTree = "<group>"; };
+		6CD420A22B459BB700A4EF73 /* SentrySDK+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SentrySDK+Extension.swift"; sourceTree = "<group>"; };
 		6CD6DAE72ABB4E8000974035 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		6CD6DB022ABCA0DD00974035 /* ApproverDebug (Integration).entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "ApproverDebug (Integration).entitlements"; sourceTree = "<group>"; };
 		6CD6DB032ABCA30500974035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -485,11 +486,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD43BCAA2B0E71FE000091E9 /* Base32 in Frameworks */,
-				3DD9C37E2A8BD68F00F1E497 /* raygun4apple in Frameworks */,
 				3D3796922A8C225D00913581 /* Moya in Frameworks */,
 				6CC60F6D2AA12AF2001A4454 /* BigInt in Frameworks */,
 				3DA2B71B2B16A60B001A0775 /* SwiftKeccak in Frameworks */,
 				6CD3B0492AC3517100CE1C18 /* FaceTecSDK.xcframework in Frameworks */,
+				6CD4209F2B44AC6400A4EF73 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,7 +500,6 @@
 			files = (
 				6CF507F52B19396A0013CD7C /* Sha3Tiny in Frameworks */,
 				6CF507F32B19396A0013CD7C /* KeccakTiny in Frameworks */,
-				6CC60F742AA12F21001A4454 /* raygun4apple in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,10 +508,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D23ACEA2AB233AE00F55C5D /* Moya in Frameworks */,
-				BD6485352AC49EA300BC0B1B /* raygun4apple in Frameworks */,
 				3DA2B7192B16429B001A0775 /* SwiftKeccak in Frameworks */,
 				BD43BCAC2B0E7206000091E9 /* Base32 in Frameworks */,
 				6CD6DAF92ABC9C0A00974035 /* BigInt in Frameworks */,
+				6CD420A12B44AC6D00A4EF73 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,7 +519,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CC60F8C2AA134F8001A4454 /* raygun4apple in Frameworks */,
 				6CC60F8E2AA134FC001A4454 /* BigInt in Frameworks */,
 				BD43BCA82B0E71EB000091E9 /* Base32 in Frameworks */,
 			);
@@ -802,6 +801,7 @@
 				BD8BC9912ADDC4E100DA979C /* BIP39.swift */,
 				BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */,
 				BD19AE0F2B053BB000282B86 /* PBKDF2.swift */,
+				6CD420A22B459BB700A4EF73 /* SentrySDK+Extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -971,11 +971,11 @@
 			);
 			name = Censo;
 			packageProductDependencies = (
-				3DD9C37D2A8BD68F00F1E497 /* raygun4apple */,
 				3D3796912A8C225D00913581 /* Moya */,
 				6CC60F6C2AA12AF2001A4454 /* BigInt */,
 				BD43BCA92B0E71FE000091E9 /* Base32 */,
 				3DA2B71A2B16A60B001A0775 /* SwiftKeccak */,
+				6CD4209E2B44AC6400A4EF73 /* Sentry */,
 			);
 			productName = Censo;
 			productReference = 3D0C1E742A83A79400AB3A48 /* Censo.app */;
@@ -996,7 +996,6 @@
 			);
 			name = CensoUITests;
 			packageProductDependencies = (
-				6CC60F732AA12F21001A4454 /* raygun4apple */,
 				6CF507F22B19396A0013CD7C /* KeccakTiny */,
 				6CF507F42B19396A0013CD7C /* Sha3Tiny */,
 			);
@@ -1020,9 +1019,9 @@
 			packageProductDependencies = (
 				3D23ACE92AB233AE00F55C5D /* Moya */,
 				6CD6DAF82ABC9C0A00974035 /* BigInt */,
-				BD6485342AC49EA300BC0B1B /* raygun4apple */,
 				BD43BCAB2B0E7206000091E9 /* Base32 */,
 				3DA2B7182B16429B001A0775 /* SwiftKeccak */,
+				6CD420A02B44AC6D00A4EF73 /* Sentry */,
 			);
 			productName = Approver;
 			productReference = 3D23ACD72AB22C9100F55C5D /* Approver.app */;
@@ -1043,7 +1042,6 @@
 			);
 			name = CensoTests;
 			packageProductDependencies = (
-				6CC60F8B2AA134F8001A4454 /* raygun4apple */,
 				6CC60F8D2AA134FC001A4454 /* BigInt */,
 				BD43BCA72B0E71EB000091E9 /* Base32 */,
 			);
@@ -1087,11 +1085,11 @@
 			);
 			mainGroup = 3D0C1E6B2A83A79400AB3A48;
 			packageReferences = (
-				3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */,
 				3D3796902A8C225D00913581 /* XCRemoteSwiftPackageReference "Moya" */,
 				6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */,
 				BD43BCA02B0E6E87000091E9 /* XCRemoteSwiftPackageReference "Base32" */,
 				3DA2B7172B16429B001A0775 /* XCRemoteSwiftPackageReference "SwiftKeccak" */,
+				6CD4209D2B44AC4B00A4EF73 /* XCRemoteSwiftPackageReference "sentry-cocoa-sdk-xcframeworks" */,
 			);
 			productRefGroup = 3D0C1E752A83A79400AB3A48 /* Products */;
 			projectDirPath = "";
@@ -1158,6 +1156,7 @@
 				3D0C1E8E2A83AA0B00AB3A48 /* SecureEnclaveWrapper.swift in Sources */,
 				E417AB852AF922D10091CFDA /* LimitedLengthString.swift in Sources */,
 				6CC60F962AA7C44B001A4454 /* EncryptionKey.swift in Sources */,
+				6CD420A32B459BB700A4EF73 /* SentrySDK+Extension.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				E4ADF6502AF01A9900EFCF4F /* ChooseAccessApprover.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Access.swift in Sources */,
@@ -1322,6 +1321,7 @@
 				6C2372852AC4BFCB0072E256 /* RetryView.swift in Sources */,
 				BD6485362AC49EC500BC0B1B /* Configuration.swift in Sources */,
 				6C5307722ADF0EE500E20F1E /* BackButton.swift in Sources */,
+				6CD420A42B459E4B00A4EF73 /* SentrySDK+Extension.swift in Sources */,
 				E4C06F432B335940006A9B39 /* SettingsItem.swift in Sources */,
 				6CD6DB062ABCD76E00974035 /* EncryptionKey.swift in Sources */,
 				3D23ACEF2AB2352800F55C5D /* SecureEnclaveKey.swift in Sources */,
@@ -1487,9 +1487,9 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OWNER_URL_SCHEME = "censo-import";
-				RAYGUN_API_KEY = vuxX53AURVfZS87D1WPqeg;
-				RAYGUN_ENABLED = no;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = none;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1547,9 +1547,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OWNER_URL_SCHEME = "censo-import";
-				RAYGUN_API_KEY = vuxX53AURVfZS87D1WPqeg;
-				RAYGUN_ENABLED = yes;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = production;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -1564,6 +1564,7 @@
 				CODE_SIGN_ENTITLEMENTS = Censo/Censo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -1588,6 +1589,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.Vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRODUCTION";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1603,6 +1605,7 @@
 				CODE_SIGN_ENTITLEMENTS = Censo/Censo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -1627,6 +1630,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.Vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCTION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1703,6 +1707,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.Guardian;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1737,6 +1742,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Guardian-staging";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1771,6 +1777,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Guardian-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1804,6 +1811,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.censo.Guardian;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1838,6 +1846,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Guardian-staging";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1872,6 +1881,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Guardian-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_DSN = "https://a3683270fd48cc8c97fc02e3693e62a1@o4506270957830144.ingest.sentry.io/4506504153792512";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1937,9 +1947,9 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OWNER_URL_SCHEME = "censo-import-integration";
-				RAYGUN_API_KEY = L9T2bPaEjr3Lede3SNpFJw;
-				RAYGUN_ENABLED = no;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = none;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1954,6 +1964,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Censo/CensoDebug (Integration).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -1979,6 +1990,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG INTEGRATION";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2066,9 +2078,9 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OWNER_URL_SCHEME = "censo-import-staging";
-				RAYGUN_API_KEY = CtOnGQjIo1U8dELkoUf0iw;
-				RAYGUN_ENABLED = no;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = none;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -2083,6 +2095,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Censo/CensoDebug (Staging).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -2108,6 +2121,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-staging";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRODUCTION";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2188,9 +2202,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OWNER_URL_SCHEME = "censo-import-integration";
-				RAYGUN_API_KEY = L9T2bPaEjr3Lede3SNpFJw;
-				RAYGUN_ENABLED = yes;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = integration;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -2205,6 +2219,7 @@
 				CODE_SIGN_ENTITLEMENTS = Censo/Censo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -2230,6 +2245,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-integration";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = INTEGRATION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2310,9 +2326,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OWNER_URL_SCHEME = "censo-import-staging";
-				RAYGUN_API_KEY = CtOnGQjIo1U8dELkoUf0iw;
-				RAYGUN_ENABLED = yes;
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
+				SENTRY_ENVIRONMENT = staging;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -2327,6 +2343,7 @@
 				CODE_SIGN_ENTITLEMENTS = Censo/Censo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Censo/Preview Content\"";
 				DEVELOPMENT_TEAM = VN5U64MGYX;
 				ENABLE_PREVIEWS = YES;
@@ -2352,6 +2369,7 @@
 				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.censo.Vault-staging";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SENTRY_DSN = "https://25be527470d95156dc08ee2b40d70f09@o4506270957830144.ingest.sentry.io/4506504051621888";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCTION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2581,20 +2599,20 @@
 				minimumVersion = 0.1.2;
 			};
 		};
-		3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/MindscapeHQ/raygun4apple.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.0.0;
+			};
+		};
+		6CD4209D2B44AC4B00A4EF73 /* XCRemoteSwiftPackageReference "sentry-cocoa-sdk-xcframeworks" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/malcommac/sentry-cocoa-sdk-xcframeworks";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.17.2;
 			};
 		};
 		BD43BCA02B0E6E87000091E9 /* XCRemoteSwiftPackageReference "Base32" */ = {
@@ -2628,30 +2646,25 @@
 			package = 3DA2B7172B16429B001A0775 /* XCRemoteSwiftPackageReference "SwiftKeccak" */;
 			productName = SwiftKeccak;
 		};
-		3DD9C37D2A8BD68F00F1E497 /* raygun4apple */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
-			productName = raygun4apple;
-		};
 		6CC60F6C2AA12AF2001A4454 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
 		};
-		6CC60F732AA12F21001A4454 /* raygun4apple */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
-			productName = raygun4apple;
-		};
-		6CC60F8B2AA134F8001A4454 /* raygun4apple */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
-			productName = raygun4apple;
-		};
 		6CC60F8D2AA134FC001A4454 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6CC60F6B2AA12AF2001A4454 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
+		};
+		6CD4209E2B44AC6400A4EF73 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CD4209D2B44AC4B00A4EF73 /* XCRemoteSwiftPackageReference "sentry-cocoa-sdk-xcframeworks" */;
+			productName = Sentry;
+		};
+		6CD420A02B44AC6D00A4EF73 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CD4209D2B44AC4B00A4EF73 /* XCRemoteSwiftPackageReference "sentry-cocoa-sdk-xcframeworks" */;
+			productName = Sentry;
 		};
 		6CD6DAF82ABC9C0A00974035 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2682,11 +2695,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BD43BCA02B0E6E87000091E9 /* XCRemoteSwiftPackageReference "Base32" */;
 			productName = Base32;
-		};
-		BD6485342AC49EA300BC0B1B /* raygun4apple */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3DD9C37C2A8BD68F00F1E497 /* XCRemoteSwiftPackageReference "raygun4apple" */;
-			productName = raygun4apple;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

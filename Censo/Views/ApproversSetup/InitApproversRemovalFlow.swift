@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 struct InitApproversRemovalFlow: View {
     @Environment(\.apiProvider) var apiProvider
@@ -98,7 +98,7 @@ struct InitApproversRemovalFlow: View {
                 }
             }
         } catch {
-            RaygunClient.sharedInstance().send(error: error, tags: ["Approvers removal: create policy setup"], customData: nil)
+            SentrySDK.captureWithTag(error: error, tagValue: "Approvers removal: create policy setup")
             showError(CensoError.failedToReplacePolicy)
         }
     }

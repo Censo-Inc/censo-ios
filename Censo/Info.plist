@@ -23,10 +23,10 @@
 		<string>${APPROVER_URL_SCHEME}</string>
 		<key>APP_STORE_PRODUCT_ID</key>
 		<string>${APP_STORE_PRODUCT_ID}</string>
-		<key>RAYGUN_API_KEY</key>
-		<string>$(RAYGUN_API_KEY)</string>
-		<key>RAYGUN_ENABLED</key>
-		<string>$(RAYGUN_ENABLED)</string>
+                <key>SENTRY_DSN</key>
+                <string>$(SENTRY_DSN)</string>
+		<key>SENTRY_ENVIRONMENT</key>
+		<string>$(SENTRY_ENVIRONMENT)</string>
 	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<string>NO</string>

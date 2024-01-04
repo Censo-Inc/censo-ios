@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 struct EnterAccessVerificationCode : View {
     @Environment(\.apiProvider) var apiProvider
@@ -221,7 +221,7 @@ struct EnterAccessVerificationCode : View {
         guard let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: deviceKey),
               let devicePublicKey = try? Base58EncodedPublicKey(data: deviceKey.publicExternalRepresentation())
         else {
-            RaygunClient.sharedInstance().send(error: CensoError.failedToCreateSignature, tags: ["Verification"], customData: nil)
+            SentrySDK.captureWithTag(error: CensoError.failedToCreateSignature, tagValue: "Verification")
             self.error = CensoError.failedToCreateSignature
             self.submitting = false
             return

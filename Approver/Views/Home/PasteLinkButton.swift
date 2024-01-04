@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import raygun4apple
+import Sentry
 
 struct PasteLinkButton: View {
     var onUrlPasted: (URL) -> Void
@@ -31,7 +31,7 @@ struct PasteLinkButton: View {
         guard let pastedInfo = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines),
               let url = URL(string: pastedInfo) else {
             let err = CensoError.invalidUrl(url: UIPasteboard.general.string ?? "")
-            RaygunClient.sharedInstance().send(error: err, tags: ["Approver Paste"], customData: nil)
+            SentrySDK.captureWithTag(error: err, tagValue: "Approver Paste")
 
             showError(err)
             return

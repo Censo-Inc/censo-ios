@@ -1,15 +1,22 @@
 #!/bin/bash
 
-echo "Locating dSYMs"
-pushd "$PWD/build/Censo.xcarchive/dSYMs/"
-echo "Found dSYMs"
-zip -r "vault-dSYMs.zip" "."
-echo "Created dSYMs zip"
-mv "vault-dSYMs.zip" "../../../vault-dSYMs.zip"
-popd
+if which sentry-cli >/dev/null; then
+  echo "sentry-cli is installed"
+else 
+  echo "installing sentry cli"
+  curl -sL https://sentry.io/get-cli/ | sh 
+fi
 
-echo "dSYMs zipped: vault-dSYMs.zip"
+if which sentry-cli >/dev/null; then
+   echo "uploading symbols to sentry"
+   export SENTRY_ORG=censo
+   ERROR=$(sentry-cli debug-files upload --include-sources "$PWD/build/Censo.xcarchive/dSYMs/" 2>&1 >/dev/null)
+   if [ ! $? -eq 0 ]; then
+      echo "warning: sentry-cli - $ERROR"
+   else
+      echo "successfully uploaded symbols to sentry"
+   fi
+else
+   echo "warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases"
+fi
 
-curl -F "DsymFile=@vault-dSYMs.zip" "https://app.raygun.com/dashboard/$RAYGUN_APPLICATION_ID/settings/symbols?authToken=$RAYGUN_ACCESS_TOKEN"
-
-rm "vault-dSYMs.zip"

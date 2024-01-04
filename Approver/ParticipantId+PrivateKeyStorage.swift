@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 import SwiftKeccak
-import raygun4apple
+import Sentry
 
 enum KeyMigration: Swift.Error {
     case migrationStarted
@@ -37,17 +37,17 @@ extension ParticipantId {
             }
             return try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData)
         } else {
-            RaygunClient.sharedInstance().send(error: KeyMigration.migrationStarted, tags: ["Key Migration"], customData: nil)
+            SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration")
 
             let oldSymmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
             guard let encryptedKeyData = encryptedKey.hexData(),
                   let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
                   let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
-                RaygunClient.sharedInstance().send(error: KeyMigration.migrationFailed, tags: ["Key Migration"], customData: nil)
+                SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration")
                 return nil
             }
             persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString())
-            RaygunClient.sharedInstance().send(error: KeyMigration.migrationCompleted, tags: ["Key Migration"], customData: nil)
+            SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration")
             return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
         }
     }

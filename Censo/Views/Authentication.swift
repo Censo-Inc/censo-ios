@@ -7,7 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
-import raygun4apple
+import Sentry
 
 extension Notification.Name {
     static let deleteUserDataNotification = Notification.Name("DeleteUserDataNotification")
@@ -65,7 +65,7 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userCredentials.userIdentifier) { state, error in
             switch error {
             case .some(let error):
-                RaygunClient.sharedInstance().send(error: error, tags: ["Authentication"], customData: nil)
+                SentrySDK.captureWithTag(error: error, tagValue: "Authentication")
             case .none:
                 break
             }
@@ -76,7 +76,7 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
                     let deviceKey = try SecureEnclaveWrapper.generateDeviceKey(userIdentifier: userCredentials.userIdentifier)
                     self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
                 } catch {
-                    RaygunClient.sharedInstance().send(error: error, tags: ["Generate Device Key"], customData: nil)
+                    SentrySDK.captureWithTag(error: error, tagValue: "Generate Device Key")
                     self.session = .failure(error)
                 }
             }

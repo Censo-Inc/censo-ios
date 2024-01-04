@@ -6,7 +6,7 @@
 //
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 struct ReplacePolicy: View {
     @Environment(\.apiProvider) var apiProvider
@@ -132,7 +132,7 @@ struct ReplacePolicy: View {
                     }
                 }
             } catch {
-                RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
+                SentrySDK.captureWithTag(error: error, tagValue: "Replace policy")
                 showError(CensoError.failedToReplacePolicy)
             }
         })
@@ -151,7 +151,7 @@ struct ReplacePolicy: View {
                 
                 return try devicePublicKey.verifySignature(for: confirmed.approverPublicKey.data + participantIdData + timeMillisData, signature: confirmed.approverKeySignature)
             } catch {
-                RaygunClient.sharedInstance().send(error: error, tags: ["Replace policy"], customData: nil)
+                SentrySDK.captureWithTag(error: error, tagValue: "Replace policy")
             }
             return false
         case .implicitlyOwner:

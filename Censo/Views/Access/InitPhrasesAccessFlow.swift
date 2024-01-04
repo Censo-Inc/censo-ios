@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
 
 struct InitPhrasesAccessFlow: View {
     @Environment(\.apiProvider) var apiProvider

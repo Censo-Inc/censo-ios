@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 @main
 struct ApproverApp: App {
@@ -36,12 +36,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             self.testing = true
         }
         #endif
-
-        let raygunClient = RaygunClient.sharedInstance(apiKey: Configuration.raygunApiKey)
-        raygunClient.applicationVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-
-        if Configuration.raygunEnabled {
-            raygunClient.enableCrashReporting()
+        
+        if Configuration.sentryEnabled {
+            SentrySDK.start { options in
+                options.dsn = Configuration.sentryDsn
+                options.environment = Configuration.sentryEnvironment
+            }
         }
         
         setupAppearance()

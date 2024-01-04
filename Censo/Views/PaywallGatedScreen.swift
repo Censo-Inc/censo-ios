@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import StoreKit
 import Moya
-import raygun4apple
+import Sentry
 import CryptoKit
 
 struct PaywallGatedScreen<Content: View>: View {
@@ -172,7 +172,7 @@ struct PaywallGatedScreen<Content: View>: View {
                 case .success(let response):
                     continuation.resume(returning: response.ownerState)
                 case .failure(let error):
-                    RaygunClient.sharedInstance().send(error: error, tags: ["Submit Purchase"], customData: nil)
+                    SentrySDK.captureWithTag(error: error, tagValue: "Submit Purchase")
                     continuation.resume(throwing: error)
                 }
             }

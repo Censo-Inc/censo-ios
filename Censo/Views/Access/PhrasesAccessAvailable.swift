@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 struct PhrasesAccessAvailable: View {
     @Environment(\.apiProvider) var apiProvider
@@ -135,7 +135,7 @@ struct PhrasesAccessAvailable: View {
             let decryptedPhraseData = try masterKey.decrypt(base64EncodedString:ownerState.vault.seedPhrases[phraseIndex].encryptedSeedPhrase)
             return try BIP39.binaryDataToWords(binaryData: decryptedPhraseData, language: language)
         } catch {
-            RaygunClient.sharedInstance().send(error: error, tags: ["Access"], customData: nil)
+            SentrySDK.captureWithTag(error: error, tagValue: "Access")
             throw error
         }
    }

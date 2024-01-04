@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Moya
-import raygun4apple
+import Sentry
 
 struct EnterApproverNickname: View {
     @Environment(\.apiProvider) var apiProvider
@@ -164,7 +164,7 @@ struct EnterApproverNickname: View {
                 }
             }
         } catch {
-            RaygunClient.sharedInstance().send(error: error, tags: ["Setup policy"], customData: nil)
+            SentrySDK.captureWithTag(error: error, tagValue: "Setup policy")
             showError(CensoError.failedToSaveApproversName)
         }
     }

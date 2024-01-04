@@ -37,15 +37,6 @@
       }
     },
     {
-      "identity" : "raygun4apple",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MindscapeHQ/raygun4apple.git",
-      "state" : {
-        "revision" : "6f629551d81bebc5985b2529d649897511a58e42",
-        "version" : "2.0.0"
-      }
-    },
-    {
       "identity" : "reactiveswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
@@ -61,6 +52,15 @@
       "state" : {
         "revision" : "9dcaa4b333db437b0fbfaf453fad29069044a8b4",
         "version" : "6.6.0"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa-sdk-xcframeworks",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/sentry-cocoa-sdk-xcframeworks",
+      "state" : {
+        "revision" : "f5016421c502c7700869743b74b9b552a7d4ae1e",
+        "version" : "8.17.2"
       }
     },
     {

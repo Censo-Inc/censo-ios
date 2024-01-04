@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
 
 struct AccessAvailableViewParams {
     var onFinished: () -> Void

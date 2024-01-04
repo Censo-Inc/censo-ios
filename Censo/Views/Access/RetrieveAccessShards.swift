@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Moya
-import raygun4apple
 
 struct RetrieveAccessShards: View {
     @Environment(\.apiProvider) var apiProvider

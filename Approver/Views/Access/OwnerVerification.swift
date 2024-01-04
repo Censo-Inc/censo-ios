@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftUI
 import Moya
 import BigInt
-import raygun4apple
+import Sentry
 import Base32
 
 struct OwnerVerification: View {
@@ -117,13 +117,13 @@ struct OwnerVerification: View {
             guard let approverPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
                   let approverPublicKey = try? approverPrivateKey.publicExternalRepresentation(),
                   approverPublicKey == status.accessPublicKey else {
-                RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverPrivateKey, tags: ["Verification"], customData: nil)
+                SentrySDK.captureWithTag(error: CensoError.failedToRecoverPrivateKey, tagValue: "Verification")
                 showError(CensoError.failedToRecoverPrivateKey)
                 return
             }
             guard let ownerPublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.ownerPublicKey),
                   let encryptedShard = try? ownerPublicKey.encrypt(data: approverPrivateKey.decrypt(base64EncodedString: status.approverEncryptedShard)) else {
-                RaygunClient.sharedInstance().send(error: CensoError.failedToRecoverShard, tags: ["Verification"], customData: nil)
+                SentrySDK.captureWithTag(error: CensoError.failedToRecoverShard, tagValue: "Verification")
                 showError(CensoError.failedToRecoverShard)
                 return
             }

@@ -7,7 +7,6 @@
 import SwiftUI
 import Moya
 import FaceTecSDK
-import raygun4apple
 
 struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     @Environment(\.apiProvider) var apiProvider
