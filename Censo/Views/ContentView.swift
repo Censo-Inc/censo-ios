@@ -58,22 +58,24 @@ struct ContentView: View {
     
     private func openURL(_ url: URL) {
         guard let scheme = url.scheme,
-              scheme.starts(with: "censo-import"),
-              url.pathComponents.count == 5,
-              let version = url.host,
+              scheme.starts(with: "censo-main"),
+              url.pathComponents.count == 6,
+              let action = url.host,
+              action == "import",
+              let version = url.pathComponents[1] as String?,
               ["v1"].contains(version) else {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
-        guard let importKey = try? Base58EncodedPublicKey(value: url.pathComponents[1]),
-              let timestamp = Int64(url.pathComponents[2]),
-              let signature = try? Base64EncodedString(value: base64urlToBase64(base64url: url.pathComponents[3])),
-              let nameBase64 = try? Base64EncodedString(value: base64urlToBase64(base64url: url.pathComponents[4])),
+        guard let importKey = try? Base58EncodedPublicKey(value: url.pathComponents[2]),
+              let timestamp = Int64(url.pathComponents[3]),
+              let signature = try? Base64EncodedString(value: base64urlToBase64(base64url: url.pathComponents[4])),
+              let nameBase64 = try? Base64EncodedString(value: base64urlToBase64(base64url: url.pathComponents[5])),
               let name = String(data: nameBase64.data, encoding: .utf8) else {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
-        
+
         // if signature is in raw uncompressed form, convert to DER
         var derSignature: Data
         if (signature.data.count > 64) {

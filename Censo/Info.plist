@@ -8,7 +8,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>censo-import</string>
+			<string>censo-main</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(OWNER_IMPORT_URL_SCHEME)</string>

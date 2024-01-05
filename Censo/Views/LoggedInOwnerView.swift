@@ -67,7 +67,13 @@ struct LoggedInOwnerView: View {
                             case .completed(let importedPhrase):
                                 switch ownerState {
                                 case .ready(let ownerState):
-                                    if let words = try? BIP39.binaryDataToWords(binaryData: importedPhrase.binaryPhrase.bigInt.serialize()) {
+                                    if let words = try? BIP39.binaryDataToWords(
+                                        // serialize() prepends a sign byte, which binaryDataToWords strips off as
+                                        // the language byte. We're passing in an explicit language to use, so that
+                                        // byte gets ignored anyway
+                                        binaryData: importedPhrase.binaryPhrase.bigInt.serialize(),
+                                        language: importedPhrase.language
+                                    ) {
                                         NavigationStack {
                                             SeedVerification(
                                                 words: words,
