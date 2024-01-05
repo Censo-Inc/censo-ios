@@ -134,7 +134,7 @@ struct API {
         var url: URL
         
         init(value: String) throws {
-            guard let url = URL(string: "\(Configuration.ownerResetUrlScheme)://reset/\(value)") else {
+            guard let url = URL(string: "\(Configuration.ownerUrlScheme)://reset/\(value)") else {
                 throw ValueWrapperError.invalidResetToken
             }
             self.value = value
