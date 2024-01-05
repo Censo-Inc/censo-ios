@@ -12,6 +12,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(APPROVER_URL_SCHEME)</string>
+				<string>$(OWNER_RESET_URL_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
@@ -20,15 +21,17 @@
 		<key>API_BASE_URL</key>
 		<string>$(API_BASE_URL)</string>
 		<key>SENTRY_DSN</key>
-                <string>$(SENTRY_DSN)</string>
-                <key>SENTRY_ENVIRONMENT</key>
-                <string>$(SENTRY_ENVIRONMENT)</string>
+		<string>$(SENTRY_DSN)</string>
+		<key>SENTRY_ENVIRONMENT</key>
+		<string>$(SENTRY_ENVIRONMENT)</string>
+		<key>OWNER_RESET_URL_SCHEME</key>
+		<string>$(OWNER_RESET_URL_SCHEME)</string>
 	</dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-  <key>ITSAppUsesNonExemptEncryption</key>
-  <string>NO</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<string>NO</string>
 </dict>
 </plist>

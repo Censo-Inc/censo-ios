@@ -14,7 +14,8 @@ struct Configuration {
     static let ownerAppURL: URL = URL(string: "https://censo.co")!
     static let apiBaseURL: URL = URLValue(for: "API_BASE_URL")
     static let approverUrlScheme: URL = URLValue(for: "APPROVER_URL_SCHEME")
-    static let ownerUrlScheme: URL = URLValue(for: "OWNER_URL_SCHEME")
+    static let ownerImportUrlScheme: URL = URLValue(for: "OWNER_IMPORT_URL_SCHEME")
+    static let ownerResetUrlScheme: URL = URLValue(for: "OWNER_RESET_URL_SCHEME")
     static let sentryDsn: String = stringValue(for: "SENTRY_DSN")
     static let sentryEnvironment: String = stringValue(for: "SENTRY_ENVIRONMENT")
     static let sentryEnabled: Bool = stringValue(for: "SENTRY_ENVIRONMENT").lowercased() != "none"

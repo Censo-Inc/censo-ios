@@ -37,6 +37,7 @@ struct API {
         case rejectAccessVerification(String)
         
         case labelOwner(ParticipantId, String)
+        case createOwnerLoginIdResetToken(ParticipantId)
     }
     
     enum ApproverPhase: Codable, Equatable {
@@ -120,21 +121,53 @@ struct API {
         }
     }
     
-    struct ApproverState: Codable, Identifiable {
-        var id: String {
-            get {
-                return participantId.value
-            }
-        }
-        
+    struct ApproverState: Codable {
         var participantId: ParticipantId
         var phase: ApproverPhase
         var invitationId: String?
         var ownerLabel: String?
+        var ownerLoginIdResetToken: OwnerLoginIdResetToken?
+    }
+    
+    struct OwnerLoginIdResetToken: Codable, Equatable, Hashable {
+        var value: String
+        var url: URL
+        
+        init(value: String) throws {
+            guard let url = URL(string: "\(Configuration.ownerResetUrlScheme)://reset/\(value)") else {
+                throw ValueWrapperError.invalidResetToken
+            }
+            self.value = value
+            self.url = url
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            do {
+                self = try OwnerLoginIdResetToken(value: try container.decode(String.self))
+            } catch {
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid login id reset token")
+            }
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(value)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(value)
+        }
     }
     
     struct ApproverUser: Decodable {
         var approverStates: [ApproverState]
+        
+        var isActiveApprover: Bool {
+            get {
+                return approverStates.countActiveApprovers() > 0
+            }
+        }
     }
     
     struct AcceptInvitationApiResponse: Codable {
@@ -200,6 +233,8 @@ extension API: TargetType {
             return "v1/apple-attestation"
         case .labelOwner(let participantId, _):
             return "v1/approvers/\(participantId.value)/owner-label"
+        case .createOwnerLoginIdResetToken(let participantId):
+            return "v1/login-id-reset-token/\(participantId.value)"
         }
     }
 
@@ -215,7 +250,8 @@ extension API: TargetType {
              .approveAccessVerification,
              .rejectAccessVerification,
              .registerAttestationObject,
-             .attestationChallenge:
+             .attestationChallenge,
+             .createOwnerLoginIdResetToken:
             return .post
         case .labelOwner:
             return .put
@@ -236,7 +272,8 @@ extension API: TargetType {
              .rejectOwnerVerification,
              .rejectAccessVerification,
              .attestationChallenge,
-             .attestationKey:
+             .attestationKey,
+             .createOwnerLoginIdResetToken:
             return .requestPlain
         case .registerAttestationObject(let challenge, let attestation, let keyId):
             #if DEBUG
@@ -308,7 +345,8 @@ extension API: TargetType {
              .approveOwnerVerification,
              .signIn,
              .approveAccessVerification,
-             .labelOwner:
+             .labelOwner,
+             .createOwnerLoginIdResetToken:
             return true
         }
     }
@@ -377,3 +415,21 @@ extension Array where Element == API.ApproverState {
         return self.filter({$0.participantId != participantId}).count > 0
     }
 }
+
+struct Owner: Identifiable {
+    var id: String {
+        get {
+            return participantId.value
+        }
+    }
+    
+    var label: String?
+    var participantId: ParticipantId
+}
+
+extension API.ApproverState {
+    func toOwner() -> Owner {
+        return Owner(label: self.ownerLabel, participantId: self.participantId)
+    }
+}
+

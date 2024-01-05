@@ -13,9 +13,11 @@ struct Owners: View {
     var session: Session
     @Binding var user: API.ApproverUser
     
-    @State var labellingOwner: API.ApproverState?
+    @State var labellingOwner: Owner?
     
     var body: some View {
+        let owners = user.approverStates.map({ $0.toOwner() })
+        
         NavigationView {
             VStack {
                 Text("Who I'm Helping")
@@ -30,12 +32,12 @@ struct Owners: View {
                 
                 ScrollView {
                     VStack(spacing: 30) {
-                        ForEach(Array(user.approverStates.enumerated()), id: \.offset) { i, approverState in
+                        ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
                             OwnerPill(
-                                participantId: approverState.participantId,
-                                label: approverState.ownerLabel,
+                                participantId: owner.participantId,
+                                label: owner.label,
                                 onEdit: {
-                                    labellingOwner = approverState
+                                    labellingOwner = owner
                                 }
                             )
                         }
@@ -59,12 +61,12 @@ struct Owners: View {
                 }
             })
         }
-        .sheet(item: $labellingOwner) { approverState in
+        .sheet(item: $labellingOwner) { owner in
             NavigationView {
                 LabelOwner(
                     session: session,
-                    participantId: approverState.participantId,
-                    label: approverState.ownerLabel,
+                    participantId: owner.participantId,
+                    label: owner.label,
                     onComplete: {
                         self.user = $0
                         self.labellingOwner = nil
@@ -82,39 +84,6 @@ struct Owners: View {
                 })
             }
         }
-    }
-}
-
-struct OwnerPill: View {
-    var participantId: ParticipantId
-    var label: String?
-    var onEdit: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .leading) {
-                Text(label ?? "-")
-                    .font(.system(size: 24))
-                    .bold()
-            }
-            
-            Spacer()
-            
-            Button {
-                onEdit()
-            } label: {
-                Image("Pencil")
-                    .renderingMode(.template)
-                    .resizable()
-                    .frame(width: 32, height: 32)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .overlay(
-            RoundedRectangle(cornerRadius: 16.0)
-                .stroke(Color.Censo.primaryForeground, lineWidth: 1)
-        )
     }
 }
 

@@ -37,6 +37,7 @@ struct OwnerVerification: View {
         switch (step) {
         case .getLive:
             GetLiveWithOwner(
+                intent: .accessApproval,
                 onContinue: {
                     step = .verify
                 }

@@ -13,6 +13,7 @@ enum ValueWrapperError: Error {
     case invalidBase64
     case invalidParticipantId
     case invalidInvitationId
+    case invalidResetToken
     case invalidBinaryPhrase
 }
 

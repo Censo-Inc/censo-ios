@@ -41,6 +41,7 @@ enum CensoError: Swift.Error {
     case linkExpired
     case linkInFuture
     case cannotVerifyMasterKeySignature
+    case failedToGenerateLoginResetToken
 }
 
 extension CensoError: LocalizedError {
@@ -112,6 +113,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("This link is not yet valid", comment: "Future link")
         case .cannotVerifyMasterKeySignature:
             return NSLocalizedString("Cannot verify master key signature", comment: "Invalid signature")
+        case .failedToGenerateLoginResetToken:
+            return NSLocalizedString("Failed to generate login id reset token", comment: "Failed to generate login id reset token")
         }
         
     }

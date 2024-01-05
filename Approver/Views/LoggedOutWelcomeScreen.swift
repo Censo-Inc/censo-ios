@@ -1,5 +1,5 @@
 //
-//  LoggedOutPasteLinkScreen.swift
+//  LoggedOutWelcomeScreen.swift
 //  Approver
 //
 //  Created by Anton Onyshchenko on 07.11.23.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct LoggedOutPasteLinkScreen: View {
-    var onUrlPasted: (URL) -> Void
+struct LoggedOutWelcomeScreen: View {
+    var onContinue: () -> Void
     
     var body: some View {
         NavigationView {
@@ -23,27 +23,8 @@ struct LoggedOutPasteLinkScreen: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
 
-                NavigationLink {
-                    VStack(spacing: 30) {
-                        Spacer()
-                        
-                        Image(systemName: "square.and.arrow.down")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 100)
-                        
-                        Text("To continue, the person you are assisting must send you a link.\n\nOnce you receive it, you can tap on it to continue.\n\nOr, simply copy the link to the clipboard and paste using the button below.")
-                            .font(.title3)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        
-                        PasteLinkButton(onUrlPasted: onUrlPasted)
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 54)
-                    
+                Button {
+                    onContinue()
                 } label: {
                     Text("Continue")
                         .font(.title3)
@@ -69,8 +50,8 @@ struct LoggedOutPasteLinkScreen: View {
 
 #if DEBUG
 #Preview {
-    LoggedOutPasteLinkScreen(
-        onUrlPasted: { _ in }
+    LoggedOutWelcomeScreen(
+        onContinue: {}
     )
     .foregroundColor(.Censo.primaryForeground)
 }

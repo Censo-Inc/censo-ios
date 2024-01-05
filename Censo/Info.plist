@@ -11,7 +11,8 @@
 			<string>censo-import</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(OWNER_URL_SCHEME)</string>
+				<string>$(OWNER_IMPORT_URL_SCHEME)</string>
+				<string>$(OWNER_RESET_URL_SCHEME)</string>
 			</array>
 		</dict>
 	</array>

@@ -21,23 +21,44 @@ struct ContentView: View {
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var url: URL?
+    @State private var showLogin: Bool = false
     @State private var navigateToRoute = false
     @State private var reloadNeeded = false
+    @State private var showLoggedInWelcome = true
     
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
-                if url == nil {
-                    LoggedOutPasteLinkScreen(
-                        onUrlPasted: { url in
-                            self.url = url
+                if showLogin {
+                    NavigationView {
+                        Login(
+                            onSuccess: {
+                                self.showLoggedInWelcome = false
+                                onSuccess()
+                            }
+                        )
+                        .toolbarBackground(.hidden)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarBackButtonHidden(true)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    self.showLogin = false
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    LoggedOutWelcomeScreen(
+                        onContinue: {
+                            self.showLogin = true
                         }
                     )
                     .onOpenURL(perform: {
                         self.url = $0
                     })
-                } else {
-                    Login(onSuccess: onSuccess)
                 }
             },
             loggedInContent: { session in
@@ -52,10 +73,11 @@ struct ContentView: View {
                                             openURL(url)
                                         }
                                 } else {
-                                    ApproverHome(
+                                    LoggedInView(
                                         session: session,
                                         onUrlPasted: { url in openURL(url) },
-                                        reloadNeeded: $reloadNeeded
+                                        reloadNeeded: $reloadNeeded,
+                                        showWelcome: $showLoggedInWelcome
                                     )
                                 }
 
@@ -100,7 +122,8 @@ struct ContentView: View {
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
-                self.url = nil
+                self.currentError = nil
+                self.showingError = false
             })
         } message: { error in
             Text(error.localizedDescription)

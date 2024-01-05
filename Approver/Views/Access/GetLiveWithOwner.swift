@@ -13,10 +13,13 @@ import Moya
 struct GetLiveWithOwner: View {
     @Environment(\.dismiss) var dismiss
     
+    var intent: Intent
     var onContinue: () -> Void
+    var onBack: (() -> Void)?
     
-    init(onContinue: @escaping () -> Void) {
-        self.onContinue = onContinue
+    enum Intent {
+        case accessApproval
+        case loginIdReset
     }
     
     var body: some View {
@@ -24,14 +27,25 @@ struct GetLiveWithOwner: View {
             VStack(alignment: .leading) {
                 Spacer()
                 
-                Text("Approve request")
-                    .font(.title2)
-                    .bold()
-                    .padding(.vertical)
+                switch (intent) {
+                case .accessApproval:
+                    Text("Approve request")
+                        .font(.title2)
+                        .bold()
+                        .padding(.vertical)
+                    
+                    Text("Approving a request will take about 2 minutes. This approval should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
+                        .font(.subheadline)
+                case .loginIdReset:
+                    Text("Get live with the person that contacted you")
+                        .font(.title2)
+                        .bold()
+                        .padding(.vertical)
+                    
+                    Text("This process should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.")
+                        .font(.subheadline)
+                }
                 
-                Text("Approving a request will take about 2 minutes. This approval should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
-                    .font(.subheadline)
-        
                 Spacer()
                 
                 Button {
@@ -49,22 +63,30 @@ struct GetLiveWithOwner: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
+        .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
+                if let onBack {
+                    Button {
+                        onBack()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                } else {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
                 }
             }
-        }
+        })
     }
 }
 
 #if DEBUG
 #Preview {
     NavigationStack {
-        GetLiveWithOwner(onContinue: {})
+        GetLiveWithOwner(intent: .accessApproval, onContinue: {})
     }
 }
 
