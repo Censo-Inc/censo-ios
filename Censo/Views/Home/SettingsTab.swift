@@ -20,8 +20,14 @@ struct SettingsTab: View {
     @State private var resetInProgress = false
     @State private var showApproversRemoval = false
     @State private var showPushNotificationSettings = false
+    @State private var deleteConfirmation = ""
+
     @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
-    
+
+    func deleteConfirmationMessage() -> String {
+        return "Delete my \(ownerState.vault.seedPhrases.count) seed phrase\(ownerState.vault.seedPhrases.count == 1 ? "" : "s")"
+    }
+
     var body: some View {
         VStack {
             Text("Settings")
@@ -80,17 +86,27 @@ struct SettingsTab: View {
             Text(error.localizedDescription)
         }
         .alert("Delete Data", isPresented: $resetRequested) {
-            Button {
+            TextField(text: $deleteConfirmation) {
+                Text("Confirmation")
+            }
+            Button(role: .destructive) {
                 deleteUser()
-            } label: { Text("Confirm") }
-            Button {
+                deleteConfirmation = ""
+            } label: {
+                Text("Confirm")
+            }
+            Button(role: .cancel) {
+                deleteConfirmation = ""
             } label: { Text("Cancel") }
         } message: {
-            Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nAre you sure?")
+            Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
         }
     }
     
     private func deleteUser() {
+        if (deleteConfirmation != deleteConfirmationMessage()) {
+            return
+        }
         resetInProgress = true
         apiProvider.request(with: session, endpoint: .deleteUser) { result in
             resetInProgress = false
