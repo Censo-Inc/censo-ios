@@ -23,86 +23,67 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     
     @ViewBuilder var accessAvailableView: (AccessAvailableViewParams) -> AccessAvailableView
     
-    @State private var deletingAccess = false
     @State private var showingError = false
     @State private var error: Error?
     
     var body: some View {
-        if deletingAccess {
+        switch (ownerState.access) {
+        case nil:
             ProgressView()
+                .onAppear {
+                    requestAccess()
+                }
                 .alert("Error", isPresented: $showingError, presenting: error) { _ in
                     Button {
-                        refreshState()
+                        dismiss()
                     } label: {
                         Text("OK")
                     }
                 } message: { error in
                     Text(error.localizedDescription)
                 }
-        } else {
-            switch (ownerState.access) {
-            case nil:
+        case .anotherDevice:
+            AccessOnAnotherDevice(
+                onCancelAccess: deleteAccessAndDismiss
+            )
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+            })
+        case .thisDevice(let access):
+            // delete it in case this is a leftover access with other intent
+            if access.intent != intent {
                 ProgressView()
                     .onAppear {
-                        requestAccess()
+                        deleteAccess()
                     }
-                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                        Button {
-                            dismiss()
-                        } label: {
-                            Text("OK")
-                        }
-                    }
-            case .anotherDevice:
-                AccessOnAnotherDevice(
-                    onCancelAccess: deleteAccessAndDismiss
-                )
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
-                    }
-                })
-            case .thisDevice(let access):
-                // delete it in case this is a leftover access with other intent
-                if access.intent != intent {
+            } else {
+                switch (access.status) {
+                case .requested:
+                    AccessApproval(
+                        session: session,
+                        policy: ownerState.policy,
+                        access: access,
+                        onCancel: {
+                            deleteAccess(onSuccess: { dismiss() })
+                        },
+                        onOwnerStateUpdated: onOwnerStateUpdated
+                    )
+                case .timelocked:
                     ProgressView()
                         .onAppear {
-                            deleteAccess()
+                            dismiss()
                         }
-                } else {
-                    switch (access.status) {
-                    case .requested:
-                        AccessApproval(
-                            session: session,
-                            policy: ownerState.policy,
-                            access: access,
-                            onCancel: {
-                                deleteAccess(onSuccess: { dismiss() })
-                            },
-                            onOwnerStateUpdated: onOwnerStateUpdated
-                        )
-                    case .timelocked:
-                        Text("Timelocked")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar(content: {
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button {
-                                        dismiss()
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                    }
-                                }
-                            })
-                    case .available:
-                        accessAvailableView(AccessAvailableViewParams(
-                            onFinished: deleteAccessAndDismiss
-                        ))
-                    }
+                case .available:
+                    accessAvailableView(AccessAvailableViewParams(
+                        onFinished: deleteAccessAndDismiss
+                    ))
                 }
             }
         }
@@ -129,15 +110,13 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     }
     
     private func deleteAccess(onSuccess: @escaping () -> Void = {}) {
-        self.deletingAccess = true
         apiProvider.decodableRequest(with: session, endpoint: .deleteAccess) { (result: Result<API.DeleteAccessApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
                 onOwnerStateUpdated(response.ownerState)
                 onSuccess()
             case .failure(let error):
-                self.showingError = true
-                self.error = error
+                showError(error)
             }
         }
     }
@@ -186,7 +165,8 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                     intent: .accessPhrases
                 )),
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in },
             intent: .accessPhrases,

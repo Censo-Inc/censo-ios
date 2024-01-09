@@ -188,6 +188,10 @@ extension API {
         var ownerState: OwnerState
     }
     
+    struct TimelockApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
     struct StoreSeedPhraseApiRequest : Encodable {
         var encryptedSeedPhrase: Base64EncodedString
         var seedPhraseHash: String

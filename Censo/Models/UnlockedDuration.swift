@@ -17,7 +17,7 @@ struct UnlockedDuration: Codable, Equatable, Hashable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.singleValueContainer()
+        let container = try decoder.singleValueContainer()
         do {
             self = try UnlockedDuration(value: container.decode(UInt.self))
         } catch {

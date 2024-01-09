@@ -308,6 +308,12 @@ extension API {
             }
         }
     }
+    
+    struct TimelockSetting: Codable, Equatable {
+        var defaultTimelockInSeconds: Int
+        var currentTimelockInSeconds: Int?
+        var disabledAt: Date?
+    }
 
     enum AuthType: String, Codable {
         case none = "None"
@@ -339,6 +345,7 @@ extension API {
             var access: Access?
             var authType: AuthType
             var subscriptionStatus: SubscriptionStatus
+            var timelockSetting: TimelockSetting
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {
@@ -388,6 +395,21 @@ extension API {
                 case .ready(let ready): return ready.subscriptionStatus
                 }
             }
+        }
+        
+    }
+}
+
+extension API.OwnerState.Ready {
+    var hasBlockingPhraseAccessRequest: Bool {
+        get {
+            switch (self.access) {
+            case .thisDevice(let access):
+                return access.intent == .accessPhrases && (access.status == .available || access.status == .timelocked)
+            default:
+                break
+            }
+            return false
         }
     }
 }

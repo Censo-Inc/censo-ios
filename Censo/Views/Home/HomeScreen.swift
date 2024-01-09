@@ -181,6 +181,23 @@ extension API.Policy {
     }
 }
 
+extension API.TimelockSetting {
+    static var sample: Self {
+        .init(defaultTimelockInSeconds: 172800, currentTimelockInSeconds: nil)
+    }
+    
+    static var sample2: Self {
+        .init(defaultTimelockInSeconds: 172800, currentTimelockInSeconds: 172800)
+    }
+    
+    static var sample3: Self {
+        .init(defaultTimelockInSeconds: 172800,
+              currentTimelockInSeconds: 172800,
+              disabledAt: Date().addingTimeInterval(60000)
+        )
+    }
+}
+
 extension API.Vault {
     static var sample: Self {
         .init(
@@ -211,7 +228,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 vault: .sample,
                 access: nil,
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -223,7 +241,50 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 vault: .sample,
                 access: nil,
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
+            ),
+            onOwnerStateUpdated: { _ in }
+        )
+        
+        HomeScreen(
+            session: .sample,
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                access: .thisDevice(API.Access.ThisDevice(
+                    guid: "",
+                    status: API.Access.Status.timelocked,
+                    createdAt: Date(),
+                    unlocksAt: Date().addingTimeInterval(7200),
+                    expiresAt: Date(),
+                    approvals: [],
+                    intent: .accessPhrases
+                )),
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample
+            ),
+            onOwnerStateUpdated: { _ in }
+        )
+        
+        HomeScreen(
+            session: .sample,
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                access: .thisDevice(API.Access.ThisDevice(
+                    guid: "",
+                    status: API.Access.Status.available,
+                    createdAt: Date(),
+                    unlocksAt: Date().addingTimeInterval(7200),
+                    expiresAt: Date(),
+                    approvals: [],
+                    intent: .accessPhrases
+                )),
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in }
         )

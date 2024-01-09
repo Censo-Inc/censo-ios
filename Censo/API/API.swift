@@ -53,6 +53,10 @@ struct API {
 
         case acceptImport(channel: String, ownerProof: OwnerProof)
         case getImportEncryptedData(channel: String)
+        
+        case enableTimelock
+        case disableTimelock
+        case cancelDisabledTimelock
     }
 }
 
@@ -122,6 +126,11 @@ extension API: TargetType {
             return "v1/import/\(channel)/accept"
         case .getImportEncryptedData(let channel):
             return "v1/import/\(channel)/encrypted"
+        case .enableTimelock:
+            return "v1/timelock/enable"
+        case .disableTimelock,
+             .cancelDisabledTimelock:
+            return "v1/timelock/disable"
         }
     }
 
@@ -131,7 +140,7 @@ extension API: TargetType {
              .attestationKey,
              .getImportEncryptedData:
             return .get
-        case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup:
+        case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup, .cancelDisabledTimelock:
             return .delete
         case .signIn,
              .registerPushToken,
@@ -154,7 +163,9 @@ extension API: TargetType {
              .registerAttestationObject,
              .attestationChallenge,
              .submitPurchase,
-             .acceptImport:
+             .acceptImport,
+             .enableTimelock,
+             .disableTimelock:
             return .post
         case .replacePolicy:
             return .put
@@ -170,7 +181,10 @@ extension API: TargetType {
              .attestationChallenge,
              .attestationKey,
              .getImportEncryptedData,
-             .deletePolicySetup:
+             .deletePolicySetup,
+             .enableTimelock,
+             .disableTimelock,
+             .cancelDisabledTimelock:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -276,7 +290,10 @@ extension API: TargetType {
              .storeSeedPhrase,
              .deleteAccess,
              .attestationKey,
-             .getImportEncryptedData:
+             .getImportEncryptedData,
+             .enableTimelock,
+             .disableTimelock,
+             .cancelDisabledTimelock:
             return false
         case .signIn,
              .deleteUser,

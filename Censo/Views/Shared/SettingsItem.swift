@@ -12,6 +12,7 @@ struct SettingsItem: View {
     var title: String
     var buttonText: String
     var description: String
+    var buttonDisabled: Bool = false
     var onSelected: () -> Void
 
     var body: some View {
@@ -29,6 +30,7 @@ struct SettingsItem: View {
                         .frame(minWidth: 80)
                 }
                 .buttonStyle(RoundedButtonStyle(tint: .light))
+                .disabled(buttonDisabled)
             }
             
             Text(description)

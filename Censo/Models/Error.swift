@@ -42,6 +42,8 @@ enum CensoError: Swift.Error {
     case linkInFuture
     case cannotVerifyMasterKeySignature
     case failedToGenerateLoginResetToken
+    case cannotRemoveApproversWhileAccessInProgress
+    case cannotSetupApproversWhileAccessInProgress
 }
 
 extension CensoError: LocalizedError {
@@ -115,6 +117,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Cannot verify master key signature", comment: "Invalid signature")
         case .failedToGenerateLoginResetToken:
             return NSLocalizedString("Failed to generate login id reset token", comment: "Failed to generate login id reset token")
+        case .cannotRemoveApproversWhileAccessInProgress:
+            return NSLocalizedString("Cannot remove approvers while an access is in progress", comment: "Approver removal")
+        case .cannotSetupApproversWhileAccessInProgress:
+            return NSLocalizedString("Cannot setup approvers while an access is in progress", comment: "Approver setup")
         }
         
     }

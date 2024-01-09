@@ -22,7 +22,7 @@ struct ShowPhrase: View {
                 AccessExpirationCountdown(
                     expiresAt: start.addingTimeInterval(TimeInterval(900)),
                     onExpired: {
-                        onComplete(false)
+                        onComplete(false)  
                     },
                     onBackgrounded: {
                         onComplete(false)
