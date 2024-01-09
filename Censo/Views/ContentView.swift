@@ -16,6 +16,13 @@ struct ContentView: View {
     @State private var pendingImport: Import?
     @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
     
+    private var isMaintenanceModeBinding: Binding<Bool> {
+        Binding(
+            get: { self.globalMaintenanceState.isMaintenanceMode },
+            set: { _ in /* intentionally left blank to ignore changes */ }
+        )
+    }
+    
     /// <#Description#>
     var body: some View {
         Authentication(
@@ -41,9 +48,16 @@ struct ContentView: View {
                 //.fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
                 //    MaintenanceOverlayView(session: session)
                 //}
-                .overlay(
-                    globalMaintenanceState.isMaintenanceMode ? AnyView(MaintenanceOverlayView(session: session)) : AnyView(EmptyView())
-                )
+                //.overlay(
+                //    globalMaintenanceState.isMaintenanceMode ? AnyView(MaintenanceOverlayView(session: session)) : AnyView(EmptyView())
+                //)
+                // Use non-dismissable sheet
+                .sheet(isPresented: isMaintenanceModeBinding) {
+                    MaintenanceOverlayView(session: session)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .edgesIgnoringSafeArea(.all)
+                        .interactiveDismissDisabled()
+                }
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
