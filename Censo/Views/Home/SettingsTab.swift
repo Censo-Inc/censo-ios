@@ -21,6 +21,8 @@ struct SettingsTab: View {
     @State private var showApproversRemoval = false
     @State private var showPushNotificationSettings = false
     @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
+    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
+    @State private var showAlert = false
     
     var body: some View {
         VStack {
@@ -71,7 +73,9 @@ struct SettingsTab: View {
                 showPushNotificationSettings = false
             }
         })
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+        .onChange(of: showingError) { _ in updateAlertPresentation() }
+        .onChange(of: globalMaintenanceState.isMaintenanceMode) { _ in updateAlertPresentation() }
+        .alert("Error", isPresented: $showAlert, presenting: error) { _ in
             Button {
                 showingError = false
                 error = nil
@@ -88,6 +92,11 @@ struct SettingsTab: View {
         } message: {
             Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nAre you sure?")
         }
+    }
+    
+    private func updateAlertPresentation() {
+        // Update showAlert based on the combined condition
+        showAlert = showingError && !globalMaintenanceState.isMaintenanceMode
     }
     
     private func deleteUser() {

@@ -11,24 +11,34 @@ import SwiftUI
 struct RetryView: View {
     var error: Error
     var action: () -> Void
-
+    
+    @State private var previousMaintenanceMode: Bool = GlobalMaintenanceState.shared.isMaintenanceMode
+    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
+    
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
-
+            
             Text(error.message)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-
+            
             Button(action: action) {
                 Text("Retry")
                     .frame(minWidth: 100)
             }
             .buttonStyle(RoundedButtonStyle(tint: .dark))
-
+            
             Spacer()
         }
         .frame(maxWidth: .infinity)
+        //retry when maintenance mode is off
+        .onReceive(globalMaintenanceState.$isMaintenanceMode) { isMaintenanceMode in
+            if previousMaintenanceMode && !isMaintenanceMode {
+                action()
+            }
+            previousMaintenanceMode = isMaintenanceMode
+        }
     }
 
     private func showHelp() {

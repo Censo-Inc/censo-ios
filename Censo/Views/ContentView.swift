@@ -44,6 +44,7 @@ struct ContentView: View {
         } message: { error in
             Text(error.localizedDescription)
         }
+        
     }
 
     private func base64urlToBase64(base64url: String) -> String {

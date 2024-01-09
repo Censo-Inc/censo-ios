@@ -163,6 +163,9 @@
 		6CFEAD5F2AF15C1200C20140 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD5D2AF15C1200C20140 /* Login.swift */; };
 		6CFEAD632AF1C87100C20140 /* OperationCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */; };
 		6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */; };
+		B8764BC22B4C38D900E97501 /* Maintenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC12B4C38D900E97501 /* Maintenance.swift */; };
+		B8764BC42B4C3C9200E97501 /* MaintenancePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */; };
+		B8764BC82B4C41BF00E97501 /* MaintenanceOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC72B4C41BF00E97501 /* MaintenanceOverlayView.swift */; };
 		BD19AE0E2B0525AA00282B86 /* CreatePassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */; };
 		BD19AE102B053BB000282B86 /* PBKDF2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE0F2B053BB000282B86 /* PBKDF2.swift */; };
 		BD19AE122B05509000282B86 /* GetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE112B05509000282B86 /* GetPassword.swift */; };
@@ -424,6 +427,9 @@
 		6CFEAD582AF15B3800C20140 /* LoginBottomLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginBottomLinks.swift; sourceTree = "<group>"; };
 		6CFEAD5D2AF15C1200C20140 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationCompletedView.swift; sourceTree = "<group>"; };
+		B8764BC12B4C38D900E97501 /* Maintenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maintenance.swift; sourceTree = "<group>"; };
+		B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenancePlugin.swift; sourceTree = "<group>"; };
+		B8764BC72B4C41BF00E97501 /* MaintenanceOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceOverlayView.swift; sourceTree = "<group>"; };
 		BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePassword.swift; sourceTree = "<group>"; };
 		BD19AE0F2B053BB000282B86 /* PBKDF2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBKDF2.swift; sourceTree = "<group>"; };
 		BD19AE112B05509000282B86 /* GetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPassword.swift; sourceTree = "<group>"; };
@@ -575,6 +581,7 @@
 				3D0C1E772A83A79400AB3A48 /* CensoApp.swift */,
 				3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */,
 				3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */,
+				B8764BC12B4C38D900E97501 /* Maintenance.swift */,
 				3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */,
 				3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */,
 				E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */,
@@ -628,6 +635,7 @@
 				BD19AE112B05509000282B86 /* GetPassword.swift */,
 				E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */,
 				BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */,
+				B8764BC72B4C41BF00E97501 /* MaintenanceOverlayView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -731,6 +739,7 @@
 				3D3796A42A8F255F00913581 /* Models.swift */,
 				3D9817532AA15265003A4CD0 /* AuthPlugin.swift */,
 				6C2372872AC5A4D50072E256 /* ErrorResponsePlugin.swift */,
+				B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */,
 				6C8A87032AAB83DB002E54D6 /* OwnerState.swift */,
 				3D23ACF82AB264B400F55C5D /* MoyaProvider+Decodable.swift */,
 				3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */,
@@ -1203,6 +1212,7 @@
 				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
 				BD19AE122B05509000282B86 /* GetPassword.swift in Sources */,
 				6C2392B32AE6CDB200987A91 /* PhrasesTab.swift in Sources */,
+				B8764BC22B4C38D900E97501 /* Maintenance.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */,
 				6C07AA502B2D150A005FF9D7 /* PushNotificationSettings.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
@@ -1216,6 +1226,7 @@
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
 				E4FB35672B18C0BF00D75E26 /* InitPhrasesAccessFlow.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
+				B8764BC82B4C41BF00E97501 /* MaintenanceOverlayView.swift in Sources */,
 				6CF507F72B1A48440013CD7C /* LanguageSelection.swift in Sources */,
 				E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */,
 				3D28C0102B06721C00E261AA /* AttestKey.swift in Sources */,
@@ -1253,6 +1264,7 @@
 				6CAD2EED2B278E2D003815A0 /* Activated.swift in Sources */,
 				3D37969B2A8C3C4200913581 /* APIProvider.swift in Sources */,
 				3D8214672AC22D6E00AC2598 /* BorderedButtonStyle.swift in Sources */,
+				B8764BC42B4C3C9200E97501 /* MaintenancePlugin.swift in Sources */,
 				6C5307762AE0111A00E20F1E /* VerificationCodeEntry.swift in Sources */,
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
 				E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */,

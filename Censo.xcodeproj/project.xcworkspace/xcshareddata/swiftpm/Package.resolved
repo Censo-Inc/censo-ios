@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/malcommac/sentry-cocoa-sdk-xcframeworks",
       "state" : {
-        "revision" : "f5016421c502c7700869743b74b9b552a7d4ae1e",
-        "version" : "8.17.2"
+        "revision" : "3028d4a4f3e9cb5b86017d281bf6cb4bd9501a19",
+        "version" : "8.18.0"
       }
     },
     {
