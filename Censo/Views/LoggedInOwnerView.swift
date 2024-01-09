@@ -23,127 +23,114 @@ struct LoggedInOwnerView: View {
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
     @State private var refreshStatePublisher = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
 
     var session: Session
 
     var body: some View {
-
-        ZStack {
-            
-            switch ownerStateResource {
-            case .idle:
-                ProgressView()
-                    .onAppear(perform: reload)
-            case .loading:
-                ProgressView()
-            case .success(let ownerState):
-                if (acceptedTermsOfUseVersion == "v0.2") {
-                    let ownerStateBinding = Binding<API.OwnerState>(
-                        get: { ownerState },
-                        set: { replaceOwnerState(newOwnerState: $0) }
-                    )
-                    PaywallGatedScreen(session: session, ownerState: ownerStateBinding) {
-                        BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                            switch pendingImport {
+        switch ownerStateResource {
+        case .idle:
+            ProgressView()
+                .onAppear(perform: reload)
+        case .loading:
+            ProgressView()
+        case .success(let ownerState):
+            if (acceptedTermsOfUseVersion == "v0.2") {
+                let ownerStateBinding = Binding<API.OwnerState>(
+                    get: { ownerState },
+                    set: { replaceOwnerState(newOwnerState: $0) }
+                )
+                PaywallGatedScreen(session: session, ownerState: ownerStateBinding) {
+                    BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                        switch pendingImport {
+                        case .none:
+                            switch importPhase {
                             case .none:
-                                switch importPhase {
-                                case .none:
-                                    switch ownerState {
-                                    case .initial:
-                                        InitialPlanSetup(
-                                            session: session,
-                                            onComplete: replaceOwnerState
-                                        )
-                                    case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
-                                        FirstPhrase(
-                                            ownerState: ready,
-                                            session: session,
-                                            onComplete: replaceOwnerState
-                                        )
-                                    case .ready(let ready):
-                                        HomeScreen(
-                                            session: session,
-                                            ownerState: ready,
-                                            onOwnerStateUpdated: replaceOwnerState
-                                        )
-                                    }
-                                case .completed(let importedPhrase):
-                                    switch ownerState {
-                                    case .ready(let ownerState):
-                                        if let words = try? BIP39.binaryDataToWords(
-                                            // serialize() prepends a sign byte, which binaryDataToWords strips off as
-                                            // the language byte. We're passing in an explicit language to use, so that
-                                            // byte gets ignored anyway
-                                            binaryData: importedPhrase.binaryPhrase.bigInt.serialize(),
-                                            language: importedPhrase.language
-                                        ) {
-                                            NavigationStack {
-                                                SeedVerification(
-                                                    words: words,
-                                                    session: session,
-                                                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                                                    masterKeySignature: ownerState.policy.masterKeySignature,
-                                                    ownerParticipantId: ownerState.policy.owner?.participantId,
-                                                    isFirstTime: false,
-                                                    requestedLabel: importedPhrase.label,
-                                                    onClose: { importPhase = .none }
-                                                ) { ownerState in
-                                                    replaceOwnerState(newOwnerState: ownerState)
-                                                    importPhase = .none
-                                                }
-                                            }
-                                        } else {
-                                            ProgressView().onAppear {
+                                switch ownerState {
+                                case .initial:
+                                    InitialPlanSetup(
+                                        session: session,
+                                        onComplete: replaceOwnerState
+                                    )
+                                case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
+                                    FirstPhrase(
+                                        ownerState: ready,
+                                        session: session,
+                                        onComplete: replaceOwnerState
+                                    )
+                                case .ready(let ready):
+                                    HomeScreen(
+                                        session: session,
+                                        ownerState: ready,
+                                        onOwnerStateUpdated: replaceOwnerState
+                                    )
+                                }
+                            case .completed(let importedPhrase):
+                                switch ownerState {
+                                case .ready(let ownerState):
+                                    if let words = try? BIP39.binaryDataToWords(
+                                        // serialize() prepends a sign byte, which binaryDataToWords strips off as
+                                        // the language byte. We're passing in an explicit language to use, so that
+                                        // byte gets ignored anyway
+                                        binaryData: importedPhrase.binaryPhrase.bigInt.serialize(),
+                                        language: importedPhrase.language
+                                    ) {
+                                        NavigationStack {
+                                            SeedVerification(
+                                                words: words,
+                                                session: session,
+                                                publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                                                masterKeySignature: ownerState.policy.masterKeySignature,
+                                                ownerParticipantId: ownerState.policy.owner?.participantId,
+                                                isFirstTime: false,
+                                                requestedLabel: importedPhrase.label,
+                                                onClose: { importPhase = .none }
+                                            ) { ownerState in
+                                                replaceOwnerState(newOwnerState: ownerState)
                                                 importPhase = .none
                                             }
                                         }
-                                    case .initial:
+                                    } else {
                                         ProgressView().onAppear {
                                             importPhase = .none
                                         }
                                     }
-                                case .completing, .accepting:
-                                    ProgressView("Importing phrase")
+                                case .initial:
+                                    ProgressView().onAppear {
+                                        importPhase = .none
+                                    }
                                 }
-                            case .some(let imp):
-                                AcceptImportView(importToAccept: imp, onAccept: { imp in
-                                    acceptImport(importToAccept: imp)
-                                    pendingImport = nil
-                                }, onDecline: {
-                                    pendingImport = nil
-                                })
+                            case .completing, .accepting:
+                                ProgressView("Importing phrase")
                             }
+                        case .some(let imp):
+                            AcceptImportView(importToAccept: imp, onAccept: { imp in
+                                acceptImport(importToAccept: imp)
+                                pendingImport = nil
+                            }, onDecline: {
+                                pendingImport = nil
+                            })
                         }
-                        .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: checkForCompletedImport))
                     }
-                } else {
-                    NavigationStack {
-                        TermsOfUse(
-                            text: TermsOfUse.v0_2,
-                            onAccept: {
-                                acceptedTermsOfUseVersion = "v0.2"
-                            }
-                        )
-                        .navigationTitle("Terms of Use")
-                        .navigationBarTitleDisplayMode(.inline)
-                    }
+                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: checkForCompletedImport))
                 }
-            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
-                SignIn(session: session, onSuccess: reload) {
-                    ProgressView("Signing in...")
+            } else {
+                NavigationStack {
+                    TermsOfUse(
+                        text: TermsOfUse.v0_2,
+                        onAccept: {
+                            acceptedTermsOfUseVersion = "v0.2"
+                        }
+                    )
+                    .navigationTitle("Terms of Use")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
-            case .failure(let error):
-                RetryView(error: error, action: reload)
             }
-         
-            // Overlay if in maintenance mode
-            if globalMaintenanceState.isMaintenanceMode {
-                MaintenanceOverlayView(session: session)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .edgesIgnoringSafeArea(.all)
-                    .zIndex(1)
+        case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+            SignIn(session: session, onSuccess: reload) {
+                ProgressView("Signing in...")
             }
+        case .failure(let error):
+            RetryView(error: error, action: reload)
         }
     }
 

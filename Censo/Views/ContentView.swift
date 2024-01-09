@@ -14,6 +14,9 @@ struct ContentView: View {
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
+    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
+    
+    /// <#Description#>
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
@@ -35,6 +38,12 @@ struct ContentView: View {
                         }
                     }
                 }
+                //.fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
+                //    MaintenanceOverlayView(session: session)
+                //}
+                .overlay(
+                    globalMaintenanceState.isMaintenanceMode ? AnyView(MaintenanceOverlayView(session: session)) : AnyView(EmptyView())
+                )
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
