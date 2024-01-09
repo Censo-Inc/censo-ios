@@ -108,19 +108,19 @@ struct SettingsTab: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .alert("Delete Data", isPresented: $resetRequested) {
+        .alert("Delete Data Confirmation", isPresented: $resetRequested) {
             TextField(text: $deleteConfirmation) {
-                Text("Confirmation")
+                Text(deleteConfirmationMessage())
             }
-            Button(role: .destructive) {
-                deleteUser()
+            Button("Cancel", role: .cancel) {
                 deleteConfirmation = ""
-            } label: {
-                Text("Confirm")
             }
-            Button(role: .cancel) {
+            Button("Confirm", role: .destructive) {
+                if (deleteConfirmation == deleteConfirmationMessage()) {
+                    deleteUser()
+                }
                 deleteConfirmation = ""
-            } label: { Text("Cancel") }
+            }
         } message: {
             Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
         }
@@ -136,9 +136,6 @@ struct SettingsTab: View {
     }
     
     private func deleteUser() {
-        if (deleteConfirmation != deleteConfirmationMessage()) {
-            return
-        }
         resetInProgress = true
         apiProvider.request(with: session, endpoint: .deleteUser) { result in
             resetInProgress = false
