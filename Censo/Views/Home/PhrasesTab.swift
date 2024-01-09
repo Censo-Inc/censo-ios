@@ -27,6 +27,7 @@ struct PhrasesTab: View {
     @State private var confirmAccessCancelation: Bool = false
     @State private var deletingAccess: Bool = false
     @State private var deleteConfirmationText = ""
+    @State private var showingDeleteNotConfirmed: Bool = false
 
     private func deleteConfirmationMessage(_ i: Int) -> String {
         return  "Delete \(ownerState.vault.seedPhrases[i].label)"
@@ -176,11 +177,18 @@ struct PhrasesTab: View {
                 Button("Confirm", role: .destructive) {
                     if (deleteConfirmationText == deleteConfirmationMessage(i)) {
                         deletePhrase(ownerState.vault.seedPhrases[i])
+                    } else {
+                        showingDeleteNotConfirmed = true
                     }
                     deleteConfirmationText = ""
                 }
             } message: { i in
                 Text("You are about to delete this phrase. If you are sure, type:\n\"\(deleteConfirmationMessage(i))\"")
+            }
+            .alert("Delete Confirmation", isPresented: $showingDeleteNotConfirmed) {
+                Button("Ok") { }
+            } message: {
+                Text("Delete was not confirmed")
             }
         }
     }
