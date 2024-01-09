@@ -45,19 +45,19 @@ struct ContentView: View {
                         }
                     }
                 }
-                //.fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
-                //    MaintenanceOverlayView(session: session)
-                //}
+                .fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
+                    MaintenanceOverlayView(session: session)
+                }
                 //.overlay(
                 //    globalMaintenanceState.isMaintenanceMode ? AnyView(MaintenanceOverlayView(session: session)) : AnyView(EmptyView())
                 //)
                 // Use non-dismissable sheet
-                .sheet(isPresented: isMaintenanceModeBinding) {
-                    MaintenanceOverlayView(session: session)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .edgesIgnoringSafeArea(.all)
-                        .interactiveDismissDisabled()
-                }
+                //.sheet(isPresented: isMaintenanceModeBinding) {
+                //    MaintenanceOverlayView(session: session)
+                //        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                //        .edgesIgnoringSafeArea(.all)
+                //        .interactiveDismissDisabled()
+                //}
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
