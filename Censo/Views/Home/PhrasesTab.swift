@@ -21,10 +21,16 @@ struct PhrasesTab: View {
     @State private var editingIndex: Int?
     @State private var phraseGuidsBeingDeleted: Set<String> = []
     @State private var showingDeleteConfirmation = false
+    @State private var deleteConfirmationIndex = 0
     @State private var showingAddPhrase = false
     @State private var showingAccess: Bool = false
     @State private var confirmAccessCancelation: Bool = false
     @State private var deletingAccess: Bool = false
+    @State private var deleteConfirmationText = ""
+
+    private func deleteConfirmationMessage(_ i: Int) -> String {
+        return  "Delete \(ownerState.vault.seedPhrases[i].label)"
+    }
     
     var body: some View {
         NavigationStack {
@@ -64,24 +70,14 @@ struct PhrasesTab: View {
                     Button(role: .destructive) {
                         showingEditSheet = false
                         showingDeleteConfirmation = true
+                        deleteConfirmationIndex = i
                     } label: {
                         Text("Delete")
                     }
                 } message: { i in
                     Text(ownerState.vault.seedPhrases[i].label)
                 }
-                .confirmationDialog(
-                    Text("Are you sure?"),
-                    isPresented: $showingDeleteConfirmation,
-                    presenting: editingIndex
-                ) { i in
-                    Button("Yes", role: .destructive) {
-                        deletePhrase(ownerState.vault.seedPhrases[i])
-                    }
-                } message: { i in
-                    Text("You are about to delete \"\(ownerState.vault.seedPhrases[i].label)\".\n Are you sure?")
-                }
-                
+
                 Divider().frame(maxWidth: .infinity)
                 
                 
@@ -133,7 +129,6 @@ struct PhrasesTab: View {
                         .frame(maxWidth: 208)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Seed Phrases"))
@@ -170,6 +165,22 @@ struct PhrasesTab: View {
                 } label: { Text("OK") }
             } message: { error in
                 Text(error.localizedDescription)
+            }
+            .alert("Delete Confirmation", isPresented: $showingDeleteConfirmation, presenting: deleteConfirmationIndex) { i in
+                TextField(text: $deleteConfirmationText) {
+                    Text(deleteConfirmationMessage(i))
+                }
+                Button("Cancel", role: .cancel) {
+                    deleteConfirmationText = ""
+                }
+                Button("Confirm", role: .destructive) {
+                    if (deleteConfirmationText == deleteConfirmationMessage(i)) {
+                        deletePhrase(ownerState.vault.seedPhrases[i])
+                    }
+                    deleteConfirmationText = ""
+                }
+            } message: { i in
+                Text("You are about to delete this phrase. If you are sure, type:\n\"\(deleteConfirmationMessage(i))\"")
             }
         }
     }
