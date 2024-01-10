@@ -26,7 +26,7 @@ struct MaintenanceView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .edgesIgnoringSafeArea(.all)
-            .background(Color.green.opacity(0.5))
+            .background(Color(UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)))
             .disabled(true)
             .onAppear {
                 timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
