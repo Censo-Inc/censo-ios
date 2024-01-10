@@ -158,7 +158,7 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
+        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

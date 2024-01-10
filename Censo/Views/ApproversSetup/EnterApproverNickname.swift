@@ -180,7 +180,8 @@ struct EnterApproverNickname: View {
                 vault: .sample,
                 policySetup: nil,
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in }
         )

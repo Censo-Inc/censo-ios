@@ -12,6 +12,8 @@ struct DashboardTab: View {
     var ownerState: API.OwnerState.Ready
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
+    @State private var showingError = false
+    @State private var error: Error?
     @State private var showingAddPhrase = false
     @State private var showingApproversSetup = false
     @Binding var parentTabViewSelectedTab: HomeScreen.TabId
@@ -65,7 +67,12 @@ struct DashboardTab: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                     Button {
-                        self.showingApproversSetup = true
+                        if ownerState.hasBlockingPhraseAccessRequest {
+                            self.error = CensoError.cannotSetupApproversWhileAccessInProgress
+                            self.showingError = true
+                        } else {
+                            self.showingApproversSetup = true
+                        }
                     } label: {
                         Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
                             .font(.headline)
@@ -108,6 +115,14 @@ struct DashboardTab: View {
                 )
             }
         })
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button {
+                showingError = false
+                error = nil
+            } label: { Text("OK") }
+        } message: { error in
+            Text(error.localizedDescription)
+        }
     }
 }
 
@@ -127,7 +142,8 @@ public extension UIFont {
                 policy: .sample,
                 vault: .sample,
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
@@ -145,7 +161,8 @@ public extension UIFont {
                 policy: .sample2Approvers,
                 vault: .sample,
                 authType: .facetec,
-                subscriptionStatus: .active
+                subscriptionStatus: .active,
+                timelockSetting: .sample
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab

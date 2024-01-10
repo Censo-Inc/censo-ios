@@ -71,7 +71,7 @@ struct ShowPhraseList: View {
             Spacer()
             
             Button {
-                if ownerState.policy.externalApproversCount > 0 {
+                if ownerState.policy.externalApproversCount > 0 || ownerState.timelockSetting.currentTimelockInSeconds != nil {
                     confirmExit = true
                 } else {
                     onFinished()
@@ -91,7 +91,7 @@ struct ShowPhraseList: View {
             Button {
             } label: { Text("Cancel") }
         } message: {
-            Text("Are you all finished accessing phrases? If you exit you will need to request approval to access your phrases again.")
+            Text("Are you all finished accessing phrases? If you exit you will need to \(ownerState.policy.externalApproversCount > 0 ? "request approval" : "wait for the timelock period") to access your phrases again.")
         }
     }
 }
@@ -103,7 +103,7 @@ struct ShowPhraseList: View {
     NavigationView {
         ShowPhraseList(
             session: .sample,
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
             onOwnerStateUpdated: {_ in },
             viewedPhrases: [1],
             onPhraseSelected: {_ in },

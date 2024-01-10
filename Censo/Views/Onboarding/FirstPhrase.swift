@@ -209,7 +209,7 @@ struct AddYourOwnPhrase: View {
 #if DEBUG
 #Preview {
     FirstPhrase(
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
         session: .sample,
         onComplete: {_ in }
     ).foregroundColor(.Censo.primaryForeground)
