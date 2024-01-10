@@ -24,6 +24,7 @@ struct SettingsTab: View {
     @State private var showPushNotificationSettings = false
     @State private var deleteConfirmation = ""
     @State var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
 
     @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
 
@@ -100,14 +101,22 @@ struct SettingsTab: View {
                 showPushNotificationSettings = false
             }
         })
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
+//        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+//            Button {
+//                showingError = false
+//                error = nil
+//            } label: { Text("OK") }
+//        } message: { error in
+//            Text(error.localizedDescription)
+//        }
+        .dismissableAlert(
+            isPresented: $showingError,
+            error: $error,
+            okAction: {
                 showingError = false
                 error = nil
-            } label: { Text("OK") }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+            }
+        )
         .alert("Delete Data Confirmation", isPresented: $resetRequested) {
             TextField(text: $deleteConfirmation) {
                 Text(deleteConfirmationMessage())
@@ -207,6 +216,34 @@ struct SettingsTab: View {
     private func showError(_ error: Error) {
         self.error = error
         self.showingError = true
+    }
+}
+
+extension View {
+    func dismissableAlert(
+        isPresented: Binding<Bool>,
+        error: Binding<Error?>,
+        okAction: @escaping () -> Void
+    ) -> some View {
+        let globalMaintenanceState = GlobalMaintenanceState.shared
+        @State var previousMaintenanceMode = globalMaintenanceState.isMaintenanceMode
+
+        return self
+            .alert("Error", isPresented: isPresented, presenting: error.wrappedValue) { _ in
+                Button {
+                    okAction()
+                } label: { Text("OK") }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+            .onReceive(globalMaintenanceState.$isMaintenanceMode) { currentMaintenanceMode in
+                if previousMaintenanceMode && !currentMaintenanceMode {
+                    isPresented.wrappedValue = false
+                    error.wrappedValue = nil
+                    okAction()
+                }
+                previousMaintenanceMode = currentMaintenanceMode
+            }
     }
 }
 
