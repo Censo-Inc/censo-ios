@@ -55,7 +55,7 @@ struct LoggedInOwnerView: View {
                                     FirstPhrase(
                                         ownerState: ready,
                                         session: session,
-                                        onComplete: replaceOwnerState
+                                        onComplete: replaceOwnerState                                    
                                     )
                                 case .ready(let ready):
                                     HomeScreen(

@@ -7,17 +7,16 @@
 
 import Combine
 import SwiftUI
-import Moya
 
 struct MaintenanceView: View {
     
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
+    @ObservedObject var globalMaintenanceState = MaintenanceState.shared
     
     @State private var timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
     var body: some View {
 
-        if (globalMaintenanceState.isMaintenanceMode) {
+        if (globalMaintenanceState.isOn) {
 
             VStack {
                 Text("Censo is currently under maintenance, please try again in a few minutes.")

@@ -24,7 +24,6 @@ struct SettingsTab: View {
     @State private var showPushNotificationSettings = false
     @State private var deleteConfirmation = ""
     @State var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
 
     @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
 
@@ -225,8 +224,6 @@ extension View {
         error: Binding<Error?>,
         okAction: @escaping () -> Void
     ) -> some View {
-        let globalMaintenanceState = GlobalMaintenanceState.shared
-
         return self
             .alert("Error", isPresented: isPresented, presenting: error.wrappedValue) { _ in
                 Button {
@@ -235,8 +232,8 @@ extension View {
             } message: { error in
                 Text(error.localizedDescription)
             }
-            .onReceive(globalMaintenanceState.$maintenanceModeChange) { modeChange in
-                if modeChange.previous && !modeChange.current {
+            .onReceive(MaintenanceState.shared.$maintenanceModeChange) { modeChange in
+                if modeChange.oldValue && !modeChange.newValue {
                     isPresented.wrappedValue = false
                     error.wrappedValue = nil
                     okAction()

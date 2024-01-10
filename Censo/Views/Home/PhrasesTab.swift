@@ -28,7 +28,7 @@ struct PhrasesTab: View {
     @State private var deletingAccess: Bool = false
     @State private var deleteConfirmationText = ""
     @State private var showingDeleteNotConfirmed: Bool = false
-    
+
     private func deleteConfirmationMessage(_ i: Int) -> String {
         return  "Delete \(ownerState.vault.seedPhrases[i].label)"
     }
@@ -78,7 +78,7 @@ struct PhrasesTab: View {
                 } message: { i in
                     Text(ownerState.vault.seedPhrases[i].label)
                 }
-                
+
                 Divider().frame(maxWidth: .infinity)
                 
                 
@@ -93,7 +93,7 @@ struct PhrasesTab: View {
                     }
                     .frame(height: 32)
                     .padding(.vertical)
-                    
+
                     Button(role: .destructive) {
                         confirmAccessCancelation = true
                     } label: {

@@ -12,7 +12,7 @@ final class MaintenancePlugin: Moya.PluginType {
     func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
         switch result {
         case .success(let response):
-            GlobalMaintenanceState.shared.isMaintenanceMode = response.statusCode == 418
+            MaintenanceState.shared.isOn = response.statusCode == 418
         case .failure:
             break
         }

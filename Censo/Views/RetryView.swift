@@ -12,8 +12,6 @@ struct RetryView: View {
     var error: Error
     var action: () -> Void
     
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
-    
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
@@ -31,8 +29,8 @@ struct RetryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .onReceive(globalMaintenanceState.$maintenanceModeChange) { modeChange in
-            if modeChange.previous && !modeChange.current {
+        .onReceive(MaintenanceState.shared.$maintenanceModeChange) { modeChange in
+            if modeChange.oldValue && !modeChange.newValue {
                 action()
             }
         }

@@ -107,7 +107,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var contentWindow: UIWindow?
     var maintenanceWindow: UIWindow?
-    let deepLinkManager = DeepLinkManager()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let windowScene = scene as? UIWindowScene {
@@ -117,22 +116,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // handle the deep link if the app is launched by a deep link
         if let urlContext = connectionOptions.urlContexts.first {
-            deepLinkManager.deepLinkURL = urlContext.url
+            DeepLinkManager.shared.url = urlContext.url
         }
     }
     
     // handle the deep link if app was already launched
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            deepLinkManager.deepLinkURL = url
+            DeepLinkManager.shared.url = url
         }
     }
     
     func setupContentWindow(in scene: UIWindowScene) {
         let window = UIWindow(windowScene: scene)
-        let contentView: some View = ContentView()
-            .environmentObject(deepLinkManager)
-            .foregroundColor(Color.Censo.primaryForeground)
+        let contentView: some View = ContentView().foregroundColor(Color.Censo.primaryForeground)
         window.rootViewController = UIHostingController(rootView: contentView)
         self.contentWindow = window
         window.makeKeyAndVisible()
@@ -161,10 +158,11 @@ class PassThroughWindow: UIWindow {
 }
 
 class DeepLinkManager: ObservableObject {
-    @Published var deepLinkURL: URL?
+    static let shared = DeepLinkManager()
+    @Published var url: URL?
     
-    func resetDeepLink() {
-        deepLinkURL = nil
+    func reset() {
+        url = nil
     }
 }
 
