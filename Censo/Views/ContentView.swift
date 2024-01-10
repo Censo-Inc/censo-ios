@@ -41,7 +41,7 @@ struct ContentView: View {
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
-                    apiProvider.request(with: session, endpoint: .user) { _ in }
+                    apiProvider.request(with: session, endpoint: .health) { _ in }
                 }
             }
         )
