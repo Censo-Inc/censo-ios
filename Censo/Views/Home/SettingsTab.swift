@@ -236,7 +236,6 @@ extension View {
                 Text(error.localizedDescription)
             }
             .onReceive(globalMaintenanceState.$maintenanceModeChange) { modeChange in
-                debugPrint("modeChange: from \(modeChange.previous) to \(modeChange.current)")
                 if modeChange.previous && !modeChange.current {
                     isPresented.wrappedValue = false
                     error.wrappedValue = nil
