@@ -14,17 +14,8 @@ struct ContentView: View {
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
     @Environment(\.apiProvider) var apiProvider
 
-    private var isMaintenanceModeBinding: Binding<Bool> {
-        Binding(
-            get: { self.globalMaintenanceState.isMaintenanceMode },
-            set: { _ in /* intentionally left blank to ignore changes */ }
-        )
-    }
-    
-    /// <#Description#>
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
@@ -47,7 +38,6 @@ struct ContentView: View {
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
-                    debugPrint("\(Date()) received notification for maintenance status check")
                     apiProvider.request(with: session, endpoint: .user) { _ in }
                 }
             }

@@ -39,7 +39,7 @@ struct RetryView: View {
             previousMaintenanceMode = isMaintenanceMode
         }
     }
-
+    
     private func showHelp() {
         if let helpUrl = URL(string: "https://help.censo.co"), UIApplication.shared.canOpenURL(helpUrl) {
             UIApplication.shared.open(helpUrl)

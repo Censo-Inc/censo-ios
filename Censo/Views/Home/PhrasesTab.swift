@@ -28,11 +28,11 @@ struct PhrasesTab: View {
     @State private var deletingAccess: Bool = false
     @State private var deleteConfirmationText = ""
     @State private var showingDeleteNotConfirmed: Bool = false
-
+    
     private func deleteConfirmationMessage(_ i: Int) -> String {
         return  "Delete \(ownerState.vault.seedPhrases[i].label)"
     }
-
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -78,10 +78,10 @@ struct PhrasesTab: View {
                 } message: { i in
                     Text(ownerState.vault.seedPhrases[i].label)
                 }
-
+                
                 Divider().frame(maxWidth: .infinity)
-
-
+                
+                
                 if let timelockExpiration = timelockExpiration() {
                     HStack {
                         Image("HourGlass")
@@ -93,7 +93,7 @@ struct PhrasesTab: View {
                     }
                     .frame(height: 32)
                     .padding(.vertical)
-
+                    
                     Button(role: .destructive) {
                         confirmAccessCancelation = true
                     } label: {
@@ -101,7 +101,7 @@ struct PhrasesTab: View {
                             Text("Cancel Access")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-
+                            
                         }
                         .frame(maxWidth: 208)
                     }
@@ -192,7 +192,7 @@ struct PhrasesTab: View {
             }
         }
     }
-
+    
     func timelockExpiration() -> Date? {
         guard case let .thisDevice(access) = ownerState.access,
               access.intent == .accessPhrases,
@@ -202,7 +202,7 @@ struct PhrasesTab: View {
         }
         return access.unlocksAt
     }
-
+    
     func getAccessButtonLabel() -> String {
         guard case let .thisDevice(access) = ownerState.access,
               access.intent == .accessPhrases,
@@ -212,7 +212,7 @@ struct PhrasesTab: View {
         }
         return "Show Seed Phrase\(ownerState.vault.seedPhrases.count > 1 ? "s" : "")"
     }
-
+    
     func deletePhrase(_ seedPhrase: API.SeedPhrase) {
         phraseGuidsBeingDeleted.insert(seedPhrase.guid)
         apiProvider.decodableRequest(with: session, endpoint: .deleteSeedPhrase(guid: seedPhrase.guid)) { (result: Result<API.DeleteSeedPhraseApiResponse, MoyaError>) in
@@ -239,7 +239,7 @@ struct PhrasesTab: View {
             }
         }
     }
-
+    
     private func refreshState() {
         apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
             switch result {
@@ -250,7 +250,7 @@ struct PhrasesTab: View {
             }
         }
     }
-
+    
     private func showError(_ error: Error) {
         self.error = error
         self.showingError = true
