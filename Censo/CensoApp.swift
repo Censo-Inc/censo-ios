@@ -105,30 +105,34 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-  var contentWindow: UIWindow?
-  var maintenanceWindow: UIWindow?
-
-  func scene(
-    _ scene: UIScene,
-    willConnectTo session: UISceneSession,
-    options connectionOptions: UIScene.ConnectionOptions
-  ) {
-    if let windowScene = scene as? UIWindowScene {
-      setupContentWindow(in: windowScene)
-      setupMaintenanceWindow(in: windowScene)
-    }
-  }
+    var contentWindow: UIWindow?
+    var maintenanceWindow: UIWindow?
+    let deepLinkManager = DeepLinkManager()
     
-//    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-//        if userActivity.activityType == NSUserActivityTypeBrowsingWeb  {
-//            debugPrint("//doSomethingWith(url: userActivity.webpageURL)")
-//            //doSomethingWith(url: userActivity.webpageURL)
-//        }
-//    }
-
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        if let windowScene = scene as? UIWindowScene {
+            setupContentWindow(in: windowScene)
+            setupMaintenanceWindow(in: windowScene)
+        }
+        
+        // handle the deep link if the app is launched by a deep link
+        if let urlContext = connectionOptions.urlContexts.first {
+            deepLinkManager.deepLinkURL = urlContext.url
+        }
+    }
+    
+    // handle the deep link if app was already launched
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            deepLinkManager.deepLinkURL = url
+        }
+    }
+    
     func setupContentWindow(in scene: UIWindowScene) {
         let window = UIWindow(windowScene: scene)
-        let contentView: some View = ContentView().foregroundColor(Color.Censo.primaryForeground)
+        let contentView: some View = ContentView()
+            .environmentObject(deepLinkManager)
+            .foregroundColor(Color.Censo.primaryForeground)
         window.rootViewController = UIHostingController(rootView: contentView)
         self.contentWindow = window
         window.makeKeyAndVisible()
@@ -154,6 +158,14 @@ class PassThroughWindow: UIWindow {
     // If the returned view is the `UIHostingController`'s view, ignore. Click will be handled by windown below.
     return rootViewController?.view == hitView ? nil : hitView
   }
+}
+
+class DeepLinkManager: ObservableObject {
+    @Published var deepLinkURL: URL?
+    
+    func resetDeepLink() {
+        deepLinkURL = nil
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

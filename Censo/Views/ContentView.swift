@@ -10,30 +10,33 @@ import Moya
 import CryptoKit
 
 struct ContentView: View {
-    @State private var url: URL?
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
     @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var deepLinkManager: DeepLinkManager
 
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
                 Login(onSuccess: onSuccess)
-                    .onOpenURL(perform: { self.url = $0 })
             },
             loggedInContent: { session in
                 CloudCheck {
                     AppAttest(session: session) {
-                        if let url {
+                        if let url = deepLinkManager.deepLinkURL {
                             ProgressView()
                                 .onAppear {
-                                    self.url = nil
                                     openURL(url)
+                                    deepLinkManager.resetDeepLink()
                                 }
                         } else {
                             LoggedInOwnerView(pendingImport: $pendingImport, session: session)
-                                .onOpenURL(perform: openURL)
+                                .onReceive(deepLinkManager.$deepLinkURL) { url in
+                                    guard let url = url else { return }
+                                    openURL(url)
+                                    deepLinkManager.resetDeepLink()
+                                }
                         }
                     }
                 }
@@ -44,7 +47,7 @@ struct ContentView: View {
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
-                self.url = nil
+                self.deepLinkManager.resetDeepLink()
             })
         } message: { error in
             Text(error.localizedDescription)

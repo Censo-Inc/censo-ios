@@ -13,6 +13,7 @@
 			<array>
 				<string>$(OWNER_IMPORT_URL_SCHEME)</string>
 				<string>$(OWNER_RESET_URL_SCHEME)</string>
+				<string>$(OWNER_URL_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
@@ -24,8 +25,8 @@
 		<string>${APPROVER_URL_SCHEME}</string>
 		<key>APP_STORE_PRODUCT_ID</key>
 		<string>${APP_STORE_PRODUCT_ID}</string>
-                <key>SENTRY_DSN</key>
-                <string>$(SENTRY_DSN)</string>
+		<key>SENTRY_DSN</key>
+		<string>$(SENTRY_DSN)</string>
 		<key>SENTRY_ENVIRONMENT</key>
 		<string>$(SENTRY_ENVIRONMENT)</string>
 	</dict>
