@@ -226,7 +226,6 @@ extension View {
         okAction: @escaping () -> Void
     ) -> some View {
         let globalMaintenanceState = GlobalMaintenanceState.shared
-        @State var previousMaintenanceMode = globalMaintenanceState.isMaintenanceMode
 
         return self
             .alert("Error", isPresented: isPresented, presenting: error.wrappedValue) { _ in
@@ -236,13 +235,13 @@ extension View {
             } message: { error in
                 Text(error.localizedDescription)
             }
-            .onReceive(globalMaintenanceState.$isMaintenanceMode) { currentMaintenanceMode in
-                if previousMaintenanceMode && !currentMaintenanceMode {
+            .onReceive(globalMaintenanceState.$maintenanceModeChange) { modeChange in
+                debugPrint("modeChange: from \(modeChange.previous) to \(modeChange.current)")
+                if modeChange.previous && !modeChange.current {
                     isPresented.wrappedValue = false
                     error.wrappedValue = nil
                     okAction()
                 }
-                previousMaintenanceMode = currentMaintenanceMode
             }
     }
 }

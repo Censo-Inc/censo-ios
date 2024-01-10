@@ -10,5 +10,12 @@ import Foundation
 
 class GlobalMaintenanceState: ObservableObject {
     static let shared = GlobalMaintenanceState()
-    @Published var isMaintenanceMode: Bool = false
+    @Published var isMaintenanceMode: Bool = false {
+        didSet {
+            if oldValue != isMaintenanceMode {
+                maintenanceModeChange = (oldValue, isMaintenanceMode)
+            }
+        }
+    }
+    @Published var maintenanceModeChange: (previous: Bool, current: Bool) = (false, false)
 }

@@ -12,7 +12,6 @@ struct RetryView: View {
     var error: Error
     var action: () -> Void
     
-    @State private var previousMaintenanceMode: Bool = GlobalMaintenanceState.shared.isMaintenanceMode
     @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
     
     var body: some View {
@@ -32,11 +31,10 @@ struct RetryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .onReceive(globalMaintenanceState.$isMaintenanceMode) { isMaintenanceMode in
-            if previousMaintenanceMode && !isMaintenanceMode {
+        .onReceive(globalMaintenanceState.$maintenanceModeChange) { modeChange in
+            if modeChange.previous && !modeChange.current {
                 action()
             }
-            previousMaintenanceMode = isMaintenanceMode
         }
     }
     
