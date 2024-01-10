@@ -15,13 +15,12 @@ struct CensoApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .foregroundColor(Color.Censo.primaryForeground)
+            // Windows are provided by the SceneDelegate
         }
     }
 }
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     #if DEBUG
     var testing: Bool = false
     #endif
@@ -50,6 +49,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         handlePushRegistration()
 
         return true
+    }
+    
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let sceneConfig: UISceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        sceneConfig.delegateClass = SceneDelegate.self
+        return sceneConfig
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -99,6 +104,58 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+  var contentWindow: UIWindow?
+  var maintenanceWindow: UIWindow?
+
+  func scene(
+    _ scene: UIScene,
+    willConnectTo session: UISceneSession,
+    options connectionOptions: UIScene.ConnectionOptions
+  ) {
+    if let windowScene = scene as? UIWindowScene {
+      setupContentWindow(in: windowScene)
+      setupMaintenanceWindow(in: windowScene)
+    }
+  }
+    
+//    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+//        if userActivity.activityType == NSUserActivityTypeBrowsingWeb  {
+//            debugPrint("//doSomethingWith(url: userActivity.webpageURL)")
+//            //doSomethingWith(url: userActivity.webpageURL)
+//        }
+//    }
+
+    func setupContentWindow(in scene: UIWindowScene) {
+        let window = UIWindow(windowScene: scene)
+        let contentView: some View = ContentView().foregroundColor(Color.Censo.primaryForeground)
+        window.rootViewController = UIHostingController(rootView: contentView)
+        self.contentWindow = window
+        window.makeKeyAndVisible()
+    }
+    
+    func setupMaintenanceWindow(in scene: UIWindowScene) {
+        let maintenanceWindow = PassThroughWindow(windowScene: scene)
+        let maintenanceView: some View = MaintenanceView().foregroundColor(Color.Censo.primaryForeground)
+        let maintenanceController = UIHostingController(rootView: maintenanceView)
+        // transparent background to make content window visible
+        maintenanceController.view.backgroundColor = .clear
+        maintenanceWindow.rootViewController = maintenanceController
+        // only one key window is allowed, therefore just making visible
+        maintenanceWindow.isHidden = false
+        self.maintenanceWindow = maintenanceWindow
+    }
+}
+
+class PassThroughWindow: UIWindow {
+  // If no SwiftUI view responds to the user touch, then the containing UIHostingController's (UI)view will.
+  override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    guard let hitView = super.hitTest(point, with: event) else { return nil }
+    // If the returned view is the `UIHostingController`'s view, ignore. Click will be handled by windown below.
+    return rootViewController?.view == hitView ? nil : hitView
+  }
+}
+
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound])
@@ -106,7 +163,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NotificationCenter.default.post(name: .userDidReceiveRemoteNotification, object: notification)
     }
 }
-
 
 extension Notification.Name {
     static let userDidReceiveRemoteNotification = Notification.Name("userDidReceiveRemoteNotification")

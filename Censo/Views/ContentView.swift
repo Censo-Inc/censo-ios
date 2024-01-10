@@ -15,7 +15,8 @@ struct ContentView: View {
     @State private var currentError: Error?
     @State private var pendingImport: Import?
     @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
-    
+    @Environment(\.apiProvider) var apiProvider
+
     private var isMaintenanceModeBinding: Binding<Bool> {
         Binding(
             get: { self.globalMaintenanceState.isMaintenanceMode },
@@ -45,19 +46,10 @@ struct ContentView: View {
                         }
                     }
                 }
-                .fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
-                    MaintenanceOverlayView(session: session)
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
+                    debugPrint("\(Date()) received notification for maintenance status check")
+                    apiProvider.request(with: session, endpoint: .user) { _ in }
                 }
-                //.overlay(
-                //    globalMaintenanceState.isMaintenanceMode ? AnyView(MaintenanceOverlayView(session: session)) : AnyView(EmptyView())
-                //)
-                // Use non-dismissable sheet
-                //.sheet(isPresented: isMaintenanceModeBinding) {
-                //    MaintenanceOverlayView(session: session)
-                //        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                //        .edgesIgnoringSafeArea(.all)
-                //        .interactiveDismissDisabled()
-                //}
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in

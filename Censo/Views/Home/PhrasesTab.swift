@@ -23,7 +23,6 @@ struct PhrasesTab: View {
     @State private var showingDeleteConfirmation = false
     @State private var showingAddPhrase = false
     @State private var showingAccess: Bool = false
-    @ObservedObject var globalMaintenanceState = GlobalMaintenanceState.shared
 
     var body: some View {
         NavigationStack {
@@ -126,9 +125,6 @@ struct PhrasesTab: View {
                     session: session,
                     onComplete: onOwnerStateUpdated
                 )
-                .fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
-                    MaintenanceOverlayView(session: session)
-                }
             })
             .sheet(isPresented: $showingAccess, content: {
                 InitPhrasesAccessFlow(
@@ -136,18 +132,15 @@ struct PhrasesTab: View {
                     ownerState: ownerState,
                     onOwnerStateUpdated: onOwnerStateUpdated
                 )
-                .fullScreenCover(isPresented: $globalMaintenanceState.isMaintenanceMode) {
-                    MaintenanceOverlayView(session: session)
-                }
             })
-//            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-//                Button {
-//                    showingError = false
-//                    error = nil
-//                } label: { Text("OK") }
-//            } message: { error in
-//                Text(error.localizedDescription)
-//            }
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button {
+                    showingError = false
+                    error = nil
+                } label: { Text("OK") }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
         }
     }
     

@@ -32,7 +32,6 @@ struct RetryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        //retry when maintenance mode is off
         .onReceive(globalMaintenanceState.$isMaintenanceMode) { isMaintenanceMode in
             if previousMaintenanceMode && !isMaintenanceMode {
                 action()
