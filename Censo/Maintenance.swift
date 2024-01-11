@@ -20,37 +20,19 @@ class MaintenanceState: ObservableObject {
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    @Environment(\.scenePhase) private var scenePhase
+    
     var contentWindow: UIWindow?
     var maintenanceWindow: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        // Configure and attach maintenance window to the provided UIWindowScene 'scene'.
         if let windowScene = scene as? UIWindowScene {
-            setupContentWindow(in: windowScene)
             setupMaintenanceWindow(in: windowScene)
         }
-        
-        // handle the deep link if the app is launched by a deep link
-        if let urlContext = connectionOptions.urlContexts.first {
-            DeeplinkState.shared.url = urlContext.url
-        }
     }
     
-    // handle the deep link if app was already launched
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let url = URLContexts.first?.url {
-            DeeplinkState.shared.url = url
-        }
-    }
-    
-    func setupContentWindow(in scene: UIWindowScene) {
-        let window = UIWindow(windowScene: scene)
-        let contentView: some View = ContentView().foregroundColor(Color.Censo.primaryForeground)
-        window.rootViewController = UIHostingController(rootView: contentView)
-        self.contentWindow = window
-        window.makeKeyAndVisible()
-    }
-    
-    func setupMaintenanceWindow(in scene: UIWindowScene) {
+    private func setupMaintenanceWindow(in scene: UIWindowScene) {
         let maintenanceWindow = PassThroughWindow(windowScene: scene)
         let maintenanceView: some View = MaintenanceView().foregroundColor(Color.Censo.primaryForeground)
         let maintenanceController = UIHostingController(rootView: maintenanceView)

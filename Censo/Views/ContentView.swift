@@ -10,28 +10,30 @@ import Moya
 import CryptoKit
 
 struct ContentView: View {
+    @State private var url: URL?
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
     @Environment(\.apiProvider) var apiProvider
-    @ObservedObject var deeplinkState = DeeplinkState.shared
 
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
                 Login(onSuccess: onSuccess)
+                    .onOpenURL(perform: { self.url = $0 })
             },
             loggedInContent: { session in
                 CloudCheck {
                     AppAttest(session: session) {
-                        if let url = deeplinkState.url {
+                        if let url {
                             ProgressView()
                                 .onAppear {
+                                    self.url = nil
                                     openURL(url)
-                                    deeplinkState.reset()
                                 }
                         } else {
                             LoggedInOwnerView(pendingImport: $pendingImport, session: session)
+                                .onOpenURL(perform: openURL)
                         }
                     }
                 }
@@ -42,14 +44,12 @@ struct ContentView: View {
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
-                deeplinkState.reset()
+                self.url = nil
             })
         } message: { error in
             Text(error.localizedDescription)
         }
-        
     }
-
 
     private func base64urlToBase64(base64url: String) -> String {
         var base64 = base64url

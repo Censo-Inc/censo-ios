@@ -169,8 +169,6 @@
 		B83CD3AD2B4FFDCC00C48E52 /* MaintenanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC72B4C41BF00E97501 /* MaintenanceView.swift */; };
 		B83CD3AE2B4FFDCF00C48E52 /* View+DismissableAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8312B392B4FE4C4002B39CA /* View+DismissableAlert.swift */; };
 		B83CD3AF2B4FFE8C00C48E52 /* Maintenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC12B4C38D900E97501 /* Maintenance.swift */; };
-		B83CD3B42B4FFF1E00C48E52 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83CD3B32B4FFF1E00C48E52 /* Deeplink.swift */; };
-		B83CD3B62B4FFFD600C48E52 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83CD3B32B4FFF1E00C48E52 /* Deeplink.swift */; };
 		B83CD3B72B5008DB00C48E52 /* MaintenancePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */; };
 		B83CD3B82B5008DE00C48E52 /* MaintenancePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */; };
 		B8764BC22B4C38D900E97501 /* Maintenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8764BC12B4C38D900E97501 /* Maintenance.swift */; };
@@ -440,7 +438,6 @@
 		6CFEAD5D2AF15C1200C20140 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationCompletedView.swift; sourceTree = "<group>"; };
 		B8312B392B4FE4C4002B39CA /* View+DismissableAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DismissableAlert.swift"; sourceTree = "<group>"; };
-		B83CD3B32B4FFF1E00C48E52 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		B8764BC12B4C38D900E97501 /* Maintenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maintenance.swift; sourceTree = "<group>"; };
 		B8764BC32B4C3C9200E97501 /* MaintenancePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenancePlugin.swift; sourceTree = "<group>"; };
 		B8764BC72B4C41BF00E97501 /* MaintenanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceView.swift; sourceTree = "<group>"; };
@@ -594,7 +591,6 @@
 				3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */,
 				3D0C1E772A83A79400AB3A48 /* CensoApp.swift */,
 				3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */,
-				B83CD3B32B4FFF1E00C48E52 /* Deeplink.swift */,
 				3D0C1E912A83AA5C00AB3A48 /* Keychain.swift */,
 				B8764BC12B4C38D900E97501 /* Maintenance.swift */,
 				3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */,
@@ -1257,7 +1253,6 @@
 				6C4D5E8D2AEB069E001DCDA6 /* AccessExpirationCountdown.swift in Sources */,
 				BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */,
 				6CB2F4232B48451900111416 /* TimelockCountdown.swift in Sources */,
-				B83CD3B42B4FFF1E00C48E52 /* Deeplink.swift in Sources */,
 				3D9817542AA15265003A4CD0 /* AuthPlugin.swift in Sources */,
 				6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */,
 				E4ADF6582AF1127000EFCF4F /* SigningKey.swift in Sources */,
@@ -1364,7 +1359,6 @@
 				E4716FD42ACDD71C00BC2AA7 /* ButtonStyleTint.swift in Sources */,
 				BD6485392AC4A2BF00BC0B1B /* SubmitVerification.swift in Sources */,
 				6C0AF95B2ACC5BCE009A9B54 /* ApproverHome.swift in Sources */,
-				B83CD3B62B4FFFD600C48E52 /* Deeplink.swift in Sources */,
 				6C0AF9672ACC7240009A9B54 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				E42A39AC2B483CC1006F87E2 /* ApproverStatus.swift in Sources */,
 				E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */,

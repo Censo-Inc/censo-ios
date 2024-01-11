@@ -15,7 +15,8 @@ struct ApproverApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // Windows are provided by the SceneDelegate
+            ContentView()
+                .foregroundColor(Color.Censo.primaryForeground)
         }
     }
 }
@@ -49,6 +50,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // connect SceneDelegate to configure scene with the maintenance window
         let sceneConfig: UISceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         sceneConfig.delegateClass = SceneDelegate.self
         return sceneConfig

@@ -9,8 +9,6 @@ import Combine
 import SwiftUI
 
 struct MaintenanceView: View {
-    @Environment(\.scenePhase) var scenePhase
-    
     @ObservedObject var maintenanceState = MaintenanceState.shared
     @State private var showMaintenanceView: Bool = false
     
@@ -40,11 +38,6 @@ struct MaintenanceView: View {
             }
         }
         .opacity(showMaintenanceView ? 1 : 0)
-        .onChange(of: scenePhase) { newScenePhase in
-           if (newScenePhase == .active && showMaintenanceView) {
-               NotificationCenter.default.post(name: Notification.Name.maintenanceStatusCheckNotification, object: nil)
-           }
-        }
         .onChange(of: maintenanceState.isOn) { isMaintenanceMode in
             if !isMaintenanceMode {
                 // Delay to allow for retry under the maintenance screen
