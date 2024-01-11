@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CensoError: Swift.Error {
+enum CensoError: Swift.Error, Equatable {
     case validation(String)
     case biometricValidation(message: String, scanResultBlob: String)
     case unexpected(Int)

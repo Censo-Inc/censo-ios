@@ -30,8 +30,12 @@ struct RetryView: View {
         }
         .frame(maxWidth: .infinity)
         .onReceive(MaintenanceState.shared.$maintenanceModeChange) { modeChange in
-            if modeChange.oldValue && !modeChange.newValue {
-                action()
+            // Retry only the CensoError.underMaintenance when maintenance mode has changed
+            if let errorValue = error as? MoyaError,
+                case .underlying(CensoError.underMaintenance, _) = errorValue {
+                if modeChange.oldValue && !modeChange.newValue {
+                    action()
+                }
             }
         }
     }

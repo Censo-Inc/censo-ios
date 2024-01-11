@@ -100,14 +100,6 @@ struct SettingsTab: View {
                 showPushNotificationSettings = false
             }
         })
-//        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-//            Button {
-//                showingError = false
-//                error = nil
-//            } label: { Text("OK") }
-//        } message: { error in
-//            Text(error.localizedDescription)
-//        }
         .dismissableAlert(
             isPresented: $showingError,
             error: $error,
@@ -218,29 +210,6 @@ struct SettingsTab: View {
     }
 }
 
-extension View {
-    func dismissableAlert(
-        isPresented: Binding<Bool>,
-        error: Binding<Error?>,
-        okAction: @escaping () -> Void
-    ) -> some View {
-        return self
-            .alert("Error", isPresented: isPresented, presenting: error.wrappedValue) { _ in
-                Button {
-                    okAction()
-                } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
-            .onReceive(MaintenanceState.shared.$maintenanceModeChange) { modeChange in
-                if modeChange.oldValue && !modeChange.newValue {
-                    isPresented.wrappedValue = false
-                    error.wrappedValue = nil
-                    okAction()
-                }
-            }
-    }
-}
 
 #if DEBUG
 #Preview("Enable Timelock") {
