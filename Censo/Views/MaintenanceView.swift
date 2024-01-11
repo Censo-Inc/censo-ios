@@ -9,9 +9,8 @@ import Combine
 import SwiftUI
 
 struct MaintenanceView: View {
-    
+    @Environment(\.scenePhase) var scenePhase
     @ObservedObject var globalMaintenanceState = MaintenanceState.shared
-    
     @State private var timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -27,11 +26,15 @@ struct MaintenanceView: View {
             .edgesIgnoringSafeArea(.all)
             .background(Color(UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)))
             .disabled(true)
-            .onAppear {
-                timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
-            }
-            .onDisappear {
-                timer.upstream.connect().cancel()
+            .onChange(of: scenePhase) { newScenePhase in
+                switch newScenePhase {
+                case .active:
+                    timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+                case .inactive, .background:
+                    timer.upstream.connect().cancel()
+                default:
+                    break;
+                }
             }
             .onReceive(timer) { _ in
                 // session is not available in this place, notify logged in view to perfrom an API call
