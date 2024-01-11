@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var currentError: Error?
     @State private var pendingImport: Import?
     @Environment(\.apiProvider) var apiProvider
+    @ObservedObject var deepLinkState = DeepLinkState.shared
 
     var body: some View {
         Authentication(
@@ -23,19 +24,14 @@ struct ContentView: View {
             loggedInContent: { session in
                 CloudCheck {
                     AppAttest(session: session) {
-                        if let url = DeepLinkManager.shared.url {
+                        if let url = deepLinkState.url {
                             ProgressView()
                                 .onAppear {
                                     openURL(url)
-                                    DeepLinkManager.shared.reset()
+                                    DeepLinkState.shared.reset()
                                 }
                         } else {
                             LoggedInOwnerView(pendingImport: $pendingImport, session: session)
-                                .onReceive(DeepLinkManager.shared.$url) { url in
-                                    guard let url = url else { return }
-                                    openURL(url)
-                                    DeepLinkManager.shared.reset()
-                                }
                         }
                     }
                 }
@@ -46,13 +42,14 @@ struct ContentView: View {
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
-                DeepLinkManager.shared.reset()
+                DeepLinkState.shared.reset()
             })
         } message: { error in
             Text(error.localizedDescription)
         }
         
     }
+
 
     private func base64urlToBase64(base64url: String) -> String {
         var base64 = base64url

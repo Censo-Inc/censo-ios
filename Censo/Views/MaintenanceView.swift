@@ -45,9 +45,7 @@ struct MaintenanceView: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        MaintenanceView(
-            //session: .sample
-        )
+        MaintenanceView()
     }
     .foregroundColor(.Censo.primaryForeground)
 }

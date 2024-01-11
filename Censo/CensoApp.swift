@@ -116,14 +116,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // handle the deep link if the app is launched by a deep link
         if let urlContext = connectionOptions.urlContexts.first {
-            DeepLinkManager.shared.url = urlContext.url
+            DeepLinkState.shared.url = urlContext.url
         }
     }
     
     // handle the deep link if app was already launched
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            DeepLinkManager.shared.url = url
+            DeepLinkState.shared.url = url
         }
     }
     
@@ -157,8 +157,8 @@ class PassThroughWindow: UIWindow {
   }
 }
 
-class DeepLinkManager: ObservableObject {
-    static let shared = DeepLinkManager()
+class DeepLinkState: ObservableObject {
+    static let shared = DeepLinkState()
     @Published var url: URL?
     
     func reset() {
