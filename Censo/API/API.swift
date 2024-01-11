@@ -291,8 +291,6 @@ extension API: TargetType {
              .deleteAccess,
              .attestationKey,
              .getImportEncryptedData,
-             .enableTimelock,
-             .disableTimelock,
              .cancelDisabledTimelock:
             return false
         case .signIn,
@@ -308,6 +306,8 @@ extension API: TargetType {
              .confirmApprover,
              .submitPurchase,
              .acceptImport,
+             .enableTimelock,
+             .disableTimelock,
              .deletePolicySetup:
             return true
         }

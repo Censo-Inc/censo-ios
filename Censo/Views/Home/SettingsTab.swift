@@ -61,7 +61,6 @@ struct SettingsTab: View {
                 } else if let disabledAt = ownerState.timelockSetting.disabledAt {
                     SettingsItem(title: "Cancel Disable Timelock", buttonText: "Cancel", description: "Waiting \(disabledAt.toDisplayDuration()) before disabling the timelock. If you want to leave the timelock enabled, you can cancel now.", buttonDisabled: timelockUpdateInProgress) {
                         cancelDisableRequested = true
-                        enableOrDisableTimelock(enable: false)
                     }
                     .onReceive(timer) { _ in
                         if (Date.now >= disabledAt) {
@@ -69,7 +68,7 @@ struct SettingsTab: View {
                         }
                     }
                 } else {
-                    SettingsItem(title: "Disable Timelock", buttonText: "Disable", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled", buttonDisabled: timelockUpdateInProgress) {
+                    SettingsItem(title: "Disable Timelock", buttonText: "Disable", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled.", buttonDisabled: timelockUpdateInProgress) {
                         enableOrDisableTimelock(enable: false)
                     }
                 }
