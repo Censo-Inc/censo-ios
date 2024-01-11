@@ -17,6 +17,8 @@ struct API {
     var endpoint: Endpoint
 
     enum Endpoint {
+        case health
+
         case attestationChallenge
         case registerAttestationObject(challenge: String, attestation: String, keyId: String)
         case attestationKey
@@ -204,6 +206,8 @@ extension API: TargetType {
 
     var path: String {
         switch endpoint {
+        case .health:
+            return "/health"
         case .attestationChallenge:
             return "v1/attestation-challenge"
         case .registerAttestationObject:
@@ -255,7 +259,8 @@ extension API: TargetType {
             return .post
         case .labelOwner:
             return .put
-        case .user,
+        case .health,
+             .user,
              .attestationKey:
             return .get
         case .deleteUser:
@@ -265,7 +270,8 @@ extension API: TargetType {
 
     var task: Moya.Task {
         switch endpoint {
-        case .user,
+        case .health,
+             .user,
              .deleteUser,
              .declineInvitation,
              .acceptInvitation,
@@ -330,7 +336,8 @@ extension API: TargetType {
 
     var requiresAssertion: Bool {
         switch endpoint {
-        case .user,
+        case .health,
+             .user,
              .declineInvitation,
              .acceptInvitation,
              .rejectOwnerVerification,
@@ -368,7 +375,8 @@ struct APIProviderEnvironmentKey: EnvironmentKey {
     static var defaultValue: MoyaProvider<API> = MoyaProvider(
         plugins: [
             AuthPlugin(),
-            ErrorResponsePlugin()
+            ErrorResponsePlugin(),
+            MaintenancePlugin(),
         ]
     )
 }

@@ -99,14 +99,14 @@ struct SettingsTab: View {
                 showPushNotificationSettings = false
             }
         })
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
+        .dismissableAlert(
+            isPresented: $showingError,
+            error: $error,
+            okAction: {
                 showingError = false
                 error = nil
-            } label: { Text("OK") }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+            }
+        )
         .alert("Delete Data Confirmation", isPresented: $resetRequested) {
             TextField(text: $deleteConfirmation) {
                 Text(deleteConfirmationMessage())
@@ -208,6 +208,7 @@ struct SettingsTab: View {
         self.showingError = true
     }
 }
+
 
 #if DEBUG
 #Preview("Enable Timelock") {

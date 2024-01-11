@@ -21,7 +21,7 @@ struct CensoApp: App {
     }
 }
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     #if DEBUG
     var testing: Bool = false
     #endif
@@ -50,6 +50,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         handlePushRegistration()
 
         return true
+    }
+    
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // connect SceneDelegate to configure scene with the maintenance window
+        let sceneConfig: UISceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        sceneConfig.delegateClass = SceneDelegate.self
+        return sceneConfig
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -106,7 +113,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NotificationCenter.default.post(name: .userDidReceiveRemoteNotification, object: notification)
     }
 }
-
 
 extension Notification.Name {
     static let userDidReceiveRemoteNotification = Notification.Name("userDidReceiveRemoteNotification")

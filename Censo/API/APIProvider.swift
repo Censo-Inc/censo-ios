@@ -12,7 +12,8 @@ struct APIProviderEnvironmentKey: EnvironmentKey {
     static var defaultValue: MoyaProvider<API> = MoyaProvider(
         plugins: [
             AuthPlugin(),
-            ErrorResponsePlugin()
+            ErrorResponsePlugin(),
+            MaintenancePlugin(),
         ]
     )
 }

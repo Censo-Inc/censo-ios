@@ -15,6 +15,8 @@ struct API {
     var endpoint: Endpoint
 
     enum Endpoint {
+        case health
+
         case attestationChallenge
         case registerAttestationObject(challenge: String, attestation: String, keyId: String)
         case attestationKey
@@ -67,6 +69,8 @@ extension API: TargetType {
 
     var path: String {
         switch endpoint {
+        case .health:
+            return "/health"
         case .attestationChallenge:
             return "v1/attestation-challenge"
         case .registerAttestationObject:
@@ -136,7 +140,8 @@ extension API: TargetType {
 
     var method: Moya.Method {
         switch endpoint {
-        case .user,
+        case .health,
+             .user,
              .attestationKey,
              .getImportEncryptedData:
             return .get
@@ -174,7 +179,8 @@ extension API: TargetType {
 
     var task: Moya.Task {
         switch endpoint {
-        case .user,
+        case .health,
+             .user,
              .deleteUser,
              .initBiometryVerification,
              .rejectApproverVerification,
@@ -275,7 +281,8 @@ extension API: TargetType {
 
     var requiresAssertion: Bool {
         switch endpoint {
-        case .user,
+        case .health,
+             .user,
              .attestationChallenge,
              .registerAttestationObject,
              .registerPushToken,

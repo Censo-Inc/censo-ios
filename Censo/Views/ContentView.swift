@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
+    @Environment(\.apiProvider) var apiProvider
+
     var body: some View {
         Authentication(
             loggedOutContent: { onSuccess in
@@ -34,6 +36,9 @@ struct ContentView: View {
                                 .onOpenURL(perform: openURL)
                         }
                     }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
+                    apiProvider.request(with: session, endpoint: .health) { _ in }
                 }
             }
         )

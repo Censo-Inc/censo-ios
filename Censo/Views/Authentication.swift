@@ -11,6 +11,7 @@ import Sentry
 
 extension Notification.Name {
     static let deleteUserDataNotification = Notification.Name("DeleteUserDataNotification")
+    static let maintenanceStatusCheckNotification = Notification.Name("MaintenanceStatusCheckNotification")
 }
 
 struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutContent : View, LoggedInContent : View {

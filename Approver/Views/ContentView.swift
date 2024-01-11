@@ -118,6 +118,9 @@ struct ContentView: View {
                         .onOpenURL(perform: openURL)
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
+                    apiProvider.request(with: session, endpoint: .health) { _ in }
+                }
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in

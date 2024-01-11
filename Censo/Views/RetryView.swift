@@ -11,26 +11,35 @@ import SwiftUI
 struct RetryView: View {
     var error: Error
     var action: () -> Void
-
+    
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
-
+            
             Text(error.message)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-
+            
             Button(action: action) {
                 Text("Retry")
                     .frame(minWidth: 100)
             }
             .buttonStyle(RoundedButtonStyle(tint: .dark))
-
+            
             Spacer()
         }
         .frame(maxWidth: .infinity)
+        .onReceive(MaintenanceState.shared.$maintenanceModeChange) { modeChange in
+            // Retry only the CensoError.underMaintenance when maintenance mode has changed
+            if let errorValue = error as? MoyaError,
+                case .underlying(CensoError.underMaintenance, _) = errorValue {
+                if modeChange.oldValue && !modeChange.newValue {
+                    action()
+                }
+            }
+        }
     }
-
+    
     private func showHelp() {
         if let helpUrl = URL(string: "https://help.censo.co"), UIApplication.shared.canOpenURL(helpUrl) {
             UIApplication.shared.open(helpUrl)
