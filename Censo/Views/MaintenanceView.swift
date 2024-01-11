@@ -11,47 +11,46 @@ import SwiftUI
 struct MaintenanceView: View {
     @Environment(\.scenePhase) var scenePhase
     
-    @ObservedObject var globalMaintenanceState = MaintenanceState.shared
+    @ObservedObject var maintenanceState = MaintenanceState.shared
     @State private var showMaintenanceView: Bool = false
     
     @State private var timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
-    
     var body: some View {
-        
-        VStack {
-            Text("Censo is currently under maintenance, please try again in a few minutes.")
-                .padding()
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .edgesIgnoringSafeArea(.all)
-        .background(Color(UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)))
-        .disabled(true)
-        .opacity(showMaintenanceView ? 1 : 0)
-        .onChange(of: scenePhase) { newScenePhase in
-            switch newScenePhase {
-            case .active:
-                timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
-            case .inactive, .background:
-                timer.upstream.connect().cancel()
-            default:
-                break;
+        Group {
+            if showMaintenanceView {
+                VStack {
+                    Text("Censo is currently under maintenance, please try again in a few minutes.")
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .edgesIgnoringSafeArea(.all)
+                .background(Color(UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)))
+                .disabled(true)
+                .onReceive(timer) { _ in
+                    NotificationCenter.default.post(name: Notification.Name.maintenanceStatusCheckNotification, object: nil)
+                }
             }
         }
-        .onChange(of: globalMaintenanceState.isOn) { isMaintenanceMode in
+        .opacity(showMaintenanceView ? 1 : 0)
+        .onChange(of: scenePhase) { newScenePhase in
+            if newScenePhase == .active && showMaintenanceView {
+                timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+            } else if newScenePhase == .background {
+                timer.upstream.connect().cancel()
+            }
+        }
+        .onChange(of: maintenanceState.isOn) { isMaintenanceMode in
             if !isMaintenanceMode {
-                // Delay to allow for retry
+                // Delay to allow for retry under the maintenance screen
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     showMaintenanceView = false
                 }
             } else {
                 showMaintenanceView = true
+                timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
             }
-        }
-        .onReceive(timer) { _ in
-            // session is not available in this place, notify logged in view to perfrom an API call
-            NotificationCenter.default.post(name: Notification.Name.maintenanceStatusCheckNotification, object: nil)
         }
     }
 }

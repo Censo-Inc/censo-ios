@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var currentError: Error?
     @State private var pendingImport: Import?
     @Environment(\.apiProvider) var apiProvider
-    @ObservedObject var deepLinkState = DeepLinkState.shared
+    @ObservedObject var deeplinkState = DeeplinkState.shared
 
     var body: some View {
         Authentication(
@@ -24,11 +24,11 @@ struct ContentView: View {
             loggedInContent: { session in
                 CloudCheck {
                     AppAttest(session: session) {
-                        if let url = deepLinkState.url {
+                        if let url = deeplinkState.url {
                             ProgressView()
                                 .onAppear {
                                     openURL(url)
-                                    DeepLinkState.shared.reset()
+                                    deeplinkState.reset()
                                 }
                         } else {
                             LoggedInOwnerView(pendingImport: $pendingImport, session: session)
@@ -42,7 +42,7 @@ struct ContentView: View {
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
-                DeepLinkState.shared.reset()
+                deeplinkState.reset()
             })
         } message: { error in
             Text(error.localizedDescription)

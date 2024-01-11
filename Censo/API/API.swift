@@ -16,7 +16,7 @@ struct API {
 
     enum Endpoint {
         case health
-        
+
         case attestationChallenge
         case registerAttestationObject(challenge: String, attestation: String, keyId: String)
         case attestationKey

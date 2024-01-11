@@ -16,11 +16,11 @@ enum ApproverRoute : Hashable {
 
 struct ContentView: View {
     @Environment(\.apiProvider) var apiProvider
+    @ObservedObject var deeplinkState = DeeplinkState.shared
 
     @State private var route: ApproverRoute?
     @State private var showingError = false
     @State private var currentError: Error?
-    @State private var url: URL?
     @State private var showLogin: Bool = false
     @State private var navigateToRoute = false
     @State private var reloadNeeded = false
@@ -56,9 +56,6 @@ struct ContentView: View {
                             self.showLogin = true
                         }
                     )
-                    .onOpenURL(perform: {
-                        self.url = $0
-                    })
                 }
             },
             loggedInContent: { session in
@@ -66,11 +63,11 @@ struct ContentView: View {
                     AppAttest(session: session) {
                         NavigationView {
                             VStack {
-                                if let url {
+                                if let url = deeplinkState.url {
                                     ProgressView()
                                         .onAppear {
-                                            self.url = nil
                                             openURL(url)
+                                            deeplinkState.reset()
                                         }
                                 } else {
                                     LoggedInView(
@@ -115,8 +112,10 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        .onOpenURL(perform: openURL)
                     }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
+                    apiProvider.request(with: session, endpoint: .health) { _ in }
                 }
             }
         )
