@@ -20,9 +20,7 @@ class MaintenanceState: ObservableObject {
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    @Environment(\.scenePhase) private var scenePhase
     
-    var contentWindow: UIWindow?
     var maintenanceWindow: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
