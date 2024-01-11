@@ -49,7 +49,7 @@ struct LoggedInOwnerView: View {
                                 case .initial:
                                     InitialPlanSetup(
                                         session: session,
-                                        onComplete: replaceOwnerState
+                                        onComplete: replaceOwnerState                                    
                                     )
                                 case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
                                     FirstPhrase(
