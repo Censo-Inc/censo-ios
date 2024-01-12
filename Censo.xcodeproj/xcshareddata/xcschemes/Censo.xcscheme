@@ -34,7 +34,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3D0C1EB92A83E22200AB3A48"
+               BlueprintIdentifier = "3DCAAD8C2B51E6BE00D5C093"
                BuildableName = "CensoUITests.xctest"
                BlueprintName = "CensoUITests"
                ReferencedContainer = "container:Censo.xcodeproj">
@@ -45,7 +45,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6CC60F7B2AA13466001A4454"
+               BlueprintIdentifier = "3DCAAD742B51E53500D5C093"
                BuildableName = "CensoTests.xctest"
                BlueprintName = "CensoTests"
                ReferencedContainer = "container:Censo.xcodeproj">

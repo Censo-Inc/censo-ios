@@ -117,7 +117,8 @@ struct FirstTimePhrase: View {
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            
+            .accessibilityIdentifier("generatePhraseButton")
+
             Button {
                 onAddYourOwnPhrase()
             } label: {
@@ -130,7 +131,7 @@ struct FirstTimePhrase: View {
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-
+            .accessibilityIdentifier("existingPhraseButton")
         }
         .padding(.horizontal)
         .padding([.horizontal, .bottom])

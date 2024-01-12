@@ -51,7 +51,8 @@ struct SaveSeedPhrase: View {
                         Text("Enter a label...")
                     }
                     .textFieldStyle(RoundedTextFieldStyle())
-                    
+                    .accessibilityIdentifier("labelTextField")
+
                     Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color.red)
@@ -74,6 +75,7 @@ struct SaveSeedPhrase: View {
                     .frame(maxWidth: .infinity)
                 }
                 .disabled(!label.isValid || inProgress)
+                .accessibilityIdentifier("saveButton")
             }
             .padding(30)
             .buttonStyle(RoundedButtonStyle())

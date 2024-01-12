@@ -63,6 +63,15 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
             return
         }
 
+#if DEBUG
+        if CommandLine.isTesting {
+            createSession(with: userCredentials)
+            self.credentialState = .authorized
+            return
+        }
+#endif
+
+
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userCredentials.userIdentifier) { state, error in
             switch error {
             case .some(let error):
@@ -70,19 +79,23 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
             case .none:
                 break
             }
-            if let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
-                self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
-            } else {
-                do {
-                    let deviceKey = try SecureEnclaveWrapper.generateDeviceKey(userIdentifier: userCredentials.userIdentifier)
-                    self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
-                } catch {
-                    SentrySDK.captureWithTag(error: error, tagValue: "Generate Device Key")
-                    self.session = .failure(error)
-                }
-            }
+            createSession(with: userCredentials)
 
             self.credentialState = state
+        }
+    }
+
+    private func createSession(with userCredentials: UserCredentials) {
+        if let deviceKey = SecureEnclaveWrapper.deviceKey(userIdentifier: userCredentials.userIdentifier) {
+            self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
+        } else {
+            do {
+                let deviceKey = try SecureEnclaveWrapper.generateDeviceKey(userIdentifier: userCredentials.userIdentifier)
+                self.session = .success(Session(deviceKey: deviceKey, userCredentials: userCredentials))
+            } catch {
+                SentrySDK.captureWithTag(error: error, tagValue: "Generate Device Key")
+                self.session = .failure(error)
+            }
         }
     }
 }

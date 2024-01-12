@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import Censo
 
 final class Base58Tests: XCTestCase {
     func getTestCases() -> [Data: String] {

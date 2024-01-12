@@ -7,6 +7,7 @@
 
 import XCTest
 import CryptoKit
+@testable import Censo
 
 final class EncryptionTests: XCTestCase {
     func testSymmetricEncryption() {

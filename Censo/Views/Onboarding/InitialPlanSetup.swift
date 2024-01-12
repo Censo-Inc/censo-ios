@@ -137,7 +137,8 @@ struct InitialPlanSetup: View {
                                         return .handled
                                     })
                                     .padding(.bottom)
-                                
+                                    .accessibilityIdentifier("usePasswordLink")
+
                                 Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
                                     .font(.caption)
                                     .italic()

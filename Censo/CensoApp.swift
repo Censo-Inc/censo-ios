@@ -13,6 +13,7 @@ import Moya
 @main
 struct CensoApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -33,6 +34,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         #if DEBUG
         if CommandLine.arguments.contains("testing") {
             self.testing = true
+
+            Keychain.userCredentials = .init(idToken: "testIdToken".data(using: .utf8)!, userIdentifier: CommandLine.arguments.last!)
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
         }
         #endif
         

@@ -35,14 +35,16 @@ struct CreatePassword: View {
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
                 .padding([.leading, .trailing, .bottom])
-                
+                .accessibilityIdentifier("passwordField")
+
                 SecureField("Enter it again...", text: $passwordAgain) {
                     checkPasswordAgain()
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
                 .focused($focusPasswordAgain)
                 .padding()
-                
+                .accessibilityIdentifier("passwordConfirmField")
+
                 Button {
                     if let cryptedPassword = pbkdf2(password: password) {
                         onCreated(Base64EncodedString(data: cryptedPassword))
@@ -56,7 +58,8 @@ struct CreatePassword: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
                 .disabled(createDisabled)
-                
+                .accessibilityIdentifier("createPasswordButton")
+
                 Spacer()
             }
             .padding()

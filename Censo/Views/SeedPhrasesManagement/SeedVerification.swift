@@ -42,6 +42,7 @@ struct SeedVerification: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
+                .accessibilityIdentifier("nextButton")
             }
         }
         .background(

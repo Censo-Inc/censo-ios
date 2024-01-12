@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import Censo
 
 final class BIP39Tests: XCTestCase {
     private func tryValidation(phrase: String, expectedError: BIP39InvalidReason) {

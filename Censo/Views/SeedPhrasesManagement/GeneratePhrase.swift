@@ -69,6 +69,7 @@ struct GeneratePhrase: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding(.horizontal)
                 .padding(.bottom)
+                .accessibilityIdentifier("generateButton")
             }
             .multilineTextAlignment(.center)
             .navigationTitle(Text("Add Seed Phrase"))

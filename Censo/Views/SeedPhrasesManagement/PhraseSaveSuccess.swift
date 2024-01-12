@@ -47,6 +47,7 @@ struct PhraseSaveSuccess: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(30)
+            .accessibilityIdentifier("okButton")
         }
         .sheet(isPresented: $showPushNotificationSettings, content: {
             PushNotificationSettings {

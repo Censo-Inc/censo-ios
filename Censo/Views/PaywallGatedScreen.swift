@@ -263,7 +263,8 @@ struct Paywall: View {
             }
             .buttonStyle(RoundedButtonStyle())
             .padding(.bottom)
-            
+            .accessibilityIdentifier("purchaseButton")
+
             HStack {
                 Link(destination: Configuration.termsOfServiceURL, label: {
                     Text("Terms")

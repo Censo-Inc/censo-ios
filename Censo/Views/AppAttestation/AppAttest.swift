@@ -28,8 +28,18 @@ struct AppAttest<Content>: View where Content : View {
         self._attestKey = AppStorage("attestKey-\(session.userCredentials.userIdentifier)")
     }
 
+    private var shouldBypass: Bool {
+        #if DEBUG
+        return DCAppAttestService().isSupported
+        #else
+        return false
+        #endif
+    }
+
     var body: some View {
-        if let attestKey = attestKey {
+        if shouldBypass {
+            content()
+        } else if let attestKey = attestKey {
             if attestKey.verified {
                 AttestationCheck(session: session, keyId: attestKey.keyId) {
                     self.attestKey = nil

@@ -52,7 +52,8 @@ struct PushNotificationSettings: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                
+                .accessibilityIdentifier("enableButton")
+
                 Button {
                     pushNotificationsEnabled = "false"
                     onFinish()
@@ -64,7 +65,7 @@ struct PushNotificationSettings: View {
                 }
                 .padding(.vertical)
                 .buttonStyle(RoundedButtonStyle())
-                
+                .accessibilityIdentifier("noThanksButton")
             }
             .padding(.horizontal, 25)
         } else {

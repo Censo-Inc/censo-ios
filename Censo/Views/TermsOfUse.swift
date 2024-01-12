@@ -20,6 +20,7 @@ struct TermsOfUse: View {
             if (isReview) {
                 WebView(text: $text)
                     .frame(minWidth: 0, maxWidth: .infinity)
+                    .accessibilityIdentifier("termsWebView")
                 Divider()
             } else {
 
@@ -43,6 +44,7 @@ struct TermsOfUse: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding(.horizontal)
                 .padding(.bottom)
+                .accessibilityIdentifier("reviewTermsButton")
             }
 
             Button {
@@ -54,6 +56,7 @@ struct TermsOfUse: View {
             .buttonStyle(RoundedButtonStyle())
             .padding(.horizontal)
             .padding(.bottom)
+            .accessibilityIdentifier("acceptTermsButton")
 
             Text("By tapping Accept & Continue, you agree to our Terms of Use.")
                 .font(.system(size: 12.0))

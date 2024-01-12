@@ -6,101 +6,102 @@
 //
 
 import XCTest
-import Censo
+@testable import Censo
 
 final class SampleTest: XCTestCase {
     var app: XCUIApplication!
+    var userId: String!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+        userId = "testAppleUserIdentifier-\(UUID().uuidString)"
         app = XCUIApplication()
-        app.launchArguments = ["testing"]
+        app.launchArguments = ["testing", userId]
         app.launch()
     }
 
     override func tearDownWithError() throws {
-        //Keychain.removeVault()
+
     }
 
-    func testPhraseEntryForwards() throws {
-        throw XCTSkip("just a sample, no longer works")
-        app.buttons["addPhrase"].tap()
+    func test00_Onboarding() throws {
+        let reviewButton = app.buttons["reviewTermsButton"]
+        XCTAssertTrue(reviewButton.waitForExistence(timeout: 50))
 
-        let phraseName = "Test"
+        reviewButton.tap()
 
-        let name = app.textFields["nameField"]
-        name.tap()
-        name.typeText(phraseName)
+        let terms = app.webViews["termsWebView"]
+        XCTAssertTrue(terms.waitForExistence(timeout: 5))
 
-        let myTestPhrase = "obvious logic scout door humble speak stamp bean tape mutual rough pride airport yellow artwork ranch prevent pact identify globe garlic leisure vital analyst"
+        let acceptButton = app.buttons["acceptTermsButton"]
+        XCTAssertTrue(acceptButton.waitForExistence(timeout: 5))
 
-        let words = app.textFields["wordsField"]
-        words.tap()
-        words.typeText(myTestPhrase)
+        acceptButton.tap()
 
-        let addButton = app.buttons["addToVaultButton"]
-        addButton.tap()
+        let purchaseButton = app.buttons["purchaseButton"]
+        XCTAssertTrue(purchaseButton.waitForExistence(timeout: 5))
 
-        let newPhrase = app.buttons[phraseName]
-        XCTAssertTrue(newPhrase.waitForExistence(timeout: 5))
+        purchaseButton.tap()
 
-        newPhrase.tap()
+        let passwordLink = app.staticTexts["usePasswordLink"]
+        XCTAssertTrue(passwordLink.waitForExistence(timeout: 5))
 
-        let myTestWords = myTestPhrase.split(separator: " ").map(String.init)
+        passwordLink.tap()
 
-        for i in 0..<myTestWords.count {
-            let number = app.staticTexts["\(i+1)"]
-            XCTAssertTrue(number.waitForExistence(timeout: 5))
+        // Can test invalid password length
+        let passwordField = app.secureTextFields["passwordField"]
+        XCTAssertTrue(passwordField.waitForExistence(timeout: 5))
 
-            let message = app.staticTexts[myTestWords[i]]
-            XCTAssertTrue(message.waitForExistence(timeout: 5))
+        passwordField.tap()
+        passwordField.typeText("MyPassword123!MyPassword123!MyPassword123!")
 
-            if i % 3 == 2 {
-                let nextButton = app.buttons["nextWordSetButton"]
-                nextButton.tap()
-            }
-        }
+        let passwordConfirmField = app.secureTextFields["passwordConfirmField"]
+        XCTAssertTrue(passwordConfirmField.waitForExistence(timeout: 5))
+
+        passwordConfirmField.tap()
+        passwordConfirmField.typeText("MyPassword123!MyPassword123!MyPassword123!")
+        passwordConfirmField.typeText("\n")
+
+        let createPasswordButton = app.buttons["createPasswordButton"]
+        XCTAssertTrue(createPasswordButton.waitForExistence(timeout: 5))
+
+        createPasswordButton.tap()
+
+        let generatePhraseButton = app.buttons["generatePhraseButton"]
+        XCTAssertTrue(generatePhraseButton.waitForExistence(timeout: 5))
+
+        generatePhraseButton.tap()
+
+        let generateButton = app.buttons["generateButton"]
+        XCTAssertTrue(generateButton.waitForExistence(timeout: 5))
+
+        generateButton.tap()
+
+        let nextButton = app.buttons["nextButton"]
+        XCTAssertTrue(nextButton.waitForExistence(timeout: 5))
+
+        nextButton.tap()
+
+        let labelTextField = app.textFields["labelTextField"]
+        XCTAssertTrue(labelTextField.waitForExistence(timeout: 5))
+
+        labelTextField.tap()
+        labelTextField.typeText("MyPhrase")
+
+        let saveButton = app.buttons["saveButton"]
+        XCTAssertTrue(saveButton.waitForExistence(timeout: 5))
+
+        saveButton.tap()
+
+        let okButton = app.buttons["okButton"]
+        XCTAssertTrue(okButton.waitForExistence(timeout: 5))
+
+        okButton.tap()
+
+        let noThanksButton = app.buttons["noThanksButton"]
+        XCTAssertTrue(noThanksButton.waitForExistence(timeout: 5))
+
+        noThanksButton.tap()
     }
 
-    func testPhraseEntryBackwards() throws {
-        throw XCTSkip("just a sample, no longer works")
-        app.buttons["addPhrase"].tap()
-
-        let phraseName = "Test"
-
-        let name = app.textFields["nameField"]
-        name.tap()
-        name.typeText(phraseName)
-
-        let myTestPhrase = "obvious logic scout door humble speak stamp bean tape mutual rough pride airport yellow artwork ranch prevent pact identify globe garlic leisure vital analyst"
-
-        let words = app.textFields["wordsField"]
-        words.tap()
-        words.typeText(myTestPhrase)
-
-        let addButton = app.buttons["addToVaultButton"]
-        addButton.tap()
-
-        let newPhrase = app.buttons[phraseName]
-        XCTAssertTrue(newPhrase.waitForExistence(timeout: 5))
-
-        newPhrase.tap()
-
-        let myTestWords = myTestPhrase.split(separator: " ").map(String.init)
-
-        for i in 0..<myTestWords.count {
-            if i % 3 == 0 {
-                let previousButton = app.buttons["previousWordSetButton"]
-                previousButton.tap()
-            }
-
-            let j = myTestWords.count - i - 1
-
-            let number = app.staticTexts["\(j+1)"]
-            XCTAssertTrue(number.waitForExistence(timeout: 5))
-
-            let message = app.staticTexts[myTestWords[j]]
-            XCTAssertTrue(message.waitForExistence(timeout: 5))
-        }
-    }
 }
