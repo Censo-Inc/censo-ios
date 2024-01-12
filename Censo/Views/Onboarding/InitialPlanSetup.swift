@@ -34,6 +34,7 @@ struct InitialPlanSetup: View {
     
     @State private var createPolicyParams: CreatePolicyParams?
     @State private var usePasswordAuth = false
+    @State private var showLearnMore = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -103,6 +104,8 @@ struct InitialPlanSetup: View {
             } else {
                 GeometryReader { geometry in
                     ZStack(alignment: .bottom) {
+                        Spacer()
+                            .frame(maxHeight: geometry.size.height * 0.05)
                         VStack {
                             Image("FaceScanHandWithPhone")
                                 .resizable()
@@ -156,7 +159,16 @@ struct InitialPlanSetup: View {
                                     }
                                 }
                                 .buttonStyle(RoundedButtonStyle())
-                                .padding(.bottom)
+                                .frame(maxWidth: .infinity)
+
+                                Button {
+                                    showLearnMore = true
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "info.circle")
+                                        Text("Learn more")
+                                    }
+                                }
                                 .frame(maxWidth: .infinity)
                             }
                             .padding(.horizontal)
@@ -176,6 +188,24 @@ struct InitialPlanSetup: View {
             }
         } message: { error in
             Text("There was an error submitting your info.\n\(error.localizedDescription)")
+        }
+        .sheet(isPresented: $showLearnMore) {
+            LearnMore(title: "Face Scan & Privacy", showLearnMore: $showLearnMore) {
+                VStack {
+                    Text("""
+                        Censo uses a face scan to ensure your security and protect your privacy.  Any security actions you take with Censo require a face scan as one of the sources of authentication.
+                        
+                        Censo utilizes face technology built by facetec.com. Facetec’s certified liveness plus 3D face matching ensures that you and only you can access your seed phrases and make changes to your security.  Facetec provides over 2 billion 3D liveness checks annually.
+                        
+                        By utilizing Facetec rather than the biometrics on your mobile device, we can assure that you’ll never lose access to your seed phrases, even in the event you lose your mobile device or change the biometry on your phone.
+                        
+                        Censo maintains only an encrypted version of your face scan that can never be used to identify you or tied to your identity, although it does allow Censo to positively identify you as a user.
+                        """
+                    )
+                    .padding()
+                    
+                }
+            }
         }
     }
     

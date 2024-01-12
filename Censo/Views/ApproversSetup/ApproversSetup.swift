@@ -46,7 +46,8 @@ struct ApproversSetup: View {
     @State private var error: Error?
     @State private var showDeletePolicySetupConfirmation = false
     @State private var deletingPolicySetup = false
-    
+    @State private var showLearnMore = false
+
     init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void, step: Step) {
         self.session = session
         self.ownerState = ownerState
@@ -71,17 +72,17 @@ struct ApproversSetup: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 0) {
                             Spacer()
-                            Text("Increase your security")
-                                .font(.title2)
+                            Text("Add Approvers, increase your security")
+                                .font(.title)
                                 .bold()
                                 .padding(.vertical)
                             
                             Text("""
-                            Adding two trusted approvers increases your security by eliminating any single point of compromise while providing extra backup should you or your approvers lose your credentials.
-                            
-                            Choose approvers who you think are reliable and you can trust.
-                            
-                            While they can never access your seed phrase (only you can), you will need at least one of the two you choose to help you access it.
+                            If you use approvers, you will need to add a total of two.
+
+                            Once you add them, whenever you want to access your seed phrases, you will need to request the help of one of your two approvers.
+
+                            Approvers can be removed by you after you add them.
                             """
                             )
                             .font(.subheadline)
@@ -121,6 +122,20 @@ struct ApproversSetup: View {
                                 .padding(.top)
                             }
                             
+                            Button {
+                                showLearnMore = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "info.circle")
+                                        .tint(.black)
+
+                                    Text("Learn more")
+                                        .tint(.black)
+                                }
+                            }
+                            .padding(.top)
+                            .frame(maxWidth: .infinity)
+
                             Spacer(minLength: 0)
                         }
                         .padding([.leading, .trailing], 32)
@@ -156,6 +171,28 @@ struct ApproversSetup: View {
                         }
                     }
                 })
+                .sheet(isPresented: $showLearnMore) {
+                    LearnMore(title: "Trusted Approvers & Safety in Number", showLearnMore: $showLearnMore) {
+                        VStack {
+                            Text("""
+                                Censo's approach to securing your cryptographically secured seed phrases and user credentials is innovative yet intuitive. By encrypting the seed phrase on your device and then distributing cryptographically provable approval rights to Trusted Approvers using Shamir Secret Sharing, we ensure maximum security and resilience.
+                                
+                                **The role of Trusted Approvers**
+                                Your Trusted Approvers are your safety net. They could be close family, friends, or even your attorney – people you trust implicitly. But here’s the catch: they can help you access your seed phrase, yet they can't access it themselves. They are your guardians, not gatekeepers.
+                                
+                                **Simple for them, Secure for you**
+                                Trusted Approvers don’t need to be crypto gurus. If they can use a smartphone, they can be your rock-solid backup. And for them, it's as easy as accepting a request and following a few simple steps.
+                                
+                                **The Power of Redundancy and No Single Point of Failure**
+                                Our 2-of-3 threshold ensures there's no single point of failure. If one Trusted Approver is unavailable or loses their credentials, you still have a backup. It's a seamless blend of security and convenience.
+                                
+                                **A Fail-Safe for Authentication Too**
+                                In the rare event you lose access to your usual authentication methods (like your Apple or Google Login ID), your Trusted Approvers can step in. Think of it as a triple-layered safety net.
+                                """)
+                            .padding()
+                        }
+                    }
+                }
             case .setupPrimary:
                 SetupApprover(
                     session: session,
