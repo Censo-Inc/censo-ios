@@ -19,6 +19,7 @@ struct FirstPhrase: View {
     var ownerState: API.OwnerState.Ready
     var session: Session
     var onComplete: (API.OwnerState) -> Void
+    var onCancel: () -> Void
     
     var body: some View {
         NavigationStack {
@@ -40,6 +41,7 @@ struct FirstPhrase: View {
                                     onGeneratePhrase: { showingGeneratePhrase = true },
                                     onAddYourOwnPhrase: { addYourOwnPhrase = true }
                                 )
+                                .onboardingCancelNavBar(onCancel: onCancel)
                             }
                         }
                         .background {
@@ -131,7 +133,7 @@ struct FirstTimePhrase: View {
 
         }
         .padding(.horizontal)
-        .padding(.horizontal)
+        .padding([.horizontal, .bottom])
     }
 }
 
@@ -199,7 +201,7 @@ struct AddYourOwnPhrase: View {
             .buttonStyle(RoundedButtonStyle())
         }
         .padding(.horizontal)
-        .padding(.horizontal)
+        .padding([.horizontal, .bottom])
     }
     
     private func currentLanguage() ->  WordListLanguage {
@@ -212,7 +214,8 @@ struct AddYourOwnPhrase: View {
     FirstPhrase(
         ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
         session: .sample,
-        onComplete: {_ in }
+        onComplete: {_ in },
+        onCancel: {}
     ).foregroundColor(.Censo.primaryForeground)
 }
 #endif

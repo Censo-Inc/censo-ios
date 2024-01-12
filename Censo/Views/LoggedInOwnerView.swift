@@ -23,6 +23,9 @@ struct LoggedInOwnerView: View {
     @RemoteResult<API.OwnerState, API> private var ownerStateResource
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
     @State private var refreshStatePublisher = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    @State private var cancelOnboarding = false
+    @State private var showingError = false
+    @State private var error: Error?
 
     var session: Session
 
@@ -34,98 +37,113 @@ struct LoggedInOwnerView: View {
         case .loading:
             ProgressView()
         case .success(let ownerState):
-            if (acceptedTermsOfUseVersion == "v0.2") {
-                let ownerStateBinding = Binding<API.OwnerState>(
-                    get: { ownerState },
-                    set: { replaceOwnerState(newOwnerState: $0) }
-                )
-                PaywallGatedScreen(session: session, ownerState: ownerStateBinding) {
-                    BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
-                        switch pendingImport {
-                        case .none:
-                            switch importPhase {
+            VStack {
+                if (acceptedTermsOfUseVersion == "v0.2") {
+                    let ownerStateBinding = Binding<API.OwnerState>(
+                        get: { ownerState },
+                        set: { replaceOwnerState(newOwnerState: $0) }
+                    )
+                    PaywallGatedScreen(session: session, ownerState: ownerStateBinding, onCancel: onCancelOnboarding) {
+                        BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                            switch pendingImport {
                             case .none:
-                                switch ownerState {
-                                case .initial(let initial):
-                                    InitialPlanSetup(
-                                        session: session,
-                                        ownerState: initial,
-                                        onComplete: replaceOwnerState
-                                    )
-                                case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
-                                    FirstPhrase(
-                                        ownerState: ready,
-                                        session: session,
-                                        onComplete: replaceOwnerState                                    
-                                    )
-                                case .ready(let ready):
-                                    HomeScreen(
-                                        session: session,
-                                        ownerState: ready,
-                                        onOwnerStateUpdated: replaceOwnerState
-                                    )
-                                }
-                            case .completed(let importedPhrase):
-                                switch ownerState {
-                                case .ready(let ownerState):
-                                    if let words = try? BIP39.binaryDataToWords(
-                                        // serialize() prepends a sign byte, which binaryDataToWords strips off as
-                                        // the language byte. We're passing in an explicit language to use, so that
-                                        // byte gets ignored anyway
-                                        binaryData: importedPhrase.binaryPhrase.bigInt.serialize(),
-                                        language: importedPhrase.language
-                                    ) {
-                                        NavigationStack {
-                                            SeedVerification(
-                                                words: words,
-                                                session: session,
-                                                publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                                                masterKeySignature: ownerState.policy.masterKeySignature,
-                                                ownerParticipantId: ownerState.policy.owner?.participantId,
-                                                ownerEntropy: ownerState.policy.ownerEntropy,
-                                                isFirstTime: false,
-                                                requestedLabel: importedPhrase.label,
-                                                onClose: { importPhase = .none }
-                                            ) { ownerState in
-                                                replaceOwnerState(newOwnerState: ownerState)
+                                switch importPhase {
+                                case .none:
+                                    switch ownerState {
+                                    case .initial(let initial):
+                                        InitialPlanSetup(
+                                            session: session,
+                                            ownerState: initial,
+                                            onComplete: replaceOwnerState,
+                                            onCancel: onCancelOnboarding
+                                        )
+                                    case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
+                                        FirstPhrase(
+                                            ownerState: ready,
+                                            session: session,
+                                            onComplete: replaceOwnerState,
+                                            onCancel: onCancelOnboarding
+                                        )
+                                    case .ready(let ready):
+                                        HomeScreen(
+                                            session: session,
+                                            ownerState: ready,
+                                            onOwnerStateUpdated: replaceOwnerState
+                                        )
+                                    }
+                                case .completed(let importedPhrase):
+                                    switch ownerState {
+                                    case .ready(let ownerState):
+                                        if let words = try? BIP39.binaryDataToWords(
+                                            // serialize() prepends a sign byte, which binaryDataToWords strips off as
+                                            // the language byte. We're passing in an explicit language to use, so that
+                                            // byte gets ignored anyway
+                                            binaryData: importedPhrase.binaryPhrase.bigInt.serialize(),
+                                            language: importedPhrase.language
+                                        ) {
+                                            NavigationStack {
+                                                SeedVerification(
+                                                    words: words,
+                                                    session: session,
+                                                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                                                    masterKeySignature: ownerState.policy.masterKeySignature,
+                                                    ownerParticipantId: ownerState.policy.owner?.participantId,
+                                                    ownerEntropy: ownerState.policy.ownerEntropy,
+                                                    isFirstTime: false,
+                                                    requestedLabel: importedPhrase.label,
+                                                    onClose: { importPhase = .none }
+                                                ) { ownerState in
+                                                    replaceOwnerState(newOwnerState: ownerState)
+                                                    importPhase = .none
+                                                }
+                                            }
+                                        }
+                                        case .initial:
+                                            ProgressView().onAppear {
                                                 importPhase = .none
                                             }
                                         }
-                                    } else {
-                                        ProgressView().onAppear {
-                                            importPhase = .none
-                                        }
-                                    }
-                                case .initial:
-                                    ProgressView().onAppear {
-                                        importPhase = .none
-                                    }
+                                case .completing, .accepting:
+                                    ProgressView("Importing phrase")
                                 }
-                            case .completing, .accepting:
-                                ProgressView("Importing phrase")
+                            case .some(let imp):
+                                AcceptImportView(importToAccept: imp, onAccept: { imp in
+                                    acceptImport(importToAccept: imp)
+                                    pendingImport = nil
+                                }, onDecline: {
+                                    pendingImport = nil
+                                })
                             }
-                        case .some(let imp):
-                            AcceptImportView(importToAccept: imp, onAccept: { imp in
-                                acceptImport(importToAccept: imp)
-                                pendingImport = nil
-                            }, onDecline: {
-                                pendingImport = nil
-                            })
                         }
+                        .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: checkForCompletedImport))
                     }
-                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: checkForCompletedImport))
-                }
-            } else {
-                NavigationStack {
+                } else {
                     TermsOfUse(
                         text: TermsOfUse.v0_2,
                         onAccept: {
                             acceptedTermsOfUseVersion = "v0.2"
                         }
                     )
-                    .navigationTitle("Terms of Use")
-                    .navigationBarTitleDisplayMode(.inline)
+                    .onboardingCancelNavBar(
+                        onboarding: ownerState.onboarding,
+                        navigationTitle: "Terms of Use",
+                        onCancel: onCancelOnboarding
+                    )
                 }
+            }
+            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                Button { } label: { Text("OK") }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+            .alert("Exit Setup", isPresented: $cancelOnboarding) {
+                Button(role: .destructive) {
+                    deleteUser(ownerState: ownerState)
+                } label: { Text("Exit") }
+                Button(role: .cancel) {
+                } label: { Text("Cancel") }
+            } message: {
+                Text("This will exit the setup process and delete **ALL** of your data. You will be required to start over again.")
             }
         case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
             SignIn(session: session, onSuccess: reload) {
@@ -133,6 +151,30 @@ struct LoggedInOwnerView: View {
             }
         case .failure(let error):
             RetryView(error: error, action: reload)
+        }
+    }
+    
+    private func onCancelOnboarding() {
+        cancelOnboarding = true
+    }
+    
+    private func deleteUser(ownerState: API.OwnerState) {
+        apiProvider.request(with: session, endpoint: .deleteUser) { result in
+            switch result {
+            case .success:
+                switch ownerState {
+                case .ready(let ready):
+                    if let ownerTrustedApprover = ready.policy.approvers.first(where: { $0.isOwner }) {
+                        session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
+                    }
+                default:
+                    break
+                }
+                NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
+            case .failure(let error):
+                self.showingError = true
+                self.error = error
+            }
         }
     }
 

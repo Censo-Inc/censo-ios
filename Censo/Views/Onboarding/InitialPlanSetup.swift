@@ -15,6 +15,7 @@ struct InitialPlanSetup: View {
     var session: Session
     var ownerState: API.OwnerState.Initial
     var onComplete: (API.OwnerState) -> Void
+    var onCancel: () -> Void
     
     @State private var showingError = false
     @State private var error: Error?
@@ -113,6 +114,7 @@ struct InitialPlanSetup: View {
                             Spacer()
                         }
                         .padding(.leading, geometry.size.width * 0.1)
+                        .padding(.top, 10)
                         
                         VStack(spacing: 0) {
                             Spacer()
@@ -175,6 +177,7 @@ struct InitialPlanSetup: View {
                             .padding(.horizontal)
                         }
                     }
+                    .onboardingCancelNavBar(onCancel: onCancel)
                 }
             }
         }
@@ -244,7 +247,7 @@ struct InitialPlanSetup: View {
 
 #if DEBUG
 #Preview {
-    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active), onComplete: {_ in})
+    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active), onComplete: {_ in}, onCancel: {})
         .foregroundColor(.Censo.primaryForeground)
 }
 #endif

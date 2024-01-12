@@ -17,6 +17,7 @@ struct PaywallGatedScreen<Content: View>: View {
     
     var session: Session
     @Binding var ownerState: API.OwnerState
+    var onCancel: () -> Void
     @ViewBuilder var content: () -> Content
     
     private let productIds = [Configuration.appStoreProductId]
@@ -60,7 +61,11 @@ struct PaywallGatedScreen<Content: View>: View {
                         }
                     }
                 } else if let offer {
-                    Paywall(offer: offer, purchase: purchase, restorePurchases: restorePurchases)
+                    Paywall(offer: offer, 
+                            purchase: purchase,
+                            restorePurchases: restorePurchases
+                    )
+                    .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
                 } else {
                     ProgressView()
                         .onAppear() { loadProduct() }
@@ -345,7 +350,8 @@ import Moya
     
     return PaywallGatedScreen(
         session: .sample,
-        ownerState: $ownerState
+        ownerState: $ownerState,
+        onCancel: {}
     ) {
         Text("Behind the paywall")
     }.foregroundColor(.Censo.primaryForeground)

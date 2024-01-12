@@ -434,6 +434,20 @@ extension API {
                 }
             }
         }
+
+        var onboarding: Bool {
+            get {
+                switch self {
+                case .initial:
+                    return true
+                case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
+                    return true
+                default:
+                    return false
+                }
+            }
+        }
+        
     }
 }
 
