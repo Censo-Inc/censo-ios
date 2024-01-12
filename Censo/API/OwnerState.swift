@@ -40,8 +40,21 @@ extension API {
                     return accepted.deviceEncryptedTotpSecret
                 case .verificationSubmitted(let verificationSubmitted):
                     return verificationSubmitted.deviceEncryptedTotpSecret
-                case .initial, .confirmed, .declined, .implicitlyOwner:
+                case .initial, .confirmed, .declined, .implicitlyOwner, .ownerAsApprover:
                     return nil
+                }
+            }
+        }
+        
+        var entropy: Base64EncodedString? {
+            get {
+                return switch status {
+                case .ownerAsApprover(let status):
+                    status.entropy
+                case .implicitlyOwner(let status):
+                    status.entropy
+                case .initial, .accepted, .confirmed, .declined, .verificationSubmitted:
+                    nil
                 }
             }
         }
@@ -64,6 +77,7 @@ extension API {
         case accepted(Accepted)
         case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
+        case ownerAsApprover(OwnerAsApprover)
         case implicitlyOwner(ImplicitlyOwner)
         
         struct Initial: Codable, Equatable {
@@ -90,8 +104,14 @@ extension API {
             var confirmedAt: Date
         }
 
+        struct OwnerAsApprover: Codable, Equatable {
+            var entropy: Base64EncodedString
+            var confirmedAt: Date
+        }
+        
         struct ImplicitlyOwner: Codable, Equatable {
             var approverPublicKey: Base58EncodedPublicKey
+            var entropy: Base64EncodedString?
             var confirmedAt: Date
         }
 
@@ -117,6 +137,8 @@ extension API {
                 self = .verificationSubmitted(try VerificationSubmitted(from: decoder))
             case "Confirmed":
                 self = .confirmed(try Confirmed(from: decoder))
+            case "OwnerAsApprover":
+                self = .ownerAsApprover(try OwnerAsApprover(from: decoder))
             case "ImplicitlyOwner":
                 self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
             default:
@@ -140,6 +162,9 @@ extension API {
                 try status.encode(to: encoder)
             case .confirmed(let status):
                 try container.encode("Confirmed", forKey: .type)
+                try status.encode(to: encoder)
+            case .ownerAsApprover(let status):
+                try container.encode("OwnerAsApprover", forKey: .type)
                 try status.encode(to: encoder)
             case .implicitlyOwner(let status):
                 try container.encode("ImplicitlyOwner", forKey: .type)
@@ -169,6 +194,7 @@ extension API {
         var intermediateKey: Base58EncodedPublicKey
         var approverKeysSignatureByIntermediateKey: Base64EncodedString
         var masterKeySignature: Base64EncodedString?
+        var ownerEntropy: Base64EncodedString?
 
         var externalApprovers: [TrustedApprover] {
             return approvers
@@ -274,7 +300,7 @@ extension API {
             get {
                 return approvers.first(where: {
                     switch ($0.status) {
-                    case .implicitlyOwner:
+                    case .implicitlyOwner, .ownerAsApprover:
                         return true
                     default:
                         return false
@@ -334,6 +360,7 @@ extension API {
         
         struct Initial: Codable {
             var authType: AuthType
+            var entropy: Base64EncodedString
             var subscriptionStatus: SubscriptionStatus
         }
         
@@ -397,6 +424,16 @@ extension API {
             }
         }
         
+        var entropy: Base64EncodedString? {
+            get {
+                return switch (self) {
+                case .initial(let initial):
+                    initial.entropy
+                case .ready(let ready):
+                    ready.policy.ownerEntropy
+                }
+            }
+        }
     }
 }
 

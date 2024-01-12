@@ -100,10 +100,9 @@ struct RenameApprover: View {
         do {
             let approvers: [API.ApproverSetup] = try policySetup.approvers.enumerated().map({ (index, approver) in
                 if index == 0 {
-                    return .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
+                    return .ownerAsApprover(API.ApproverSetup.OwnerAsApprover(
                         participantId: approver.participantId,
-                        label: "Me",
-                        approverPublicKey: try session.getOrCreateApproverKey(participantId: approver.participantId).publicExternalRepresentation()
+                        label: "Me"
                     ))
                 } else {
                     return .externalApprover(API.ApproverSetup.ExternalApprover(

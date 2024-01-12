@@ -14,6 +14,7 @@ struct SetupApprover : View {
     var session: Session
     var policySetup: API.PolicySetup?
     var isPrimary: Bool
+    var ownerEntropy: Base64EncodedString?
     var onComplete: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
@@ -33,6 +34,7 @@ struct SetupApprover : View {
                 session: session,
                 policySetup: policySetup,
                 isPrimary: isPrimary,
+                ownerEntropy: ownerEntropy,
                 onComplete: onOwnerStateUpdated,
                 onBack: onBack
             )

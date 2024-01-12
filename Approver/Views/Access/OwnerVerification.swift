@@ -68,7 +68,8 @@ struct OwnerVerification: View {
                     .onAppear {
                         confirmOrRejectOwner(
                             participantId: approverState.participantId,
-                            status: status
+                            status: status,
+                            entropy: approverState.phase.entropy?.data
                         )
                     }
                 default:
@@ -113,9 +114,9 @@ struct OwnerVerification: View {
         self.showingError = true
     }
     
-    private func confirmOrRejectOwner(participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation) {
+    private func confirmOrRejectOwner(participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation, entropy: Data?) {
         if (try? verifyOwnerSignature(participantId: participantId, status: status)) ?? false {
-            guard let approverPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier),
+            guard let approverPrivateKey = participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier, entropy: entropy),
                   let approverPublicKey = try? approverPrivateKey.publicExternalRepresentation(),
                   approverPublicKey == status.accessPublicKey else {
                 SentrySDK.captureWithTag(error: CensoError.failedToRecoverPrivateKey, tagValue: "Verification")

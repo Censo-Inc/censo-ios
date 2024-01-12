@@ -46,11 +46,17 @@ extension API {
     enum ApproverSetup: Encodable, Decodable {
         case implicitlyOwner(ImplicitlyOwner)
         case externalApprover(ExternalApprover)
+        case ownerAsApprover(OwnerAsApprover)
         
         struct ImplicitlyOwner: Encodable, Decodable {
             var participantId: ParticipantId
             var label: String
             var approverPublicKey: Base58EncodedPublicKey
+        }
+        
+        struct OwnerAsApprover: Encodable, Decodable {
+            var participantId: ParticipantId
+            var label: String
         }
         
         struct ExternalApprover: Encodable, Decodable {
@@ -69,6 +75,8 @@ extension API {
             switch type {
             case "ImplicitlyOwner":
                 self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
+            case "OwnerAsApprover":
+                self = .ownerAsApprover(try OwnerAsApprover(from: decoder))
             case "ExternalApprover":
                 self = .externalApprover(try ExternalApprover(from: decoder))
             default:
@@ -82,6 +90,9 @@ extension API {
             case .implicitlyOwner(let implicitlyOwner):
                 try container.encode("ImplicitlyOwner", forKey: .type)
                 try implicitlyOwner.encode(to: encoder)
+            case .ownerAsApprover(let ownerAsApprover):
+                try container.encode("OwnerAsApprover", forKey: .type)
+                try ownerAsApprover.encode(to: encoder)
             case .externalApprover(let externalApprover):
                 try container.encode("ExternalApprover", forKey: .type)
                 try externalApprover.encode(to: encoder)
@@ -161,7 +172,10 @@ extension API {
         var keyConfirmationSignature: Base64EncodedString
         var keyConfirmationTimeMillis: UInt64
     }
-    
+    struct CompleteOwnerApprovershipApiRequest: Encodable {
+        var participantId: ParticipantId
+        var approverPublicKey: Base58EncodedPublicKey
+    }
     struct UnlockApiRequest: Encodable {
         var biometryVerificationId: String
         var biometryData: FacetecBiometry
@@ -237,6 +251,7 @@ extension API {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
         var isOwnerShard: Bool
+        var ownerEntropy: Base64EncodedString?
     }
     
     struct RetrieveAccessShardsApiResponse : BiometryVerificationResponse {

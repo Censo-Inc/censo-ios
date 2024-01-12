@@ -72,34 +72,28 @@ struct InitApproversRemovalFlow: View {
     
     private func createPolicySetupWithoutExternalApprovers() {
         self.step = .creatingPolicySetup
-        do {
-            let ownerParticipantId = ParticipantId.random()
-            let setupPolicyRequest = API.SetupPolicyApiRequest(
-                threshold: 1,
-                approvers: [
-                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
-                        participantId: ownerParticipantId,
-                        label: "Me",
-                        approverPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
-                    ))
-                ]
-            )
-            
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .setupPolicy(setupPolicyRequest)
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    onOwnerStateUpdated(response.ownerState)
-                    self.step = .replacingPolicy
-                case .failure(let error):
-                    showError(error)
-                }
+        let ownerParticipantId = ParticipantId.random()
+        let setupPolicyRequest = API.SetupPolicyApiRequest(
+            threshold: 1,
+            approvers: [
+                .ownerAsApprover(API.ApproverSetup.OwnerAsApprover(
+                    participantId: ownerParticipantId,
+                    label: "Me"
+                ))
+            ]
+        )
+        
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .setupPolicy(setupPolicyRequest)
+        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            switch result {
+            case .success(let response):
+                onOwnerStateUpdated(response.ownerState)
+                self.step = .replacingPolicy
+            case .failure(let error):
+                showError(error)
             }
-        } catch {
-            SentrySDK.captureWithTag(error: error, tagValue: "Approvers removal: create policy setup")
-            showError(CensoError.failedToReplacePolicy)
         }
     }
     

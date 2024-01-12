@@ -75,6 +75,8 @@ struct ApproverPill: View {
                             .foregroundColor(.Censo.green)
                     case .implicitlyOwner:
                         Text("")
+                    case .ownerAsApprover(_):
+                        Text("")
                     }
                 case .trusted:
                     Text("Active")

@@ -46,10 +46,11 @@ struct LoggedInOwnerView: View {
                             switch importPhase {
                             case .none:
                                 switch ownerState {
-                                case .initial:
+                                case .initial(let initial):
                                     InitialPlanSetup(
                                         session: session,
-                                        onComplete: replaceOwnerState                                    
+                                        ownerState: initial,
+                                        onComplete: replaceOwnerState
                                     )
                                 case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
                                     FirstPhrase(
@@ -81,6 +82,7 @@ struct LoggedInOwnerView: View {
                                                 publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                                                 masterKeySignature: ownerState.policy.masterKeySignature,
                                                 ownerParticipantId: ownerState.policy.owner?.participantId,
+                                                ownerEntropy: ownerState.policy.ownerEntropy,
                                                 isFirstTime: false,
                                                 requestedLabel: importedPhrase.label,
                                                 onClose: { importPhase = .none }

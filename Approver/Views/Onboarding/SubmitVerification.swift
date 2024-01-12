@@ -80,7 +80,7 @@ struct SubmitVerification: View {
     }
     
     private func submitVerificaton(code: String) {
-        guard let approverKey = try? session.getOrCreateApproverKey(participantId: approverState.participantId),
+        guard let approverKey = try? session.getOrCreateApproverKey(participantId: approverState.participantId, entropy: approverState.phase.entropy?.data),
               let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: approverKey),
               let approverPublicKey = try? approverKey.publicExternalRepresentation()
         else {
@@ -151,7 +151,7 @@ extension API.ApproverState {
     static var sampleVerificationRejected: Self {
         .init(
             participantId: .random(),
-            phase: .verificationRejected,
+            phase: .verificationRejected(.sample),
             invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
         )
     }
@@ -159,12 +159,23 @@ extension API.ApproverState {
     static var sampleWaitingForCode: Self {
         .init(
             participantId: .random(),
-            phase: .waitingForCode,
+            phase: .waitingForCode(.sample),
             invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g"
         )
     }
 }
 
+extension API.ApproverPhase.VerificationRejected {
+    static var sample: Self {
+        .init(entropy: Base64EncodedString(data: Data()))
+    }
+}
+
+extension API.ApproverPhase.WaitingForCode {
+    static var sample: Self {
+        .init(entropy: Base64EncodedString(data: Data()))
+    }
+}
 #endif
 
 extension API.ApproverPhase {

@@ -153,7 +153,7 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #Preview("Initial") {
     let session = Session.sample
-    @State var ownerState3 = API.OwnerState.initial(API.OwnerState.Initial(authType: .facetec, subscriptionStatus: .active))
+    @State var ownerState3 = API.OwnerState.initial(API.OwnerState.Initial(authType: .facetec, entropy: .sample, subscriptionStatus: .active))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState3,

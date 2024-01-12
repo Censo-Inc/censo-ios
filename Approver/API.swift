@@ -43,13 +43,21 @@ struct API {
     }
     
     enum ApproverPhase: Codable, Equatable {
-        case waitingForCode
+        case waitingForCode(WaitingForCode)
         case waitingForVerification
-        case verificationRejected
+        case verificationRejected(VerificationRejected)
         case complete
         case accessRequested(AccessRequested)
         case accessVerification(AccessVerification)
         case accessConfirmation(AccessConfirmation)
+        
+        struct WaitingForCode: Codable, Equatable {
+            var entropy: Base64EncodedString?
+        }
+
+        struct VerificationRejected: Codable, Equatable {
+            var entropy: Base64EncodedString?
+        }
         
         struct AccessRequested: Codable, Equatable {
             var createdAt: Date
@@ -70,6 +78,7 @@ struct API {
             var ownerKeySignatureTimeMillis: UInt64
             var ownerPublicKey: Base58EncodedPublicKey
             var approverEncryptedShard: Base64EncodedString
+            var approverEntropy: Base64EncodedString?
         }
         
         enum ApproverPhaseCodingKeys: String, CodingKey {
@@ -81,11 +90,11 @@ struct API {
             let type = try container.decode(String.self, forKey: .type)
             switch type {
             case "WaitingForCode":
-                self = .waitingForCode
+                self = .waitingForCode(try WaitingForCode(from: decoder))
             case "WaitingForVerification":
                 self = .waitingForVerification
             case "VerificationRejected":
-                self = .verificationRejected
+                self = .verificationRejected(try VerificationRejected(from: decoder))
             case "Complete":
                 self = .complete
             case "AccessRequested":
@@ -121,8 +130,29 @@ struct API {
                 try phase.encode(to: encoder)
             }
         }
+        
+        var entropy: Base64EncodedString? {
+            get {
+                return switch self {
+                case .waitingForCode(let waitingForCode):
+                    waitingForCode.entropy
+                case .verificationRejected(let verificationRejected):
+                    verificationRejected.entropy
+                case .accessConfirmation(let accessConfirmation):
+                    accessConfirmation.approverEntropy
+                case .waitingForVerification:
+                    nil
+                case .complete:
+                    nil
+                case .accessRequested:
+                    nil
+                case .accessVerification:
+                    nil
+                }
+            }
+        }
     }
-    
+
     struct ApproverState: Codable {
         var participantId: ParticipantId
         var phase: ApproverPhase

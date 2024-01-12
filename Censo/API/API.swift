@@ -28,6 +28,7 @@ struct API {
 
         case confirmApprover(ConfirmApproverApiRequest)
         case rejectApproverVerification(ParticipantId)
+        case ownerCompletion(CompleteOwnerApprovershipApiRequest)
 
         case createPolicy(CreatePolicyApiRequest)
         case createPolicyWithPassword(CreatePolicyWithPasswordApiRequest)
@@ -96,6 +97,8 @@ extension API: TargetType {
             return "v1/approvers/\(request.participantId.value)/confirmation"
         case .rejectApproverVerification(let id):
             return "v1/approvers/\(id.value)/verification/reject"
+        case .ownerCompletion(let request):
+            return "v1/approvers/\(request.participantId.value)/owner-completion"
         case .registerPushToken:
             return "v1/notification-tokens"
         case .initBiometryVerification:
@@ -154,6 +157,7 @@ extension API: TargetType {
              .setupPolicy,
              .confirmApprover,
              .rejectApproverVerification,
+             .ownerCompletion,
              .initBiometryVerification,
              .confirmBiometryVerification,
              .unlock,
@@ -234,6 +238,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .confirmApprover(let request):
             return .requestJSONEncodable(request)
+        case .ownerCompletion(let request):
+            return .requestJSONEncodable(request)
         case .confirmBiometryVerification(_, let faceScan, let auditTrailImage, let lowQualityAuditTrailImage):
             return .requestJSONEncodable(
                 ConfirmBiometryVerificationApiRequest(faceScan: faceScan, auditTrailImage: auditTrailImage, lowQualityAuditTrailImage: lowQualityAuditTrailImage)
@@ -311,6 +317,7 @@ extension API: TargetType {
              .retrieveAccessShardsWithPassword,
              .deleteSeedPhrase,
              .confirmApprover,
+             .ownerCompletion,
              .submitPurchase,
              .acceptImport,
              .enableTimelock,

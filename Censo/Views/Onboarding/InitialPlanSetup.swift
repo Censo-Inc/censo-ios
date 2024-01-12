@@ -11,8 +11,9 @@ import Moya
 struct InitialPlanSetup: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
-    
+
     var session: Session
+    var ownerState: API.OwnerState.Initial
     var onComplete: (API.OwnerState) -> Void
     
     @State private var showingError = false
@@ -28,6 +29,7 @@ struct InitialPlanSetup: View {
         var encryptedShard: Base64EncodedString
         var participantId: ParticipantId
         var masterKeySignature: Base64EncodedString
+        var entropy: Base64EncodedString
     }
     
     @State private var createPolicyParams: CreatePolicyParams?
@@ -185,7 +187,7 @@ struct InitialPlanSetup: View {
     private func startPolicyCreation() {
         do {
             let participantId: ParticipantId = .random()
-            let ownerApproverKey = try session.getOrCreateApproverKey(participantId: participantId)
+            let ownerApproverKey = try session.getOrCreateApproverKey(participantId: participantId, entropy: ownerState.entropy.data)
             let ownerApproverPublicKey = try ownerApproverKey.publicExternalRepresentation()
             let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
             let masterEncryptionKey = try EncryptionKey.generateRandomKey()
@@ -201,7 +203,8 @@ struct InitialPlanSetup: View {
                     participants: [(participantId, ownerApproverPublicKey)]
                 ).first(where: { $0.participantId == participantId })!.encryptedShard,
                 participantId: participantId,
-                masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
+                masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data),
+                entropy: ownerState.entropy
             )
         } catch {
             showError(error)
@@ -211,7 +214,7 @@ struct InitialPlanSetup: View {
 
 #if DEBUG
 #Preview {
-    InitialPlanSetup(session: .sample, onComplete: {_ in})
+    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active), onComplete: {_ in})
         .foregroundColor(.Censo.primaryForeground)
 }
 #endif

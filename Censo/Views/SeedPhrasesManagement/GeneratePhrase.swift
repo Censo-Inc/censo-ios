@@ -99,6 +99,7 @@ struct GeneratePhrase: View {
                     publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                     masterKeySignature: ownerState.policy.masterKeySignature,
                     ownerParticipantId: ownerState.policy.owner?.participantId,
+                    ownerEntropy: ownerState.policy.ownerEntropy,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)

@@ -341,7 +341,7 @@ private extension Product.SubscriptionPeriod {
 import Moya
 
 #Preview {
-    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, subscriptionStatus: .none))
+    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, entropy: .sample, subscriptionStatus: .none))
     
     return PaywallGatedScreen(
         session: .sample,

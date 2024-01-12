@@ -90,45 +90,78 @@ struct ReplacePolicy: View {
                 if !policySetup.approvers.allSatisfy( { verifyKeyConfirmationSignature(approver: $0) } ) {
                     throw CensoError.cannotVerifyKeyConfirmationSignature
                 }
-
+                
                 let ownerOldParticipantId = ownerState.policy.approvers.first!.participantId
-        
+                
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetup.owner!.participantId)
-
-
-                let concatenatedApproverPublicKeys = policySetup
-                    .approvers
-                    .sorted(using: KeyPathComparator(\.publicKey!.value, order: .forward))
-                    .map({ $0.publicKey!.data })
-                    .reduce(Data(), +)
-
-                apiProvider.decodableRequest(
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetup.owner!.participantId, entropy: ownerState.policySetup?.owner?.entropy?.data)
+                apiProvider.request(
                     with: session,
-                    endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
-                        intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
-                        approverKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
-                        approverShards: try newIntermediateKey.shard(
-                            threshold: policySetup.threshold,
-                            participants: policySetup.approvers.map({ approver in
-                                return (approver.participantId, approver.publicKey!)
-                            })
-                        ),
-                        encryptedMasterPrivateKey: try newIntermediateKey.encrypt(data: masterKey.privateKeyRaw()),
-                        masterEncryptionPublicKey: masterPublicKey,
-                        signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData()),
-                        masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
-                    ))
-                ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                    switch result {
-                    case .success(let response):
-                        session.deleteApproverKey(participantId: ownerOldParticipantId)
-                        onSuccess(response.ownerState)
-                    case .failure(let error):
-                        showError(error)
+                    endpoint: .ownerCompletion(
+                        API.CompleteOwnerApprovershipApiRequest(
+                            participantId: policySetup.owner!.participantId,
+                            approverPublicKey: try ownerApproverKey.publicExternalRepresentation()
+                        )
+                    )
+                ) { ownerCompletionResult in
+                    do {
+                        switch ownerCompletionResult {
+                        case .failure(let error):
+                            showError(error)
+                        case .success:
+                            let concatenatedApproverPublicKeys = (
+                                [try ownerApproverKey.publicExternalRepresentation()] +
+                                policySetup
+                                    .approvers
+                                    .filter { switch $0.status {
+                                    case .implicitlyOwner, .ownerAsApprover:
+                                        false
+                                    default:
+                                        true
+                                    }}
+                                    .map({ $0.publicKey! })
+                            )
+                                .sorted(using: KeyPathComparator(\.value, order: .forward))
+                                .map({ $0.data })
+                                .reduce(Data(), +)
+                            
+                            apiProvider.decodableRequest(
+                                with: session,
+                                endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
+                                    intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
+                                    approverKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
+                                    approverShards: try newIntermediateKey.shard(
+                                        threshold: policySetup.threshold,
+                                        participants: policySetup.approvers.map({ approver in
+                                            return switch approver.status {
+                                            case .ownerAsApprover, .implicitlyOwner:
+                                                (approver.participantId, try ownerApproverKey.publicExternalRepresentation())
+                                            default:
+                                                (approver.participantId, approver.publicKey!)
+                                            }
+                                        })
+                                    ),
+                                    encryptedMasterPrivateKey: try newIntermediateKey.encrypt(data: masterKey.privateKeyRaw()),
+                                    masterEncryptionPublicKey: masterPublicKey,
+                                    signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData()),
+                                    masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
+                                ))
+                            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+                                switch result {
+                                case .success(let response):
+                                    session.deleteApproverKey(participantId: ownerOldParticipantId)
+                                    onSuccess(response.ownerState)
+                                case .failure(let error):
+                                    showError(error)
+                                }
+                            }
+                        }
+                    } catch {
+                        SentrySDK.captureWithTag(error: error, tagValue: "Replace policy")
+                        showError(CensoError.failedToReplacePolicy)
                     }
                 }
             } catch {
@@ -154,7 +187,7 @@ struct ReplacePolicy: View {
                 SentrySDK.captureWithTag(error: error, tagValue: "Replace policy")
             }
             return false
-        case .implicitlyOwner:
+        case .implicitlyOwner, .ownerAsApprover:
             return true
         default:
             return false

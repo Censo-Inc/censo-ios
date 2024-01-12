@@ -24,6 +24,7 @@ struct SaveSeedPhrase: View {
     var publicMasterEncryptionKey: Base58EncodedPublicKey
     var masterKeySignature: Base64EncodedString?
     var ownerParticipantId: ParticipantId?
+    var ownerEntropy: Base64EncodedString?
     var isFirstTime: Bool
     var requestedLabel: String?
     var onSuccess: (API.OwnerState) -> Void
@@ -109,7 +110,7 @@ struct SaveSeedPhrase: View {
         do {
             // first verify the master key signature if it is available
             if (masterKeySignature != nil) {
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerParticipantId!)
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerParticipantId!, entropy: ownerEntropy?.data)
                 let verified = try ownerApproverKey.verifySignature(for: publicMasterEncryptionKey.data, signature: masterKeySignature!)
                 if (!verified) {
                     showError(CensoError.cannotVerifyMasterKeySignature)
@@ -157,7 +158,7 @@ struct SaveSeedPhrase: View {
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, isFirstTime: true, onSuccess: { _ in })
+            SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true, onSuccess: { _ in })
         }
         .foregroundColor(Color.Censo.primaryForeground)
     }

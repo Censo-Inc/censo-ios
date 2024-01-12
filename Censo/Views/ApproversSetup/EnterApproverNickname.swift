@@ -17,6 +17,7 @@ struct EnterApproverNickname: View {
     var session: Session
     var policySetup: API.PolicySetup?
     var isPrimary: Bool
+    var ownerEntropy: Base64EncodedString?
     var onComplete: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     
@@ -120,10 +121,9 @@ struct EnterApproverNickname: View {
             if let owner = policySetup?.approvers.first,
                let primaryApprover = policySetup?.approvers.last {
                 approvers = [
-                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
+                    .ownerAsApprover(API.ApproverSetup.OwnerAsApprover(
                         participantId: owner.participantId,
-                        label: "Me",
-                        approverPublicKey: try session.getOrCreateApproverKey(participantId: owner.participantId).publicExternalRepresentation()
+                        label: "Me"
                     )),
                     .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: primaryApprover.participantId,
@@ -139,10 +139,9 @@ struct EnterApproverNickname: View {
             } else {
                 let ownerParticipantId = ParticipantId.random()
                 approvers = [
-                    .implicitlyOwner(API.ApproverSetup.ImplicitlyOwner(
+                    .ownerAsApprover(API.ApproverSetup.OwnerAsApprover(
                         participantId: ownerParticipantId,
-                        label: "Me",
-                        approverPublicKey: try session.getOrCreateApproverKey(participantId: ownerParticipantId).publicExternalRepresentation()
+                        label: "Me"
                     )),
                     .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
