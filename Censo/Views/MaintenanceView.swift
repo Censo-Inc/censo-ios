@@ -18,13 +18,15 @@ struct MaintenanceView: View {
         Group {
             if showMaintenanceView {
                 VStack {
-                    Text("Censo is currently under maintenance, please try again in a few minutes.")
+                    Image("DogConstruction")
+                    Text("Sorry!\nApp under maintenance.\nPlease try us in a few.")
                         .padding()
+                        .font(.headline)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.all)
-                .background(Color(UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)))
+                .background(.background)
                 .disabled(true)
                 .onAppear {
                     timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
