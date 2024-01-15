@@ -10,8 +10,6 @@ import SwiftUI
 import Moya
 
 struct AccessApproval : View {
-    @Environment(\.dismiss) var dismiss
-    
     var session: Session
     var policy: API.Policy
     var access: API.Access.ThisDevice
@@ -39,6 +37,7 @@ struct AccessApproval : View {
         let navigationTitle: String = switch (access.intent) {
         case .accessPhrases: "Access"
         case .replacePolicy: "Remove approvers"
+        case .recoverOwnerKey: "Key recovery"
         }
         
         switch(step) {
@@ -46,6 +45,7 @@ struct AccessApproval : View {
             ChooseAccessApprover(
                 intent: access.intent,
                 policy: policy,
+                approvals: access.approvals,
                 selectedApprover: selected,
                 onContinue: { approver in
                     step = .enterTotp(approver: approver)
@@ -72,7 +72,12 @@ struct AccessApproval : View {
                 intent: access.intent,
                 onOwnerStateUpdated: onOwnerStateUpdated,
                 onSuccess: { ownerState in
-                    step = .approved(ownerState: ownerState)
+                    if let access = ownerState.thisDeviceAccess, access.isApproved {
+                        step = .approved(ownerState: ownerState)
+                    } else {
+                        onOwnerStateUpdated(ownerState)
+                        step = .chooseApprover(selected: nil)
+                    }
                 }
             )
             .navigationTitle(Text(navigationTitle))

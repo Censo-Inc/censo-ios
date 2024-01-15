@@ -68,10 +68,28 @@ struct ReplacePolicy: View {
                 .onAppear {
                     replacePolicy(encryptedShards)
                 }
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button {
+                        step = .cleanup
+                    } label: {
+                        Text("OK")
+                    }
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
             case .cleanup:
                 ProgressView()
                     .onAppear {
                         deleteAccessIfExists(onSuccess: onCanceled)
+                    }
+                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                        Button {
+                            onCanceled()
+                        } label: {
+                            Text("OK")
+                        }
+                    } message: { error in
+                        Text(error.localizedDescription)
                     }
             }
         } else {
@@ -98,6 +116,7 @@ struct ReplacePolicy: View {
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
                 let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetup.owner!.participantId, entropy: ownerState.policySetup?.owner?.entropy?.data)
+                
                 apiProvider.request(
                     with: session,
                     endpoint: .ownerCompletion(
@@ -124,15 +143,14 @@ struct ReplacePolicy: View {
                                     }}
                                     .map({ $0.publicKey! })
                             )
-                                .sorted(using: KeyPathComparator(\.value, order: .forward))
-                                .map({ $0.data })
-                                .reduce(Data(), +)
+                                .sortedByStringRepr()
+                                .toBytes()
                             
                             apiProvider.decodableRequest(
                                 with: session,
                                 endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
                                     intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
-                                    approverKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
+                                    approverPublicKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
                                     approverShards: try newIntermediateKey.shard(
                                         threshold: policySetup.threshold,
                                         participants: policySetup.approvers.map({ approver in
@@ -143,7 +161,9 @@ struct ReplacePolicy: View {
                                                 (approver.participantId, approver.publicKey!)
                                             }
                                         })
-                                    ),
+                                    ).map({
+                                        return API.ReplacePolicyApiRequest.ApproverShard(participantId: $0.participantId, encryptedShard: $0.shard)
+                                    }),
                                     encryptedMasterPrivateKey: try newIntermediateKey.encrypt(data: masterKey.privateKeyRaw()),
                                     masterEncryptionPublicKey: masterPublicKey,
                                     signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData()),

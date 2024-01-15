@@ -57,19 +57,30 @@ struct LoggedInOwnerView: View {
                                             onComplete: replaceOwnerState,
                                             onCancel: onCancelOnboarding
                                         )
-                                    case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
-                                        FirstPhrase(
-                                            ownerState: ready,
-                                            session: session,
-                                            onComplete: replaceOwnerState,
-                                            onCancel: onCancelOnboarding
-                                        )
                                     case .ready(let ready):
-                                        HomeScreen(
-                                            session: session,
-                                            ownerState: ready,
-                                            onOwnerStateUpdated: replaceOwnerState
-                                        )
+                                        if ready.policy.ownersApproverKeyRecoveryRequired(session) {
+                                            OwnerKeyRecovery(
+                                                session: session,
+                                                ownerState: ready,
+                                                onOwnerStateUpdated: replaceOwnerState
+                                            )
+                                        } else {
+                                            if ready.vault.seedPhrases.isEmpty {
+                                                FirstPhrase(
+                                                    ownerState: ready,
+                                                    session: session,
+                                                    onComplete: replaceOwnerState,
+                                                    onCancel: onCancelOnboarding
+                                                )
+                                                
+                                            } else {
+                                                HomeScreen(
+                                                    session: session,
+                                                    ownerState: ready,
+                                                    onOwnerStateUpdated: replaceOwnerState
+                                                )
+                                            }
+                                        }
                                     }
                                 case .completed(let importedPhrase):
                                     switch ownerState {

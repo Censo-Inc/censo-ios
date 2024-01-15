@@ -21,7 +21,6 @@ struct PasteLinkButton: View {
         } label: {
             Text("Paste from clipboard")
                 .font(.title3)
-                .padding(.horizontal)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(RoundedButtonStyle())
@@ -31,7 +30,7 @@ struct PasteLinkButton: View {
         guard let pastedInfo = UIPasteboard.general.string?.trimmingCharacters(in: .whitespacesAndNewlines),
               let url = URL(string: pastedInfo) else {
             let err = CensoError.invalidUrl(url: UIPasteboard.general.string ?? "")
-            SentrySDK.captureWithTag(error: err, tagValue: "Approver Paste")
+            SentrySDK.captureWithTag(error: err, tagValue: "Paste Link Error")
 
             showError(err)
             return

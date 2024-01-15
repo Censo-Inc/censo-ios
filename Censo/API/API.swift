@@ -35,6 +35,7 @@ struct API {
         case setupPolicy(SetupPolicyApiRequest)
         case deletePolicySetup
         case replacePolicy(ReplacePolicyApiRequest)
+        case replacePolicyShards(ReplacePolicyShardsApiRequest)
 
         case initBiometryVerification
         case confirmBiometryVerification(verificationId: String, faceScan: String, auditTrailImage: String, lowQualityAuditTrailImage: String)
@@ -60,6 +61,9 @@ struct API {
         case enableTimelock
         case disableTimelock
         case cancelDisabledTimelock
+        case createDevice
+        case resetLoginId(ResetLoginIdApiRequest)
+        case resetLoginIdWithPassword(ResetLoginIdWithPasswordApiRequest)
     }
 }
 
@@ -93,6 +97,8 @@ extension API: TargetType {
             return "v1/policy-setup"
         case .replacePolicy:
             return "v1/policy"
+        case .replacePolicyShards:
+            return "v1/policy/shards"
         case .confirmApprover(let request):
             return "v1/approvers/\(request.participantId.value)/confirmation"
         case .rejectApproverVerification(let id):
@@ -138,6 +144,12 @@ extension API: TargetType {
         case .disableTimelock,
              .cancelDisabledTimelock:
             return "v1/timelock/disable"
+        case .createDevice:
+            return "v1/device"
+        case .resetLoginId(_):
+            return "v1/login-id"
+        case .resetLoginIdWithPassword(_):
+            return "v1/login-id-password"
         }
     }
 
@@ -174,9 +186,13 @@ extension API: TargetType {
              .submitPurchase,
              .acceptImport,
              .enableTimelock,
-             .disableTimelock:
+             .disableTimelock,
+             .createDevice:
             return .post
-        case .replacePolicy:
+        case .replacePolicy,
+             .resetLoginId,
+             .resetLoginIdWithPassword,
+             .replacePolicyShards:
             return .put
         }
     }
@@ -194,7 +210,8 @@ extension API: TargetType {
              .deletePolicySetup,
              .enableTimelock,
              .disableTimelock,
-             .cancelDisabledTimelock:
+             .cancelDisabledTimelock,
+             .createDevice:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -236,6 +253,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .replacePolicy(let request):
             return .requestJSONEncodable(request)
+        case .replacePolicyShards(let request):
+            return .requestJSONEncodable(request)
         case .confirmApprover(let request):
             return .requestJSONEncodable(request)
         case .ownerCompletion(let request):
@@ -270,6 +289,10 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .acceptImport(_, let ownerProof):
             return .requestJSONEncodable(ownerProof)
+        case .resetLoginId(let request):
+            return .requestJSONEncodable(request)
+        case .resetLoginIdWithPassword(let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -322,7 +345,11 @@ extension API: TargetType {
              .acceptImport,
              .enableTimelock,
              .disableTimelock,
-             .deletePolicySetup:
+             .deletePolicySetup,
+             .createDevice,
+             .resetLoginId,
+             .resetLoginIdWithPassword,
+             .replacePolicyShards:
             return true
         }
     }

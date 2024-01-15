@@ -9,12 +9,18 @@ import Foundation
 import BigInt
 import Sentry
 
+struct EncryptedShard {
+    var participantId: ParticipantId
+    var participantPublicKey: Base58EncodedPublicKey
+    var shard: Base64EncodedString
+}
+
 extension EncryptionKey {
     enum ShardingError: Error {
         case badParticipantId
     }
 
-    func shard(threshold: Int, participants: [(ParticipantId, Base58EncodedPublicKey)]) throws -> [API.ApproverShard] {
+    func shard(threshold: Int, participants: [(ParticipantId, Base58EncodedPublicKey)]) throws -> [EncryptedShard] {
         let sharer = try SecretSharer(
             secret: BigInt(privateKeyRaw().toHexString(), radix: 16)!,
             threshold: threshold,
@@ -24,9 +30,10 @@ extension EncryptionKey {
             guard let shard = sharer.shards.first(where: {$0.x == participantId.bigInt}) else {
                 throw ShardingError.badParticipantId
             }
-            return API.ApproverShard(
+            return EncryptedShard(
                 participantId: participantId,
-                encryptedShard: try EncryptionKey
+                participantPublicKey: participantPublicKey,
+                shard: try EncryptionKey
                     .generateFromPublicExternalRepresentation(base58PublicKey: participantPublicKey)
                     .encrypt(data: shard.y.magnitude.serialize())
             )

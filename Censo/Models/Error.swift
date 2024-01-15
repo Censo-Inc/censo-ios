@@ -21,6 +21,7 @@ enum CensoError: Swift.Error, Equatable {
     case verificationFailed
     case failedToDecryptSecrets
     case failedToCreateApproverKey
+    case failedToPersistApproverKey
     case failedToRetrieveApproverKey
     case failedToDecodeSecrets
     case failedToEncodeSecrets
@@ -77,6 +78,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Failed to generate and store your approver key", comment: "key storage")
         case .failedToRetrieveApproverKey:
             return NSLocalizedString("Failed to retrieve your approver key", comment: "key retrieval")
+        case .failedToPersistApproverKey:
+            return NSLocalizedString("Failed to store your approver key", comment: "key storage")
         case .failedToDecodeSecrets:
             return NSLocalizedString("Cannot decode decrypted phrases", comment: "phrase decoding failed")
         case .failedToEncodeSecrets:

@@ -205,8 +205,17 @@ extension API {
         var externalApproversCount: Int {
             return externalApprovers.count
         }
+        
         var owner: TrustedApprover? {
             return approvers.first { $0.isOwner }
+        }
+        
+        func ownersApproverKeyRecoveryRequired(_ session: Session) -> Bool {
+            guard let ownerParticipantId = owner?.participantId else {
+                return false
+            }
+            
+            return !session.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy?.data)
         }
     }
     
@@ -217,6 +226,7 @@ extension API {
         enum Intent : String, Codable {
             case accessPhrases = "AccessPhrases"
             case replacePolicy = "ReplacePolicy"
+            case recoverOwnerKey = "RecoverOwnerKey"
         }
         
         struct AnotherDevice: Codable {
@@ -245,6 +255,12 @@ extension API {
                     case rejected = "Rejected"
                 }
             }
+            
+            var isApproved: Bool {
+                get {
+                    return [.available, .timelocked].contains(status)
+                }
+            }
         }
         
         var isThisDevice: Bool {
@@ -255,7 +271,7 @@ extension API {
                 }
             }
         }
-
+        
         enum Status : String, Codable {
             case requested = "Requested"
             case timelocked = "Timelocked"

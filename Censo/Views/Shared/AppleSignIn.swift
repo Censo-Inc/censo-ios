@@ -12,6 +12,7 @@ struct AppleSignIn: View {
     @State private var showingError = false
     @State private var error: Error?
 
+    var enabled: Bool = true
     var onSuccess: () -> Void
 
     enum AppleSignInError: Error {
@@ -20,30 +21,38 @@ struct AppleSignIn: View {
 
     var body: some View {
         VStack {
-            SignInWithAppleButton(.signIn) { request in
-                request.requestedScopes = []
-            } onCompletion: { result in
-                switch result {
-                case .success(let authResults):
-                    if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-                        guard let idToken = appleIDCredential.identityToken else {
-                            showError(AppleSignInError.noIdentityToken)
+            ZStack {
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = []
+                } onCompletion: { result in
+                    switch result {
+                    case .success(let authResults):
+                        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+                            guard let idToken = appleIDCredential.identityToken else {
+                                showError(AppleSignInError.noIdentityToken)
+                                break
+                            }
+                            
+                            Keychain.userCredentials = .init(idToken: idToken, userIdentifier: appleIDCredential.user)
+                            onSuccess()
+                        } else {
                             break
                         }
-
-                        Keychain.userCredentials = .init(idToken: idToken, userIdentifier: appleIDCredential.user)
-                        onSuccess()
-                    } else {
-                        break
+                    case .failure(let error):
+                        showError(error)
                     }
-                case .failure(let error):
-                    showError(error)
+                }
+                .signInWithAppleButtonStyle(.black)
+                .disabled(!enabled)
+                .opacity(enabled ? 1.0 : 0.5 )
+                
+                if !enabled {
+                    Rectangle()
+                        .fill(.gray.opacity(0.5))
                 }
             }
-            .signInWithAppleButtonStyle(.black)
             .frame(maxWidth: 322, maxHeight: 64)
             .cornerRadius(100.0)
-            .padding()
         }
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button(role: .cancel, action: {}) {
@@ -62,6 +71,9 @@ struct AppleSignIn: View {
 
 #if DEBUG
 #Preview {
-    AppleSignIn(onSuccess: {})
+    VStack {
+        AppleSignIn(enabled: true, onSuccess: {})
+        AppleSignIn(enabled: false, onSuccess: {})
+    }
 }
 #endif

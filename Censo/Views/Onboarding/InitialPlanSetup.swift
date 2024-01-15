@@ -235,7 +235,7 @@ struct InitialPlanSetup: View {
                 encryptedShard: try intermediateEncryptionKey.shard(
                     threshold: 1,
                     participants: [(participantId, ownerApproverPublicKey)]
-                ).first(where: { $0.participantId == participantId })!.encryptedShard,
+                ).first(where: { $0.participantId == participantId })!.shard,
                 participantId: participantId,
                 masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data),
                 entropy: ownerState.entropy

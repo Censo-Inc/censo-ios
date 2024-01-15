@@ -34,19 +34,25 @@ struct Authentication<LoggedOutContent, LoggedInContent>: View where LoggedOutCo
             case .none:
                 Text("No DeviceKey")
             case .success(let session):
-                loggedInContent(session)
-                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.deleteUserDataNotification)) { _ in
-                    session.deleteDeviceKey()
-                    Keychain.removeUserCredentials()
-                    UserDefaults.standard.removeObject(forKey: "attestKey-\(session.userCredentials.userIdentifier)")
-                    self.credentialState = .notFound
-                }
-                .onChange(of: scenePhase) { newPhase in
-                    switch newPhase {
-                    case .active:
-                        fetchCredentialState()
-                    default:
-                        break
+                CloudCheck {
+                    MaintenanceStatusCheck(session: session) {
+                        AppAttest(session: session) {
+                            loggedInContent(session)
+                                .onReceive(NotificationCenter.default.publisher(for: Notification.Name.deleteUserDataNotification)) { _ in
+                                    session.deleteDeviceKey()
+                                    Keychain.removeUserCredentials()
+                                    UserDefaults.standard.removeObject(forKey: "attestKey-\(session.userCredentials.userIdentifier)")
+                                    self.credentialState = .notFound
+                                }
+                                .onChange(of: scenePhase) { newPhase in
+                                    switch newPhase {
+                                    case .active:
+                                        fetchCredentialState()
+                                    default:
+                                        break
+                                    }
+                                }
+                        }
                     }
                 }
             case .failure:

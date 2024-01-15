@@ -34,7 +34,7 @@ struct EnterAccessVerificationCode : View {
             VStack {
                 let title = switch (intent) {
                 case .accessPhrases: "Request access"
-                case .replacePolicy: "Request approval"
+                case .replacePolicy, .recoverOwnerKey: "Request approval"
                 }
                 
                 Text(title)

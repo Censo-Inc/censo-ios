@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-struct UserCredentials: Codable {
+struct UserCredentials: Codable, Equatable {
     var idToken: Data
     var userIdentifier: String
 

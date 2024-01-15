@@ -222,10 +222,19 @@
 		E4025C992AC6C8B5008FE3B8 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C982AC6C8B5008FE3B8 /* HomeScreen.swift */; };
 		E4025C9B2AC6E019008FE3B8 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025C9A2AC6E019008FE3B8 /* BackButton.swift */; };
 		E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
+		E40BEE0A2B4C23250086F6CF /* LoginIdReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40BEE092B4C23250086F6CF /* LoginIdReset.swift */; };
+		E40BEE0B2B4C2DBE0086F6CF /* PasteLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */; };
+		E40BEE0D2B4C88320086F6CF /* LoginIdResetToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40BEE0C2B4C88320086F6CF /* LoginIdResetToken.swift */; };
 		E417AB852AF922D10091CFDA /* LimitedLengthString.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB842AF922D10091CFDA /* LimitedLengthString.swift */; };
 		E417AB8B2AFA8B6C0091CFDA /* PasteLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */; };
 		E43C67DC2B2740BD0063188F /* GeneratePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */; };
 		E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */; };
+		E46395712B4EC854005FE818 /* LoginIdResetStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46395702B4EC854005FE818 /* LoginIdResetStepView.swift */; };
+		E46395732B4EC93D005FE818 /* LoginIdResetCollectTokensStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46395722B4EC93D005FE818 /* LoginIdResetCollectTokensStep.swift */; };
+		E46395752B4EC969005FE818 /* LoginIdResetSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46395742B4EC969005FE818 /* LoginIdResetSignInStep.swift */; };
+		E46395772B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46395762B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift */; };
+		E46395792B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46395782B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift */; };
+		E463957D2B4F395A005FE818 /* OwnerKeyRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463957C2B4F395A005FE818 /* OwnerKeyRecovery.swift */; };
 		E463C5A12AE1359100AFDFBB /* ApproversSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */; };
 		E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */; };
 		E4716FD42ACDD71C00BC2AA7 /* ButtonStyleTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */; };
@@ -452,10 +461,18 @@
 		E4025C982AC6C8B5008FE3B8 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E4025C9A2AC6E019008FE3B8 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		E4025CA02ACD6A3E008FE3B8 /* ButtonStyleTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyleTint.swift; sourceTree = "<group>"; };
+		E40BEE092B4C23250086F6CF /* LoginIdReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdReset.swift; sourceTree = "<group>"; };
+		E40BEE0C2B4C88320086F6CF /* LoginIdResetToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetToken.swift; sourceTree = "<group>"; };
 		E417AB842AF922D10091CFDA /* LimitedLengthString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedLengthString.swift; sourceTree = "<group>"; };
 		E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteLinkButton.swift; sourceTree = "<group>"; };
 		E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePhrase.swift; sourceTree = "<group>"; };
 		E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometryGatedScreen.swift; sourceTree = "<group>"; };
+		E46395702B4EC854005FE818 /* LoginIdResetStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetStepView.swift; sourceTree = "<group>"; };
+		E46395722B4EC93D005FE818 /* LoginIdResetCollectTokensStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetCollectTokensStep.swift; sourceTree = "<group>"; };
+		E46395742B4EC969005FE818 /* LoginIdResetSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetSignInStep.swift; sourceTree = "<group>"; };
+		E46395762B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetStartVerificationStep.swift; sourceTree = "<group>"; };
+		E46395782B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIdResetInitKeyRecoveryStep.swift; sourceTree = "<group>"; };
+		E463957C2B4F395A005FE818 /* OwnerKeyRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerKeyRecovery.swift; sourceTree = "<group>"; };
 		E463C5A02AE1359100AFDFBB /* ApproversSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetup.swift; sourceTree = "<group>"; };
 		E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextFieldStyle.swift; sourceTree = "<group>"; };
 		E4716FD72ACEB9A400BC2AA7 /* VerificationCodeEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeEntry.swift; sourceTree = "<group>"; };
@@ -599,12 +616,13 @@
 				E463C59F2AE134F000AFDFBB /* ApproversSetup */,
 				E4025C9C2AC6E223008FE3B8 /* SeedPhrasesManagement */,
 				E4025C9D2AC70157008FE3B8 /* Access */,
+				E40BEE082B4C22E60086F6CF /* LoginIdReset */,
 				6CD6DAFA2ABC9C8500974035 /* Facetec */,
 				3D0C1E9B2A83B40E00AB3A48 /* ButtonStyles */,
 				E463C5A22AE13E1700AFDFBB /* TextFieldStyles */,
 				3D8214682AC28C2B00AC2598 /* Shared */,
-				3D0C1E792A83A79400AB3A48 /* ContentView.swift */,
 				3D28C0082B06712800E261AA /* AppAttestation */,
+				3D0C1E792A83A79400AB3A48 /* ContentView.swift */,
 				3DF711302AEABDCF009B18CB /* CloudCheck.swift */,
 				3DE0B9802ABA5F0C0001F3A3 /* LoggedInOwnerView.swift */,
 				3D55E60F2B51B79C0096F612 /* MaintenanceView.swift */,
@@ -664,6 +682,7 @@
 				E417AB842AF922D10091CFDA /* LimitedLengthString.swift */,
 				3D28C00F2B06721C00E261AA /* AttestKey.swift */,
 				BDEB3F192B2255B600899A5D /* Import.swift */,
+				E40BEE0C2B4C88320086F6CF /* LoginIdResetToken.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -768,6 +787,7 @@
 				6C07AA4F2B2D150A005FF9D7 /* PushNotificationSettings.swift */,
 				3D55E6122B51B7C10096F612 /* TimelockCountdown.swift */,
 				E4C06F412B335940006A9B39 /* SettingsItem.swift */,
+				E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -953,13 +973,26 @@
 			path = Access;
 			sourceTree = "<group>";
 		};
+		E40BEE082B4C22E60086F6CF /* LoginIdReset */ = {
+			isa = PBXGroup;
+			children = (
+				E40BEE092B4C23250086F6CF /* LoginIdReset.swift */,
+				E46395722B4EC93D005FE818 /* LoginIdResetCollectTokensStep.swift */,
+				E46395742B4EC969005FE818 /* LoginIdResetSignInStep.swift */,
+				E46395762B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift */,
+				E46395782B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift */,
+				E46395702B4EC854005FE818 /* LoginIdResetStepView.swift */,
+				E463957C2B4F395A005FE818 /* OwnerKeyRecovery.swift */,
+			);
+			path = LoginIdReset;
+			sourceTree = "<group>";
+		};
 		E417AB8C2AFA8C2C0091CFDA /* Home */ = {
 			isa = PBXGroup;
 			children = (
 				6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */,
 				3D55E61B2B51B9410096F612 /* ApproverStatus.swift */,
 				3D55E61C2B51B9410096F612 /* LoggedInWelcomeScreen.swift */,
-				E417AB8A2AFA8B6C0091CFDA /* PasteLinkButton.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1197,6 +1230,7 @@
 				6CC60F692AA1292C001A4454 /* BigInt+Access.swift in Sources */,
 				6C2372882AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
+				E46395792B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
 				BD19AE122B05509000282B86 /* GetPassword.swift in Sources */,
@@ -1205,6 +1239,7 @@
 				6C07AA502B2D150A005FF9D7 /* PushNotificationSettings.swift in Sources */,
 				3D55E61D2B51B9410096F612 /* ApproverStatus.swift in Sources */,
 				3D0C1E8A2A83A8C400AB3A48 /* FilledButtonStyle.swift in Sources */,
+				E46395752B4EC969005FE818 /* LoginIdResetSignInStep.swift in Sources */,
 				3D3796A52A8F255F00913581 /* Models.swift in Sources */,
 				BD8BC9922ADDC4E100DA979C /* BIP39.swift in Sources */,
 				E4ADF6542AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift in Sources */,
@@ -1217,9 +1252,11 @@
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				6CF507F72B1A48440013CD7C /* LanguageSelection.swift in Sources */,
 				E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */,
+				E46395712B4EC854005FE818 /* LoginIdResetStepView.swift in Sources */,
 				3D28C0102B06721C00E261AA /* AttestKey.swift in Sources */,
 				E4C06F422B335940006A9B39 /* SettingsItem.swift in Sources */,
 				BD89A3FC2AEB3FA50035B094 /* ApproverPill.swift in Sources */,
+				E40BEE0B2B4C2DBE0086F6CF /* PasteLinkButton.swift in Sources */,
 				3D23ACF92AB264B500F55C5D /* MoyaProvider+Decodable.swift in Sources */,
 				BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */,
 				3DA2B71D2B195661001A0775 /* AttestationCheck.swift in Sources */,
@@ -1235,6 +1272,7 @@
 				E4FB356B2B18FA4400D75E26 /* RetrieveAccessShards.swift in Sources */,
 				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,
 				3DD9C3802A8BD6A800F1E497 /* Configuration.swift in Sources */,
+				E40BEE0D2B4C88320086F6CF /* LoginIdResetToken.swift in Sources */,
 				3D3E64D62AE6B76A0000C56C /* WordEntry.swift in Sources */,
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
 				E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */,
@@ -1262,6 +1300,7 @@
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
 				E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */,
 				6CAC0B4F2B163A8B008051BD /* RefreshOnTimer.swift in Sources */,
+				E40BEE0A2B4C23250086F6CF /* LoginIdReset.swift in Sources */,
 				E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */,
 				3DE0B9812ABA5F0C0001F3A3 /* LoggedInOwnerView.swift in Sources */,
 				3D55E62C2B51B97F0096F612 /* LoggedOutWelcomeScreen.swift in Sources */,
@@ -1286,6 +1325,7 @@
 				3D23ACC72AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift in Sources */,
 				3DE0B97F2ABA57160001F3A3 /* MoyaProvider+Session.swift in Sources */,
 				3DE0B97B2ABA32B00001F3A3 /* RemoteResult.swift in Sources */,
+				E463957D2B4F395A005FE818 /* OwnerKeyRecovery.swift in Sources */,
 				E472073F2AEBCCC6009A06A1 /* AccessApproval.swift in Sources */,
 				BD5026182AE8B0A000B727C4 /* AppSpecificError.swift in Sources */,
 				3DCAADA42B51ED5700D5C093 /* LearnMore.swift in Sources */,
@@ -1301,6 +1341,7 @@
 				3D0C1E782A83A79400AB3A48 /* CensoApp.swift in Sources */,
 				E463C5A12AE1359100AFDFBB /* ApproversSetup.swift in Sources */,
 				6C65753E2AB388D700E1D737 /* TotpUtils.swift in Sources */,
+				E46395732B4EC93D005FE818 /* LoginIdResetCollectTokensStep.swift in Sources */,
 				E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */,
 				6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				3D28C0122B06723600E261AA /* MoyaProvider+Async.swift in Sources */,
@@ -1316,6 +1357,7 @@
 				3D0C1E8C2A83A9EB00AB3A48 /* DeviceKey.swift in Sources */,
 				E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */,
 				E4D3768D2AE83A24005809F7 /* ApproversSetupDone.swift in Sources */,
+				E46395772B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3D3E64D12AE6B76A0000C56C /* SeedVerification.swift in Sources */,
 				3D55E6102B51B79C0096F612 /* MaintenanceView.swift in Sources */,

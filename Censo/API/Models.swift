@@ -100,11 +100,6 @@ extension API {
         }
     }
     
-    struct ApproverShard: Encodable {
-        var participantId: ParticipantId
-        var encryptedShard: Base64EncodedString
-    }
-    
     struct OwnerStateResponse: Decodable {
         var ownerState: OwnerState
     }
@@ -154,17 +149,41 @@ extension API {
     
     struct ReplacePolicyApiRequest: Encodable {
         var intermediatePublicKey: Base58EncodedPublicKey
-        var approverKeysSignatureByIntermediateKey: Base64EncodedString
+        var approverPublicKeysSignatureByIntermediateKey: Base64EncodedString
         var approverShards: [ApproverShard]
         var encryptedMasterPrivateKey: Base64EncodedString
         var masterEncryptionPublicKey: Base58EncodedPublicKey
         var signatureByPreviousIntermediateKey: Base64EncodedString
         var masterKeySignature: Base64EncodedString
+        
+        struct ApproverShard: Encodable {
+            var participantId: ParticipantId
+            var encryptedShard: Base64EncodedString
+        }
     }
     
-    struct ReplacePolicyApiResponse: BiometryVerificationResponse {
+    struct ReplacePolicyApiResponse {
         var ownerState: OwnerState
-        var scanResultBlob: String
+    }
+    
+    struct ReplacePolicyShardsApiRequest: Encodable {
+        var intermediatePublicKey: Base58EncodedPublicKey
+        var approverPublicKeysSignatureByIntermediateKey: Base64EncodedString
+        var approverShards: [ApproverShard]
+        var encryptedMasterPrivateKey: Base64EncodedString
+        var masterEncryptionPublicKey: Base58EncodedPublicKey
+        var signatureByPreviousIntermediateKey: Base64EncodedString
+        var masterKeySignature: Base64EncodedString
+        
+        struct ApproverShard: Encodable {
+            var participantId: ParticipantId
+            var encryptedShard: Base64EncodedString
+            var approverPublicKey: Base58EncodedPublicKey
+        }
+    }
+    
+    struct ReplacePolicyShardsApiResponse {
+        var ownerState: OwnerState
     }
     
     struct ConfirmApproverApiRequest: Encodable {
@@ -251,6 +270,7 @@ extension API {
         var participantId: ParticipantId
         var encryptedShard: Base64EncodedString
         var isOwnerShard: Bool
+        var approverPublicKey: Base58EncodedPublicKey?
         var ownerEntropy: Base64EncodedString?
     }
     
@@ -293,5 +313,26 @@ extension API {
     
     struct OwnerProof: Codable {
         var signature: Base64EncodedString
+    }
+    
+    struct ResetLoginIdApiRequest: Encodable {
+        var identityToken: String
+        var resetTokens: [LoginIdResetToken]
+        var biometryVerificationId: String
+        var biometryData: FacetecBiometry
+    }
+    
+    struct ResetLoginIdApiResponse: BiometryVerificationResponse {
+        var scanResultBlob: String
+    }
+    
+    struct ResetLoginIdWithPasswordApiRequest: Encodable {
+        var identityToken: String
+        var resetTokens: [LoginIdResetToken]
+        var password: Password
+    }
+    
+    struct ResetLoginIdWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import Security
 import LocalAuthentication
 
-struct DeviceKey: SecureEnclaveKey {
+struct DeviceKey: SecureEnclaveKey, Equatable {
     let identifier: String
     let secKey: SecKey
 

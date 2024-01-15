@@ -8,7 +8,7 @@
 import Foundation
 import Sentry
 
-struct Session {
+struct Session : Equatable {
     var deviceKey: DeviceKey
     var userCredentials: UserCredentials
 }
@@ -18,16 +18,35 @@ extension Session {
         let userIdentifier = self.userCredentials.userIdentifier
         let existingKey = participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy)
         if (existingKey == nil) {
-            guard let privateKey = try? generatePrivateKey(),
-                  let encryptedKey = encryptPrivateKey(privateKey: privateKey, userIdentifier: userIdentifier, entropy: entropy) else {
-                SentrySDK.captureWithTag(error: CensoError.failedToCreateApproverKey, tagValue: "Approver Key")
-                throw CensoError.failedToCreateApproverKey
-            }
-            participantId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey, entropy: entropy)
-            return try EncryptionKey.generateFromPrivateKeyX963(data: privateKey)
+            let encryptionKey = try generateApproverKey(participantId: participantId)
+            try persistApproverKey(participantId: participantId, key: encryptionKey, entropy: entropy)
+            return encryptionKey
         } else {
             return existingKey!
         }
+    }
+    
+    func generateApproverKey(participantId: ParticipantId) throws -> EncryptionKey {
+        guard let privateKey = try? generatePrivateKey() else {
+            SentrySDK.captureWithTag(error: CensoError.failedToCreateApproverKey, tagValue: "Approver Key")
+            throw CensoError.failedToCreateApproverKey
+        }
+        
+        return try EncryptionKey.generateFromPrivateKeyX963(data: privateKey)
+    }
+    
+    func persistApproverKey(participantId: ParticipantId, key: EncryptionKey, entropy: Data?) throws {
+        let userIdentifier = self.userCredentials.userIdentifier
+        guard let encryptedKey = encryptPrivateKey(privateKey: try key.privateKeyX963(), userIdentifier: userIdentifier, entropy: entropy) else {
+            SentrySDK.captureWithTag(error: CensoError.failedToPersistApproverKey, tagValue: "Approver Key")
+            throw CensoError.failedToPersistApproverKey
+        }
+        participantId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey, entropy: entropy)
+    }
+    
+    func approverKeyExists(participantId: ParticipantId, entropy: Data?) -> Bool {
+        let userIdentifier = self.userCredentials.userIdentifier
+        return participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy) != nil
     }
     
     func deleteApproverKey(participantId: ParticipantId) {

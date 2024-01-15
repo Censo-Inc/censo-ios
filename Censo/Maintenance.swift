@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 class MaintenanceState: ObservableObject {
     static let shared = MaintenanceState()
@@ -49,5 +50,19 @@ class PassThroughWindow: UIWindow {
         guard let hitView = super.hitTest(point, with: event) else { return nil }
         // If the returned view is the `UIHostingController`'s view, ignore. Click will be handled by windown below.
         return rootViewController?.view == hitView ? nil : hitView
+    }
+}
+
+struct MaintenanceStatusCheck<Content>: View where Content : View {
+    @Environment(\.apiProvider) var apiProvider
+    
+    var session: Session
+    @ViewBuilder var content: () -> Content
+    
+    var body: some View {
+        content()
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.maintenanceStatusCheckNotification)) { _ in
+                apiProvider.request(with: session, endpoint: .health) { _ in }
+            }
     }
 }
