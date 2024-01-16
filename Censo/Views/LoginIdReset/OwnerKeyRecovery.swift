@@ -193,7 +193,7 @@ struct OwnerKeyRecovery: View {
                         intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
                         approverPublicKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
                         approverShards: try newIntermediateKey.shard(
-                            threshold: policySetup.threshold,
+                            threshold: Int(ownerState.policy.threshold),
                             participants: participants
                         ).map({
                             return API.ReplacePolicyShardsApiRequest.ApproverShard(
