@@ -172,7 +172,7 @@ struct ApproversSetup: View {
                     }
                 })
                 .sheet(isPresented: $showLearnMore) {
-                    LearnMore(title: "Trusted Approvers & Safety in Number", showLearnMore: $showLearnMore) {
+                    LearnMore(title: "Trusted Approvers & Safety in Numbers", showLearnMore: $showLearnMore) {
                         VStack {
                             Text("""
                                 Censo's approach to securing your cryptographically secured seed phrases and user credentials is innovative yet intuitive. By encrypting the seed phrase on your device and then distributing cryptographically provable approval rights to Trusted Approvers using Shamir Secret Sharing, we ensure maximum security and resilience.
