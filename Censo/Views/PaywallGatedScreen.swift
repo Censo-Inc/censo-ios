@@ -63,7 +63,8 @@ struct PaywallGatedScreen<Content: View>: View {
                 } else if let offer {
                     Paywall(offer: offer, 
                             purchase: purchase,
-                            restorePurchases: restorePurchases
+                            restorePurchases: restorePurchases,
+                            codeRedeemed: {}
                     )
                     .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
                 } else {
@@ -201,6 +202,10 @@ struct Paywall: View {
     var offer: Offer
     var purchase: (Product) -> Void
     var restorePurchases: () -> Void
+    var codeRedeemed: () -> Void
+    @State private var displayRedemptionSheet = false
+    @State private var displayError = false
+    @State private var error = ""
     
     struct Offer {
         var product: Product
@@ -265,6 +270,14 @@ struct Paywall: View {
             .padding(.bottom)
             .accessibilityIdentifier("purchaseButton")
 
+            Button {
+                displayRedemptionSheet = true
+            } label: {
+                Text("Redeem Code")
+                    .fontWeight(.semibold)
+            }
+            .padding()
+
             HStack {
                 Link(destination: Configuration.termsOfServiceURL, label: {
                     Text("Terms")
@@ -295,6 +308,24 @@ struct Paywall: View {
             }
         }
         .padding()
+        .offerCodeRedemption(isPresented: $displayRedemptionSheet) { result in
+            switch (result) {
+            case .success:
+                codeRedeemed()
+            case .failure(let err):
+                SentrySDK.captureWithTag(error: err, tagValue: "Redeem Code")
+                displayError = true
+                error = err.localizedDescription
+            }
+        }
+        .alert("Error", isPresented: $displayError) {
+            Button {
+                displayError = false
+                error = ""
+            } label: { Text("OK") }
+        } message: {
+            Text(error)
+        }
     }
 }
 
