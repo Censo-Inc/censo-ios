@@ -47,6 +47,7 @@ struct API {
         
         case storeSeedPhrase(StoreSeedPhraseApiRequest)
         case deleteSeedPhrase(guid: String)
+        case getSeedPhrase(guid: String)
         
         case requestAccess(RequestAccessApiRequest)
         case deleteAccess
@@ -121,7 +122,8 @@ extension API: TargetType {
             return "v1/lock"
         case .storeSeedPhrase:
             return "v1/vault/seed-phrases"
-        case .deleteSeedPhrase(let guid):
+        case .deleteSeedPhrase(let guid),
+             .getSeedPhrase(let guid):
             return "v1/vault/seed-phrases/\(guid)"
         case .requestAccess:
             return "v1/access"
@@ -158,7 +160,8 @@ extension API: TargetType {
         case .health,
              .user,
              .attestationKey,
-             .getImportEncryptedData:
+             .getImportEncryptedData,
+             .getSeedPhrase:
             return .get
         case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup, .cancelDisabledTimelock:
             return .delete
@@ -207,6 +210,7 @@ extension API: TargetType {
              .attestationChallenge,
              .attestationKey,
              .getImportEncryptedData,
+             .getSeedPhrase,
              .deletePolicySetup,
              .enableTimelock,
              .disableTimelock,
@@ -327,6 +331,7 @@ extension API: TargetType {
              .deleteAccess,
              .attestationKey,
              .getImportEncryptedData,
+             .getSeedPhrase,
              .cancelDisabledTimelock:
             return false
         case .signIn,

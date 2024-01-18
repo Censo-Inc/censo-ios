@@ -175,7 +175,6 @@ extension API {
     
     struct SeedPhrase: Codable, Equatable {
         var guid: String
-        var encryptedSeedPhrase: Base64EncodedString
         var seedPhraseHash: Base64EncodedString
         var label: String
         var createdAt: Date

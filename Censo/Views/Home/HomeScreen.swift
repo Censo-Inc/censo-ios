@@ -209,13 +209,13 @@ extension API.Vault {
 
 extension API.SeedPhrase {
     static var sample: Self {
-        .init(guid: "guid1", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", createdAt: Date())
+        .init(guid: "guid1", seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", createdAt: Date())
     }
     static var sample2: Self {
-        .init(guid: "guid2", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "Robin Hood", createdAt: Date())
+        .init(guid: "guid2", seedPhraseHash: .sample, label: "Robin Hood", createdAt: Date())
     }
     static var sample3: Self {
-        .init(guid: "guid3", encryptedSeedPhrase: .sample, seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", createdAt: Date())
+        .init(guid: "guid3", seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", createdAt: Date())
     }
 }
 

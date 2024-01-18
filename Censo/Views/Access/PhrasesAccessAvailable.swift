@@ -21,7 +21,8 @@ struct PhrasesAccessAvailable: View {
     enum Step {
         case showingList
         case intro(phraseIndex: Int)
-        case retrievingShards(phraseIndex: Int, language: WordListLanguage?)
+        case retrievingSeedPhrase(phraseIndex: Int, language: WordListLanguage?)
+        case retrievingShards(phraseIndex: Int, encryptedSeedPhrase: Base64EncodedString, language: WordListLanguage?)
         case showingSeedPhrase(phraseIndex: Int, phrase: [String], start: Date)
     }
     
@@ -60,7 +61,7 @@ struct PhrasesAccessAvailable: View {
                 ownerState: ownerState,
                 session: session,
                 onReadyToGetStarted: { language in
-                    self.step = .retrievingShards(phraseIndex: phraseIndex, language: language)
+                    self.step = .retrievingSeedPhrase(phraseIndex: phraseIndex, language: language)
                 }
             )
             .navigationTitle(Text("Access"))
@@ -75,7 +76,30 @@ struct PhrasesAccessAvailable: View {
                     }
                 }
             })
-        case .retrievingShards(let phraseIndex, let language):
+        case .retrievingSeedPhrase(let phraseIndex, let language):
+            ProgressView()
+                .onAppear {
+                    getSeedPhrase(
+                        phraseIndex: phraseIndex,
+                        onEncryptedSeedPhraseRetrieved: { encryptedSeedPhrase in
+                            self.step = .retrievingShards(
+                                phraseIndex: phraseIndex,
+                                encryptedSeedPhrase: encryptedSeedPhrase,
+                                language: language
+                            )
+                        }
+                    )
+                }
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button {
+                        self.step = .showingList
+                    } label: {
+                        Text("OK")
+                    }
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
+        case .retrievingShards(let phraseIndex, let encryptedSeedPhrase, let language):
             RetrieveAccessShards(
                 session: session,
                 ownerState: ownerState,
@@ -83,7 +107,7 @@ struct PhrasesAccessAvailable: View {
                     do {
                         self.step = .showingSeedPhrase(
                             phraseIndex: phraseIndex,
-                            phrase: try recoverPhrase(encryptedShards, phraseIndex, language),
+                            phrase: try recoverPhrase(encryptedShards, encryptedSeedPhrase, language),
                             start: Date.now)
                     } catch {
                         self.step = .showingList
@@ -128,11 +152,22 @@ struct PhrasesAccessAvailable: View {
         self.error = error
     }
     
-    private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ phraseIndex: Int, _ language: WordListLanguage?) throws -> [String] {
+    func getSeedPhrase( phraseIndex: Int, onEncryptedSeedPhraseRetrieved: @escaping  (Base64EncodedString) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .getSeedPhrase(guid: ownerState.vault.seedPhrases[phraseIndex].guid)) { (result: Result<API.GetSeedPhraseApiResponse, MoyaError>) in
+            switch result {
+            case .success(let payload):
+                onEncryptedSeedPhraseRetrieved(payload.encryptedSeedPhrase)
+            case .failure(let error):
+                showError(error)
+            }
+        }
+    }
+    
+    private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ encryptedSeedPhrase: Base64EncodedString, _ language: WordListLanguage?) throws -> [String] {
         do {
             let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
-            let decryptedPhraseData = try masterKey.decrypt(base64EncodedString:ownerState.vault.seedPhrases[phraseIndex].encryptedSeedPhrase)
+            let decryptedPhraseData = try masterKey.decrypt(base64EncodedString: encryptedSeedPhrase)
             return try BIP39.binaryDataToWords(binaryData: decryptedPhraseData, language: language)
         } catch {
             SentrySDK.captureWithTag(error: error, tagValue: "Access")
