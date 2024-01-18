@@ -52,7 +52,7 @@ struct Base58EncodedPublicKey: Codable, Equatable {
 
 extension Array where Element == Base58EncodedPublicKey {
     func sortedByStringRepr() -> [Base58EncodedPublicKey] {
-        return self.sorted(using: KeyPathComparator(\.value, order: .forward))
+        return self.map({ $0.value }).sorted().map({ try! Base58EncodedPublicKey(value: $0) })
     }
     
     func toBytes() -> Data {
