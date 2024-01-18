@@ -26,6 +26,7 @@ struct SeedEntry: View {
     var isFirstTime: Bool
     var language: WordListLanguage
     var onSuccess: (API.OwnerState) -> Void
+    var onBack: () -> Void
 
     var body: some View {
         NavigationStack {
@@ -74,10 +75,18 @@ struct SeedEntry: View {
             .navigationTitle(Text("Add Seed Phrase"))
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        showingDismissAlert = true
-                    } label: {
-                        Image(systemName: "xmark")
+                    if (words.isEmpty) {
+                        Button {
+                            onBack()
+                        } label: {
+                            Image(systemName: "chevron.left")
+                        }
+                    } else {
+                        Button {
+                            showingDismissAlert = true
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
                     }
                 }
             })
@@ -135,9 +144,10 @@ struct SeedEntry_Previews: PreviewProvider {
             publicMasterEncryptionKey: .sample,
             ownerEntropy: .sample,
             isFirstTime: true,
-            language: WordListLanguage.english) { _ in
-            
-        }.foregroundColor(Color.Censo.primaryForeground)
+            language: WordListLanguage.english,
+            onSuccess: { _ in },
+            onBack: { }
+        ).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 

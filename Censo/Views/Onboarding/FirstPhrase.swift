@@ -24,7 +24,6 @@ struct FirstPhrase: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                    
                         VStack {
                             Spacer()
                             if addYourOwnPhrase {
@@ -33,9 +32,19 @@ struct FirstPhrase: View {
                                         language = selectedLanguage
                                         showingAddPhrase = true
                                     },
-                                    onPastePhrase: { showingPastePhrase = true },
-                                    onBack: { addYourOwnPhrase = false }
+                                    onPastePhrase: { showingPastePhrase = true }
                                 )
+                                .navigationTitle("")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar(content: {
+                                    ToolbarItem(placement: .navigationBarLeading) {
+                                        Button {
+                                            addYourOwnPhrase = false
+                                        } label: {
+                                            Image(systemName: "chevron.left")
+                                        }
+                                    }
+                                })
                             } else {
                                 FirstTimePhrase(
                                     onGeneratePhrase: { showingGeneratePhrase = true },
@@ -66,13 +75,16 @@ struct FirstPhrase: View {
                 ownerEntropy: ownerState.policy.ownerEntropy,
                 isFirstTime: true,
                 language: language,
-                onSuccess: onComplete
+                onSuccess: onComplete,
+                onBack: {
+                    showingAddPhrase = false
+                }
             )
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
-                onComplete: onComplete, session: session,
-                ownerState: ownerState, isFirstTime: true
+                onComplete: onComplete, onBack: { showingPastePhrase = false },
+                session: session, ownerState: ownerState, isFirstTime: true
             )
         })
         .sheet(isPresented: $showingGeneratePhrase, content: {
@@ -141,14 +153,13 @@ struct FirstTimePhrase: View {
 struct AddYourOwnPhrase: View {
     var onInputPhrase: (WordListLanguage) -> Void
     var onPastePhrase: () -> Void
-    var onBack: () -> Void
     
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
     
     var body: some View {
         VStack(alignment: .leading) {
             Spacer()
-            Text("Time to add your first seed phrase")
+            Text("How do you want to provide your seed phrase?")
                 .font(.title2)
                 .fontWeight(.semibold)
                 .fixedSize(horizontal: false, vertical: true)
@@ -162,44 +173,42 @@ struct AddYourOwnPhrase: View {
             )
             .padding(.vertical)
             
-            Button {
-                onInputPhrase(currentLanguage())
-            } label: {
-                HStack(spacing: 20) {
-                    Image("PhraseEntry").renderingMode(.template)
-                    Text("Input seed phrase")
+            HStack(alignment: .bottom) {
+                VStack {
+                    Button {
+                        onInputPhrase(currentLanguage())
+                    } label: {
+                        Image("PhraseEntry")
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    Text("Input")
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(RoundedButtonStyle())
-            
-            Button {
-                onPastePhrase()
-            } label: {
-                HStack(spacing: 20) {
-                    Image("ClipboardText").renderingMode(.template)
-                    Text("Paste seed phrase")
+
+                VStack {
+                    Button {
+                        onPastePhrase()
+                    } label: {
+                        Image("ClipboardText")
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    Text("Paste")
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
+                
             }
-            .buttonStyle(RoundedButtonStyle())
-            
-            Button {
-                onBack()
-            } label: {
-                HStack(spacing: 20) {
-                    Image(systemName: "arrowshape.backward.fill").renderingMode(.template)
-                    Text("Back")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(RoundedButtonStyle())
         }
         .padding(.horizontal)
         .padding([.horizontal, .bottom])

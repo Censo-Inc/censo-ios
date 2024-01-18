@@ -33,6 +33,7 @@ struct PastePhrase: View {
     @State private var showingVerification = false
     
     var onComplete: (API.OwnerState) -> Void
+    var onBack: () -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
@@ -117,9 +118,9 @@ struct PastePhrase: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        dismiss()
+                        onBack()
                     } label: {
-                        Image(systemName: "xmark")
+                        Image(systemName: "chevron.left")
                     }
                 }
             }
@@ -167,6 +168,7 @@ struct PastePhrase: View {
 #Preview {
     PastePhrase(
         onComplete: {_ in},
+        onBack: {},
         session: .sample,
         ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
         isFirstTime: true

@@ -13,9 +13,10 @@ struct AdditionalPhrase: View {
     
     enum Step {
         case intro
+        case generatePhrase
+        case haveMyOwn
         case addPhrase
         case pastePhrase
-        case generatePhrase
     }
     
     @State private var step: Step = .intro
@@ -27,13 +28,14 @@ struct AdditionalPhrase: View {
     
     var body: some View {
         switch step {
-        case .intro:
+        case .intro, .haveMyOwn:
             NavigationStack {
                 GeometryReader { geometry in
                     ZStack(alignment: .bottom) {
                         VStack {
                             Image("AddYourSeedPhrase")
                                 .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .frame(
                                     maxWidth: geometry.size.width,
                                     maxHeight: geometry.size.height * 0.6)
@@ -44,71 +46,127 @@ struct AdditionalPhrase: View {
                         
                         VStack(alignment: .leading) {
                             Spacer()
-                            Text("Add another seed phrase")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .padding(.vertical)
-                            
-                            LanguageSelection(
-                                text: Text("For seed phrase input/generation, the current language is \(currentLanguage().displayName()). You may change it **here**"
-                                          ).font(.subheadline),
-                                languageId: $languageId
-                            )
-                            .padding(.bottom)
-                            
-                            Button {
-                                step = .addPhrase
-                            } label: {
-                                HStack(spacing: 20) {
-                                    Image("PhraseEntry")
-                                        .renderingMode(.template)
-                                    Text("Input seed phrase")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
+                            switch step {
+                                
+                            case .intro:
+                                Text("Add another seed phrase")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical)
+                                
+                                LanguageSelection(
+                                    text: Text("You can add one of your own, or generate a new seed phrase with Censo and add that. The current language is \(currentLanguage().displayName()). You may change it **here**"
+                                              ).font(.subheadline),
+                                    languageId: $languageId
+                                )
+                                .padding(.bottom)
+                                
+                                Button {
+                                    step = .generatePhrase
+                                } label: {
+                                    HStack(spacing: 20) {
+                                        Image(systemName: "wand.and.stars")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                        Text("Generate phrase")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(RoundedButtonStyle())
-                            
-                            Button {
-                                step = .pastePhrase
-                            } label: {
-                                HStack(spacing: 20) {
-                                    Image("ClipboardText")
-                                        .renderingMode(.template)
-                                    Text("Paste seed phrase")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
+                                .buttonStyle(RoundedButtonStyle())
+                                .padding(.bottom, 5)
+                                
+                                Button {
+                                    step = .haveMyOwn
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image("ClipboardText").renderingMode(.template)
+                                        Text("I have my own")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(RoundedButtonStyle())
-                            
-                            Button {
-                                step = .generatePhrase
-                            } label: {
-                                HStack(spacing: 20) {
-                                    Image(systemName: "wand.and.stars")
-                                        .resizable()
-                                        .frame(width: 30, height: 30)
-                                    Text("Generate phrase")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
+                                .buttonStyle(RoundedButtonStyle())
+                                .accessibilityIdentifier("existingPhraseButton")
+                            case .haveMyOwn:
+                                Text("How do you want to provide your seed phrase?")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical)
+                                
+                                LanguageSelection(
+                                    text: Text("The current language for Paste or Input is \(currentLanguage().displayName()). You may change it **here**"
+                                              ).font(.subheadline),
+                                    languageId: $languageId
+                                )
+                                .padding(.bottom)
+                                
+                                HStack(alignment: .bottom) {
+                                    VStack {
+                                        Button {
+                                            step = .addPhrase
+                                        } label: {
+                                            Image("PhraseEntry")
+                                                .renderingMode(.template)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 32, height: 32)
+                                        }
+                                        .buttonStyle(RoundedButtonStyle())
+                                        Text("Input")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
+
+                                    VStack {
+                                        Button {
+                                            step = .pastePhrase
+                                        } label: {
+                                            Image("ClipboardText")
+                                                .renderingMode(.template)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 32, height: 32)
+                                        }
+                                        .buttonStyle(RoundedButtonStyle())
+                                        Text("Paste")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    
                                 }
-                                .frame(maxWidth: .infinity)
+                            case .addPhrase, .generatePhrase, .pastePhrase:
+                                EmptyView()
                             }
-                            .buttonStyle(RoundedButtonStyle())
-                            .padding(.bottom, 5)
                         }
                         .padding(.leading)
                         .padding(.horizontal)
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar(content: {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    dismiss()
-                                } label: {
-                                    Image(systemName: "xmark")
+                            switch step {
+                            case .intro:
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button {
+                                        dismiss()
+                                    } label: {
+                                        Image(systemName: "xmark")
+                                    }
+                                }
+                            case .haveMyOwn:
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button {
+                                        step = .intro
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                    }
+                                }
+                            case .addPhrase, .generatePhrase, .pastePhrase:
+                                ToolbarItem() {
+                                    EmptyView()
                                 }
                             }
                         })
@@ -127,6 +185,9 @@ struct AdditionalPhrase: View {
                 onSuccess: { ownerState in
                     onComplete(ownerState)
                     dismiss()
+                },
+                onBack: {
+                    step = .haveMyOwn
                 }
             )
         case .pastePhrase:
@@ -134,7 +195,11 @@ struct AdditionalPhrase: View {
                 onComplete: { ownerState in
                     onComplete(ownerState)
                     dismiss()
-                }, session: session,
+                },
+                onBack: {
+                    step = .haveMyOwn
+                },
+                session: session,
                 ownerState: ownerState,
                 isFirstTime: false
             )
