@@ -129,9 +129,9 @@ struct EncryptionKey : SigningKey {
     
     static func generateFromPrivateKeyRaw(data: Data) throws -> EncryptionKey {
         // We expect the data length to be 32 bytes
-        // In case we get 33 bytes, we drop the first byte as it might represent the sign (positive or negative)
-        // of the encoded big integer
-        let privateKey = try P256.Signing.PrivateKey.init(rawRepresentation: data.count == 33 ? data.dropFirst() : data)
+        // In case we get 33 bytes and the first byte is 0,
+        // we drop it as it might represent the sign of the encoded big integer
+        let privateKey = try P256.Signing.PrivateKey.init(rawRepresentation: data.count == 33 && data[0] == 0 ? data.dropFirst() : data)
         return try generateFromPrivateKeyX963(data: privateKey.x963Representation)
     }
     
