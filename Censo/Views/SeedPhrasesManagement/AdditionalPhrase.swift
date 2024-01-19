@@ -17,6 +17,7 @@ struct AdditionalPhrase: View {
         case haveMyOwn
         case addPhrase
         case pastePhrase
+        case photoPhrase
     }
     
     @State private var step: Step = .intro
@@ -123,6 +124,23 @@ struct AdditionalPhrase: View {
 
                                     VStack {
                                         Button {
+                                            step = .photoPhrase
+                                        } label: {
+                                            Image(systemName: "camera")
+                                                .renderingMode(.template)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 32, height: 32)
+                                        }
+                                        .buttonStyle(RoundedButtonStyle())
+                                        Text("Photo")
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    VStack {
+                                        Button {
                                             step = .pastePhrase
                                         } label: {
                                             Image("ClipboardText")
@@ -139,7 +157,7 @@ struct AdditionalPhrase: View {
                                     .frame(maxWidth: .infinity)
                                     
                                 }
-                            case .addPhrase, .generatePhrase, .pastePhrase:
+                            case .addPhrase, .generatePhrase, .pastePhrase, .photoPhrase:
                                 EmptyView()
                             }
                         }
@@ -164,7 +182,7 @@ struct AdditionalPhrase: View {
                                         Image(systemName: "chevron.left")
                                     }
                                 }
-                            case .addPhrase, .generatePhrase, .pastePhrase:
+                            case .addPhrase, .generatePhrase, .pastePhrase, .photoPhrase:
                                 ToolbarItem() {
                                     EmptyView()
                                 }
@@ -196,6 +214,16 @@ struct AdditionalPhrase: View {
                     onComplete(ownerState)
                     dismiss()
                 },
+                onBack: {
+                    step = .haveMyOwn
+                },
+                session: session,
+                ownerState: ownerState,
+                isFirstTime: false
+            )
+        case .photoPhrase:
+            PhotoPhrase(
+                onComplete: onComplete,
                 onBack: {
                     step = .haveMyOwn
                 },

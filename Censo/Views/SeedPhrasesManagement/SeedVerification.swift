@@ -86,7 +86,7 @@ struct SeedVerification: View {
         .interactiveDismissDisabled()
         .navigationDestination(isPresented: $showingSave) {
             SaveSeedPhrase(
-                words: words,
+                seedPhrase: .bip39(words: words),
                 session: session,
                 publicMasterEncryptionKey: publicMasterEncryptionKey,
                 masterKeySignature: masterKeySignature,

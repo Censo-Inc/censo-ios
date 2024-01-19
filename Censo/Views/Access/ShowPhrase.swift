@@ -10,7 +10,7 @@ import SwiftUI
 struct ShowPhrase: View {
     
     var label: String
-    var words: [String]
+    var seedPhrase: SeedPhrase
     var onComplete: (Bool) -> Void
     var start: Date
     
@@ -31,11 +31,33 @@ struct ShowPhrase: View {
             }
             .frame(width: 430, height: 64)
             .background(Color.Censo.gray224)
+
             
-            Spacer()
-            
-            WordList(words: words)
-                .frame(height: 250)
+            switch (seedPhrase) {
+            case .bip39(let words):
+                Group {
+                    Spacer()
+                    WordList(words: words)
+                        .frame(height: 250)
+                }
+            case .image(let imageData):
+                Group {
+                    if let uiImage = UIImage(data: imageData) {
+                        Text("Zoom in to see the words")
+                            .padding()
+                        ZoomableScrollView {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                            
+                        }
+                        .padding(.horizontal)
+                    } else {
+                        Text("Unable to render image").foregroundColor(.red)
+                    }
+                }
+            }
             
             Group {
                 Divider()
@@ -57,11 +79,12 @@ struct ShowPhrase: View {
     
 }
 
-#Preview {
+#if DEBUG
+#Preview("Words") {
     NavigationView {
         ShowPhrase(
             label: "Testing",
-            words: ["hello", "goodbye", "three", "four"],
+            seedPhrase: .bip39(words: ["hello", "goodbye", "three", "four"]),
             onComplete: {_ in},
             start: Date.now
         )
@@ -77,3 +100,25 @@ struct ShowPhrase: View {
         })
     }.foregroundColor(Color.Censo.primaryForeground)
 }
+
+#Preview("Image") {
+    NavigationView {
+        ShowPhrase(
+            label: "Testing",
+            seedPhrase: .image(imageData: UIImage(systemName: "photo.fill")!.jpegData(compressionQuality: 1)!),
+            onComplete: {_ in},
+            start: Date.now
+        )
+        .navigationTitle(Text("Access"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                } label: {
+                    Image(systemName: "xmark")
+                }
+            }
+        })
+    }.foregroundColor(Color.Censo.primaryForeground)
+}
+#endif

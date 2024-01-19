@@ -45,6 +45,7 @@ enum CensoError: Swift.Error, Equatable {
     case failedToGenerateLoginResetToken
     case cannotRemoveApproversWhileAccessInProgress
     case cannotSetupApproversWhileAccessInProgress
+    case invalidPhraseData
 }
 
 extension CensoError: LocalizedError {
@@ -124,6 +125,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Cannot remove approvers while an access is in progress", comment: "Approver removal")
         case .cannotSetupApproversWhileAccessInProgress:
             return NSLocalizedString("Cannot setup approvers while an access is in progress", comment: "Approver setup")
+        case .invalidPhraseData:
+            return NSLocalizedString("Invalid phrase data", comment: "Invalid phrase")
         }
         
     }

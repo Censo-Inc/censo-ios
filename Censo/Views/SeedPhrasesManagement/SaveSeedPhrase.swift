@@ -19,7 +19,7 @@ struct SaveSeedPhrase: View {
     @State private var showingError = false
     @State private var error: Error?
 
-    var words: [String]
+    var seedPhrase: SeedPhrase
     var session: Session
     var publicMasterEncryptionKey: Base58EncodedPublicKey
     var masterKeySignature: Base64EncodedString?
@@ -119,7 +119,7 @@ struct SaveSeedPhrase: View {
                     return
                 }
             }
-            let phraseData = try BIP39.phraseToBinaryData(words: words)
+            let phraseData = try seedPhrase.toData()
             let encryptedSeedPhrase = try EncryptionKey
                 .generateFromPublicExternalRepresentation(base58PublicKey: publicMasterEncryptionKey)
                 .encrypt(data: phraseData)
@@ -160,7 +160,7 @@ struct SaveSeedPhrase: View {
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SaveSeedPhrase(words: [""], session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true, onSuccess: { _ in })
+            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true, onSuccess: { _ in })
         }
         .foregroundColor(Color.Censo.primaryForeground)
     }

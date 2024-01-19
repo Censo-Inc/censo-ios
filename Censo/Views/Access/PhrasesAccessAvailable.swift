@@ -23,7 +23,7 @@ struct PhrasesAccessAvailable: View {
         case intro(phraseIndex: Int)
         case retrievingSeedPhrase(phraseIndex: Int, language: WordListLanguage?)
         case retrievingShards(phraseIndex: Int, encryptedSeedPhrase: Base64EncodedString, language: WordListLanguage?)
-        case showingSeedPhrase(phraseIndex: Int, phrase: [String], start: Date)
+        case showingSeedPhrase(phraseIndex: Int, seedPhrase: SeedPhrase, start: Date)
     }
     
     @State private var step: Step = .showingList
@@ -107,7 +107,7 @@ struct PhrasesAccessAvailable: View {
                     do {
                         self.step = .showingSeedPhrase(
                             phraseIndex: phraseIndex,
-                            phrase: try recoverPhrase(encryptedShards, encryptedSeedPhrase, language),
+                            seedPhrase: try recoverPhrase(encryptedShards, encryptedSeedPhrase, language),
                             start: Date.now)
                     } catch {
                         self.step = .showingList
@@ -118,11 +118,11 @@ struct PhrasesAccessAvailable: View {
                     self.step = .showingList
                 }
             )
-        case .showingSeedPhrase(let phraseIndex, let phrase, let start):
+        case .showingSeedPhrase(let phraseIndex, let seedPhrase, let start):
             let label = ownerState.vault.seedPhrases[phraseIndex].label
             ShowPhrase(
                 label: label,
-                words: phrase,
+                seedPhrase: seedPhrase,
                 onComplete: { finished in
                     if finished {
                         viewedPhrases.append(phraseIndex)
@@ -163,12 +163,12 @@ struct PhrasesAccessAvailable: View {
         }
     }
     
-    private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ encryptedSeedPhrase: Base64EncodedString, _ language: WordListLanguage?) throws -> [String] {
+    private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ encryptedSeedPhrase: Base64EncodedString, _ language: WordListLanguage?) throws -> SeedPhrase {
         do {
             let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
             let decryptedPhraseData = try masterKey.decrypt(base64EncodedString: encryptedSeedPhrase)
-            return try BIP39.binaryDataToWords(binaryData: decryptedPhraseData, language: language)
+            return try SeedPhrase.fromData(data: decryptedPhraseData, language: language)
         } catch {
             SentrySDK.captureWithTag(error: error, tagValue: "Access")
             throw error

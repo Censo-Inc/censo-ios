@@ -14,6 +14,7 @@ struct FirstPhrase: View {
     @State private var showingGeneratePhrase = false
     @State private var showingAddPhrase = false
     @State private var showingPastePhrase = false
+    @State private var showingPhotoPhrase = false
     @State private var language: WordListLanguage = WordListLanguage.english
 
     var ownerState: API.OwnerState.Ready
@@ -32,7 +33,8 @@ struct FirstPhrase: View {
                                         language = selectedLanguage
                                         showingAddPhrase = true
                                     },
-                                    onPastePhrase: { showingPastePhrase = true }
+                                    onPastePhrase: { showingPastePhrase = true },
+                                    onPhotoPhrase: { showingPhotoPhrase = true }
                                 )
                                 .navigationTitle("")
                                 .navigationBarTitleDisplayMode(.inline)
@@ -83,8 +85,20 @@ struct FirstPhrase: View {
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
-                onComplete: onComplete, onBack: { showingPastePhrase = false },
-                session: session, ownerState: ownerState, isFirstTime: true
+                onComplete: onComplete, 
+                onBack: { showingPastePhrase = false },
+                session: session, 
+                ownerState: ownerState,
+                isFirstTime: true
+            )
+        })
+        .sheet(isPresented: $showingPhotoPhrase, content: {
+            PhotoPhrase(
+                onComplete: onComplete,
+                onBack: { showingPhotoPhrase = false },
+                session: session,
+                ownerState: ownerState,
+                isFirstTime: true
             )
         })
         .sheet(isPresented: $showingGeneratePhrase, content: {
@@ -153,6 +167,7 @@ struct FirstTimePhrase: View {
 struct AddYourOwnPhrase: View {
     var onInputPhrase: (WordListLanguage) -> Void
     var onPastePhrase: () -> Void
+    var onPhotoPhrase: () -> Void
     
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
     
@@ -186,6 +201,23 @@ struct AddYourOwnPhrase: View {
                     }
                     .buttonStyle(RoundedButtonStyle())
                     Text("Input")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+                
+                VStack {
+                    Button {
+                        onPhotoPhrase()
+                    } label: {
+                        Image(systemName: "camera")
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    Text("Photo")
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
