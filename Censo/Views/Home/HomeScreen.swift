@@ -205,6 +205,12 @@ extension API.Vault {
             publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
+    static var sample1Phrase: Self {
+        .init(
+            seedPhrases: [.sample],
+            publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+        )
+    }
 }
 
 extension API.SeedPhrase {
@@ -229,7 +235,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 access: nil,
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -242,7 +249,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 access: nil,
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -263,7 +271,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 )),
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -284,7 +293,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 )),
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in }
         )

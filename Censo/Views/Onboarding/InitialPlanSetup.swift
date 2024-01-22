@@ -178,7 +178,7 @@ struct InitialPlanSetup: View {
                             .padding(.horizontal)
                         }
                     }
-                    .onboardingCancelNavBar(onCancel: onCancel)
+                    .onboardingCancelNavBar(onCancel: onCancel, showAsBack: true)
                 }
             }
         }
@@ -248,7 +248,7 @@ struct InitialPlanSetup: View {
 
 #if DEBUG
 #Preview {
-    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active), onComplete: {_ in}, onCancel: {})
+    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false), onComplete: {_ in}, onCancel: {})
         .foregroundColor(.Censo.primaryForeground)
 }
 #endif

@@ -378,6 +378,7 @@ extension API {
             var authType: AuthType
             var entropy: Base64EncodedString
             var subscriptionStatus: SubscriptionStatus
+            var subscriptionRequired: Bool
         }
         
         struct Ready: Codable {
@@ -389,6 +390,7 @@ extension API {
             var authType: AuthType
             var subscriptionStatus: SubscriptionStatus
             var timelockSetting: TimelockSetting
+            var subscriptionRequired: Bool
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {
@@ -440,6 +442,15 @@ extension API {
             }
         }
         
+        var subscriptionRequired: Bool {
+            get {
+                switch (self) {
+                case .initial(let initial): return initial.subscriptionRequired
+                case .ready(let ready): return ready.subscriptionRequired
+                }
+            }
+        }
+
         var entropy: Base64EncodedString? {
             get {
                 return switch (self) {
@@ -480,3 +491,13 @@ extension API.OwnerState.Ready {
         }
     }
 }
+
+#if DEBUG
+
+extension API.OwnerState.Ready {
+    static var sample: Self {
+        API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true)
+    }
+}
+
+#endif

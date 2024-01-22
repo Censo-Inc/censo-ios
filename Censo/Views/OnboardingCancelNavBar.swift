@@ -11,6 +11,7 @@ struct OnboardingCancelNavBar: ViewModifier {
     var onCancel: () -> Void
     var navigationTitle: String?
     var onboarding: Bool = true
+    var showAsBack = false
     
     func body(content: Content) -> some View {
         if onboarding {
@@ -23,7 +24,11 @@ struct OnboardingCancelNavBar: ViewModifier {
                             Button {
                                 onCancel()
                             } label: {
-                                Image(systemName: "xmark")
+                                if showAsBack {
+                                    Image(systemName: "chevron.left")
+                                } else {
+                                    Image(systemName: "xmark")
+                                }
                             }
                         }
                     })
@@ -41,8 +46,8 @@ struct OnboardingCancelNavBar: ViewModifier {
 }
 
 extension View {
-    func onboardingCancelNavBar(onCancel: @escaping () -> Void) -> some View {
-        modifier(OnboardingCancelNavBar(onCancel: onCancel))
+    func onboardingCancelNavBar(onCancel: @escaping () -> Void, showAsBack: Bool = false) -> some View {
+        modifier(OnboardingCancelNavBar(onCancel: onCancel, showAsBack: showAsBack))
     }
     
     func onboardingCancelNavBar(onboarding: Bool, onCancel: @escaping () -> Void) -> some View {

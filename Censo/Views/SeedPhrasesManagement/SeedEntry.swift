@@ -19,10 +19,7 @@ struct SeedEntry: View {
     @State private var showingDismissAlert = false
 
     var session: Session
-    var publicMasterEncryptionKey: Base58EncodedPublicKey
-    var masterKeySignature: Base64EncodedString?
-    var ownerParticipantId: ParticipantId?
-    var ownerEntropy: Base64EncodedString?
+    var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
     var language: WordListLanguage
     var onSuccess: (API.OwnerState) -> Void
@@ -85,10 +82,7 @@ struct SeedEntry: View {
                 SeedVerification(
                     words: words,
                     session: session,
-                    publicMasterEncryptionKey: publicMasterEncryptionKey,
-                    masterKeySignature: masterKeySignature,
-                    ownerParticipantId: ownerParticipantId,
-                    ownerEntropy: ownerEntropy,
+                    ownerState: ownerState,
                     isFirstTime: isFirstTime,
                     onSuccess: onSuccess
                 )
@@ -132,8 +126,7 @@ struct SeedEntry_Previews: PreviewProvider {
     static var previews: some View {
         SeedEntry(
             session: .sample,
-            publicMasterEncryptionKey: .sample,
-            ownerEntropy: .sample,
+            ownerState: .sample,
             isFirstTime: true,
             language: WordListLanguage.english) { _ in
             

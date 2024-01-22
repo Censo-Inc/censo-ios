@@ -60,10 +60,7 @@ struct FirstPhrase: View {
         .sheet(isPresented: $showingAddPhrase, content: {
             SeedEntry(
                 session: session,
-                publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                masterKeySignature: ownerState.policy.masterKeySignature,
-                ownerParticipantId: ownerState.policy.owner?.participantId,
-                ownerEntropy: ownerState.policy.ownerEntropy,
+                ownerState: ownerState,
                 isFirstTime: true,
                 language: language,
                 onSuccess: onComplete
@@ -213,7 +210,7 @@ struct AddYourOwnPhrase: View {
 #if DEBUG
 #Preview {
     FirstPhrase(
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+        ownerState: .sample,
         session: .sample,
         onComplete: {_ in },
         onCancel: {}

@@ -143,7 +143,8 @@ public extension UIFont {
                 vault: .sample,
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
@@ -162,7 +163,8 @@ public extension UIFont {
                 vault: .sample,
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab

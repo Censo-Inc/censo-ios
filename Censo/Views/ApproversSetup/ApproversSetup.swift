@@ -284,7 +284,8 @@ struct ApproversSetup: View {
                 policySetup: policySetup,
                 authType: .facetec,
                 subscriptionStatus: .active,
-                timelockSetting: .sample
+                timelockSetting: .sample,
+                subscriptionRequired: true
             ),
             onOwnerStateUpdated: { _ in }
         )

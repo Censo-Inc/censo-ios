@@ -17,6 +17,7 @@ struct PaywallGatedScreen<Content: View>: View {
     
     var session: Session
     @Binding var ownerState: API.OwnerState
+    var ignoreSubscriptionRequired = false
     var onCancel: () -> Void
     @ViewBuilder var content: () -> Content
     
@@ -37,7 +38,7 @@ struct PaywallGatedScreen<Content: View>: View {
     
     var body: some View {
         Group {
-            if ownerState.subscriptionStatus == .active {
+            if ownerState.subscriptionStatus == .active || (ownerState.subscriptionStatus == .none && !ownerState.subscriptionRequired && !ignoreSubscriptionRequired) {
                 content()
             } else {
                 if let actionInProgress {
@@ -378,7 +379,7 @@ private extension Product.SubscriptionPeriod {
 import Moya
 
 #Preview {
-    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, entropy: .sample, subscriptionStatus: .none))
+    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, entropy: .sample, subscriptionStatus: .none, subscriptionRequired: false))
     
     return PaywallGatedScreen(
         session: .sample,

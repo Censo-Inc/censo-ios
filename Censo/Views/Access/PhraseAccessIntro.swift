@@ -114,7 +114,7 @@ struct SetupStep: View {
 #Preview {
     NavigationView {
         PhraseAccessIntro(
-            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+            ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
             session: .sample,
             onReadyToGetStarted: {_ in}
         )
