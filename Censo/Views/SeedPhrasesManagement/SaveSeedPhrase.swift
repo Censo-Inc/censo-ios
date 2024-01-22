@@ -110,24 +110,37 @@ struct SaveSeedPhrase: View {
                 }
             }
             .sheet(isPresented: $showPaywall, content: {
-                PaywallGatedScreen(
-                    session: session,
-                    ownerState: Binding(
-                        get: { .ready(ownerState) },
-                        set: { newOwnerState in
-                            switch newOwnerState {
-                            case .ready(let ready):
-                                ownerState = ready
-                            case .initial:
-                                break
+                NavigationStack {
+                    PaywallGatedScreen(
+                        session: session,
+                        ownerState: Binding(
+                            get: { .ready(ownerState) },
+                            set: { newOwnerState in
+                                switch newOwnerState {
+                                case .ready(let ready):
+                                    ownerState = ready
+                                case .initial:
+                                    break
+                                }
+                            }),
+                        ignoreSubscriptionRequired: true,
+                        onCancel: { dismiss() }) {
+                            ProgressView().onAppear {
+                                save()
                             }
-                        }),
-                    ignoreSubscriptionRequired: true,
-                    onCancel: { dismiss() }) {
-                    ProgressView().onAppear { 
-                        save()
-                    }
+                        }
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    showPaywall = false
+                                } label: {
+                                    Image(systemName: "xmark")
+                                }
+                            }
+                        })
                 }
+                
             })
         }
     }
