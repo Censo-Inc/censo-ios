@@ -390,6 +390,7 @@ extension API {
             var subscriptionStatus: SubscriptionStatus
             var timelockSetting: TimelockSetting
             var subscriptionRequired: Bool
+            var onboarded: Bool
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {
@@ -466,7 +467,7 @@ extension API {
                 switch self {
                 case .initial:
                     return true
-                case .ready(let ready) where ready.vault.seedPhrases.isEmpty:
+                case .ready(let ready) where !ready.onboarded:
                     return true
                 default:
                     return false
@@ -494,8 +495,21 @@ extension API.OwnerState.Ready {
 #if DEBUG
 
 extension API.OwnerState.Ready {
+    
     static var sample: Self {
-        API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true)
+        .init(
+            policy: .sample,
+            vault: .sample,
+            authType: .facetec,
+            subscriptionStatus: .active,
+            timelockSetting: .sample,
+            subscriptionRequired: true,
+            onboarded: true
+        )
+    }
+    
+    static var sample2Approvers: Self {
+        API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true)
     }
 }
 

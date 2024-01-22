@@ -125,7 +125,7 @@ struct BiometryGatedScreen<Content: View>: View {
 #Preview("ReadyUnlocked") {
     let session = Session.sample
     
-    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600), authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true
+    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600), authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true
 ))
     return BiometryGatedScreen(
         session: session,
@@ -140,7 +140,7 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #Preview("ReadyLocked") {
     let session = Session.sample
-    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true))
+    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState2,

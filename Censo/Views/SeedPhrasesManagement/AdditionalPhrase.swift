@@ -253,7 +253,7 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample1Phrase, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
+        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample1Phrase, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

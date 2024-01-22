@@ -166,7 +166,7 @@ struct WordCountOption: View {
         language: WordListLanguage.english,
         onComplete: {_ in },
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
+        ownerState: .sample,
         isFirstTime: false
     )
 }

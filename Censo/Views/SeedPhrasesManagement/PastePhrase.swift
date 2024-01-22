@@ -167,7 +167,7 @@ struct PastePhrase: View {
         onComplete: {_ in},
         onBack: {},
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
+        ownerState: .sample,
         isFirstTime: true
     )
     .foregroundColor(Color.Censo.primaryForeground)

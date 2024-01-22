@@ -249,6 +249,7 @@ struct AddYourOwnPhrase: View {
 }
 
 #if DEBUG
+
 #Preview {
     FirstPhrase(
         ownerState: .sample,

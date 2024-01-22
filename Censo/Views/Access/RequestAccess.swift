@@ -167,7 +167,8 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in },
             intent: .accessPhrases,

@@ -181,7 +181,8 @@ struct EnterApproverNickname: View {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in }
         )

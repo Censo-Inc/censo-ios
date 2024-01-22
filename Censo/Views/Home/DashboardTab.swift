@@ -138,14 +138,7 @@ public extension UIFont {
         @State var selectedTab = HomeScreen.TabId.dashboard
         DashboardTab(
             session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true
-            ),
+            ownerState: .sample,
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )
@@ -164,7 +157,8 @@ public extension UIFont {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab

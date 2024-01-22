@@ -65,7 +65,7 @@ struct LoggedInOwnerView: View {
                                                 onOwnerStateUpdated: replaceOwnerState
                                             )
                                         } else {
-                                            if ready.vault.seedPhrases.isEmpty {
+                                            if !ready.onboarded {
                                                 FirstPhrase(
                                                     ownerState: ready,
                                                     session: session,

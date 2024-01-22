@@ -213,21 +213,21 @@ struct SettingsTab: View {
 #if DEBUG
 #Preview("Enable Timelock") {
     SettingsTab(session: .sample,
-                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
+                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true),
                 onOwnerStateUpdated: {_ in }
     )
 }
 
 #Preview("Disable Timelock") {
     SettingsTab(session: .sample,
-                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample2, subscriptionRequired: true),
+                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample2, subscriptionRequired: true, onboarded: true),
                 onOwnerStateUpdated: {_ in }
     )
 }
 
 #Preview("Cancel Disable Timelock") {
     SettingsTab(session: .sample,
-                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample3, subscriptionRequired: true),
+                ownerState: API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample3, subscriptionRequired: true, onboarded: true),
                 onOwnerStateUpdated: {_ in }
     )
 }

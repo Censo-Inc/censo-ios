@@ -236,7 +236,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -250,7 +251,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -272,7 +274,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in }
         )
@@ -294,7 +297,8 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 authType: .facetec,
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
-                subscriptionRequired: true
+                subscriptionRequired: true,
+                onboarded: true
             ),
             onOwnerStateUpdated: { _ in }
         )

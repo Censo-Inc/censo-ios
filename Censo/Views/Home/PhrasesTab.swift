@@ -117,6 +117,7 @@ struct PhrasesTab: View {
                             .fontWeight(.semibold)
                             .frame(maxWidth: 208)
                     }
+                    .disabled(ownerState.vault.seedPhrases.isEmpty)
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
                 }
@@ -261,7 +262,7 @@ struct PhrasesTab: View {
 #Preview {
     PhrasesTab(
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
+        ownerState: .sample,
         onOwnerStateUpdated: { _ in }
     )
     .foregroundColor(Color.Censo.primaryForeground)
