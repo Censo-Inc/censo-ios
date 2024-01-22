@@ -18,13 +18,11 @@ struct SaveSeedPhrase: View {
     @State private var newOwnerState: API.OwnerState?
     @State private var showingError = false
     @State private var error: Error?
+    @State private var showPaywall = false
 
     var seedPhrase: SeedPhrase
     var session: Session
-    var publicMasterEncryptionKey: Base58EncodedPublicKey
-    var masterKeySignature: Base64EncodedString?
-    var ownerParticipantId: ParticipantId?
-    var ownerEntropy: Base64EncodedString?
+    @State var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
     var requestedLabel: String?
     var onSuccess: (API.OwnerState) -> Void
@@ -37,83 +35,109 @@ struct SaveSeedPhrase: View {
             .navigationTitle(Text("Add Seed Phrase"))
             .navigationBarTitleDisplayMode(.inline)
         } else {
-            VStack(alignment: .leading, spacing: 20) {
-                Spacer()
-
-                Text("Label your seed phrase")
-                    .font(.title2.bold())
-
-                Text("Give your seed phrase a unique label so you can easily identify it.")
-                    .fixedSize(horizontal: false, vertical: true)
-
-                VStack(spacing: 0) {
-                    TextField(text: $label.value) {
-                        Text("Enter a label...")
-                    }
-                    .textFieldStyle(RoundedTextFieldStyle())
-                    .accessibilityIdentifier("labelTextField")
-
-                    Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(Color.red)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding(.vertical)
-
-                Button {
-                    save()
-                } label: {
-                    Group {
-                        if inProgress {
-                            ProgressView()
-                        } else {
-                            Text("Save seed phrase")
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 20) {
+                    Spacer()
+                    
+                    Text("Label your seed phrase")
+                        .font(.title2.bold())
+                    
+                    Text("Give your seed phrase a unique label so you can easily identify it.")
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    VStack(spacing: 0) {
+                        TextField(text: $label.value) {
+                            Text("Enter a label...")
                         }
+                        .textFieldStyle(RoundedTextFieldStyle())
+                        .accessibilityIdentifier("labelTextField")
+                        
+                        Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(Color.red)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
+                    .padding(.vertical)
+                    
+                    Button {
+                        if (ownerState.vault.seedPhrases.count == 1) {
+                            showPaywall = true
+                        } else {
+                            save()
+                        }
+                    } label: {
+                        Group {
+                            if inProgress {
+                                ProgressView()
+                            } else {
+                                Text("Save seed phrase")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .disabled(!label.isValid || inProgress)
+                    .accessibilityIdentifier("saveButton")
                 }
-                .disabled(!label.isValid || inProgress)
-                .accessibilityIdentifier("saveButton")
+                .padding(30)
+                .buttonStyle(RoundedButtonStyle())
+                .navigationTitle(Text("Add Seed Phrase"))
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden(true)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        BackButton()
+                    }
+                })
+                .alert("Are you sure?", isPresented: $showingDismissAlert) {
+                    Button(role: .destructive, action: { dismiss() }) {
+                        Text("Exit")
+                    }
+                } message: {
+                    Text("Your progress will be lost")
+                }
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button { } label: { Text("OK") }
+                } message: { error in
+                    Text("Failed to save phrase.\n\(error.localizedDescription)")
+                }
+                .interactiveDismissDisabled()
+                .onAppear {
+                    if (requestedLabel != nil && label.value == "") {
+                        label.value = requestedLabel ?? ""
+                    }
+                }
             }
-            .padding(30)
-            .buttonStyle(RoundedButtonStyle())
-            .navigationTitle(Text("Add Seed Phrase"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    BackButton()
+            .sheet(isPresented: $showPaywall, content: {
+                PaywallGatedScreen(
+                    session: session,
+                    ownerState: Binding(
+                        get: { .ready(ownerState) },
+                        set: { newOwnerState in
+                            switch newOwnerState {
+                            case .ready(let ready):
+                                ownerState = ready
+                            case .initial:
+                                break
+                            }
+                        }),
+                    ignoreSubscriptionRequired: true,
+                    onCancel: { dismiss() }) {
+                    ProgressView().onAppear { 
+                        save()
+                    }
                 }
             })
-            .alert("Are you sure?", isPresented: $showingDismissAlert) {
-                Button(role: .destructive, action: { dismiss() }) {
-                    Text("Exit")
-                }
-            } message: {
-                Text("Your progress will be lost")
-            }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button { } label: { Text("OK") }
-            } message: { error in
-                Text("Failed to save phrase.\n\(error.localizedDescription)")
-            }
-            .interactiveDismissDisabled()
-            .onAppear {
-                if (requestedLabel != nil && label.value == "") {
-                    label.value = requestedLabel ?? ""
-                }
-            }
         }
     }
 
     private func save() {
         do {
             // first verify the master key signature if it is available
-            if (masterKeySignature != nil) {
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerParticipantId!, entropy: ownerEntropy?.data)
-                let verified = try ownerApproverKey.verifySignature(for: publicMasterEncryptionKey.data, signature: masterKeySignature!)
+            if (ownerState.policy.masterKeySignature != nil) {
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerState.policy.ownerEntropy?.data)
+                let verified = try ownerApproverKey.verifySignature(for: ownerState.vault.publicMasterEncryptionKey.data, signature: ownerState.policy.masterKeySignature!)
                 if (!verified) {
                     showError(CensoError.cannotVerifyMasterKeySignature)
                     return
@@ -121,7 +145,7 @@ struct SaveSeedPhrase: View {
             }
             let phraseData = try seedPhrase.toData()
             let encryptedSeedPhrase = try EncryptionKey
-                .generateFromPublicExternalRepresentation(base58PublicKey: publicMasterEncryptionKey)
+                .generateFromPublicExternalRepresentation(base58PublicKey: ownerState.vault.publicMasterEncryptionKey)
                 .encrypt(data: phraseData)
 
             let payload = API.StoreSeedPhraseApiRequest(
@@ -160,7 +184,7 @@ struct SaveSeedPhrase: View {
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true, onSuccess: { _ in })
+            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, ownerState: .sample, isFirstTime: true, onSuccess: { _ in })
         }
         .foregroundColor(Color.Censo.primaryForeground)
     }

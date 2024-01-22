@@ -133,10 +133,7 @@ struct PastePhrase: View {
                 SeedVerification(
                     words: BIP39.splitToWords(phrase: pastedPhrase),
                     session: session,
-                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                    masterKeySignature: ownerState.policy.masterKeySignature,
-                    ownerParticipantId: ownerState.policy.owner?.participantId,
-                    ownerEntropy: ownerState.policy.ownerEntropy,
+                    ownerState: ownerState,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)
@@ -170,7 +167,7 @@ struct PastePhrase: View {
         onComplete: {_ in},
         onBack: {},
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
         isFirstTime: true
     )
     .foregroundColor(Color.Censo.primaryForeground)

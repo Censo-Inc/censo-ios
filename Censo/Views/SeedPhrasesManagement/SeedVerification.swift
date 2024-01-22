@@ -15,10 +15,7 @@ struct SeedVerification: View {
 
     var words: [String]
     var session: Session
-    var publicMasterEncryptionKey: Base58EncodedPublicKey
-    var masterKeySignature: Base64EncodedString?
-    var ownerParticipantId: ParticipantId?
-    var ownerEntropy: Base64EncodedString?
+    var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
     var requestedLabel: String? = nil
     var onClose: (() -> Void)? = nil
@@ -88,10 +85,7 @@ struct SeedVerification: View {
             SaveSeedPhrase(
                 seedPhrase: .bip39(words: words),
                 session: session,
-                publicMasterEncryptionKey: publicMasterEncryptionKey,
-                masterKeySignature: masterKeySignature,
-                ownerParticipantId: ownerParticipantId,
-                ownerEntropy: ownerEntropy,
+                ownerState: ownerState,
                 isFirstTime: isFirstTime,
                 requestedLabel: requestedLabel,
                 onSuccess: onSuccess
@@ -104,10 +98,10 @@ struct SeedVerification: View {
 struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SeedVerification(words: ["sample", "word"], session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
+            SeedVerification(words: ["sample", "word"], session: .sample, ownerState: .sample, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
         }
         NavigationStack {
-            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, publicMasterEncryptionKey: .sample, ownerEntropy: .sample, isFirstTime: true) { _ in }
+            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, ownerState: .sample, isFirstTime: true) { _ in }
         }
     }
 }

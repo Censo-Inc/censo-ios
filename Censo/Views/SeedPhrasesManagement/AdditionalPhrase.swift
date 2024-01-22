@@ -32,19 +32,17 @@ struct AdditionalPhrase: View {
         case .intro, .haveMyOwn:
             NavigationStack {
                 GeometryReader { geometry in
-                    ZStack(alignment: .bottom) {
-                        VStack {
+                    ZStack(alignment: .bottomTrailing) {
+                        VStack(alignment: .trailing) {
                             Image("AddYourSeedPhrase")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(
-                                    maxWidth: geometry.size.width,
-                                    maxHeight: geometry.size.height * 0.6)
+                                    maxHeight: geometry.size.height * 0.5)
                             Spacer()
                         }
-                        .padding(.leading)
                         .padding(.top)
-                        
+
                         VStack(alignment: .leading) {
                             Spacer()
                             switch step {
@@ -54,14 +52,20 @@ struct AdditionalPhrase: View {
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                     .padding(.vertical)
-                                
+                                if (ownerState.vault.seedPhrases.count == 1) {
+                                    Text("Storing one seed phrase with Censo is free, but to store more than one you’ll need a subscription. Go ahead and enter your seed phrase now, we’ll ask you to subscribe when you’re ready to save it.")
+                                        .font(.subheadline)
+                                        .padding(.bottom)
+                                        .padding(.trailing)
+                                }
                                 LanguageSelection(
                                     text: Text("You can add one of your own, or generate a new seed phrase with Censo and add that. The current language is \(currentLanguage().displayName()). You may change it **here**"
                                               ).font(.subheadline),
                                     languageId: $languageId
                                 )
                                 .padding(.bottom)
-                                
+                                .padding(.trailing)
+
                                 Button {
                                     step = .generatePhrase
                                 } label: {
@@ -194,10 +198,7 @@ struct AdditionalPhrase: View {
         case .addPhrase:
             SeedEntry(
                 session: session,
-                publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                masterKeySignature: ownerState.policy.masterKeySignature,
-                ownerParticipantId: ownerState.policy.owner?.participantId,
-                ownerEntropy: ownerState.policy.ownerEntropy,
+                ownerState: ownerState,
                 isFirstTime: false,
                 language: currentLanguage(),
                 onSuccess: { ownerState in
@@ -252,7 +253,7 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
+        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample1Phrase, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

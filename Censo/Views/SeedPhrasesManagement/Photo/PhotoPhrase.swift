@@ -40,10 +40,7 @@ struct PhotoPhrase: View {
                 SaveSeedPhrase(
                     seedPhrase: .image(imageData: imageData),
                     session: session,
-                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                    masterKeySignature: ownerState.policy.masterKeySignature,
-                    ownerParticipantId: ownerState.policy.owner?.participantId,
-                    ownerEntropy: ownerState.policy.ownerEntropy,
+                    ownerState: ownerState,
                     isFirstTime: isFirstTime,
                     onSuccess: { ownerState in
                         showingSave = false
@@ -62,7 +59,7 @@ struct PhotoPhrase: View {
         onComplete: {_ in},
         onBack: {},
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
         isFirstTime: true
     )
     .foregroundColor(Color.Censo.primaryForeground)

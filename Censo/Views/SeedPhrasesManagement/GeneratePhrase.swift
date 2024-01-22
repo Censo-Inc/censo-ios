@@ -97,10 +97,7 @@ struct GeneratePhrase: View {
                 SeedVerification(
                     words: phrase,
                     session: session,
-                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                    masterKeySignature: ownerState.policy.masterKeySignature,
-                    ownerParticipantId: ownerState.policy.owner?.participantId,
-                    ownerEntropy: ownerState.policy.ownerEntropy,
+                    ownerState: ownerState,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)
@@ -169,7 +166,7 @@ struct WordCountOption: View {
         language: WordListLanguage.english,
         onComplete: {_ in },
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
         isFirstTime: false
     )
 }

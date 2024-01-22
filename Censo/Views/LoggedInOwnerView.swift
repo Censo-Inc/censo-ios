@@ -51,7 +51,7 @@ struct LoggedInOwnerView: View {
                                 case .none:
                                     switch ownerState {
                                     case .initial(let initial):
-                                        InitialPlanSetup(
+                                        Welcome(
                                             session: session,
                                             ownerState: initial,
                                             onComplete: replaceOwnerState,
@@ -84,7 +84,7 @@ struct LoggedInOwnerView: View {
                                     }
                                 case .completed(let importedPhrase):
                                     switch ownerState {
-                                    case .ready(let ownerState):
+                                    case .ready(let ready):
                                         if let words = try? BIP39.binaryDataToWords(
                                             // serialize() prepends a sign byte, which binaryDataToWords strips off as
                                             // the language byte. We're passing in an explicit language to use, so that
@@ -96,10 +96,7 @@ struct LoggedInOwnerView: View {
                                                 SeedVerification(
                                                     words: words,
                                                     session: session,
-                                                    publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
-                                                    masterKeySignature: ownerState.policy.masterKeySignature,
-                                                    ownerParticipantId: ownerState.policy.owner?.participantId,
-                                                    ownerEntropy: ownerState.policy.ownerEntropy,
+                                                    ownerState: ready,
                                                     isFirstTime: false,
                                                     requestedLabel: importedPhrase.label,
                                                     onClose: { importPhase = .none }

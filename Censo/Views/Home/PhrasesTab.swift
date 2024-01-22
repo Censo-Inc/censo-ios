@@ -261,7 +261,7 @@ struct PhrasesTab: View {
 #Preview {
     PhrasesTab(
         session: .sample,
-        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample),
+        ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true),
         onOwnerStateUpdated: { _ in }
     )
     .foregroundColor(Color.Censo.primaryForeground)
