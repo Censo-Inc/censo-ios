@@ -116,6 +116,8 @@ struct RenameSeedPhrase: View {
     }
 }
 
+#if DEBUG
 #Preview {
     RenameSeedPhrase(session: .sample, ownerState: .sample, editingIndex: 0, onComplete: {_ in })
 }
+#endif
