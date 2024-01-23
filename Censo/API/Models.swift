@@ -239,6 +239,10 @@ extension API {
         var ownerState: OwnerState
     }
     
+    struct UpdateSeedPhraseApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
+    
     struct GetSeedPhraseApiResponse : Decodable {
         var encryptedSeedPhrase: Base64EncodedString
     }

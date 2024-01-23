@@ -48,6 +48,7 @@ struct API {
         case storeSeedPhrase(StoreSeedPhraseApiRequest)
         case deleteSeedPhrase(guid: String)
         case getSeedPhrase(guid: String)
+        case updateSeedPhrase(guid: String, label: String)
         
         case requestAccess(RequestAccessApiRequest)
         case deleteAccess
@@ -125,6 +126,8 @@ extension API: TargetType {
         case .deleteSeedPhrase(let guid),
              .getSeedPhrase(let guid):
             return "v1/vault/seed-phrases/\(guid)"
+        case .updateSeedPhrase(let guid, _):
+            return "v1/vault/seed-phrases/\(guid)"
         case .requestAccess:
             return "v1/access"
         case .deleteAccess:
@@ -165,6 +168,8 @@ extension API: TargetType {
             return .get
         case .deleteUser, .deleteSeedPhrase, .deleteAccess, .deletePolicySetup, .cancelDisabledTimelock:
             return .delete
+        case .updateSeedPhrase:
+            return .patch
         case .signIn,
              .registerPushToken,
              .createPolicy,
@@ -297,6 +302,10 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .resetLoginIdWithPassword(let request):
             return .requestJSONEncodable(request)
+        case .updateSeedPhrase(_, let label):
+            return .requestJSONEncodable([
+                "label": label
+            ])
         }
     }
 
@@ -332,6 +341,7 @@ extension API: TargetType {
              .attestationKey,
              .getImportEncryptedData,
              .getSeedPhrase,
+             .updateSeedPhrase,
              .cancelDisabledTimelock:
             return false
         case .signIn,

@@ -28,6 +28,7 @@ struct PhrasesTab: View {
     @State private var deletingAccess: Bool = false
     @State private var deleteConfirmationText = ""
     @State private var showingDeleteNotConfirmed: Bool = false
+    @State private var showingRenameSheet = false
 
     private func deleteConfirmationMessage(_ i: Int) -> String {
         return  "Delete \(ownerState.vault.seedPhrases[i].label)"
@@ -68,6 +69,14 @@ struct PhrasesTab: View {
                     }
                 }
                 .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
+                    
+                    Button  {
+                        showingEditSheet = false
+                        showingRenameSheet = true
+                    } label: {
+                        Text("Rename")
+                    }
+                    
                     Button(role: .destructive) {
                         showingEditSheet = false
                         showingDeleteConfirmation = true
@@ -149,6 +158,17 @@ struct PhrasesTab: View {
                     session: session,
                     ownerState: ownerState,
                     onOwnerStateUpdated: onOwnerStateUpdated
+                )
+            })
+            .sheet(isPresented: $showingRenameSheet, content: {
+                RenameSeedPhrase(
+                    session: session,
+                    ownerState: ownerState,
+                    editingIndex: editingIndex!,
+                    onComplete: { ownerState in
+                        showingRenameSheet = false
+                        onOwnerStateUpdated(ownerState)
+                    }
                 )
             })
             .alert("Cancel access", isPresented: $confirmAccessCancelation) {
