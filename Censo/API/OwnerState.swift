@@ -27,7 +27,6 @@ extension API {
             get {
                 switch (status) {
                 case .confirmed(let confirmed): return confirmed.approverPublicKey
-                case .implicitlyOwner(let implicitlyOwner): return implicitlyOwner.approverPublicKey
                 default: return nil
                 }
             }
@@ -40,7 +39,7 @@ extension API {
                     return accepted.deviceEncryptedTotpSecret
                 case .verificationSubmitted(let verificationSubmitted):
                     return verificationSubmitted.deviceEncryptedTotpSecret
-                case .initial, .confirmed, .declined, .implicitlyOwner, .ownerAsApprover:
+                case .initial, .confirmed, .declined, .ownerAsApprover:
                     return nil
                 }
             }
@@ -50,8 +49,6 @@ extension API {
             get {
                 return switch status {
                 case .ownerAsApprover(let status):
-                    status.entropy
-                case .implicitlyOwner(let status):
                     status.entropy
                 case .initial, .accepted, .confirmed, .declined, .verificationSubmitted:
                     nil
@@ -78,7 +75,6 @@ extension API {
         case verificationSubmitted(VerificationSubmitted)
         case confirmed(Confirmed)
         case ownerAsApprover(OwnerAsApprover)
-        case implicitlyOwner(ImplicitlyOwner)
         
         struct Initial: Codable, Equatable {
             var deviceEncryptedTotpSecret: Base64EncodedString
@@ -108,12 +104,6 @@ extension API {
             var entropy: Base64EncodedString
             var confirmedAt: Date
         }
-        
-        struct ImplicitlyOwner: Codable, Equatable {
-            var approverPublicKey: Base58EncodedPublicKey
-            var entropy: Base64EncodedString?
-            var confirmedAt: Date
-        }
 
         struct Onboarded: Codable {
             var onboardedAt: Date
@@ -139,8 +129,6 @@ extension API {
                 self = .confirmed(try Confirmed(from: decoder))
             case "OwnerAsApprover":
                 self = .ownerAsApprover(try OwnerAsApprover(from: decoder))
-            case "ImplicitlyOwner":
-                self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
             }
@@ -165,9 +153,6 @@ extension API {
                 try status.encode(to: encoder)
             case .ownerAsApprover(let status):
                 try container.encode("OwnerAsApprover", forKey: .type)
-                try status.encode(to: encoder)
-            case .implicitlyOwner(let status):
-                try container.encode("ImplicitlyOwner", forKey: .type)
                 try status.encode(to: encoder)
             }
         }
@@ -315,7 +300,7 @@ extension API {
             get {
                 return approvers.first(where: {
                     switch ($0.status) {
-                    case .implicitlyOwner, .ownerAsApprover:
+                    case .ownerAsApprover:
                         return true
                     default:
                         return false

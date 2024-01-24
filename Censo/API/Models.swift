@@ -44,15 +44,8 @@ extension API {
     }
     
     enum ApproverSetup: Encodable, Decodable {
-        case implicitlyOwner(ImplicitlyOwner)
         case externalApprover(ExternalApprover)
         case ownerAsApprover(OwnerAsApprover)
-        
-        struct ImplicitlyOwner: Encodable, Decodable {
-            var participantId: ParticipantId
-            var label: String
-            var approverPublicKey: Base58EncodedPublicKey
-        }
         
         struct OwnerAsApprover: Encodable, Decodable {
             var participantId: ParticipantId
@@ -73,8 +66,6 @@ extension API {
             let container = try decoder.container(keyedBy: ApproverSetupCodingKeys.self)
             let type = try container.decode(String.self, forKey: .type)
             switch type {
-            case "ImplicitlyOwner":
-                self = .implicitlyOwner(try ImplicitlyOwner(from: decoder))
             case "OwnerAsApprover":
                 self = .ownerAsApprover(try OwnerAsApprover(from: decoder))
             case "ExternalApprover":
@@ -87,9 +78,6 @@ extension API {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: ApproverSetupCodingKeys.self)
             switch self {
-            case .implicitlyOwner(let implicitlyOwner):
-                try container.encode("ImplicitlyOwner", forKey: .type)
-                try implicitlyOwner.encode(to: encoder)
             case .ownerAsApprover(let ownerAsApprover):
                 try container.encode("OwnerAsApprover", forKey: .type)
                 try ownerAsApprover.encode(to: encoder)

@@ -16,7 +16,7 @@ struct Welcome: View {
     
     var body: some View {
         if (showInitialSetup) {
-            InitialPlanSetup(
+            InitialPolicySetup(
                 session: session,
                 ownerState: ownerState,
                 onComplete: onComplete,

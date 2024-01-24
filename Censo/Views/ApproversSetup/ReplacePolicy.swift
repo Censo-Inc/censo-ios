@@ -136,7 +136,7 @@ struct ReplacePolicy: View {
                                 policySetup
                                     .approvers
                                     .filter { switch $0.status {
-                                    case .implicitlyOwner, .ownerAsApprover:
+                                    case .ownerAsApprover:
                                         false
                                     default:
                                         true
@@ -155,7 +155,7 @@ struct ReplacePolicy: View {
                                         threshold: policySetup.threshold,
                                         participants: policySetup.approvers.map({ approver in
                                             return switch approver.status {
-                                            case .ownerAsApprover, .implicitlyOwner:
+                                            case .ownerAsApprover:
                                                 (approver.participantId, try ownerApproverKey.publicExternalRepresentation())
                                             default:
                                                 (approver.participantId, approver.publicKey!)
@@ -207,7 +207,7 @@ struct ReplacePolicy: View {
                 SentrySDK.captureWithTag(error: error, tagValue: "Replace policy")
             }
             return false
-        case .implicitlyOwner, .ownerAsApprover:
+        case .ownerAsApprover:
             return true
         default:
             return false

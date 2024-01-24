@@ -267,7 +267,7 @@
 		E4BC28C02B31B5A50099AF8E /* RoundedTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */; };
 		E4C06F422B335940006A9B39 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C06F412B335940006A9B39 /* SettingsItem.swift */; };
 		E4C06F432B335940006A9B39 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C06F412B335940006A9B39 /* SettingsItem.swift */; };
-		E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */; };
+		E4D376812AE82D7E005809F7 /* InitialPolicySetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3767F2AE82D7E005809F7 /* InitialPolicySetup.swift */; };
 		E4D376832AE8391D005809F7 /* SetupApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376822AE8391D005809F7 /* SetupApprover.swift */; };
 		E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376842AE83977005809F7 /* EnterApproverNickname.swift */; };
 		E4D376872AE83999005809F7 /* GetLiveWithApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */; };
@@ -509,7 +509,7 @@
 		E4ADF6552AF01AF400EFCF4F /* AccessApproved.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessApproved.swift; sourceTree = "<group>"; };
 		E4ADF6572AF1127000EFCF4F /* SigningKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningKey.swift; sourceTree = "<group>"; };
 		E4C06F412B335940006A9B39 /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
-		E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialPlanSetup.swift; sourceTree = "<group>"; };
+		E4D3767F2AE82D7E005809F7 /* InitialPolicySetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialPolicySetup.swift; sourceTree = "<group>"; };
 		E4D376822AE8391D005809F7 /* SetupApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupApprover.swift; sourceTree = "<group>"; };
 		E4D376842AE83977005809F7 /* EnterApproverNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterApproverNickname.swift; sourceTree = "<group>"; };
 		E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLiveWithApprover.swift; sourceTree = "<group>"; };
@@ -978,7 +978,7 @@
 		BDFE3C092AD5DB1D000C76D4 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				E4D3767F2AE82D7E005809F7 /* InitialPlanSetup.swift */,
+				E4D3767F2AE82D7E005809F7 /* InitialPolicySetup.swift */,
 				BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */,
 				BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */,
 				BD8B28572B5EB04400C0BE80 /* Welcome.swift */,
@@ -1355,7 +1355,7 @@
 				3D55E6132B51B7C10096F612 /* TimelockCountdown.swift in Sources */,
 				6C5307762AE0111A00E20F1E /* VerificationCodeEntry.swift in Sources */,
 				6C23727D2AC4A3600072E256 /* Error.swift in Sources */,
-				E4D376812AE82D7E005809F7 /* InitialPlanSetup.swift in Sources */,
+				E4D376812AE82D7E005809F7 /* InitialPolicySetup.swift in Sources */,
 				6CAC0B4F2B163A8B008051BD /* RefreshOnTimer.swift in Sources */,
 				E40BEE0A2B4C23250086F6CF /* LoginIdReset.swift in Sources */,
 				E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */,

@@ -1,5 +1,5 @@
 //
-//  ImplicitOwnerPlanSetup.swift
+//  InitialPolicySetup.swift
 //  Censo
 //
 //  Created by Brendan Flood on 10/10/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Moya
 
-struct InitialPlanSetup: View {
+struct InitialPolicySetup: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
 
@@ -249,7 +249,7 @@ struct InitialPlanSetup: View {
 
 #if DEBUG
 #Preview {
-    InitialPlanSetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false), onComplete: {_ in}, onCancel: {})
+    InitialPolicySetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false), onComplete: {_ in}, onCancel: {})
         .foregroundColor(.Censo.primaryForeground)
 }
 #endif

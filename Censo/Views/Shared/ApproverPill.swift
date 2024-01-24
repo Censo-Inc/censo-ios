@@ -77,8 +77,6 @@ struct ApproverPill: View {
                     case .confirmed:
                         Text("Verified")
                             .foregroundColor(isDisabled ? .Censo.gray : .Censo.green)
-                    case .implicitlyOwner:
-                        Text("")
                     case .ownerAsApprover(_):
                         Text("")
                     }
