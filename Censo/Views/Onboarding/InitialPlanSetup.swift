@@ -99,6 +99,7 @@ struct InitialPlanSetup: View {
                     } onSuccess: { response in
                         onComplete(response.ownerState)
                     } onCancelled: {
+                        self.createPolicyParams = nil
                         dismiss()
                     }
                 }
