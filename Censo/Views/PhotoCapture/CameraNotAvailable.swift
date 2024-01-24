@@ -17,12 +17,12 @@ struct CameraNotAvailable: View {
                 .fontWeight(.semibold)
             
 
-            Text("Grant Censo access to your camera in order to take your photo.")
+            Text("Grant Censo access to your camera in order to take a photo of your seed phrase.")
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
 
-            Text("In your Settings App, go to Privacy > Camera and verify the switch next to Camera is on to continue.")
+            Text("In your Settings App, go to Privacy > Camera and verify the switch next to Censo is on to continue.")
                 .multilineTextAlignment(.center)
                 .font(.footnote)
             
