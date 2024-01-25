@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "C8BAEB8C-5FCF-40CA-8BF2-9BDCB8C4A3DE",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Censo.xcodeproj",
+        "identifier" : "3DCAAD742B51E53500D5C093",
+        "name" : "CensoTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Censo.xcodeproj",
+        "identifier" : "3DCAAD8C2B51E6BE00D5C093",
+        "name" : "CensoUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

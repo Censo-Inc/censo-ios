@@ -332,6 +332,7 @@
 		3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phrase.swift; sourceTree = "<group>"; };
 		3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodedPhrase.swift; sourceTree = "<group>"; };
 		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
+		3D16F0B32B5B0F8800999440 /* Censo (Integration).xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Censo (Integration).xctestplan"; sourceTree = SOURCE_ROOT; };
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecAuth.swift; sourceTree = "<group>"; };
 		3D23ACD72AB22C9100F55C5D /* Approver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Approver.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -604,6 +605,7 @@
 				BDFE3C062AD06177000C76D4 /* Censo.entitlements */,
 				6C021BDD2ABDE875005A68FD /* CensoDebug (Staging).entitlements */,
 				6CC60F5F2A9D31CA001A4454 /* CensoDebug (Integration).entitlements */,
+				3D16F0B32B5B0F8800999440 /* Censo (Integration).xctestplan */,
 				3DD9C37F2A8BD6A800F1E497 /* Configuration.swift */,
 				3D0C1E772A83A79400AB3A48 /* CensoApp.swift */,
 				3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */,
