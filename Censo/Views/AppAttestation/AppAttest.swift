@@ -67,7 +67,7 @@ struct AppAttest<Content>: View where Content : View {
 
     func assertedEndpointClosure() -> MoyaProvider<API>.EndpointClosure {
         { target in
-            var endpoint = MoyaProvider<API>.defaultEndpointMapping(for: target)
+            let endpoint = MoyaProvider<API>.defaultEndpointMapping(for: target)
             
             if target.requiresAssertion {
                 return endpoint.adding(newHTTPHeaderFields: [requiresAssertionHeader: "YES"])

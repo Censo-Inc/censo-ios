@@ -14,7 +14,7 @@ struct Session : Equatable {
 }
 
 extension Session {
-    func getOrCreateApproverKey(participantId: ParticipantId, entropy: Data?) throws -> EncryptionKey {
+    func getOrCreateApproverKey(participantId: ParticipantId, entropy: Data) throws -> EncryptionKey {
         let userIdentifier = self.userCredentials.userIdentifier
         let existingKey = participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy)
         if (existingKey == nil) {
@@ -44,7 +44,7 @@ extension Session {
         participantId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey, entropy: entropy)
     }
     
-    func approverKeyExists(participantId: ParticipantId, entropy: Data?) -> Bool {
+    func approverKeyExists(participantId: ParticipantId, entropy: Data) -> Bool {
         let userIdentifier = self.userCredentials.userIdentifier
         return participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy) != nil
     }

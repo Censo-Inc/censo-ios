@@ -29,12 +29,12 @@ extension ParticipantId {
         NSUbiquitousKeyValueStore.default.removeObject(forKey: self.value)
     }
     
-    func privateKey(userIdentifier: String, entropy: Data?) -> EncryptionKey? {
+    func privateKey(userIdentifier: String, entropy: Data) -> EncryptionKey? {
         guard let encryptedKey = NSUbiquitousKeyValueStore.default.string(forKey: self.value) else {
             return nil
         }
         if (encryptedKey.starts(with: "|v3|")) {
-            let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy!))
+            let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy))
 
             guard let encryptedKeyData = String(encryptedKey.dropFirst(4)).hexData(),
                   let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKeyData) else {
@@ -42,62 +42,35 @@ extension ParticipantId {
             }
             return try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData)
         } else if (encryptedKey.starts(with: "|v2|")) {
-            if (entropy == nil) {
-                let symmetricKey = SymmetricKey(data: keccak256(userIdentifier))
+            let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy))
 
-                guard let encryptedKeyData = String(encryptedKey.dropFirst(4)).hexData(),
-                      let x963KeyData = try? symmetricKey.decrypt(ciphertext: encryptedKeyData) else {
-                    return nil
-                }
-                return try? EncryptionKey.generateFromPrivateKeyX963(data: x963KeyData)
-            } else {
-                let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy!))
-
-                SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration v2->v3")
-                
-                let oldSymmetricKey = SymmetricKey(data: keccak256(userIdentifier))
-                guard let encryptedKeyData = String(encryptedKey.dropFirst(4)).hexData(),
-                      let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
-                      let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
-                    SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration v2->v3")
-                    return nil
-                }
-                persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString(), entropy: entropy)
-                SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration v2->v3")
-                return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
+            SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration v2->v3")
+            
+            let oldSymmetricKey = SymmetricKey(data: keccak256(userIdentifier))
+            guard let encryptedKeyData = String(encryptedKey.dropFirst(4)).hexData(),
+                  let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
+                  let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
+                SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration v2->v3")
+                return nil
             }
+            persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString(), entropy: entropy)
+            SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration v2->v3")
+            return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
         } else {
-            if (entropy == nil) {
-                let symmetricKey = SymmetricKey(data: keccak256(userIdentifier))
-                
-                SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration v1->v2")
-                
-                let oldSymmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
-                guard let encryptedKeyData = encryptedKey.hexData(),
-                      let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
-                      let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
-                    SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration v1->v2")
-                    return nil
-                }
-                persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString(), entropy: entropy)
-                SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration")
-                return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
-            } else {
-                let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy!))
-                
-                SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration v1->v3")
-                
-                let oldSymmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
-                guard let encryptedKeyData = encryptedKey.hexData(),
-                      let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
-                      let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
-                    SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration v1->v3")
-                    return nil
-                }
-                persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString(), entropy: entropy)
-                SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration")
-                return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
+            let symmetricKey = SymmetricKey(data: keccak256(keccak256(userIdentifier) + entropy))
+            
+            SentrySDK.captureWithTag(error: KeyMigration.migrationStarted, tagValue: "Key Migration v1->v3")
+            
+            let oldSymmetricKey = SymmetricKey(data: SHA256.hash(data: userIdentifier.data(using: .utf8)!))
+            guard let encryptedKeyData = encryptedKey.hexData(),
+                  let oldX963KeyData = try? oldSymmetricKey.decrypt(ciphertext: encryptedKeyData),
+                  let newEncryptedData = try? symmetricKey.encrypt(message: oldX963KeyData) else {
+                SentrySDK.captureWithTag(error: KeyMigration.migrationFailed, tagValue: "Key Migration v1->v3")
+                return nil
             }
+            persistEncodedPrivateKey(encodedPrivateKey: newEncryptedData.toHexString(), entropy: entropy)
+            SentrySDK.captureWithTag(error: KeyMigration.migrationCompleted, tagValue: "Key Migration")
+            return try? EncryptionKey.generateFromPrivateKeyX963(data: oldX963KeyData)
         }
     }
 }

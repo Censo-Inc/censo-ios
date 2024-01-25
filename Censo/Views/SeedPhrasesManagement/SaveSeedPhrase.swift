@@ -147,9 +147,12 @@ struct SaveSeedPhrase: View {
 
     private func save() {
         do {
+            guard let ownerEntropy = ownerState.policy.ownerEntropy else {
+                throw CensoError.invalidEntropy
+            }
             // first verify the master key signature if it is available
             if (ownerState.policy.masterKeySignature != nil) {
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerState.policy.ownerEntropy?.data)
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerEntropy.data)
                 let verified = try ownerApproverKey.verifySignature(for: ownerState.vault.publicMasterEncryptionKey.data, signature: ownerState.policy.masterKeySignature!)
                 if (!verified) {
                     showError(CensoError.cannotVerifyMasterKeySignature)

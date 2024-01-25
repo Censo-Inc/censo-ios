@@ -195,11 +195,12 @@ extension API {
         }
         
         func ownersApproverKeyRecoveryRequired(_ session: Session) -> Bool {
-            guard let ownerParticipantId = owner?.participantId else {
+            guard let ownerParticipantId = owner?.participantId,
+                  let ownerEntropy = ownerEntropy else {
                 return false
             }
             
-            return !session.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy?.data)
+            return !session.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy.data)
         }
     }
     
@@ -432,17 +433,6 @@ extension API {
                 switch (self) {
                 case .initial(let initial): return initial.subscriptionRequired
                 case .ready(let ready): return ready.subscriptionRequired
-                }
-            }
-        }
-
-        var entropy: Base64EncodedString? {
-            get {
-                return switch (self) {
-                case .initial(let initial):
-                    initial.entropy
-                case .ready(let ready):
-                    ready.policy.ownerEntropy
                 }
             }
         }

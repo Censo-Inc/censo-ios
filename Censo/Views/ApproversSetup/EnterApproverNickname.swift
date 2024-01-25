@@ -17,7 +17,6 @@ struct EnterApproverNickname: View {
     var session: Session
     var policySetup: API.PolicySetup?
     var isPrimary: Bool
-    var ownerEntropy: Base64EncodedString?
     var onComplete: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     

@@ -20,7 +20,7 @@ struct InvitationId: Codable, Equatable, Hashable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.singleValueContainer()
+        let container = try decoder.singleValueContainer()
         do {
             self = try InvitationId(value: try container.decode(String.self))
         } catch {

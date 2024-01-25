@@ -103,7 +103,14 @@ struct ReplacePolicy: View {
     private func replacePolicy(_ encryptedShards: [API.EncryptedShard]) {
         deleteAccessIfExists(onSuccess: {
             do {
-                let policySetup = ownerState.policySetup!
+                guard let policySetup = ownerState.policySetup,
+                      let policySetupOwner = policySetup.owner else {
+                    throw CensoError.invalidPolicySetup
+                }
+                
+                guard let entropy = policySetupOwner.entropy else {
+                    throw CensoError.invalidEntropy
+                }
                 
                 if !policySetup.approvers.allSatisfy( { verifyKeyConfirmationSignature(approver: $0) } ) {
                     throw CensoError.cannotVerifyKeyConfirmationSignature
@@ -115,7 +122,7 @@ struct ReplacePolicy: View {
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetup.owner!.participantId, entropy: ownerState.policySetup?.owner?.entropy?.data)
+                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetupOwner.participantId, entropy: entropy.data)
                 
                 apiProvider.request(
                     with: session,

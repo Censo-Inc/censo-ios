@@ -45,7 +45,10 @@ extension EncryptionKey {
             let decryptedShard: Data
             
             if encryptedShard.isOwnerShard {
-                guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier, entropy: encryptedShard.ownerEntropy?.data) else {
+                guard let entropy = encryptedShard.ownerEntropy else {
+                    throw CensoError.invalidEntropy
+                }
+                guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier, entropy: entropy.data) else {
                     SentrySDK.captureWithTag(error: CensoError.failedToRetrieveApproverKey, tagValue: "Approver Key")
                     throw CensoError.failedToRetrieveApproverKey
                 }

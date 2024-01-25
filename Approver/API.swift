@@ -52,11 +52,11 @@ struct API {
         case accessConfirmation(AccessConfirmation)
         
         struct WaitingForCode: Codable, Equatable {
-            var entropy: Base64EncodedString?
+            var entropy: Base64EncodedString
         }
 
         struct VerificationRejected: Codable, Equatable {
-            var entropy: Base64EncodedString?
+            var entropy: Base64EncodedString
         }
         
         struct AccessRequested: Codable, Equatable {
@@ -78,7 +78,7 @@ struct API {
             var ownerKeySignatureTimeMillis: UInt64
             var ownerPublicKey: Base58EncodedPublicKey
             var approverEncryptedShard: Base64EncodedString
-            var approverEntropy: Base64EncodedString?
+            var approverEntropy: Base64EncodedString
         }
         
         enum ApproverPhaseCodingKeys: String, CodingKey {

@@ -198,7 +198,6 @@ struct ApproversSetup: View {
                     session: session,
                     policySetup: ownerState.policySetup,
                     isPrimary: true,
-                    ownerEntropy: ownerState.policy.ownerEntropy,
                     onComplete: {
                         step = .setupAlternate
                     },
@@ -212,7 +211,6 @@ struct ApproversSetup: View {
                     session: session,
                     policySetup: ownerState.policySetup,
                     isPrimary: false,
-                    ownerEntropy: ownerState.policy.ownerEntropy,
                     onComplete: {
                         step = .replacingPolicy
                     },
