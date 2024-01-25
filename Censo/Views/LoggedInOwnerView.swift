@@ -24,6 +24,7 @@ struct LoggedInOwnerView: View {
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
     @State private var refreshStatePublisher = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
     @State private var cancelOnboarding = false
+    @State private var cancelKeyRecovery = false
     @State private var showingError = false
     @State private var error: Error?
 
@@ -59,11 +60,29 @@ struct LoggedInOwnerView: View {
                                         )
                                     case .ready(let ready):
                                         if ready.policy.ownersApproverKeyRecoveryRequired(session) {
-                                            OwnerKeyRecovery(
-                                                session: session,
-                                                ownerState: ready,
-                                                onOwnerStateUpdated: replaceOwnerState
-                                            )
+                                            NavigationStack {
+                                                OwnerKeyRecovery(
+                                                    session: session,
+                                                    ownerState: ready,
+                                                    onOwnerStateUpdated: replaceOwnerState
+                                                )
+                                                .navigationBarTitleDisplayMode(.inline)
+                                                .toolbar(content: {
+                                                    ToolbarItem(placement: .navigationBarLeading) {
+                                                        Button {
+                                                            cancelKeyRecovery = true
+                                                        } label: {
+                                                            Image(systemName: "xmark")
+                                                        }
+                                                    }
+                                                })
+                                                .deleteAllDataAlert(
+                                                    title: "Cancel Key Recovery",
+                                                    numSeedPhrases: ready.vault.seedPhrases.count,
+                                                    deleteRequested:$cancelKeyRecovery) {
+                                                        deleteUser(ownerState: ownerState)
+                                                    }
+                                            }
                                         } else {
                                             if !ready.onboarded {
                                                 FirstPhrase(

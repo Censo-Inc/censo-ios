@@ -22,7 +22,7 @@ struct SettingsTab: View {
     @State private var cancelDisableRequested = false
     @State private var showApproversRemoval = false
     @State private var showPushNotificationSettings = false
-    @State private var deleteConfirmation = ""
+    
     @State var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
@@ -107,22 +107,12 @@ struct SettingsTab: View {
                 error = nil
             }
         )
-        .alert("Delete Data Confirmation", isPresented: $resetRequested) {
-            TextField(text: $deleteConfirmation) {
-                Text(deleteConfirmationMessage())
-            }
-            Button("Cancel", role: .cancel) {
-                deleteConfirmation = ""
-            }
-            Button("Confirm", role: .destructive) {
-                if (deleteConfirmation == deleteConfirmationMessage()) {
-                    deleteUser()
-                }
-                deleteConfirmation = ""
-            }
-        } message: {
-            Text("You are about to delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
-        }
+        .deleteAllDataAlert(
+            title: "Delete Data Confirmation",
+            numSeedPhrases: ownerState.vault.seedPhrases.count, 
+            deleteRequested: $resetRequested,
+            onDelete: deleteUser
+        )
         .alert("Cancel Disable Timelock", isPresented: $cancelDisableRequested) {
             Button {
                 cancelDisableTimelock()
