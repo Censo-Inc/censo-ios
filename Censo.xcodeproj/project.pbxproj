@@ -227,6 +227,17 @@
 		BD8BC98E2ADD89F400DA979C /* FirstPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */; };
 		BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */; };
 		BD8BC9922ADDC4E100DA979C /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC9912ADDC4E100DA979C /* BIP39.swift */; };
+		BDC11F0A2B62EE6A009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
+		BDC11F0B2B62EE6A009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
+		BDC11F0C2B62EE6E009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
+		BDC11F0E2B62F4BF009E306B /* ApproverDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F0D2B62F4BF009E306B /* ApproverDelete.swift */; };
+		BDC11F132B62FA36009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
+		BDC11F162B62FADC009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
+		BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
+		BDC11F1B2B62FB1A009E306B /* PaywallGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */; };
+		BDC11F1D2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
+		BDC11F1F2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
+		BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
 		BDEB3F1A2B2255B600899A5D /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F192B2255B600899A5D /* Import.swift */; };
 		BDEB3F1C2B29F74C00899A5D /* AcceptImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */; };
 		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
@@ -477,6 +488,11 @@
 		BDA52C3F2B1A53BD007001F5 /* ApproverRelease (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ApproverRelease (Integration).entitlements"; sourceTree = "<group>"; };
 		BDA52C402B1A53E0007001F5 /* ApproverRelease (Staging).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ApproverRelease (Staging).entitlements"; sourceTree = "<group>"; };
 		BDA52C412B1A53ED007001F5 /* ApproverDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ApproverDebug.entitlements; sourceTree = "<group>"; };
+		BDC11F092B62EE6A009E306B /* OwnerDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerDelete.swift; sourceTree = "<group>"; };
+		BDC11F0D2B62F4BF009E306B /* ApproverDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproverDelete.swift; sourceTree = "<group>"; };
+		BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDecline.swift; sourceTree = "<group>"; };
+		BDC11F152B62FADC009E306B /* Keep1Phrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keep1Phrase.swift; sourceTree = "<group>"; };
+		BDC11F1C2B62FBAC009E306B /* Paywall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paywall.swift; sourceTree = "<group>"; };
 		BDC3FC5E2ADE1114008C126B /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
 		BDEB3F192B2255B600899A5D /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
 		BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptImportView.swift; sourceTree = "<group>"; };
@@ -639,6 +655,7 @@
 		3D0C1E992A83B3CA00AB3A48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BDC11F112B62F9F5009E306B /* Paywall */,
 				6CA032982B583AAD005EE075 /* PhotoCapture */,
 				BDFE3C092AD5DB1D000C76D4 /* Onboarding */,
 				6C2392AD2AE6C98B00987A91 /* Home */,
@@ -666,7 +683,6 @@
 				E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */,
 				6C2392AB2AE3009A00987A91 /* LockScreen.swift */,
 				BD19AE112B05509000282B86 /* GetPassword.swift */,
-				E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */,
 				3D55E6152B51B80A0096F612 /* View+DismissableAlert.swift */,
 				BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */,
 				6C633D7E2B62B3DD00049417 /* DeleteAllDataAlert.swift */,
@@ -897,6 +913,7 @@
 		6CB230C82A9D1354009FAE91 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				BDC11F092B62EE6A009E306B /* OwnerDelete.swift */,
 				3D55E6032B51B6EA0096F612 /* DateHelper.swift */,
 				3D55E6042B51B6EA0096F612 /* SentrySDK+Extension.swift */,
 				3D55E6052B51B6EA0096F612 /* UIColor+Hex.swift */,
@@ -910,6 +927,7 @@
 				BD8BC9912ADDC4E100DA979C /* BIP39.swift */,
 				BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */,
 				BD19AE0F2B053BB000282B86 /* PBKDF2.swift */,
+				BDC11F0D2B62F4BF009E306B /* ApproverDelete.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -978,6 +996,17 @@
 				BD50261A2AE8B0E400B727C4 /* AppSpecificError.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		BDC11F112B62F9F5009E306B /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */,
+				BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */,
+				BDC11F152B62FADC009E306B /* Keep1Phrase.swift */,
+				BDC11F1C2B62FBAC009E306B /* Paywall.swift */,
+			);
+			path = Paywall;
 			sourceTree = "<group>";
 		};
 		BDFE3C092AD5DB1D000C76D4 /* Onboarding */ = {
@@ -1289,6 +1318,7 @@
 				6C2372882AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
 				E46395792B4EC9DF005FE818 /* LoginIdResetInitKeyRecoveryStep.swift in Sources */,
+				BDC11F162B62FADC009E306B /* Keep1Phrase.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
 				BD19AE122B05509000282B86 /* GetPassword.swift in Sources */,
@@ -1337,6 +1367,7 @@
 				3D0C1EAF2A83DE1F00AB3A48 /* Phrase.swift in Sources */,
 				E4025CA12ACD6A3E008FE3B8 /* ButtonStyleTint.swift in Sources */,
 				3DE0B9782ABA2ECD0001F3A3 /* Login.swift in Sources */,
+				BDC11F1D2B62FBAC009E306B /* Paywall.swift in Sources */,
 				6C6575442AB4E7DB00E1D737 /* ValueWrappers.swift in Sources */,
 				3D55E6162B51B80A0096F612 /* View+DismissableAlert.swift in Sources */,
 				E4716FD52ACEB97300BC2AA7 /* PinInputField.swift in Sources */,
@@ -1351,6 +1382,7 @@
 				BD89A3F92AE989F20035B094 /* TermsOfUse.swift in Sources */,
 				BDEB3F1C2B29F74C00899A5D /* AcceptImportView.swift in Sources */,
 				3D0C1EB12A83DE3000AB3A48 /* DecodedPhrase.swift in Sources */,
+				BDC11F132B62FA36009E306B /* SubscriptionDecline.swift in Sources */,
 				E463C5A42AE13E4100AFDFBB /* RoundedTextFieldStyle.swift in Sources */,
 				3D55E6022B51B6DC0096F612 /* Maintenance.swift in Sources */,
 				6CAD2EED2B278E2D003815A0 /* Activated.swift in Sources */,
@@ -1377,6 +1409,7 @@
 				3D55E6082B51B6EA0096F612 /* SentrySDK+Extension.swift in Sources */,
 				E4FB35692B18C12700D75E26 /* InitApproversRemovalFlow.swift in Sources */,
 				6CA032A02B5960AD005EE075 /* SeedPhotoVerification.swift in Sources */,
+				BDC11F0A2B62EE6A009E306B /* OwnerDelete.swift in Sources */,
 				E4D376832AE8391D005809F7 /* SetupApprover.swift in Sources */,
 				3D3E64D32AE6B76A0000C56C /* Word.swift in Sources */,
 				E45A14562AC4309F00EDBC10 /* BiometryGatedScreen.swift in Sources */,
@@ -1460,6 +1493,7 @@
 				3D23ACDC2AB22C9200F55C5D /* ContentView.swift in Sources */,
 				6CD6DAF12ABC9A2200974035 /* SignIn.swift in Sources */,
 				3DF711322AEABE76009B18CB /* CloudCheck.swift in Sources */,
+				BDC11F0E2B62F4BF009E306B /* ApproverDelete.swift in Sources */,
 				6CFEAD5B2AF15BDF00C20140 /* AppleSignIn.swift in Sources */,
 				3D55E60B2B51B6EA0096F612 /* UIColor+Hex.swift in Sources */,
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
@@ -1534,6 +1568,7 @@
 				3DCAAD862B51E5C500D5C093 /* ValueWrapperTests.swift in Sources */,
 				3DCAAD822B51E5C500D5C093 /* EncryptionKeyShardingAndRecoveryTests.swift in Sources */,
 				3DCAAD832B51E5C500D5C093 /* EncryptionKeyTests.swift in Sources */,
+				BDC11F0B2B62EE6A009E306B /* OwnerDelete.swift in Sources */,
 				3DCAAD842B51E5C500D5C093 /* Base58Tests.swift in Sources */,
 				3DCAAD852B51E5C500D5C093 /* BIP39Tests.swift in Sources */,
 			);
@@ -1543,7 +1578,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BDC11F1B2B62FB1A009E306B /* PaywallGatedScreen.swift in Sources */,
+				BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */,
 				3DCAAD9C2B51E6E400D5C093 /* SampleTest.swift in Sources */,
+				BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */,
+				BDC11F1F2B62FBAC009E306B /* Paywall.swift in Sources */,
+				BDC11F0C2B62EE6E009E306B /* OwnerDelete.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

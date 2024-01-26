@@ -80,7 +80,7 @@ struct LoggedInOwnerView: View {
                                                     title: "Cancel Key Recovery",
                                                     numSeedPhrases: ready.vault.seedPhrases.count,
                                                     deleteRequested:$cancelKeyRecovery) {
-                                                        deleteUser(ownerState: ownerState)
+                                                        deleteOwner(apiProvider: apiProvider, session: session, ownerState: ownerState, onSuccess: {}, onFailure: showError)
                                                     }
                                             }
                                         } else {
@@ -165,7 +165,7 @@ struct LoggedInOwnerView: View {
             }
             .alert("Exit Setup", isPresented: $cancelOnboarding) {
                 Button(role: .destructive) {
-                    deleteUser(ownerState: ownerState)
+                    deleteOwner(apiProvider: apiProvider, session: session, ownerState: ownerState, onSuccess: {}, onFailure: showError)
                 } label: { Text("Exit") }
                 Button(role: .cancel) {
                 } label: { Text("Cancel") }
@@ -184,25 +184,10 @@ struct LoggedInOwnerView: View {
     private func onCancelOnboarding() {
         cancelOnboarding = true
     }
-    
-    private func deleteUser(ownerState: API.OwnerState) {
-        apiProvider.request(with: session, endpoint: .deleteUser) { result in
-            switch result {
-            case .success:
-                switch ownerState {
-                case .ready(let ready):
-                    if let ownerTrustedApprover = ready.policy.approvers.first(where: { $0.isOwner }) {
-                        session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
-                    }
-                default:
-                    break
-                }
-                NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
-            case .failure(let error):
-                self.showingError = true
-                self.error = error
-            }
-        }
+
+    private func showError(error: Error) {
+        self.showingError = true
+        self.error = error
     }
 
     private func checkForCompletedImport() {

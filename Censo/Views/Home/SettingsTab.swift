@@ -126,22 +126,13 @@ struct SettingsTab: View {
     
     private func deleteUser() {
         resetInProgress = true
-        apiProvider.request(with: session, endpoint: .deleteUser) { result in
+        deleteOwner(apiProvider: apiProvider, session: session, ownerState: .ready(ownerState), onSuccess: {
             resetInProgress = false
-            switch result {
-            case .success:
-                if let ownerTrustedApprover = ownerState.policy.approvers.first(where: { $0.isOwner }) {
-                    session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
-                }
-                if let ownerProspectApprover = ownerState.policySetup?.owner {
-                    session.deleteApproverKey(participantId: ownerProspectApprover.participantId)
-                }
-                NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
-                pushNotificationsEnabled = nil
-            case .failure(let error):
-                showError(error)
-            }
-        }
+            pushNotificationsEnabled = nil
+        }, onFailure: { error in
+            resetInProgress = false
+            showError(error)
+        })
     }
             
     private func enableOrDisableTimelock(enable: Bool) {

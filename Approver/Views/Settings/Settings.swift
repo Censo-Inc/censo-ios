@@ -56,16 +56,13 @@ struct Settings: View {
         })
         .alert("Delete Data", isPresented: $showDeactivateAndDeleteConfirmation) {
             Button {
-                apiProvider.request(with: session, endpoint: .deleteUser) {result in
-                    showDeactivateAndDeleteConfirmation = false
-                    switch result {
-                    case .success:
-                        NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)
-                    case .failure(let error):
-                        self.showingError = true
-                        self.error = error
-                    }
-                }
+                deleteApprover(apiProvider: apiProvider, session: session, onSuccess: {
+                    self.showDeactivateAndDeleteConfirmation = false
+                }, onFailure: { error in
+                    self.showingError = true
+                    self.error = error
+                    self.showDeactivateAndDeleteConfirmation = false
+                })
             } label: { Text("Confirm") }
             Button {
                 showDeactivateAndDeleteConfirmation = false
