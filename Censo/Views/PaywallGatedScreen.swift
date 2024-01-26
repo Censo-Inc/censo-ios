@@ -21,10 +21,14 @@ struct PaywallGatedScreen<Content: View>: View {
     var onCancel: () -> Void
     @ViewBuilder var content: () -> Content
     
-    private let productIds = [Configuration.appStoreProductId]
+    private let productIds = [
+        Configuration.appStoreMonthlyProductId,
+        Configuration.appStoreYearlyProductId
+    ]
     
-    @State private var offer: Paywall.Offer?
-    
+    @State private var monthlyOffer: Product?
+    @State private var yearlyOffer: Product?
+
     enum ActionInProgress {
         case loadingProduct
         case purchase(Product)
@@ -61,8 +65,9 @@ struct PaywallGatedScreen<Content: View>: View {
                             ProgressView("Restoring your subscription")
                         }
                     }
-                } else if let offer {
-                    Paywall(offer: offer, 
+                } else if let monthlyOffer, let yearlyOffer {
+                    Paywall(monthlyOffer: monthlyOffer,
+                            yearlyOffer: yearlyOffer,
                             purchase: purchase,
                             restorePurchases: restorePurchases,
                             codeRedeemed: {}
@@ -86,13 +91,18 @@ struct PaywallGatedScreen<Content: View>: View {
         actionInProgress = .loadingProduct
         _Concurrency.Task {
             do {
-                if let product = try await Product.products(for: productIds).first {
-                    let isEligibleForIntroOffer = await product.subscription?.isEligibleForIntroOffer ?? false
-                    offer = Paywall.Offer(product: product, isEligibleForIntroOffer: isEligibleForIntroOffer)
-                    actionInProgress = nil
-                } else {
+                let products = try await Product.products(for: productIds)
+                guard let monthlyProduct = products.first(where: { product in product.subscription?.subscriptionPeriod.unit == .month &&
+                       product.subscription?.subscriptionPeriod.value == 1}),
+                      let yearlyProduct = products.first(where: { product in
+                          product.subscription?.subscriptionPeriod.unit == .year &&
+                          product.subscription?.subscriptionPeriod.value == 1
+                      }) else {
                     throw CensoError.productNotFound
                 }
+                monthlyOffer = monthlyProduct
+                yearlyOffer = yearlyProduct
+                actionInProgress = .none
             } catch {
                 showError(error)
             }
@@ -200,84 +210,125 @@ struct PaywallGatedScreen<Content: View>: View {
 }
 
 struct Paywall: View {
-    var offer: Offer
+    var monthlyOffer: Product
+    var yearlyOffer: Product
     var purchase: (Product) -> Void
     var restorePurchases: () -> Void
     var codeRedeemed: () -> Void
     @State private var displayRedemptionSheet = false
     @State private var displayError = false
     @State private var error = ""
-    
-    struct Offer {
-        var product: Product
-        var isEligibleForIntroOffer: Bool
+
+    func monthFormatter() -> DateComponentsFormatter {
+        let monthFormatter = DateComponentsFormatter()
+        monthFormatter.allowedUnits = [.month]
+        monthFormatter.unitsStyle = .full
+        return monthFormatter
+    }
+
+    func priceFormatter(locale: Locale) -> NumberFormatter {
+        let priceFormatter = NumberFormatter()
+        priceFormatter.numberStyle = .currency
+        priceFormatter.locale = locale
+        return priceFormatter
+    }
+
+    func percentChange(yearlyPrice: Decimal, monthlyPrice: Decimal) -> String? {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
+        return formatter.string(for: (100.0 * ((monthlyPrice * 12) - yearlyPrice) / (monthlyPrice * 12)))
+    }
+
+    func localizedMonth() -> String {
+        let oneMonthText = monthFormatter().string(from: DateComponents(month: 1))
+        if let r = try? Regex("\\s*1\\s*") {
+            return oneMonthText?.replacing(r, with: "") ?? "month"
+        } else {
+            return "month"
+        }
     }
     
     var body: some View {
         VStack {
-            Spacer()
-            
-            Group {
-                if let subscription = offer.product.subscription {
-                    Text("Secure all your seed phrases for\n\(offer.product.displayPrice) / \(subscription.subscriptionPeriod.formatted()).")
-                } else {
-                    Text("Secure all your seed phrases for \(offer.product.displayPrice).")
-                }
-            }
-            .font(.title)
-            .fontWeight(.medium)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal)
-            .padding(.bottom)
-            
-            let trialPeriod = offer.isEligibleForIntroOffer ? offer.product.subscription?.trialPeriod() : nil
-            
-            if trialPeriod != nil {
-                Text("Try for free, cancel anytime")
-                    .font(.title)
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal)
-                    .padding(.bottom)
-            }
-            
-            Spacer()
-            
-            Image("CensoLogoDarkBlueStacked")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 124)
-            
-            Spacer()
-            
-            Button {
-                purchase(offer.product)
-            } label: {
+            Spacer().frame(maxHeight: 75)
+            ZStack(alignment: .top) {
+                Color("AquaBackground")
+                Image("CensoLogo")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .offset(x: 0, y: -50)
                 VStack {
-                    Text("Continue")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    if let subscription = offer.product.subscription, let trialPeriod {
-                        Text("\(trialPeriod.formatted()) free, then \(offer.product.displayPrice) / \(subscription.subscriptionPeriod.formatted())")
-                            .font(.headline)
+                    Spacer().frame(maxHeight: 75)
+                    HStack {
+                        Text("Secure all your Seed Phrases for good.\nAccess and retrieval anytime.")
+                            .font(.title)
+                            .fontWeight(.medium)
+                            .padding([.horizontal], 20)
+                            .padding(.bottom)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
                     }
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(RoundedButtonStyle())
-            .padding(.bottom)
-            .accessibilityIdentifier("purchaseButton")
 
-            Button {
-                displayRedemptionSheet = true
-            } label: {
-                Text("Redeem Code")
-                    .fontWeight(.semibold)
+                    Spacer()
+                    
+                    Button {
+                        purchase(yearlyOffer)
+                    } label: {
+                        VStack {
+                            Text("\(yearlyOffer.displayPrice) / \(yearlyOffer.subscription!.subscriptionPeriod.formatted())")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("purchaseButton")
+                    .padding([.horizontal], 20)
+
+                    
+                    if let monthsText = monthFormatter().string(from: DateComponents(month: 12)),
+                       let monthlyPrice = priceFormatter(locale: yearlyOffer.priceFormatStyle.locale).string(from: yearlyOffer.price / 12 as NSNumber)
+                    {
+                        
+                        if let pctChange = percentChange(yearlyPrice: yearlyOffer.price, monthlyPrice: monthlyOffer.price) {
+                            Text("\(monthsText) **at \(monthlyPrice) / \(localizedMonth())** - save \(pctChange)%")
+                                .font(.subheadline)
+                        } else {
+                            Text("\(monthsText) **at \(monthlyPrice) / \(localizedMonth())**")
+                                .font(.subheadline)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        purchase(monthlyOffer)
+                    } label: {
+                        VStack {
+                            Text("\(monthlyOffer.displayPrice) / \(monthlyOffer.subscription!.subscriptionPeriod.formatted())")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("purchaseButton")
+                    .padding([.horizontal], 20)
+
+                    Button {
+                        displayRedemptionSheet = true
+                    } label: {
+                        Text("Redeem Code")
+                            .fontWeight(.semibold)
+                    }
+                    .padding()
+                }
+                .padding()
+
             }
-            .padding()
+
+            Spacer().frame(maxHeight: 50)
 
             HStack {
                 Link(destination: Configuration.termsOfServiceURL, label: {
@@ -308,7 +359,6 @@ struct Paywall: View {
                 }
             }
         }
-        .padding()
         .offerCodeRedemption(isPresented: $displayRedemptionSheet) { result in
             switch (result) {
             case .success:
@@ -379,7 +429,7 @@ private extension Product.SubscriptionPeriod {
 import Moya
 
 #Preview {
-    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, entropy: .sample, subscriptionStatus: .none, subscriptionRequired: false))
+    @State var ownerState = API.OwnerState.initial(.init(authType: .facetec, entropy: .sample, subscriptionStatus: .none, subscriptionRequired: true))
     
     return PaywallGatedScreen(
         session: .sample,

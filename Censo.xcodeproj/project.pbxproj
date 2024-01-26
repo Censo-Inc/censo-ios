@@ -1570,6 +1570,7 @@
 				API_BASE_URL = "https://api.censo.co";
 				APPROVER_URL_SCHEME = censo;
 				APP_STORE_PRODUCT_ID = co.censo.prod.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.prod.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1637,6 +1638,7 @@
 				API_BASE_URL = "https://api.censo.co";
 				APPROVER_URL_SCHEME = censo;
 				APP_STORE_PRODUCT_ID = co.censo.prod.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.prod.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2248,6 +2250,7 @@
 				API_BASE_URL = "https://integration.censo.dev";
 				APPROVER_URL_SCHEME = "censo-integration";
 				APP_STORE_PRODUCT_ID = co.censo.integration.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.integration.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2356,6 +2359,7 @@
 				API_BASE_URL = "https://staging.censo.dev";
 				APPROVER_URL_SCHEME = "censo-staging";
 				APP_STORE_PRODUCT_ID = co.censo.staging.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.staging.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2464,6 +2468,7 @@
 				API_BASE_URL = "https://integration.censo.dev";
 				APPROVER_URL_SCHEME = "censo-integration";
 				APP_STORE_PRODUCT_ID = co.censo.integration.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.integration.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2565,6 +2570,7 @@
 				API_BASE_URL = "https://staging.censo.dev";
 				APPROVER_URL_SCHEME = "censo-staging";
 				APP_STORE_PRODUCT_ID = co.censo.staging.standard.1month;
+				APP_STORE_YEARLY_PRODUCT_ID = co.censo.staging.standard.1year;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
