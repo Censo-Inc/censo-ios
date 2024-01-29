@@ -62,30 +62,9 @@ struct ReplaceAuthentication : View {
                                     .fixedSize(horizontal: false, vertical: true)
                                     .padding(.vertical)
                                 
-                                Text("By tapping Begin face scan, I consent to the collection and processing of a scan of my face for the purposes of authentication in connection with my use of the Censo App.")
-                                    .font(.caption)
-                                    .italic()
-                                    .multilineTextAlignment(.leading)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                
-                                Button {
+                                BeginFaceScanButton {
                                     step = .replace(newAuthType: .facetec)
-                                } label: {
-                                    HStack {
-                                        Spacer()
-                                        Image("FaceScanBW")
-                                            .renderingMode(.template)
-                                            .resizable()
-                                            .frame(width: 36, height: 36)
-                                        Text("Begin face scan")
-                                            .font(.title2)
-                                            .fontWeight(.semibold)
-                                        Spacer()
-                                    }
                                 }
-                                .buttonStyle(RoundedButtonStyle())
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical)
                                 
                                 Button {
                                     step = .replace(newAuthType: .password)
@@ -94,7 +73,7 @@ struct ReplaceAuthentication : View {
                                         .font(.subheadline)
                                         .fontWeight(.semibold)
                                 }
-                                .padding(.bottom)
+                                .padding(.vertical)
                                 .frame(maxWidth: .infinity)
                             } else {
                                 Text("Your face scan will be replaced and and immediately available for accessing your seed phrases. The previous face scan will be permanently removed from our storage.")
@@ -103,24 +82,9 @@ struct ReplaceAuthentication : View {
                                     .fixedSize(horizontal: false, vertical: true)
                                     .padding(.vertical)
                                 
-                                Button {
+                                BeginFaceScanButton {
                                     step = .replace(newAuthType: .facetec)
-                                } label: {
-                                    HStack {
-                                        Spacer()
-                                        Image("FaceScanBW")
-                                            .renderingMode(.template)
-                                            .resizable()
-                                            .frame(width: 36, height: 36)
-                                        Text("Begin face scan")
-                                            .font(.title2)
-                                            .fontWeight(.semibold)
-                                        Spacer()
-                                    }
                                 }
-                                .buttonStyle(RoundedButtonStyle())
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical)
                             }
                         }
                         .padding(.horizontal)
