@@ -22,7 +22,7 @@ func pbkdf2(password: String) -> Data? {
             passwordData.count,
             nil,
             0,
-            CCPBKDFAlgorithm(kCCPBKDF2),
+            CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA224),
             UInt32(120_000),
             derivedKeyRawBytes,
             derivedCount)
