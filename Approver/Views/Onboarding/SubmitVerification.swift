@@ -12,16 +12,20 @@ import Sentry
 struct SubmitVerification: View {
     @Environment(\.apiProvider) var apiProvider
     
-    var invitationId: InvitationId
+    enum Intent {
+        case onboarding(InvitationId)
+        case authResetApproval(ParticipantId, AuthenticationResetApprovalId)
+    }
+    
+    var intent: Intent
     var session: Session
     var approverState: API.ApproverState
-
 
     @State private var currentError: Error?
     @State private var verificationCode: [Int] = []
     @State private var disabled = false
 
-    var onSuccess: (API.ApproverState?) -> Void
+    var onSuccess: ([API.ApproverState]) -> Void
 
     @State private var waitingForVerification = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
@@ -39,13 +43,13 @@ struct SubmitVerification: View {
                         Text("Waiting for the code to be verified...")
                     }
                 )
-            case .waitingForCode:
+            case .waitingForCode, .authenticationResetWaitingForCode:
                 Text("The person you are assisting will give you a 6-digit code. Enter it below.")
                     .font(.headline)
                     .fontWeight(.medium)
                     .padding(20)
                 
-            case .verificationRejected:
+            case .verificationRejected, .authenticationResetVerificationRejected:
                 Text("That code was not verified. Please get another code and try again.")
                     .font(.headline)
                     .fontWeight(.medium)
@@ -93,24 +97,47 @@ struct SubmitVerification: View {
         currentError = nil
         disabled = true
 
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .submitVerification(
-                invitationId,
-                API.SubmitApproverVerificationApiRequest(
-                    signature: signature,
-                    timeMillis: timeMillis,
-                    approverPublicKey: approverPublicKey
+        switch (intent) {
+        case .onboarding(let invitationId):
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .submitVerification(
+                    invitationId,
+                    API.SubmitApproverVerificationApiRequest(
+                        signature: signature,
+                        timeMillis: timeMillis,
+                        approverPublicKey: approverPublicKey
+                    )
                 )
-            )
-        ) { (result: Result<API.SubmitApproverVerificationApiResponse, MoyaError>) in
-            switch result {
-            case .success(let response):
-                onSuccess(response.approverState)
-            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
-                showError(CensoError.invitationNotFound)
-            case .failure(let error):
-               showError(error)
+            ) { (result: Result<API.SubmitApproverVerificationApiResponse, MoyaError>) in
+                switch result {
+                case .success(let response):
+                    onSuccess([response.approverState])
+                case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                    showError(CensoError.invitationNotFound)
+                case .failure(let error):
+                    showError(error)
+                }
+            }
+        case .authResetApproval(_, let approvalId):
+            apiProvider.decodableRequest(
+                with: session,
+                endpoint: .submitAuthenticationResetTotpVerification(
+                    approvalId,
+                    API.SubmitAuthenticationResetTotpVerificationApiRequest(
+                        signature: signature,
+                        timeMillis: timeMillis
+                    )
+                )
+            ) { (result: Result<API.SubmitAuthenticationResetTotpVerificationApiResponse, MoyaError>) in
+                switch result {
+                case .success(let response):
+                    onSuccess(response.approverStates)
+                case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                    showError(CensoError.invitationNotFound)
+                case .failure(let error):
+                    showError(error)
+                }
             }
         }
     }
@@ -120,7 +147,12 @@ struct SubmitVerification: View {
             switch(result) {
             case .success(let user):
                 disabled = false
-                onSuccess(user.approverStates.forInvite(invitationId))
+                switch (intent) {
+                case .onboarding:
+                    onSuccess(user.approverStates)
+                case .authResetApproval:
+                    onSuccess(user.approverStates)
+                }
             case .failure:
                 break
             }
@@ -135,9 +167,12 @@ struct SubmitVerification: View {
 
 #if DEBUG
 #Preview {
-    SubmitVerification(invitationId: "invitation_01hbbyesezf0kb5hr8v7f2353g", session: .sample,
-                       approverState: .sampleWaitingForCode,
-                       onSuccess: {_ in })
+    SubmitVerification(
+        intent: .onboarding("invitation_01hbbyesezf0kb5hr8v7f2353g"),
+        session: .sample,
+        approverState: .sampleWaitingForCode,
+        onSuccess: {_ in }
+    )
 }
 
 extension API.ApproverState {

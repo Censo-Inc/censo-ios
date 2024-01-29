@@ -129,7 +129,7 @@
 		6C0AF9592ACB626F009A9B54 /* RotatingTotpPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF9582ACB626F009A9B54 /* RotatingTotpPinView.swift */; };
 		6C0AF95B2ACC5BCE009A9B54 /* ApproverHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */; };
 		6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */; };
-		6C0AF9612ACC5CEC009A9B54 /* AccessApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */; };
+		6C0AF9612ACC5CEC009A9B54 /* Approval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95E2ACC5CEC009A9B54 /* Approval.swift */; };
 		6C0AF9622ACC5CEC009A9B54 /* GetLiveWithOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */; };
 		6C0AF9632ACC62D1009A9B54 /* RandomUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F8F2AA763EA001A4454 /* RandomUtils.swift */; };
 		6C0AF9642ACC66A2009A9B54 /* TotpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65753D2AB388D700E1D737 /* TotpUtils.swift */; };
@@ -212,7 +212,7 @@
 		6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */; };
 		BD19AE0E2B0525AA00282B86 /* CreatePassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */; };
 		BD19AE102B053BB000282B86 /* PBKDF2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE0F2B053BB000282B86 /* PBKDF2.swift */; };
-		BD19AE122B05509000282B86 /* GetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE112B05509000282B86 /* GetPassword.swift */; };
+		BD19AE122B05509000282B86 /* PasswordAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD19AE112B05509000282B86 /* PasswordAuth.swift */; };
 		BD43BCAA2B0E71FE000091E9 /* Base32 in Frameworks */ = {isa = PBXBuildFile; productRef = BD43BCA92B0E71FE000091E9 /* Base32 */; };
 		BD43BCAC2B0E7206000091E9 /* Base32 in Frameworks */ = {isa = PBXBuildFile; productRef = BD43BCAB2B0E7206000091E9 /* Base32 */; };
 		BD5026182AE8B0A000B727C4 /* AppSpecificError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */; };
@@ -234,7 +234,6 @@
 		BDC11F132B62FA36009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
 		BDC11F162B62FADC009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
 		BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
-		BDC11F1B2B62FB1A009E306B /* PaywallGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */; };
 		BDC11F1D2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
 		BDC11F1F2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
 		BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
@@ -268,6 +267,14 @@
 		E472073B2AEA7746009A06A1 /* RenameApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073A2AEA7746009A06A1 /* RenameApprover.swift */; };
 		E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */; };
 		E472073F2AEBCCC6009A06A1 /* AccessApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = E472073E2AEBCCC6009A06A1 /* AccessApproval.swift */; };
+		E475C8ED2B6151440051CCD6 /* AuthenticationReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8EC2B6151440051CCD6 /* AuthenticationReset.swift */; };
+		E475C8EF2B626EB60051CCD6 /* PendingAuthResetOnAnotherDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8EE2B626EB60051CCD6 /* PendingAuthResetOnAnotherDevice.swift */; };
+		E475C8F12B6276120051CCD6 /* ChooseAuthResetApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8F02B6276120051CCD6 /* ChooseAuthResetApprover.swift */; };
+		E475C8F32B62778C0051CCD6 /* PendingAuthResetOnThisDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8F22B62778C0051CCD6 /* PendingAuthResetOnThisDevice.swift */; };
+		E475C8F52B627C1C0051CCD6 /* GetAuthResetApproval.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8F42B627C1C0051CCD6 /* GetAuthResetApproval.swift */; };
+		E475C8F72B62CDCE0051CCD6 /* ReplaceAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8F62B62CDCE0051CCD6 /* ReplaceAuthentication.swift */; };
+		E475C8FD2B63DA7E0051CCD6 /* InvalidLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8FC2B63DA7E0051CCD6 /* InvalidLinkView.swift */; };
+		E475C8FF2B63FE530051CCD6 /* PaywallGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E475C8FE2B63FE530051CCD6 /* PaywallGatedScreen.swift */; };
 		E4A8C6AC2AB9BBFD009DE6D2 /* AuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9817532AA15265003A4CD0 /* AuthPlugin.swift */; };
 		E4AB90BA2AD414FF00390AEF /* Data+BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */; };
 		E4ADF6502AF01A9900EFCF4F /* ChooseAccessApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ADF64F2AF01A9900EFCF4F /* ChooseAccessApprover.swift */; };
@@ -286,7 +293,6 @@
 		E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376882AE839C6005809F7 /* ActivateApprover.swift */; };
 		E4D3768D2AE83A24005809F7 /* ApproversSetupDone.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */; };
 		E4EFFAF42AFE62A100AA1FA0 /* FaceTec.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */; };
-		E4EFFAF92B0381E500AA1FA0 /* PaywallGatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */; };
 		E4EFFAFB2B03C20300AA1FA0 /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */; };
 		E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB35642B18A01E00D75E26 /* PhrasesAccessAvailable.swift */; };
 		E4FB35672B18C0BF00D75E26 /* InitPhrasesAccessFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB35662B18C0BF00D75E26 /* InitPhrasesAccessFlow.swift */; };
@@ -343,7 +349,7 @@
 		3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phrase.swift; sourceTree = "<group>"; };
 		3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodedPhrase.swift; sourceTree = "<group>"; };
 		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
-		3D16F0B32B5B0F8800999440 /* Censo (Integration).xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Censo (Integration).xctestplan"; sourceTree = SOURCE_ROOT; };
+		3D16F0B32B5B0F8800999440 /* Censo (Integration).xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Censo (Integration).xctestplan"; sourceTree = SOURCE_ROOT; };
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecAuth.swift; sourceTree = "<group>"; };
 		3D23ACD72AB22C9100F55C5D /* Approver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Approver.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -413,7 +419,7 @@
 		6C0AF9582ACB626F009A9B54 /* RotatingTotpPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingTotpPinView.swift; sourceTree = "<group>"; };
 		6C0AF95A2ACC5BCE009A9B54 /* ApproverHome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApproverHome.swift; sourceTree = "<group>"; };
 		6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerVerification.swift; sourceTree = "<group>"; };
-		6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessApproval.swift; sourceTree = "<group>"; };
+		6C0AF95E2ACC5CEC009A9B54 /* Approval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Approval.swift; sourceTree = "<group>"; };
 		6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetLiveWithOwner.swift; sourceTree = "<group>"; };
 		6C0AF9662ACC7240009A9B54 /* ParticipantId+PrivateKeyStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParticipantId+PrivateKeyStorage.swift"; sourceTree = "<group>"; };
 		6C2229232B20DBF700A8AFE3 /* bip39words.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bip39words.json; sourceTree = "<group>"; };
@@ -474,7 +480,7 @@
 		6CFEAD622AF1C87100C20140 /* OperationCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationCompletedView.swift; sourceTree = "<group>"; };
 		BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePassword.swift; sourceTree = "<group>"; };
 		BD19AE0F2B053BB000282B86 /* PBKDF2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBKDF2.swift; sourceTree = "<group>"; };
-		BD19AE112B05509000282B86 /* GetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPassword.swift; sourceTree = "<group>"; };
+		BD19AE112B05509000282B86 /* PasswordAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuth.swift; sourceTree = "<group>"; };
 		BD19AE142B0D1EEC00282B86 /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		BD5026172AE8B0A000B727C4 /* AppSpecificError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpecificError.swift; sourceTree = "<group>"; };
 		BD50261A2AE8B0E400B727C4 /* AppSpecificError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpecificError.swift; sourceTree = "<group>"; };
@@ -522,6 +528,14 @@
 		E472073A2AEA7746009A06A1 /* RenameApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameApprover.swift; sourceTree = "<group>"; };
 		E472073C2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptionKey+Owner.swift"; sourceTree = "<group>"; };
 		E472073E2AEBCCC6009A06A1 /* AccessApproval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessApproval.swift; sourceTree = "<group>"; };
+		E475C8EC2B6151440051CCD6 /* AuthenticationReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationReset.swift; sourceTree = "<group>"; };
+		E475C8EE2B626EB60051CCD6 /* PendingAuthResetOnAnotherDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAuthResetOnAnotherDevice.swift; sourceTree = "<group>"; };
+		E475C8F02B6276120051CCD6 /* ChooseAuthResetApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseAuthResetApprover.swift; sourceTree = "<group>"; };
+		E475C8F22B62778C0051CCD6 /* PendingAuthResetOnThisDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAuthResetOnThisDevice.swift; sourceTree = "<group>"; };
+		E475C8F42B627C1C0051CCD6 /* GetAuthResetApproval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAuthResetApproval.swift; sourceTree = "<group>"; };
+		E475C8F62B62CDCE0051CCD6 /* ReplaceAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceAuthentication.swift; sourceTree = "<group>"; };
+		E475C8FC2B63DA7E0051CCD6 /* InvalidLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvalidLinkView.swift; sourceTree = "<group>"; };
+		E475C8FE2B63FE530051CCD6 /* PaywallGatedScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaywallGatedScreen.swift; sourceTree = "<group>"; };
 		E4AB90B92AD414FF00390AEF /* Data+BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+BigInt.swift"; sourceTree = "<group>"; };
 		E4ADF64F2AF01A9900EFCF4F /* ChooseAccessApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseAccessApprover.swift; sourceTree = "<group>"; };
 		E4ADF6532AF01ACC00EFCF4F /* EnterAccessVerificationCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterAccessVerificationCode.swift; sourceTree = "<group>"; };
@@ -535,7 +549,6 @@
 		E4D376882AE839C6005809F7 /* ActivateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateApprover.swift; sourceTree = "<group>"; };
 		E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetupDone.swift; sourceTree = "<group>"; };
 		E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = FaceTec.strings; sourceTree = "<group>"; };
-		E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallGatedScreen.swift; sourceTree = "<group>"; };
 		E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Subscriptions.storekit; path = Censo/Subscriptions.storekit; sourceTree = SOURCE_ROOT; };
 		E4FB35642B18A01E00D75E26 /* PhrasesAccessAvailable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhrasesAccessAvailable.swift; sourceTree = "<group>"; };
 		E4FB35662B18C0BF00D75E26 /* InitPhrasesAccessFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitPhrasesAccessFlow.swift; sourceTree = "<group>"; };
@@ -656,6 +669,7 @@
 			isa = PBXGroup;
 			children = (
 				BDC11F112B62F9F5009E306B /* Paywall */,
+				E475C8EB2B6151310051CCD6 /* AuthenticationReset */,
 				6CA032982B583AAD005EE075 /* PhotoCapture */,
 				BDFE3C092AD5DB1D000C76D4 /* Onboarding */,
 				6C2392AD2AE6C98B00987A91 /* Home */,
@@ -682,7 +696,7 @@
 				BD89A3F82AE989F20035B094 /* TermsOfUse.swift */,
 				E45A14552AC4309F00EDBC10 /* BiometryGatedScreen.swift */,
 				6C2392AB2AE3009A00987A91 /* LockScreen.swift */,
-				BD19AE112B05509000282B86 /* GetPassword.swift */,
+				BD19AE112B05509000282B86 /* PasswordAuth.swift */,
 				3D55E6152B51B80A0096F612 /* View+DismissableAlert.swift */,
 				BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */,
 				6C633D7E2B62B3DD00049417 /* DeleteAllDataAlert.swift */,
@@ -848,16 +862,6 @@
 			path = PinInputField;
 			sourceTree = "<group>";
 		};
-		6C0AF95C2ACC5C75009A9B54 /* Access */ = {
-			isa = PBXGroup;
-			children = (
-				6C0AF95E2ACC5CEC009A9B54 /* AccessApproval.swift */,
-				6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */,
-				6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */,
-			);
-			path = Access;
-			sourceTree = "<group>";
-		};
 		6C2229222B20DB9C00A8AFE3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -974,7 +978,7 @@
 				3D55E6272B51B97F0096F612 /* Settings */,
 				E417AB8C2AFA8C2C0091CFDA /* Home */,
 				6C5307752ADF1DAD00E20F1E /* Onboarding */,
-				6C0AF95C2ACC5C75009A9B54 /* Access */,
+				E475C8FB2B63DA240051CCD6 /* Approval */,
 				3DFF194D2AC954CF006111B2 /* PinInputField */,
 			);
 			path = Views;
@@ -1001,10 +1005,10 @@
 		BDC11F112B62F9F5009E306B /* Paywall */ = {
 			isa = PBXGroup;
 			children = (
-				E4EFFAF82B0381E500AA1FA0 /* PaywallGatedScreen.swift */,
 				BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */,
 				BDC11F152B62FADC009E306B /* Keep1Phrase.swift */,
 				BDC11F1C2B62FBAC009E306B /* Paywall.swift */,
+				E475C8FE2B63FE530051CCD6 /* PaywallGatedScreen.swift */,
 			);
 			path = Paywall;
 			sourceTree = "<group>";
@@ -1106,6 +1110,30 @@
 				E463C5A32AE13E4100AFDFBB /* RoundedTextFieldStyle.swift */,
 			);
 			path = TextFieldStyles;
+			sourceTree = "<group>";
+		};
+		E475C8EB2B6151310051CCD6 /* AuthenticationReset */ = {
+			isa = PBXGroup;
+			children = (
+				E475C8EC2B6151440051CCD6 /* AuthenticationReset.swift */,
+				E475C8EE2B626EB60051CCD6 /* PendingAuthResetOnAnotherDevice.swift */,
+				E475C8F22B62778C0051CCD6 /* PendingAuthResetOnThisDevice.swift */,
+				E475C8F02B6276120051CCD6 /* ChooseAuthResetApprover.swift */,
+				E475C8F42B627C1C0051CCD6 /* GetAuthResetApproval.swift */,
+				E475C8F62B62CDCE0051CCD6 /* ReplaceAuthentication.swift */,
+			);
+			path = AuthenticationReset;
+			sourceTree = "<group>";
+		};
+		E475C8FB2B63DA240051CCD6 /* Approval */ = {
+			isa = PBXGroup;
+			children = (
+				6C0AF95E2ACC5CEC009A9B54 /* Approval.swift */,
+				6C0AF95D2ACC5CEB009A9B54 /* OwnerVerification.swift */,
+				6C0AF95F2ACC5CEC009A9B54 /* GetLiveWithOwner.swift */,
+				E475C8FC2B63DA7E0051CCD6 /* InvalidLinkView.swift */,
+			);
+			path = Approval;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1314,6 +1342,7 @@
 				3D55E63F2B51B9BB0096F612 /* OwnerPill.swift in Sources */,
 				3D3796992A8C2B9D00913581 /* RetryView.swift in Sources */,
 				E4ADF6502AF01A9900EFCF4F /* ChooseAccessApprover.swift in Sources */,
+				E475C8ED2B6151440051CCD6 /* AuthenticationReset.swift in Sources */,
 				6CC60F692AA1292C001A4454 /* BigInt+Access.swift in Sources */,
 				6C2372882AC5A4D50072E256 /* ErrorResponsePlugin.swift in Sources */,
 				6C6575462AB4E85B00E1D737 /* String+Hex.swift in Sources */,
@@ -1321,7 +1350,7 @@
 				BDC11F162B62FADC009E306B /* Keep1Phrase.swift in Sources */,
 				3D23ACCD2AAB8ECB00F55C5D /* FacetecAuth.swift in Sources */,
 				6C2392AC2AE3009A00987A91 /* LockScreen.swift in Sources */,
-				BD19AE122B05509000282B86 /* GetPassword.swift in Sources */,
+				BD19AE122B05509000282B86 /* PasswordAuth.swift in Sources */,
 				6C2392B32AE6CDB200987A91 /* PhrasesTab.swift in Sources */,
 				6CC60F902AA763EA001A4454 /* RandomUtils.swift in Sources */,
 				6C07AA502B2D150A005FF9D7 /* PushNotificationSettings.swift in Sources */,
@@ -1344,6 +1373,7 @@
 				E46395712B4EC854005FE818 /* LoginIdResetStepView.swift in Sources */,
 				3D28C0102B06721C00E261AA /* AttestKey.swift in Sources */,
 				E4C06F422B335940006A9B39 /* SettingsItem.swift in Sources */,
+				E475C8FF2B63FE530051CCD6 /* PaywallGatedScreen.swift in Sources */,
 				6CA032B22B5AB607005EE075 /* TakeSeedPhoto.swift in Sources */,
 				BD89A3FC2AEB3FA50035B094 /* ApproverPill.swift in Sources */,
 				E40BEE0B2B4C2DBE0086F6CF /* PasteLinkButton.swift in Sources */,
@@ -1357,7 +1387,6 @@
 				E4ADF6582AF1127000EFCF4F /* SigningKey.swift in Sources */,
 				3D3E64D22AE6B76A0000C56C /* PhraseSaveSuccess.swift in Sources */,
 				3D55E60A2B51B6EA0096F612 /* UIColor+Hex.swift in Sources */,
-				E4EFFAF92B0381E500AA1FA0 /* PaywallGatedScreen.swift in Sources */,
 				6CFEAD572AF157EB00C20140 /* AppleSignIn.swift in Sources */,
 				E4FB356B2B18FA4400D75E26 /* RetrieveAccessShards.swift in Sources */,
 				3DE0B97A2ABA2EDB0001F3A3 /* UserCredentials.swift in Sources */,
@@ -1374,6 +1403,7 @@
 				3DCAADA62B51ED7600D5C093 /* OnboardingCancelNavBar.swift in Sources */,
 				6C2372842AC4BF260072E256 /* FacetecError.swift in Sources */,
 				6CC60F672AA128E3001A4454 /* SecretSharer.swift in Sources */,
+				E475C8F72B62CDCE0051CCD6 /* ReplaceAuthentication.swift in Sources */,
 				3D0C1E7A2A83A79400AB3A48 /* ContentView.swift in Sources */,
 				BDEB3F1A2B2255B600899A5D /* Import.swift in Sources */,
 				3D28C00A2B06715800E261AA /* AppAttest.swift in Sources */,
@@ -1396,6 +1426,7 @@
 				6CAC0B4F2B163A8B008051BD /* RefreshOnTimer.swift in Sources */,
 				E40BEE0A2B4C23250086F6CF /* LoginIdReset.swift in Sources */,
 				E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */,
+				E475C8F52B627C1C0051CCD6 /* GetAuthResetApproval.swift in Sources */,
 				3DE0B9812ABA5F0C0001F3A3 /* LoggedInOwnerView.swift in Sources */,
 				3D55E62C2B51B97F0096F612 /* LoggedOutWelcomeScreen.swift in Sources */,
 				3D3796952A8C228B00913581 /* API.swift in Sources */,
@@ -1431,6 +1462,7 @@
 				6CA032A22B596443005EE075 /* PhotoPhrase.swift in Sources */,
 				3DE0B97D2ABA56BA0001F3A3 /* SignIn.swift in Sources */,
 				6CFEAD592AF15B3800C20140 /* LoginBottomLinks.swift in Sources */,
+				E475C8F12B6276120051CCD6 /* ChooseAuthResetApprover.swift in Sources */,
 				3D0C1E922A83AA5C00AB3A48 /* Keychain.swift in Sources */,
 				6C2392B12AE6CB4500987A91 /* SettingsTab.swift in Sources */,
 				6C8A87042AAB83DB002E54D6 /* OwnerState.swift in Sources */,
@@ -1443,6 +1475,7 @@
 				6C2092F72AD5F5BB0062AB71 /* ParticipantId+PrivateKeyStorage.swift in Sources */,
 				3D28C0122B06723600E261AA /* MoyaProvider+Async.swift in Sources */,
 				E4716FD62ACEB97800BC2AA7 /* PinInput.swift in Sources */,
+				E475C8EF2B626EB60051CCD6 /* PendingAuthResetOnAnotherDevice.swift in Sources */,
 				6CA032A82B59DA33005EE075 /* CameraNotAvailable.swift in Sources */,
 				BD8B28582B5EB04400C0BE80 /* Welcome.swift in Sources */,
 				6CA032A42B59D9AF005EE075 /* PhotoCaptureController.swift in Sources */,
@@ -1460,6 +1493,7 @@
 				E472073D2AEAC8B0009A06A1 /* EncryptionKey+Owner.swift in Sources */,
 				E4D3768D2AE83A24005809F7 /* ApproversSetupDone.swift in Sources */,
 				6CA032AA2B59DA64005EE075 /* CameraPreview.swift in Sources */,
+				E475C8F32B62778C0051CCD6 /* PendingAuthResetOnThisDevice.swift in Sources */,
 				E46395772B4EC9A6005FE818 /* LoginIdResetStartVerificationStep.swift in Sources */,
 				3D0C1E902A83AA3D00AB3A48 /* SecureEnclaveKey.swift in Sources */,
 				3D3E64D12AE6B76A0000C56C /* SeedVerification.swift in Sources */,
@@ -1502,6 +1536,7 @@
 				E4BC28BF2B31B5070099AF8E /* LimitedLengthString.swift in Sources */,
 				6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */,
 				BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
+				E475C8FD2B63DA7E0051CCD6 /* InvalidLinkView.swift in Sources */,
 				E4ADF6592AF1127000EFCF4F /* SigningKey.swift in Sources */,
 				6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */,
 				6C0AF96A2ACC93FE009A9B54 /* RotatingTotpPinView.swift in Sources */,
@@ -1530,7 +1565,7 @@
 				6CD6DAFE2ABC9D3F00974035 /* FilledButtonStyle.swift in Sources */,
 				E4BC28C02B31B5A50099AF8E /* RoundedTextFieldStyle.swift in Sources */,
 				6CD6DAF62ABC9B7A00974035 /* Keychain.swift in Sources */,
-				6C0AF9612ACC5CEC009A9B54 /* AccessApproval.swift in Sources */,
+				6C0AF9612ACC5CEC009A9B54 /* Approval.swift in Sources */,
 				3D23ACDA2AB22C9200F55C5D /* ApproverApp.swift in Sources */,
 				3D23ACF02AB2358000F55C5D /* Base58.swift in Sources */,
 				6CD6DAEB2ABC6C6400974035 /* ValueWrappers.swift in Sources */,
@@ -1578,7 +1613,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDC11F1B2B62FB1A009E306B /* PaywallGatedScreen.swift in Sources */,
 				BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */,
 				3DCAAD9C2B51E6E400D5C093 /* SampleTest.swift in Sources */,
 				BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */,

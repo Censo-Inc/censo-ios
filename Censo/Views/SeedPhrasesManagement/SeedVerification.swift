@@ -16,6 +16,7 @@ struct SeedVerification: View {
     var words: [String]
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     var requestedLabel: String? = nil
     var onClose: (() -> Void)? = nil
@@ -86,6 +87,7 @@ struct SeedVerification: View {
                 seedPhrase: .bip39(words: words),
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: isFirstTime,
                 requestedLabel: requestedLabel,
                 onSuccess: onSuccess
@@ -98,10 +100,10 @@ struct SeedVerification: View {
 struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SeedVerification(words: ["sample", "word"], session: .sample, ownerState: .sample, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
+            SeedVerification(words: ["sample", "word"], session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
         }
         NavigationStack {
-            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, ownerState: .sample, isFirstTime: true) { _ in }
+            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true) { _ in }
         }
     }
 }

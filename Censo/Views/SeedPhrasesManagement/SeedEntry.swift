@@ -20,6 +20,7 @@ struct SeedEntry: View {
 
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     var language: WordListLanguage
     var onSuccess: (API.OwnerState) -> Void
@@ -92,6 +93,7 @@ struct SeedEntry: View {
                     words: words,
                     session: session,
                     ownerState: ownerState,
+                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime,
                     onSuccess: onSuccess
                 )
@@ -136,6 +138,7 @@ struct SeedEntry_Previews: PreviewProvider {
         SeedEntry(
             session: .sample,
             ownerState: .sample,
+            reloadOwnerState: {},
             isFirstTime: true,
             language: WordListLanguage.english,
             onSuccess: { _ in },

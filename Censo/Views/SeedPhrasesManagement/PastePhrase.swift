@@ -36,6 +36,7 @@ struct PastePhrase: View {
     var onBack: () -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     
     var body: some View {
@@ -134,6 +135,7 @@ struct PastePhrase: View {
                     words: BIP39.splitToWords(phrase: pastedPhrase),
                     session: session,
                     ownerState: ownerState,
+                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)
@@ -168,6 +170,7 @@ struct PastePhrase: View {
         onBack: {},
         session: .sample,
         ownerState: .sample,
+        reloadOwnerState: {},
         isFirstTime: true
     )
     .foregroundColor(Color.Censo.primaryForeground)

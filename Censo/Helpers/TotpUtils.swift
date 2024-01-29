@@ -16,9 +16,10 @@ struct TotpUtils {
 
     static func getOTP(date: Date, secret: Data) ->  String {
         var counter = UInt64(date.timeIntervalSince1970 / period).bigEndian
-        // Generate the key based on the counter.
-        let key = SymmetricKey(data: Data(bytes: &counter, count: MemoryLayout.size(ofValue: counter)))
-        let hash = HMAC<Insecure.SHA1>.authenticationCode(for: secret, using: key)
+        let key = SymmetricKey(data: secret)
+        // Generate the payload based on the counter.
+        let payload = Data(bytes: &counter, count: MemoryLayout.size(ofValue: counter))
+        let hash = HMAC<SHA512>.authenticationCode(for: payload, using: key)
 
         var truncatedHash = hash.withUnsafeBytes { ptr -> UInt32 in
             let offset = ptr[hash.byteCount - 1] & 0x0f

@@ -355,6 +355,85 @@ extension API {
         case paused = "Paused"
     }
     
+    enum AuthenticationReset: Codable {
+        case anotherDevice(AnotherDevice)
+        case thisDevice(ThisDevice)
+        
+        struct AnotherDevice: Codable {
+            var guid: String
+        }
+        
+        struct ThisDevice : Codable {
+            var guid: String
+            var status: Status
+            var createdAt: Date
+            var expiresAt: Date
+            var approvals: [Approval]
+            
+            struct Approval : Codable {
+                var guid: String
+                var participantId: ParticipantId
+                var totpSecret: String
+                var status: Status
+                
+                enum Status : String, Codable {
+                    case initial = "Initial"
+                    case waitingForTotp = "WaitingForTotp"
+                    case approved = "Approved"
+                    case totpVerificationFailed = "TotpVerificationFailed"
+                    case rejected = "Rejected"
+                }
+            }
+            
+            func approvalForApprover(_ approver: API.TrustedApprover) -> Approval? {
+                return self.approvals.first(where: {$0.participantId == approver.participantId})
+            }
+        }
+        
+        var isThisDevice: Bool {
+            get {
+                switch (self) {
+                case .thisDevice: return true
+                default: return false
+                }
+            }
+        }
+        
+        enum Status : String, Codable {
+            case requested = "Requested"
+            case approved = "Approved"
+        }
+        
+        enum AuthenticationResetCodingKeys: String, CodingKey {
+            case type
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: AuthenticationResetCodingKeys.self)
+            let type = try container.decode(String.self, forKey: .type)
+            switch type {
+            case "AnotherDevice":
+                self = .anotherDevice(try AnotherDevice(from: decoder))
+            case "ThisDevice":
+                self = .thisDevice(try ThisDevice(from: decoder))
+            default:
+                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Authentication Reset State")
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: AuthenticationResetCodingKeys.self)
+            switch self {
+            case .anotherDevice(let anotherDevice):
+                try container.encode("AnotherDevice", forKey: .type)
+                try anotherDevice.encode(to: encoder)
+            case .thisDevice(let thisDevice):
+                try container.encode("ThisDevice", forKey: .type)
+                try thisDevice.encode(to: encoder)
+            }
+        }
+    }
+    
     enum OwnerState: Codable {
         case initial(Initial)
         case ready(Ready)
@@ -377,6 +456,8 @@ extension API {
             var timelockSetting: TimelockSetting
             var subscriptionRequired: Bool
             var onboarded: Bool
+            var canRequestAuthenticationReset: Bool
+            var authenticationReset: AuthenticationReset?
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {
@@ -479,12 +560,22 @@ extension API.OwnerState.Ready {
             subscriptionStatus: .active,
             timelockSetting: .sample,
             subscriptionRequired: true,
-            onboarded: true
+            onboarded: true,
+            canRequestAuthenticationReset: false
         )
     }
     
     static var sample2Approvers: Self {
-        API.OwnerState.Ready(policy: .sample2Approvers, vault: .sample, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true)
+        API.OwnerState.Ready(
+            policy: .sample2Approvers,
+            vault: .sample,
+            authType: .facetec,
+            subscriptionStatus: .active,
+            timelockSetting: .sample,
+            subscriptionRequired: true,
+            onboarded: true,
+            canRequestAuthenticationReset: false
+        )
     }
 }
 

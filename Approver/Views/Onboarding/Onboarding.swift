@@ -41,10 +41,12 @@ struct Onboarding: View {
                     switch currentState.phase {
                     case .waitingForCode, .waitingForVerification, .verificationRejected:
                         SubmitVerification(
-                            invitationId: inviteCode,
+                            intent: .onboarding(inviteCode),
                             session: session,
                             approverState: currentState,
-                            onSuccess: {newState in approverState = newState}
+                            onSuccess: { updatedApproverStates in
+                                approverState = updatedApproverStates.forInvite(inviteCode)
+                            }
                         )
                         .navigationBarHidden(true)
                     case .complete:

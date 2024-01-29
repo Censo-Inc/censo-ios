@@ -67,6 +67,10 @@ struct API {
         case createDevice
         case resetLoginId(ResetLoginIdApiRequest)
         case resetLoginIdWithPassword(ResetLoginIdWithPasswordApiRequest)
+        
+        case requestAuthenticationReset
+        case cancelAuthenticationReset
+        case replaceAuthentication(ReplaceAuthenticationApiRequest)
     }
 }
 
@@ -158,6 +162,12 @@ extension API: TargetType {
             return "v1/login-id"
         case .resetLoginIdWithPassword(_):
             return "v1/login-id-password"
+        case .requestAuthenticationReset:
+            return "v1/authentication-reset"
+        case .cancelAuthenticationReset:
+            return "v1/authentication-reset"
+        case .replaceAuthentication:
+            return "v1/authentication"
         }
     }
 
@@ -169,7 +179,13 @@ extension API: TargetType {
              .getImportEncryptedData,
              .getSeedPhrase:
             return .get
-        case .deleteUser, .deleteSeedPhrase, .deleteMultipleSeedPhrases, .deleteAccess, .deletePolicySetup, .cancelDisabledTimelock:
+        case .deleteUser,
+             .deleteSeedPhrase,
+             .deleteMultipleSeedPhrases,
+             .deleteAccess,
+             .deletePolicySetup,
+             .cancelDisabledTimelock,
+             .cancelAuthenticationReset:
             return .delete
         case .updateSeedPhrase:
             return .patch
@@ -198,12 +214,14 @@ extension API: TargetType {
              .acceptImport,
              .enableTimelock,
              .disableTimelock,
-             .createDevice:
+             .createDevice,
+             .requestAuthenticationReset:
             return .post
         case .replacePolicy,
              .resetLoginId,
              .resetLoginIdWithPassword,
-             .replacePolicyShards:
+             .replacePolicyShards,
+             .replaceAuthentication:
             return .put
         }
     }
@@ -223,7 +241,9 @@ extension API: TargetType {
              .enableTimelock,
              .disableTimelock,
              .cancelDisabledTimelock,
-             .createDevice:
+             .createDevice,
+             .requestAuthenticationReset,
+             .cancelAuthenticationReset:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -313,6 +333,8 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "label": label
             ])
+        case .replaceAuthentication(let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -372,7 +394,10 @@ extension API: TargetType {
              .createDevice,
              .resetLoginId,
              .resetLoginIdWithPassword,
-             .replacePolicyShards:
+             .replacePolicyShards,
+             .requestAuthenticationReset,
+             .cancelAuthenticationReset,
+             .replaceAuthentication:
             return true
         }
     }

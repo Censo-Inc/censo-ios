@@ -13,6 +13,7 @@ struct PhrasesTab: View {
     
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
@@ -149,6 +150,7 @@ struct PhrasesTab: View {
             .sheet(isPresented: $showingAddPhrase, content: {
                 AdditionalPhrase(
                     ownerState: ownerState,
+                    reloadOwnerState: reloadOwnerState,
                     session: session,
                     onComplete: onOwnerStateUpdated
                 )
@@ -283,6 +285,7 @@ struct PhrasesTab: View {
     PhrasesTab(
         session: .sample,
         ownerState: .sample,
+        reloadOwnerState: {},
         onOwnerStateUpdated: { _ in }
     )
     .foregroundColor(Color.Censo.primaryForeground)

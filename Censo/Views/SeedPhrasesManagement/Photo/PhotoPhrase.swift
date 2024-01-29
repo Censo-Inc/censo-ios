@@ -18,6 +18,7 @@ struct PhotoPhrase: View {
     var onBack: () -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     
     var body: some View {
@@ -41,6 +42,7 @@ struct PhotoPhrase: View {
                     seedPhrase: .image(imageData: imageData),
                     session: session,
                     ownerState: ownerState,
+                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime,
                     onSuccess: { ownerState in
                         showingSave = false
@@ -60,6 +62,7 @@ struct PhotoPhrase: View {
         onBack: {},
         session: .sample,
         ownerState: .sample,
+        reloadOwnerState: {},
         isFirstTime: true
     )
     .foregroundColor(Color.Censo.primaryForeground)

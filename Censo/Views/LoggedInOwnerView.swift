@@ -44,8 +44,8 @@ struct LoggedInOwnerView: View {
                         get: { ownerState },
                         set: { replaceOwnerState(newOwnerState: $0) }
                     )
-                    PaywallGatedScreen(session: session, ownerState: ownerStateBinding, onCancel: onCancelOnboarding) {
-                        BiometryGatedScreen(session: session, ownerState: ownerStateBinding, onUnlockExpired: reload) {
+                    PaywallGatedScreen(session: session, ownerState: ownerStateBinding, reloadOwnerState: reload, onCancel: onCancelOnboarding) {
+                        BiometryGatedScreen(session: session, ownerState: ownerStateBinding, reloadOwnerState: reload, onUnlockExpired: reload) {
                             switch pendingImport {
                             case .none:
                                 switch importPhase {
@@ -87,6 +87,7 @@ struct LoggedInOwnerView: View {
                                             if !ready.onboarded {
                                                 FirstPhrase(
                                                     ownerState: ready,
+                                                    reloadOwnerState: reload,
                                                     session: session,
                                                     onComplete: replaceOwnerState,
                                                     onCancel: onCancelOnboarding
@@ -96,6 +97,7 @@ struct LoggedInOwnerView: View {
                                                 HomeScreen(
                                                     session: session,
                                                     ownerState: ready,
+                                                    reloadOwnerState: reload,
                                                     onOwnerStateUpdated: replaceOwnerState
                                                 )
                                             }
@@ -116,6 +118,7 @@ struct LoggedInOwnerView: View {
                                                     words: words,
                                                     session: session,
                                                     ownerState: ready,
+                                                    reloadOwnerState: reload,
                                                     isFirstTime: false,
                                                     requestedLabel: importedPhrase.label,
                                                     onClose: { importPhase = .none }

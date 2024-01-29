@@ -13,6 +13,7 @@ struct SubscriptionDecline: View {
     @Environment(\.apiProvider) var apiProvider
 
     @Binding var ownerState: API.OwnerState
+    var reloadOwnerState: () -> Void
     var session: Session
     @State private var showKeep1Phrase = false
     @State private var deleteAll = false
@@ -20,7 +21,7 @@ struct SubscriptionDecline: View {
     @State private var error: Error?
     
     var body: some View {
-        BiometryGatedScreen(session: session, ownerState: $ownerState, onUnlockExpired: { dismiss() }) {
+        BiometryGatedScreen(session: session, ownerState: $ownerState, reloadOwnerState: reloadOwnerState, onUnlockExpired: { dismiss() }) {
             NavigationStack {
                 VStack(alignment: .leading) {
                     Text("Don't want to renew your subscription?")
@@ -117,6 +118,20 @@ struct SubscriptionDecline: View {
 
 #if DEBUG
 #Preview {
-    SubscriptionDecline(ownerState: .constant(API.OwnerState.ready(API.OwnerState.Ready(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600), authType: .facetec, subscriptionStatus: .none, timelockSetting: .sample, subscriptionRequired: true, onboarded: true))), session: .sample)
+    SubscriptionDecline(
+        ownerState: .constant(API.OwnerState.ready(API.OwnerState.Ready(
+            policy: .sample,
+            vault: .sample,
+            unlockedForSeconds: UnlockedDuration(value: 600),
+            authType: .facetec,
+            subscriptionStatus: .none,
+            timelockSetting: .sample,
+            subscriptionRequired: true,
+            onboarded: true,
+            canRequestAuthenticationReset: false
+        ))),
+        reloadOwnerState: {},
+        session: .sample
+    )
 }
 #endif

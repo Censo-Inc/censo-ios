@@ -15,6 +15,7 @@ struct Paywall: View {
     var monthlyOffer: Product
     var yearlyOffer: Product
     @Binding var ownerState: API.OwnerState
+    var reloadOwnerState: () -> Void
     var session: Session
     var purchase: (Product) -> Void
     var restorePurchases: () -> Void
@@ -199,7 +200,7 @@ struct Paywall: View {
             }
         }
         .sheet(isPresented: $displaySubscriptionDecline) {
-            SubscriptionDecline(ownerState: $ownerState, session: session)
+            SubscriptionDecline(ownerState: $ownerState, reloadOwnerState: reloadOwnerState, session: session)
         }
         .alert("Error", isPresented: $displayError) {
             Button {

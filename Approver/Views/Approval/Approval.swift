@@ -8,7 +8,7 @@
 import SwiftUI
 import Moya
 
-struct AccessApproval: View {
+struct Approval: View {
     @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
@@ -42,7 +42,20 @@ struct AccessApproval: View {
                     ProgressView()
                         .navigationBarHidden(true)
                         .onAppear {
-                            startOwnerVerification(participantId: approverState.participantId)
+                            startOwnerVerification()
+                        }
+                        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                            Button {
+                                dismiss()
+                            } label: { Text("OK") }
+                        } message: { error in
+                            Text(error.localizedDescription)
+                        }
+                case .authenticationResetRequested:
+                    ProgressView()
+                        .navigationBarHidden(true)
+                        .onAppear {
+                            acceptAuthResetRequest()
                         }
                         .alert("Error", isPresented: $showingError, presenting: error) { _ in
                             Button {
@@ -54,8 +67,16 @@ struct AccessApproval: View {
                 case .accessVerification, .accessConfirmation:
                     OwnerVerification(
                         session: session,
+                        intent: .accessApproval(approvalId),
                         approverState: approverState,
-                        approvalId: approvalId,
+                        onApproverStatesUpdated: replaceApproverStates
+                    )
+                    .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: reload, isIdleTimerDisabled: true))
+                case .authenticationResetWaitingForCode, .authenticationResetVerificationRejected:
+                    OwnerVerification(
+                        session: session,
+                        intent: .authResetApproval(approvalId),
+                        approverState: approverState,
                         onApproverStatesUpdated: replaceApproverStates
                     )
                     .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: reload, isIdleTimerDisabled: true))
@@ -94,7 +115,7 @@ struct AccessApproval: View {
         self.error = error
     }
     
-    private func startOwnerVerification(participantId: ParticipantId) {
+    private func startOwnerVerification() {
         do {
             let encryptedTotpSecret = try Base64EncodedString.encryptedTotpSecret(deviceKey: session.deviceKey)
 
@@ -118,28 +139,21 @@ struct AccessApproval: View {
             showError(error)
         }
     }
-}
-
-struct InvalidLinkView : View {
-    @Environment(\.dismiss) var dismiss
     
-    var body: some View {
-        VStack {
-            Text("Invalid link")
-        }
-        .multilineTextAlignment(.center)
-        .navigationTitle(Text(""))
-        .toolbarBackground(.visible, for: .navigationBar)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+    private func acceptAuthResetRequest() {
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .acceptAuthenticationResetRequest(approvalId)
+        ) { (result: Result<API.AcceptAuthenticationResetRequestApiResponse, MoyaError>) in
+            switch result {
+            case .success(let success):
+                replaceApproverStates(newApproverStates: success.approverStates)
+            case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
+                showError(CensoError.accessRequestNotFound)
+            case .failure(let error):
+                showError(error)
             }
         }
     }
 }
+

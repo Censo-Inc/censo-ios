@@ -15,10 +15,10 @@ struct BiometryGatedScreen<Content: View>: View {
     
     var session: Session
     @Binding var ownerState: API.OwnerState
+    var reloadOwnerState: () -> Void
     var onUnlockExpired: () -> Void
     @ViewBuilder var content: () -> Content
     
-    @State private var showAuthentication = false
     @State private var checkToggle = false
     
     private let prolongationThreshold: TimeInterval = 600
@@ -30,7 +30,7 @@ struct BiometryGatedScreen<Content: View>: View {
             case .ready(let ready):
                 let unlockedDuration = ready.unlockedForSeconds ?? UnlockedDuration(value: 0)
                 if Date.now < unlockedDuration.locksAt  {
-                        content()
+                    content()
                         .onChange(of: scenePhase) { newScenePhase in
                             switch newScenePhase {
                             case .active:
@@ -41,9 +41,6 @@ struct BiometryGatedScreen<Content: View>: View {
                             default:
                                 break;
                             }
-                        }
-                        .onAppear {
-                            showAuthentication = false
                         }
                         .onReceive(timer) { _ in
                             if (Date.now >= unlockedDuration.locksAt) {
@@ -58,49 +55,14 @@ struct BiometryGatedScreen<Content: View>: View {
                             }
                         }
                 } else {
-                    if showAuthentication {
-                        switch ownerState.authType {
-                        case .facetec:
-                            FacetecAuth<API.UnlockApiResponse>(
-                                session: session,
-                                onReadyToUploadResults: { biometryVerificationId, biometryData in
-                                    return .unlock(API.UnlockApiRequest(biometryVerificationId: biometryVerificationId, biometryData: biometryData))
-                                },
-                                onSuccess: { response in
-                                    ownerState = response.ownerState
-                                },
-                                onCancelled: {
-                                    showAuthentication = false
-                                }
-                            )
-                        case .password:
-                            GetPassword { cryptedPassword, onComplete in
-                                apiProvider.decodableRequest(with: session, endpoint: .unlockWithPassword(API.UnlockWithPasswordApiRequest(password: API.Password(cryptedPassword: cryptedPassword)))) {
-                                    (result: Result<API.UnlockWithPasswordApiResponse, MoyaError>) in
-                                    switch result {
-                                    case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
-                                        onComplete(false)
-                                    case .failure:
-                                        showAuthentication = false
-                                        onComplete(true)
-                                    case .success(let response):
-                                        ownerState = response.ownerState
-                                        onComplete(true)
-                                    }
-                                }
-                            }
-                        case .none:
-                            EmptyView().onAppear {
-                                showAuthentication = false
-                            }
+                    LockScreen(
+                        session: session,
+                        ownerState: ready,
+                        reloadOwnerState: reloadOwnerState,
+                        onOwnerStateUpdated: {
+                            ownerState = $0
                         }
-                    } else {
-                        LockScreen(
-                            onReadyToAuthenticate: {
-                                showAuthentication = true
-                            }
-                        )
-                    }
+                    )
                 }
             default:
                 content()
@@ -125,11 +87,21 @@ struct BiometryGatedScreen<Content: View>: View {
 #Preview("ReadyUnlocked") {
     let session = Session.sample
     
-    @State var ownerState1 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: UnlockedDuration(value: 600), authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true
-))
+    @State var ownerState1 = API.OwnerState.ready(.init(
+        policy: .sample,
+        vault: .sample,
+        unlockedForSeconds: UnlockedDuration(value: 600),
+        authType: .facetec,
+        subscriptionStatus: .active,
+        timelockSetting: .sample,
+        subscriptionRequired: true,
+        onboarded: true,
+        canRequestAuthenticationReset: false
+    ))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState1,
+        reloadOwnerState: {},
         onUnlockExpired: {}
     ) {
         VStack {
@@ -140,16 +112,28 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #Preview("ReadyLocked") {
     let session = Session.sample
-    @State var ownerState2 = API.OwnerState.ready(.init(policy: .sample, vault: .sample, unlockedForSeconds: nil, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true))
+    @State var ownerState2 = API.OwnerState.ready(.init(
+        policy: .sample,
+        vault: .sample,
+        unlockedForSeconds: nil,
+        authType: .facetec,
+        subscriptionStatus: .active,
+        timelockSetting: .sample,
+        subscriptionRequired: true,
+        onboarded: true,
+        canRequestAuthenticationReset: false
+    ))
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState2,
+        reloadOwnerState: {},
         onUnlockExpired: {}
     ) {
         VStack {
             Text("test")
         }
     }
+    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("Initial") {
@@ -158,11 +142,13 @@ struct BiometryGatedScreen<Content: View>: View {
     return BiometryGatedScreen(
         session: session,
         ownerState: $ownerState3,
+        reloadOwnerState: {},
         onUnlockExpired: {}
     ) {
         VStack {
             Text("test")
         }
     }
+    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

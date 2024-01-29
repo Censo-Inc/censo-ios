@@ -18,6 +18,7 @@ struct FirstPhrase: View {
     @State private var language: WordListLanguage = WordListLanguage.english
 
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var session: Session
     var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
@@ -72,6 +73,7 @@ struct FirstPhrase: View {
             SeedEntry(
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: true,
                 language: language,
                 onSuccess: onComplete,
@@ -86,6 +88,7 @@ struct FirstPhrase: View {
                 onBack: { showingPastePhrase = false },
                 session: session, 
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: true
             )
         })
@@ -95,6 +98,7 @@ struct FirstPhrase: View {
                 onBack: { showingPhotoPhrase = false },
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: true
             )
         })
@@ -104,6 +108,7 @@ struct FirstPhrase: View {
                 onComplete: onComplete, 
                 session: session,
                 ownerState: ownerState, 
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: true
             )
         })
@@ -253,6 +258,7 @@ struct AddYourOwnPhrase: View {
 #Preview {
     FirstPhrase(
         ownerState: .sample,
+        reloadOwnerState: {},
         session: .sample,
         onComplete: {_ in },
         onCancel: {}

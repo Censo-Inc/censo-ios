@@ -24,6 +24,7 @@ struct AdditionalPhrase: View {
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
 
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var session: Session
     var onComplete: (API.OwnerState) -> Void
     
@@ -199,6 +200,7 @@ struct AdditionalPhrase: View {
             SeedEntry(
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: false,
                 language: currentLanguage(),
                 onSuccess: { ownerState in
@@ -220,6 +222,7 @@ struct AdditionalPhrase: View {
                 },
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: false
             )
         case .photoPhrase:
@@ -230,6 +233,7 @@ struct AdditionalPhrase: View {
                 },
                 session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: false
             )
         case .generatePhrase:
@@ -240,6 +244,7 @@ struct AdditionalPhrase: View {
                     dismiss()
                 }, session: session,
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 isFirstTime: false
             )
         }
@@ -253,7 +258,21 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     NavigationView {
-        AdditionalPhrase(ownerState: API.OwnerState.Ready(policy: .sample, vault: .sample1Phrase, authType: .facetec, subscriptionStatus: .active, timelockSetting: .sample, subscriptionRequired: true, onboarded: true), session: .sample, onComplete: {_ in }).foregroundColor(Color.Censo.primaryForeground)
+        AdditionalPhrase(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample1Phrase,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            ),
+            reloadOwnerState: {},
+            session: .sample,
+            onComplete: {_ in }
+        ).foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

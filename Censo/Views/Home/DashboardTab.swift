@@ -10,6 +10,7 @@ struct DashboardTab: View {
     
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
@@ -102,6 +103,7 @@ struct DashboardTab: View {
         .sheet(isPresented: $showingAddPhrase, content: {
             AdditionalPhrase(
                 ownerState: ownerState,
+                reloadOwnerState: reloadOwnerState,
                 session: session,
                 onComplete: onOwnerStateUpdated
             )
@@ -139,6 +141,7 @@ public extension UIFont {
         DashboardTab(
             session: .sample,
             ownerState: .sample,
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )
@@ -158,8 +161,10 @@ public extension UIFont {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )

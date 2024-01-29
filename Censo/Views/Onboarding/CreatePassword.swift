@@ -22,7 +22,7 @@ struct CreatePassword: View {
                 Text("Create a password")
                     .font(.title2.bold())
                     .padding()
-                Text("Instead of a face scan, you can secure your seed phrases with a password. You must be sure to save this password as you will need it to access your seed phrases in the future.\n\nCenso cannot reset this password. If you lose it, you will lose access.\n\nFor security, this password must be at least 30 characters long and contain a mix of letters, numbers, and symbols.")
+                Text("Instead of a face scan, you can secure your seed phrases with a password. You must be sure to save this password as you will need it to access your seed phrases in the future.\n\n\n\nFor security, this password must be at least 30 characters long and contain a mix of letters, numbers, and symbols.")
                     .fixedSize(horizontal: false, vertical: true)
                     .padding()
                 

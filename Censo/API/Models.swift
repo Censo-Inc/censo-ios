@@ -14,14 +14,36 @@ extension API {
         var ownerState: OwnerState
     }
     
-    struct FacetecBiometry: Encodable {
-        var faceScan: String
-        var auditTrailImage: String
-        var lowQualityAuditTrailImage: String
-    }
-    
-    struct Password: Encodable {
-        var cryptedPassword: Base64EncodedString
+    enum Authentication: Encodable {
+        case facetecBiometry(FacetecBiometry)
+        case password(Password)
+        
+        struct FacetecBiometry: Encodable {
+            var verificationId: String
+            var faceScan: String
+            var auditTrailImage: String
+            var lowQualityAuditTrailImage: String
+        }
+        
+        struct Password: Encodable {
+            var cryptedPassword: Base64EncodedString
+        }
+        
+        enum AuthenticationCodingKeys: String, CodingKey {
+            case type
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: AuthenticationCodingKeys.self)
+            switch self {
+            case .facetecBiometry(let facetecBiometry):
+                try container.encode("FacetecBiometry", forKey: .type)
+                try facetecBiometry.encode(to: encoder)
+            case .password(let password):
+                try container.encode("Password", forKey: .type)
+                try password.encode(to: encoder)
+            }
+        }
     }
     
     struct InitBiometryVerificationApiResponse: Decodable {
@@ -101,7 +123,7 @@ extension API {
         var approverPublicKey: Base58EncodedPublicKey
         var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
         var biometryVerificationId: String
-        var biometryData: FacetecBiometry
+        var biometryData: Authentication.FacetecBiometry
         var masterKeySignature: Base64EncodedString
     }
     
@@ -118,7 +140,7 @@ extension API {
         var encryptedShard: Base64EncodedString
         var approverPublicKey: Base58EncodedPublicKey
         var approverPublicKeySignatureByIntermediateKey: Base64EncodedString
-        var password: Password
+        var password: Authentication.Password
         var masterKeySignature: Base64EncodedString
     }
     
@@ -185,7 +207,7 @@ extension API {
     }
     struct UnlockApiRequest: Encodable {
         var biometryVerificationId: String
-        var biometryData: FacetecBiometry
+        var biometryData: Authentication.FacetecBiometry
     }
     
     struct UnlockApiResponse: BiometryVerificationResponse {
@@ -194,7 +216,7 @@ extension API {
     }
     
     struct UnlockWithPasswordApiRequest: Encodable {
-        var password: Password
+        var password: Authentication.Password
     }
     
     struct UnlockWithPasswordApiResponse: Decodable {
@@ -259,7 +281,7 @@ extension API {
     
     struct RetrieveAccessShardsApiRequest: Encodable {
         var biometryVerificationId: String
-        var biometryData: FacetecBiometry
+        var biometryData: Authentication.FacetecBiometry
     }
     
     struct EncryptedShard : Decodable {
@@ -277,7 +299,7 @@ extension API {
     }
     
     struct RetrieveAccessShardsWithPasswordApiRequest: Encodable {
-        var password: Password
+        var password: Authentication.Password
     }
 
     struct RetrieveAccessShardsWithPasswordApiResponse: Decodable {
@@ -315,7 +337,7 @@ extension API {
         var identityToken: String
         var resetTokens: [LoginIdResetToken]
         var biometryVerificationId: String
-        var biometryData: FacetecBiometry
+        var biometryData: Authentication.FacetecBiometry
     }
     
     struct ResetLoginIdApiResponse: BiometryVerificationResponse {
@@ -325,10 +347,31 @@ extension API {
     struct ResetLoginIdWithPasswordApiRequest: Encodable {
         var identityToken: String
         var resetTokens: [LoginIdResetToken]
-        var password: Password
+        var password: Authentication.Password
     }
     
     struct ResetLoginIdWithPasswordApiResponse: Decodable {
         var ownerState: OwnerState
+    }
+    
+    struct InitiateAuthenticationResetApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct CancelAuthenticationResetApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct ReplaceAuthenticationApiRequest: Encodable {
+        var authentication: Authentication
+    }
+    
+    struct ReplacePasswordApiResponse : Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct ReplaceBiometryApiResponse : BiometryVerificationResponse {
+        var ownerState: OwnerState
+        var scanResultBlob: String
     }
 }

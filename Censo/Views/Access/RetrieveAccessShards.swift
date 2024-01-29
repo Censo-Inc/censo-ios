@@ -25,9 +25,9 @@ struct RetrieveAccessShards: View {
         case .facetec:
             FacetecAuth<API.RetrieveAccessShardsApiResponse>(
                 session: session,
-                onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                onReadyToUploadResults: { biometryData in
                     return .retrieveAccessShards(API.RetrieveAccessShardsApiRequest(
-                        biometryVerificationId: biomentryVerificationId,
+                        biometryVerificationId: biometryData.verificationId,
                         biometryData: biometryData
                     ))
                 },
@@ -37,28 +37,19 @@ struct RetrieveAccessShards: View {
                 onCancelled: onCancelled
             )
         case .password:
-            GetPassword { cryptedPassword, onComplete in
-                apiProvider.decodableRequest(
-                    with: session,
-                    endpoint: .retrieveAccessShardsWithPassword(
+            PasswordAuth<API.RetrieveAccessShardsWithPasswordApiResponse>(
+                session: session,
+                submitTo: { password in
+                    return .retrieveAccessShardsWithPassword(
                         API.RetrieveAccessShardsWithPasswordApiRequest(
-                            password: API.Password(cryptedPassword: cryptedPassword)
+                            password: password
                         )
                     )
-                )
-                { (result: Result<API.RetrieveAccessShardsWithPasswordApiResponse, MoyaError>) in
-                    switch result {
-                    case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
-                        onComplete(false)
-                    case .failure:
-                        onCancelled()
-                        onComplete(true)
-                    case .success(let response):
-                        onSuccess(response.encryptedShards)
-                        onComplete(true)
-                    }
+                },
+                onSuccess: { response in
+                    onSuccess(response.encryptedShards)
                 }
-            }
+            )
         }
     }
 }

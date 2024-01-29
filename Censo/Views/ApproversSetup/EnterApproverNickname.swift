@@ -181,7 +181,8 @@ struct EnterApproverNickname: View {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
             onOwnerStateUpdated: { _ in }
         )

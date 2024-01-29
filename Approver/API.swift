@@ -11,6 +11,8 @@ import SwiftUI
 import CryptoKit
 
 typealias InvitationId = String
+typealias AccessApprovalId = String
+typealias AuthenticationResetApprovalId = String
 
 struct API {
     var deviceKey: DeviceKey
@@ -31,15 +33,16 @@ struct API {
         case acceptInvitation(InvitationId)
         case submitVerification(InvitationId, SubmitApproverVerificationApiRequest)
         
-        case approveOwnerVerification(ParticipantId, Base64EncodedString)
-        case rejectOwnerVerification(ParticipantId)
-        
-        case storeAccessTotpSecret(String, Base64EncodedString)
-        case approveAccessVerification(String, Base64EncodedString)
-        case rejectAccessVerification(String)
+        case storeAccessTotpSecret(AccessApprovalId, Base64EncodedString)
+        case approveAccessVerification(AccessApprovalId, Base64EncodedString)
+        case rejectAccessVerification(AccessApprovalId)
         
         case labelOwner(ParticipantId, String)
         case createOwnerLoginIdResetToken(ParticipantId)
+        
+        case acceptAuthenticationResetRequest(AuthenticationResetApprovalId)
+        case rejectAuthenticationResetRequest(AuthenticationResetApprovalId)
+        case submitAuthenticationResetTotpVerification(AuthenticationResetApprovalId, SubmitAuthenticationResetTotpVerificationApiRequest)
     }
     
     enum ApproverPhase: Codable, Equatable {
@@ -50,6 +53,9 @@ struct API {
         case accessRequested(AccessRequested)
         case accessVerification(AccessVerification)
         case accessConfirmation(AccessConfirmation)
+        case authenticationResetRequested(AuthenticationResetRequested)
+        case authenticationResetWaitingForCode(AuthenticationResetWaitingForCode)
+        case authenticationResetVerificationRejected(AuthenticationResetVerificationRejected)
         
         struct WaitingForCode: Codable, Equatable {
             var entropy: Base64EncodedString
@@ -81,6 +87,18 @@ struct API {
             var approverEntropy: Base64EncodedString
         }
         
+        struct AuthenticationResetRequested: Codable, Equatable {
+            var createdAt: Date
+        }
+        
+        struct AuthenticationResetWaitingForCode: Codable, Equatable {
+            var entropy: Base64EncodedString
+        }
+        
+        struct AuthenticationResetVerificationRejected: Codable, Equatable {
+            var entropy: Base64EncodedString
+        }
+        
         enum ApproverPhaseCodingKeys: String, CodingKey {
             case type
         }
@@ -103,6 +121,12 @@ struct API {
                 self = .accessVerification(try AccessVerification(from: decoder))
             case "AccessConfirmation":
                 self = .accessConfirmation(try AccessConfirmation(from: decoder))
+            case "AuthenticationResetRequested":
+                self = .authenticationResetRequested(try AuthenticationResetRequested(from: decoder))
+            case "AuthenticationResetWaitingForCode":
+                self = .authenticationResetWaitingForCode(try AuthenticationResetWaitingForCode(from: decoder))
+            case "AuthenticationResetVerificationRejected":
+                self = .authenticationResetVerificationRejected(try AuthenticationResetVerificationRejected(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
             }
@@ -128,6 +152,15 @@ struct API {
             case .accessConfirmation(let phase):
                 try container.encode("AccessConfirmation", forKey: .type)
                 try phase.encode(to: encoder)
+            case .authenticationResetRequested(let phase):
+                try container.encode("AuthenticationResetRequested", forKey: .type)
+                try phase.encode(to: encoder)
+            case .authenticationResetWaitingForCode(let phase):
+                try container.encode("AuthenticationResetWaitingForCode", forKey: .type)
+                try phase.encode(to: encoder)
+            case .authenticationResetVerificationRejected(let phase):
+                try container.encode("AuthenticationResetVerificationRejected", forKey: .type)
+                try phase.encode(to: encoder)
             }
         }
         
@@ -148,6 +181,12 @@ struct API {
                     nil
                 case .accessVerification:
                     nil
+                case .authenticationResetRequested:
+                    nil
+                case .authenticationResetWaitingForCode(let waitingForCode):
+                    waitingForCode.entropy
+                case .authenticationResetVerificationRejected(let rejected):
+                    rejected.entropy
                 }
             }
         }
@@ -227,6 +266,23 @@ struct API {
     struct AttestationKey: Decodable {
         var keyId: String
     }
+    
+    struct AcceptAuthenticationResetRequestApiResponse: Codable {
+        var approverStates: [ApproverState]
+    }
+    
+    struct RejectAuthenticationResetRequestApiResponse: Codable {
+        var approverStates: [ApproverState]
+    }
+    
+    struct SubmitAuthenticationResetTotpVerificationApiRequest: Codable {
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
+    }
+    
+    struct SubmitAuthenticationResetTotpVerificationApiResponse: Codable {
+        var approverStates: [ApproverState]
+    }
 }
 
 extension API: TargetType {
@@ -253,10 +309,6 @@ extension API: TargetType {
             return "v1/approvership-invitations/\(id)/accept"
         case .submitVerification(let id, _):
             return "v1/approvership-invitations/\(id)/verification"
-        case .approveOwnerVerification(let id, _):
-            return "v1/access/\(id.value)/approval"
-        case .rejectOwnerVerification(let id):
-            return "v1/access/\(id.value)/rejection"
         case .storeAccessTotpSecret(let id, _):
             return "v1/access/\(id)/totp"
         case .approveAccessVerification(let id, _):
@@ -269,6 +321,12 @@ extension API: TargetType {
             return "v1/approvers/\(participantId.value)/owner-label"
         case .createOwnerLoginIdResetToken(let participantId):
             return "v1/login-id-reset-token/\(participantId.value)"
+        case .acceptAuthenticationResetRequest(let approvalId):
+            return "v1/authentication-reset/\(approvalId)/acceptance"
+        case .rejectAuthenticationResetRequest(let approvalId):
+            return "v1/authentication-reset/\(approvalId)/rejection"
+        case .submitAuthenticationResetTotpVerification(let approvalId, _):
+            return "v1/authentication-reset/\(approvalId)/totp-verification"
         }
     }
 
@@ -278,14 +336,15 @@ extension API: TargetType {
              .declineInvitation,
              .acceptInvitation,
              .submitVerification,
-             .approveOwnerVerification,
-             .rejectOwnerVerification,
              .storeAccessTotpSecret,
              .approveAccessVerification,
              .rejectAccessVerification,
              .registerAttestationObject,
              .attestationChallenge,
-             .createOwnerLoginIdResetToken:
+             .createOwnerLoginIdResetToken,
+             .acceptAuthenticationResetRequest,
+             .rejectAuthenticationResetRequest,
+             .submitAuthenticationResetTotpVerification:
             return .post
         case .labelOwner:
             return .put
@@ -305,11 +364,12 @@ extension API: TargetType {
              .deleteUser,
              .declineInvitation,
              .acceptInvitation,
-             .rejectOwnerVerification,
              .rejectAccessVerification,
              .attestationChallenge,
              .attestationKey,
-             .createOwnerLoginIdResetToken:
+             .createOwnerLoginIdResetToken,
+             .acceptAuthenticationResetRequest,
+             .rejectAuthenticationResetRequest:
             return .requestPlain
         case .registerAttestationObject(let challenge, let attestation, let keyId):
             #if DEBUG
@@ -333,10 +393,6 @@ extension API: TargetType {
             ])
         case .submitVerification(_, let request):
             return .requestJSONEncodable(request)
-        case .approveOwnerVerification(_, let encryptedShard):
-            return .requestJSONEncodable([
-                "encryptedShard": encryptedShard
-            ])
         case .storeAccessTotpSecret(_, let deviceEncryptedTotpSecret):
             return .requestJSONEncodable([
                 "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
@@ -349,6 +405,8 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "label": label
             ])
+        case .submitAuthenticationResetTotpVerification(_, let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -370,7 +428,6 @@ extension API: TargetType {
              .user,
              .declineInvitation,
              .acceptInvitation,
-             .rejectOwnerVerification,
              .attestationChallenge,
              .registerAttestationObject,
              .storeAccessTotpSecret,
@@ -379,11 +436,13 @@ extension API: TargetType {
             return false
         case .deleteUser,
              .submitVerification,
-             .approveOwnerVerification,
              .signIn,
              .approveAccessVerification,
              .labelOwner,
-             .createOwnerLoginIdResetToken:
+             .createOwnerLoginIdResetToken,
+             .acceptAuthenticationResetRequest,
+             .rejectAuthenticationResetRequest,
+             .submitAuthenticationResetTotpVerification:
             return true
         }
     }
@@ -428,7 +487,10 @@ extension API.ApproverPhase {
         case .complete,
              .accessConfirmation,
              .accessRequested,
-             .accessVerification:
+             .accessVerification,
+             .authenticationResetRequested,
+             .authenticationResetWaitingForCode,
+             .authenticationResetVerificationRejected:
             return true
         default:
             return false

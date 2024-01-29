@@ -11,7 +11,7 @@ import Sentry
 
 enum ApproverRoute : Hashable {
     case onboard(inviteCode: String)
-    case access(participantId: ParticipantId, approvalId: String)
+    case approval(participantId: ParticipantId, approvalId: String)
 }
 
 struct ContentView: View {
@@ -93,8 +93,8 @@ struct ContentView: View {
                                                 self.reloadNeeded = true
                                             }
                                         )
-                                    case .access(let participantId, let approvalId):
-                                        AccessApproval(
+                                    case .approval(let participantId, let approvalId):
+                                        Approval(
                                             session: session,
                                             participantId: participantId,
                                             approvalId: approvalId,
@@ -152,7 +152,7 @@ struct ContentView: View {
         guard scheme.starts(with: "censo"),
               url.pathComponents.count > 1,
               let action = url.host,
-              ["invite", "access"].contains(action) else {
+              ["invite", "access", "auth-reset"].contains(action) else {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
@@ -167,13 +167,13 @@ struct ContentView: View {
                 SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Invite Link Paste")
                 showError(CensoError.invalidIdentifier)
             }
-        } else {
+        } else if ["access", "auth-reset"].contains(action) {
             if url.pathComponents.count <= 3 {
                 showError(CensoError.invalidUrl(url: "\(url)"))
                 return
             }
             if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
-                self.route = .access(participantId: participantId, approvalId: url.pathComponents[3])
+                self.route = .approval(participantId: participantId, approvalId: url.pathComponents[3])
                 self.navigateToRoute = true
             } else {
                 SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Other Link Paste")

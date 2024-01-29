@@ -213,11 +213,11 @@ struct LoginIdResetLoggedInSteps: View {
             case .resetWithBiometry:
                 FacetecAuth<API.ResetLoginIdApiResponse>(
                     session: session,
-                    onReadyToUploadResults: { biomentryVerificationId, biometryData in
+                    onReadyToUploadResults: { biometryData in
                         return .resetLoginId(API.ResetLoginIdApiRequest(
                             identityToken: session.userCredentials.userIdentifier,
                             resetTokens: Array(tokens),
-                            biometryVerificationId: biomentryVerificationId,
+                            biometryVerificationId: biometryData.verificationId,
                             biometryData: biometryData
                         ))
                     },
@@ -240,29 +240,21 @@ struct LoginIdResetLoggedInSteps: View {
             case .resetWithPassword:
                 ScrollView {
                     WithResetLoginIdHeader {
-                        GetPassword { cryptedPassword, onPasswordVerificationComplete in
-                            apiProvider.decodableRequest(
-                                with: session,
-                                endpoint: .resetLoginIdWithPassword(
+                        PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
+                            session: session,
+                            submitTo: { password in
+                                return .resetLoginIdWithPassword(
                                     API.ResetLoginIdWithPasswordApiRequest(
                                         identityToken: session.userCredentials.userIdentifier,
                                         resetTokens: Array(tokens),
-                                        password: API.Password(cryptedPassword: cryptedPassword)
+                                        password: password
                                     )
                                 )
-                            )
-                            { (result: Result<API.ResetLoginIdWithPasswordApiResponse, MoyaError>) in
-                                switch result {
-                                case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
-                                    onPasswordVerificationComplete(false)
-                                case .failure:
-                                    onPasswordVerificationComplete(false)
-                                case .success:
-                                    onComplete()
-                                    onPasswordVerificationComplete(true)
-                                }
+                            },
+                            onSuccess: { _ in
+                                onComplete()
                             }
-                        }
+                        )
                     }
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)

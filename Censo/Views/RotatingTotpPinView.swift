@@ -9,8 +9,7 @@ import SwiftUI
 import Base32
 
 struct RotatingTotpPinView: View {
-    var session: Session
-    var deviceEncryptedTotpSecret: Base64EncodedString
+    var totpSecret: Data
     var style: Style
     
     enum Style {
@@ -67,51 +66,46 @@ struct RotatingTotpPinView: View {
     }
         
     var body: some View {
-        if let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
-            let pin = TotpUtils.getOTP(date: Date(), secret: totpSecret)
-            let color = detectColor()
-
-            Stack(style) {
-                Text(pin.splittingCharacters(by: " "))
-                    .font(.system(size: style.pinFontSize, weight: .semibold))
-                    .padding(.horizontal)
+        let pin = TotpUtils.getOTP(date: Date(), secret: totpSecret)
+        let color = detectColor()
+        
+        Stack(style) {
+            Text(pin.splittingCharacters(by: " "))
+                .font(.system(size: style.pinFontSize, weight: .semibold))
+                .padding(.horizontal)
+            
+            ZStack {
+                Circle()
+                    .stroke(
+                        color.opacity(0.2),
+                        lineWidth: 5
+                    )
+                    .frame(width: 36, height: 36)
                 
-                ZStack {
-                    Circle()
-                        .stroke(
-                            color.opacity(0.2),
-                            lineWidth: 5
+                Circle()
+                    .trim(from: 0, to: percentDone)
+                    .stroke(
+                        color,
+                        style: StrokeStyle(
+                            lineWidth: 5,
+                            lineCap: .round
                         )
-                        .frame(width: 36, height: 36)
-
-                    Circle()
-                        .trim(from: 0, to: percentDone)
-                        .stroke(
-                            color,
-                            style: StrokeStyle(
-                                lineWidth: 5,
-                                lineCap: .round
-                            )
-                        )
-                        .frame(width: 36, height: 36)
-                        .rotationEffect(.degrees(-90))
-
-                    Text("\(secondsRemaining)")
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundColor(color)
-                }
+                    )
+                    .frame(width: 36, height: 36)
+                    .rotationEffect(.degrees(-90))
+                
+                Text("\(secondsRemaining)")
+                    .font(.system(size: 18, weight: .regular))
+                    .foregroundColor(color)
             }
-            .onAppear {
+        }
+        .onAppear {
+            setProgress()
+        }
+        .onReceive(timerPublisher) { _ in
+            withAnimation {
                 setProgress()
             }
-            .onReceive(timerPublisher) { _ in
-                withAnimation {
-                    setProgress()
-                }
-            }
-
-        } else {
-            Text("Error") // this can be handled somewhere else I believe, this is almost an unrecoverable error
         }
     }
 }
@@ -128,12 +122,8 @@ extension String {
 #if DEBUG
 #Preview("owner style") {
     NavigationView {
-        let session = Session.sample
         RotatingTotpPinView(
-            session: session,
-            deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
-                data: base32DecodeToData(generateBase32())!
-            ),
+            totpSecret: base32DecodeToData(generateBase32())!,
             style: .owner
         )
     }
@@ -142,12 +132,8 @@ extension String {
 
 #Preview("approver style") {
     NavigationView {
-        let session = Session.sample
         RotatingTotpPinView(
-            session: session,
-            deviceEncryptedTotpSecret: try! session.deviceKey.encrypt(
-                data: base32DecodeToData(generateBase32())!
-            ),
+            totpSecret: base32DecodeToData(generateBase32())!,
             style: .approver
         )
     }

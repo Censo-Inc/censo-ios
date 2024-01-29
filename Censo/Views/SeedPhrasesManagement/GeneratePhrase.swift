@@ -28,6 +28,7 @@ struct GeneratePhrase: View {
     var onComplete: (API.OwnerState) -> Void
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     
     var body: some View {
@@ -98,6 +99,7 @@ struct GeneratePhrase: View {
                     words: phrase,
                     session: session,
                     ownerState: ownerState,
+                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime
                 ) { ownerState in
                     onComplete(ownerState)
@@ -167,6 +169,7 @@ struct WordCountOption: View {
         onComplete: {_ in },
         session: .sample,
         ownerState: .sample,
+        reloadOwnerState: {},
         isFirstTime: false
     )
 }

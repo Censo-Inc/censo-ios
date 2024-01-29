@@ -54,7 +54,7 @@ struct InitialPolicySetup: View {
                                         encryptedShard: createPolicyParams.encryptedShard,
                                         approverPublicKey: createPolicyParams.approverPublicKey,
                                         approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
-                                        password: API.Password(cryptedPassword: cryptedPassword),
+                                        password: API.Authentication.Password(cryptedPassword: cryptedPassword),
                                         masterKeySignature: createPolicyParams.masterKeySignature
                                     )
                                 )
@@ -81,7 +81,7 @@ struct InitialPolicySetup: View {
                     }
                     
                 } else {
-                    FacetecAuth<API.CreatePolicyApiResponse>(session: session) { verificationId, facetecBiometry in
+                    FacetecAuth<API.CreatePolicyApiResponse>(session: session) { facetecBiometry in
                             .createPolicy(
                                 API.CreatePolicyApiRequest(
                                     intermediatePublicKey: createPolicyParams.intermediatePublicKey,
@@ -91,7 +91,7 @@ struct InitialPolicySetup: View {
                                     encryptedShard: createPolicyParams.encryptedShard,
                                     approverPublicKey: createPolicyParams.approverPublicKey,
                                     approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
-                                    biometryVerificationId: verificationId,
+                                    biometryVerificationId: facetecBiometry.verificationId,
                                     biometryData: facetecBiometry,
                                     masterKeySignature: createPolicyParams.masterKeySignature
                                 )

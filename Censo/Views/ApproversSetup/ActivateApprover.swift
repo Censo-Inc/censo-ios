@@ -234,11 +234,10 @@ struct ActivateApprover : View {
                                 .padding(.bottom, 2)
                             
                             
-                            if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret {
-                                
+                            if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret,
+                               let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
                                 RotatingTotpPinView(
-                                    session: session,
-                                    deviceEncryptedTotpSecret: deviceEncryptedTotpSecret,
+                                    totpSecret: totpSecret,
                                     style: .owner
                                 )
                             } else if approver.isConfirmed {

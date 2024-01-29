@@ -168,7 +168,8 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
             onOwnerStateUpdated: { _ in },
             intent: .accessPhrases,

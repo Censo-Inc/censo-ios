@@ -134,6 +134,18 @@ struct Keep1Phrase: View {
 
 #if DEBUG
 #Preview {
-    Keep1Phrase(ownerState: .constant(.ready(API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .none, timelockSetting: .sample, subscriptionRequired: true, onboarded: true))), session: .sample)
+    Keep1Phrase(
+        ownerState: .constant(.ready(API.OwnerState.Ready(
+            policy: .sample,
+            vault: .sample,
+            authType: .facetec,
+            subscriptionStatus: .none,
+            timelockSetting: .sample,
+            subscriptionRequired: true,
+            onboarded: true,
+            canRequestAuthenticationReset: false
+        ))),
+        session: .sample
+    )
 }
 #endif

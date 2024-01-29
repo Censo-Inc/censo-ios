@@ -18,6 +18,7 @@ struct PaywallGatedScreen<Content: View>: View {
     var session: Session
     @Binding var ownerState: API.OwnerState
     var ignoreSubscriptionRequired = false
+    var reloadOwnerState: () -> Void
     var onCancel: () -> Void
     @ViewBuilder var content: () -> Content
     
@@ -66,13 +67,15 @@ struct PaywallGatedScreen<Content: View>: View {
                         }
                     }
                 } else if let monthlyOffer, let yearlyOffer {
-                    Paywall(monthlyOffer: monthlyOffer,
-                            yearlyOffer: yearlyOffer,
-                            ownerState: $ownerState,
-                            session: session,
-                            purchase: purchase,
-                            restorePurchases: restorePurchases,
-                            codeRedeemed: {}
+                    Paywall(
+                        monthlyOffer: monthlyOffer,
+                        yearlyOffer: yearlyOffer,
+                        ownerState: $ownerState,
+                        reloadOwnerState: reloadOwnerState,
+                        session: session,
+                        purchase: purchase,
+                        restorePurchases: restorePurchases,
+                        codeRedeemed: {}
                     )
                     .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
                 } else {
@@ -216,12 +219,24 @@ import Moya
 
 #Preview {
     let ownerState = Binding {
-        API.OwnerState.ready(API.OwnerState.Ready(policy: .sample, vault: .sample, authType: .facetec, subscriptionStatus: .none, timelockSetting: .sample, subscriptionRequired: true, onboarded: true))
+        API.OwnerState.ready(
+            API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .none,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )
+        )
     } set: { _ in }
 
     return PaywallGatedScreen(
         session: .sample,
         ownerState: ownerState,
+        reloadOwnerState: {},
         onCancel: {}
     ) {
         Text("Behind the paywall")

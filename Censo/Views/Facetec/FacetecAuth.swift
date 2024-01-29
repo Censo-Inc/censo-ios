@@ -10,11 +10,10 @@ import FaceTecSDK
 
 struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     @Environment(\.apiProvider) var apiProvider
-    @Environment(\.dismiss) var dismiss
 
-    @State private var setupStep: SetupStep = .idle
+    @State private var step: Step = .idle
 
-    enum SetupStep {
+    enum Step {
         case idle
         case loading
         case ready(API.InitBiometryVerificationApiResponse)
@@ -28,7 +27,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
 
     var body: some View {
         Group {
-            switch setupStep {
+            switch step {
             case .idle:
                 ProgressView()
                     .onAppear(perform: prepareBiometryVerification)
@@ -43,8 +42,8 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     apiProvider.decodableRequest(
                         with: session,
                         endpoint: onReadyToUploadResults(
-                            initBiometryResponse.id,
-                            API.FacetecBiometry(
+                            API.Authentication.FacetecBiometry(
+                                verificationId: initBiometryResponse.id,
                                 faceScan: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
                                 auditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
                                 lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
@@ -55,7 +54,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                         case .success(let response):
                             onSuccess(response)
                         case .failure(let error):
-                            setupStep = .failure(error)
+                            step = .failure(error)
                         }
                     }
                 }
@@ -71,7 +70,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                                     onCancelled()
                                 },
                                 onError: { error in
-                                    setupStep = .failure(error)
+                                    step = .failure(error)
                                 },
                                 onReadyToUploadResults: onReadyToUploadResults,
                                 onSuccess: onSuccess
@@ -81,18 +80,31 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     }
 #endif
             case .failure(let error):
-                switch (error) {
-                case is FaceTecSessionError:
-                    RetryView(error: FacetecError(status: (error as! FaceTecSessionError).status), action: prepareBiometryVerification)
-                default:
-                    RetryView(error: error, action: prepareBiometryVerification)
+                Group {
+                    switch (error) {
+                    case is FaceTecSessionError:
+                        RetryView(error: FacetecError(status: (error as! FaceTecSessionError).status), action: prepareBiometryVerification)
+                    default:
+                        RetryView(error: error, action: prepareBiometryVerification)
+                    }
                 }
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            onCancelled()
+                        } label: {
+                            Image(systemName: "chevron.left")
+                        }
+                    }
+                })
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
     }
 
     private func prepareBiometryVerification() {
-        setupStep = .loading
+        step = .loading
 
         apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitBiometryVerificationApiResponse, MoyaError>) in
             switch result {
@@ -103,13 +115,13 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     faceScanEncryptionKey: response.biometryEncryptionPublicKey
                 ) { success in
                     if success {
-                        setupStep = .ready(response)
+                        step = .ready(response)
                     } else {
-                        setupStep = .failure(FacetecError("Facetec failed with status \(FaceTec.sdk.getStatus().rawValue)"))
+                        step = .failure(FacetecError("Facetec failed with status \(FaceTec.sdk.getStatus().rawValue)"))
                     }
                 }
             case .failure(let error):
-                setupStep = .failure(error)
+                step = .failure(error)
             }
         }
     }
@@ -196,7 +208,7 @@ extension UIImage {
 #if DEBUG
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
-        FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_,_ in .user}) { _ in } onCancelled: {}
+        FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_ in .user}) { _ in } onCancelled: {}
     }
 }
 

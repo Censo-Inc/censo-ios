@@ -23,6 +23,7 @@ struct SaveSeedPhrase: View {
     var seedPhrase: SeedPhrase
     var session: Session
     @State var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     var requestedLabel: String?
     var onSuccess: (API.OwnerState) -> Void
@@ -124,6 +125,7 @@ struct SaveSeedPhrase: View {
                                 }
                             }),
                         ignoreSubscriptionRequired: true,
+                        reloadOwnerState: reloadOwnerState,
                         onCancel: { dismiss() }) {
                             ProgressView().onAppear {
                                 save()
@@ -200,7 +202,7 @@ struct SaveSeedPhrase: View {
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, ownerState: .sample, isFirstTime: true, onSuccess: { _ in })
+            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true, onSuccess: { _ in })
         }
         .foregroundColor(Color.Censo.primaryForeground)
     }

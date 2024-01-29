@@ -28,9 +28,14 @@ struct OwnerVerification: View {
     @State private var error: Error?
     @State private var wrongCode = false
     
+    enum Intent {
+        case accessApproval(AccessApprovalId)
+        case authResetApproval(AuthenticationResetApprovalId)
+    }
+    
     var session: Session
+    var intent: Intent
     var approverState: API.ApproverState
-    var approvalId: String?
     var onApproverStatesUpdated: ([API.ApproverState]) -> Void
     
     var body: some View {
@@ -44,45 +49,60 @@ struct OwnerVerification: View {
             )
         case .verify:
             VStack(alignment: .center, spacing: 30) {
-                Text("Read code")
-                    .font(.title2)
-                    .bold()
-                
-                Text("Read aloud this 6-digit code only to the person you are assisting. Once they have successfully entered it, their identity will have been verified and the request approved.")
-                    .font(.subheadline)
-                    .padding()
-
-                switch (approverState.phase) {
-                case .accessVerification(let phase):
-                    RotatingTotpPinView(
-                        session: session,
-                        deviceEncryptedTotpSecret: phase.encryptedTotpSecret,
-                        style: .approver
-                    )
-                case .accessConfirmation(let status):
-                    RotatingTotpPinView(
-                        session: session,
-                        deviceEncryptedTotpSecret: status.encryptedTotpSecret,
-                        style: .approver
-                    )
-                    .onAppear {
-                        confirmOrRejectOwner(
-                            participantId: approverState.participantId,
-                            status: status,
-                            entropy: approverState.phase.entropy?.data
-                        )
+                switch (intent) {
+                case .accessApproval(let approvalId):
+                    Text("Read code")
+                        .font(.title2)
+                        .bold()
+                    
+                    Text("Read aloud this 6-digit code only to the person you are assisting. Once they have successfully entered it, their identity will have been verified and the request approved.")
+                        .font(.subheadline)
+                        .padding()
+                    
+                    switch (approverState.phase) {
+                    case .accessVerification(let phase):
+                        if let totpSecret = try? session.deviceKey.decrypt(data: phase.encryptedTotpSecret.data) {
+                            RotatingTotpPinView(
+                                totpSecret: totpSecret,
+                                style: .approver
+                            )
+                        } else {
+                            Text("Can't decrypt TOTP-secret")
+                        }
+                    case .accessConfirmation(let status):
+                        if let totpSecret = try? session.deviceKey.decrypt(data: status.encryptedTotpSecret.data) {
+                            RotatingTotpPinView(
+                                totpSecret: totpSecret,
+                                style: .approver
+                            )
+                            .onAppear {
+                                confirmOrRejectAccess(
+                                    approvalId: approvalId,
+                                    participantId: approverState.participantId,
+                                    status: status,
+                                    entropy: approverState.phase.entropy?.data
+                                )
+                            }
+                        }
+                    default:
+                        EmptyView()
                     }
-                default:
-                    EmptyView()
-                }
-                
-                if wrongCode {
-                    Text("The code was entered incorrectly")
-                        .font(.subheadline)
-                        .foregroundColor(Color.red)
-                } else {
-                    Text("")
-                        .font(.subheadline)
+                    
+                    if wrongCode {
+                        Text("The code was entered incorrectly")
+                            .font(.subheadline)
+                            .foregroundColor(Color.red)
+                    } else {
+                        Text("")
+                            .font(.subheadline)
+                    }
+                case .authResetApproval(let approvalId):
+                    SubmitVerification(
+                        intent: .authResetApproval(approverState.participantId, approvalId),
+                        session: session,
+                        approverState: approverState,
+                        onSuccess: onApproverStatesUpdated
+                    )
                 }
             }
             .multilineTextAlignment(.center)
@@ -114,7 +134,7 @@ struct OwnerVerification: View {
         self.showingError = true
     }
     
-    private func confirmOrRejectOwner(participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation, entropy: Data?) {
+    private func confirmOrRejectAccess(approvalId: AccessApprovalId, participantId: ParticipantId, status: API.ApproverPhase.AccessConfirmation, entropy: Data?) {
         if (try? verifyOwnerSignature(participantId: participantId, status: status)) ?? false {
             guard let entropy else {
                 SentrySDK.captureWithTag(error: CensoError.invalidEntropy, tagValue: "Verification")
@@ -138,11 +158,8 @@ struct OwnerVerification: View {
             wrongCode = false
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: approvalId == nil ? .approveOwnerVerification(
-                    participantId,
-                    encryptedShard
-                ) : .approveAccessVerification(
-                    approvalId!,
+                endpoint: .approveAccessVerification(
+                    approvalId,
                     encryptedShard
                 )
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
@@ -160,7 +177,7 @@ struct OwnerVerification: View {
             inProgress = true
             apiProvider.decodableRequest(
                 with: session,
-                endpoint: approvalId == nil ? .rejectOwnerVerification(participantId) : .rejectAccessVerification(approvalId!)
+                endpoint: .rejectAccessVerification(approvalId)
             ) { (result: Result<API.OwnerVerificationApiResponse, MoyaError>) in
                 inProgress = false
                     switch result {
@@ -202,6 +219,7 @@ struct OwnerVerification: View {
         let session = Session.sample
         OwnerVerification(
             session: session,
+            intent: .accessApproval(""),
             approverState: .init(
                 participantId: .random(),
                 phase: .accessVerification(

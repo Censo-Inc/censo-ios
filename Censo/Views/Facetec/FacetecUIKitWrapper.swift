@@ -8,7 +8,7 @@ import SwiftUI
 import Moya
 import FaceTecSDK
 
-typealias ResultsReadyCallback = (String, API.FacetecBiometry) -> API.Endpoint
+typealias ResultsReadyCallback = (API.Authentication.FacetecBiometry) -> API.Endpoint
 
 protocol BiometryVerificationResponse : Decodable {
     var scanResultBlob: String {get set}
@@ -93,8 +93,8 @@ class FacetecUIKitWrapperCoordinator<ResponseType: BiometryVerificationResponse>
         apiProvider.decodableRequest(
             with: session,
             endpoint: onReadyToUploadResults(
-                verificationId,
-                API.FacetecBiometry(
+                API.Authentication.FacetecBiometry(
+                    verificationId: verificationId,
                     faceScan: sessionResult.faceScanBase64 ?? "",
                     auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
                     lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""

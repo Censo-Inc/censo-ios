@@ -12,6 +12,7 @@ import Moya
 struct HomeScreen: View {
     var session: Session
     var ownerState: API.OwnerState.Ready
+    var reloadOwnerState: () -> Void
     var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum TabId {
@@ -30,6 +31,7 @@ struct HomeScreen: View {
                     DashboardTab(
                         session: session,
                         ownerState: ownerState,
+                        reloadOwnerState: reloadOwnerState,
                         onOwnerStateUpdated: onOwnerStateUpdated,
                         parentTabViewSelectedTab: $selectedTab
                     )
@@ -47,6 +49,7 @@ struct HomeScreen: View {
                     PhrasesTab(
                         session: session,
                         ownerState: ownerState,
+                        reloadOwnerState: reloadOwnerState,
                         onOwnerStateUpdated: onOwnerStateUpdated
                     )
                     tabDivider()
@@ -237,8 +240,10 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in }
         )
         
@@ -252,8 +257,10 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in }
         )
         
@@ -275,8 +282,10 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in }
         )
         
@@ -298,8 +307,10 @@ struct CensoHomeScreen_Previews: PreviewProvider {
                 subscriptionStatus: .active,
                 timelockSetting: .sample,
                 subscriptionRequired: true,
-                onboarded: true
+                onboarded: true,
+                canRequestAuthenticationReset: false
             ),
+            reloadOwnerState: {},
             onOwnerStateUpdated: { _ in }
         )
     }
