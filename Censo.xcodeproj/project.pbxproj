@@ -228,15 +228,10 @@
 		BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */; };
 		BD8BC9922ADDC4E100DA979C /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC9912ADDC4E100DA979C /* BIP39.swift */; };
 		BDC11F0A2B62EE6A009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
-		BDC11F0B2B62EE6A009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
-		BDC11F0C2B62EE6E009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
 		BDC11F0E2B62F4BF009E306B /* ApproverDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F0D2B62F4BF009E306B /* ApproverDelete.swift */; };
 		BDC11F132B62FA36009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
 		BDC11F162B62FADC009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
-		BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
 		BDC11F1D2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
-		BDC11F1F2B62FBAC009E306B /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F1C2B62FBAC009E306B /* Paywall.swift */; };
-		BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F152B62FADC009E306B /* Keep1Phrase.swift */; };
 		BDEB3F1A2B2255B600899A5D /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F192B2255B600899A5D /* Import.swift */; };
 		BDEB3F1C2B29F74C00899A5D /* AcceptImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDEB3F1B2B29F74C00899A5D /* AcceptImportView.swift */; };
 		BDFE3C0D2AD5E385000C76D4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C0C2AD5E385000C76D4 /* RoundedButtonStyle.swift */; };
@@ -1603,7 +1598,6 @@
 				3DCAAD862B51E5C500D5C093 /* ValueWrapperTests.swift in Sources */,
 				3DCAAD822B51E5C500D5C093 /* EncryptionKeyShardingAndRecoveryTests.swift in Sources */,
 				3DCAAD832B51E5C500D5C093 /* EncryptionKeyTests.swift in Sources */,
-				BDC11F0B2B62EE6A009E306B /* OwnerDelete.swift in Sources */,
 				3DCAAD842B51E5C500D5C093 /* Base58Tests.swift in Sources */,
 				3DCAAD852B51E5C500D5C093 /* BIP39Tests.swift in Sources */,
 			);
@@ -1613,11 +1607,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDC11F1A2B62FAE1009E306B /* SubscriptionDecline.swift in Sources */,
 				3DCAAD9C2B51E6E400D5C093 /* SampleTest.swift in Sources */,
-				BDC11F202B63F0F4009E306B /* Keep1Phrase.swift in Sources */,
-				BDC11F1F2B62FBAC009E306B /* Paywall.swift in Sources */,
-				BDC11F0C2B62EE6E009E306B /* OwnerDelete.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

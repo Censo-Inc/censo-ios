@@ -38,10 +38,10 @@ final class SampleTest: XCTestCase {
 
         acceptButton.tap()
 
-        let purchaseButton = app.buttons["purchaseButton"]
-        XCTAssertTrue(purchaseButton.waitForExistence(timeout: 5))
+        let getStarted = app.buttons["getStarted"]
+        XCTAssertTrue(getStarted.waitForExistence(timeout: 5))
 
-        purchaseButton.tap()
+        getStarted.tap()
 
         let passwordLink = app.staticTexts["usePasswordLink"]
         XCTAssertTrue(passwordLink.waitForExistence(timeout: 5))
@@ -102,6 +102,13 @@ final class SampleTest: XCTestCase {
         XCTAssertTrue(noThanksButton.waitForExistence(timeout: 5))
 
         noThanksButton.tap()
+        
+        let homeTab = app.buttons["Home"]
+        XCTAssertTrue(homeTab.waitForExistence(timeout: 5))
+        XCTAssertTrue(homeTab.isSelected)
+        
+        XCTAssertTrue(app.buttons["My Phrases"].exists)
+        XCTAssertTrue(app.buttons["Settings"].exists)
     }
 
 }

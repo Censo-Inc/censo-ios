@@ -71,6 +71,7 @@ struct Welcome: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())
+                        .accessibilityIdentifier("getStarted")
                     }
                     .padding()
                 }

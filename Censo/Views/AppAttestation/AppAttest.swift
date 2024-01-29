@@ -30,7 +30,7 @@ struct AppAttest<Content>: View where Content : View {
 
     private var shouldBypass: Bool {
         #if DEBUG
-        return DCAppAttestService().isSupported
+        return !DCAppAttestService().isSupported
         #else
         return false
         #endif
