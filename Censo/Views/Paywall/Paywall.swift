@@ -19,7 +19,7 @@ struct Paywall: View {
     var session: Session
     var purchase: (Product) -> Void
     var restorePurchases: () -> Void
-    var codeRedeemed: () -> Void
+    var redemptionFlowEnded: () -> Void
     @State private var displayRedemptionSheet = false
     @State private var displayError = false
     @State private var error = ""
@@ -192,7 +192,9 @@ struct Paywall: View {
         .offerCodeRedemption(isPresented: $displayRedemptionSheet) { result in
             switch (result) {
             case .success:
-                codeRedeemed()
+                // success does not mean the user redeemed a code, just means the
+                // offerCodeRedemption sheet was dismissed
+                redemptionFlowEnded()
             case .failure(let err):
                 SentrySDK.captureWithTag(error: err, tagValue: "Redeem Code")
                 displayError = true

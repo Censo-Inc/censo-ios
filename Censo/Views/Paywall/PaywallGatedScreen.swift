@@ -34,6 +34,7 @@ struct PaywallGatedScreen<Content: View>: View {
         case loadingProduct
         case purchase(Product)
         case restorePurchases
+        case backFromRedemption
     }
     
     @State private var actionInProgress: ActionInProgress?
@@ -54,6 +55,7 @@ struct PaywallGatedScreen<Content: View>: View {
                             case .loadingProduct: loadProduct()
                             case .purchase(let product): purchase(product)
                             case .restorePurchases: restorePurchases()
+                            case .backFromRedemption: self.actionInProgress = nil
                             }
                         })
                     } else {
@@ -64,6 +66,28 @@ struct PaywallGatedScreen<Content: View>: View {
                             ProgressView("Processing your subscription")
                         case .restorePurchases:
                             ProgressView("Restoring your subscription")
+                        case .backFromRedemption:
+                            // when the `.offerCodeRedemption` sheet closes, we don't know if the user actually
+                            // redeemed an offer code or just dismissed the sheet. If they redeemed a code,
+                            // `observeAppStoreTransactionUpdates()` will eventually see it, but it can take
+                            // a while. Show a progress view for a while to give us a change to see the transaction
+                            // and move on without confusing the user by showing the paywall again.
+                            ProgressView("Synchronizing subscriptions")
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                                        switch self.actionInProgress {
+                                        case .backFromRedemption:
+                                            self.actionInProgress = nil
+                                        default:
+                                            break
+                                        }
+                                    }
+                                }
+                                // for some reason, when the `.offerCodeRedemption` sheet closes, the keyboard pops open shortly afterwards
+                                // this hack keeps it closed:
+                                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                                    UIApplication.shared.closeKeyboard()
+                                }
                         }
                     }
                 } else if let monthlyOffer, let yearlyOffer {
@@ -75,7 +99,11 @@ struct PaywallGatedScreen<Content: View>: View {
                         session: session,
                         purchase: purchase,
                         restorePurchases: restorePurchases,
-                        codeRedeemed: {}
+                        redemptionFlowEnded: {
+                          if (actionInProgress == nil) {
+                              actionInProgress = .backFromRedemption
+                          }
+                        }
                     )
                     .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
                 } else {
@@ -211,6 +239,12 @@ struct PaywallGatedScreen<Content: View>: View {
                 showError(error)
             }
         }
+    }
+}
+
+private extension UIApplication {
+    func closeKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
