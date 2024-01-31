@@ -104,7 +104,7 @@ struct Paywall: View {
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
-                    .accessibilityIdentifier("purchaseButton")
+                    .accessibilityIdentifier("purchaseYearlyButton")
                     .padding([.horizontal], 20)
 
                     if let monthlyPrice = priceFormatter(locale: yearlyOffer.priceFormatStyle.locale).string(from: yearlyOffer.price / 12 as NSNumber)
@@ -133,7 +133,7 @@ struct Paywall: View {
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
-                    .accessibilityIdentifier("purchaseButton")
+                    .accessibilityIdentifier("purchaseMonthlyButton")
                     .padding([.horizontal], 20)
 
                     if (ownerState.subscriptionRequired && ownerState.subscriptionStatus != .active) {

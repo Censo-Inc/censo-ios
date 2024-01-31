@@ -35,6 +35,7 @@ struct TakeSeedPhoto<Content: View>: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
+                .accessibilityIdentifier("takeAPhoto")
             }
             .padding()
             .frame(maxHeight: 80, alignment: .bottom)

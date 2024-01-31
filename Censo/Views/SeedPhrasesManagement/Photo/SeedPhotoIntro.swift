@@ -82,6 +82,7 @@ struct SeedPhotoIntro: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .accessibilityIdentifier("startPhoto")
             
         }
         .padding()

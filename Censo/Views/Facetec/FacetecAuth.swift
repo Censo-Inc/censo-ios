@@ -109,6 +109,9 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
         apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitBiometryVerificationApiResponse, MoyaError>) in
             switch result {
             case .success(let response):
+#if INTEGRATION
+                step = .ready(response)
+#else
                 FaceTec.sdk.initialize(
                     deviceKeyId: response.deviceKeyId,
                     productionKeyText: response.productionKeyText,
@@ -120,6 +123,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                         step = .failure(FacetecError("Facetec failed with status \(FaceTec.sdk.getStatus().rawValue)"))
                     }
                 }
+#endif
             case .failure(let error):
                 step = .failure(error)
             }

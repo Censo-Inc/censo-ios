@@ -36,5 +36,6 @@ struct BeginFaceScanButton : View {
         }
         .buttonStyle(RoundedButtonStyle())
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier("beginFaceSanButton")
     }
 }

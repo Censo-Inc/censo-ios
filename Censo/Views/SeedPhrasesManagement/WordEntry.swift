@@ -44,6 +44,7 @@ struct WordEntry: View {
                         focused = true // prevent keyboard from hiding
                     }
                 }
+                .accessibilityIdentifier("wordEntryTextField")
 
                 let filteredList = wordList.filter {
                     $0.starts(with: word.lowercased())

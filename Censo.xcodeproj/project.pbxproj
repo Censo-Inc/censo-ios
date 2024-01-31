@@ -105,7 +105,7 @@
 		3DCAAD862B51E5C500D5C093 /* ValueWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */; };
 		3DCAAD872B51E5C500D5C093 /* EncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFE3C112AD87157000C76D4 /* EncryptionTests.swift */; };
 		3DCAAD882B51E5C500D5C093 /* SecretSharerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F892AA134A4001A4454 /* SecretSharerTests.swift */; };
-		3DCAAD9C2B51E6E400D5C093 /* SampleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */; };
+		3DCAAD9C2B51E6E400D5C093 /* CensoUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1EB32A83E17D00AB3A48 /* CensoUITest.swift */; };
 		3DCAAD9E2B51E7E400D5C093 /* KeccakTiny in Frameworks */ = {isa = PBXBuildFile; productRef = 3DCAAD9D2B51E7E400D5C093 /* KeccakTiny */; };
 		3DCAADA02B51E7E400D5C093 /* Sha3Tiny in Frameworks */ = {isa = PBXBuildFile; productRef = 3DCAAD9F2B51E7E400D5C093 /* Sha3Tiny */; };
 		3DCAADA42B51ED5700D5C093 /* LearnMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCAADA32B51ED5600D5C093 /* LearnMore.swift */; };
@@ -201,6 +201,8 @@
 		6CD6DAFE2ABC9D3F00974035 /* FilledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E892A83A8C400AB3A48 /* FilledButtonStyle.swift */; };
 		6CD6DAFF2ABC9D6000974035 /* CensoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0C1E872A83A89F00AB3A48 /* CensoTheme.swift */; };
 		6CD6DB062ABCD76E00974035 /* EncryptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC60F952AA7C44B001A4454 /* EncryptionKey.swift */; };
+		6CE241712B6832DE00B5F588 /* TestSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE241702B6832DE00B5F588 /* TestSettings.swift */; };
+		6CE241732B692F2F00B5F588 /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE241722B692F2F00B5F588 /* TestHelper.swift */; };
 		6CF507F12B18DFA90013CD7C /* AccessOnAnotherDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF507F02B18DFA90013CD7C /* AccessOnAnotherDevice.swift */; };
 		6CF507F72B1A48440013CD7C /* LanguageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF507F62B1A48440013CD7C /* LanguageSelection.swift */; };
 		6CFEAD572AF157EB00C20140 /* AppleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFEAD562AF157EB00C20140 /* AppleSignIn.swift */; };
@@ -344,7 +346,7 @@
 		3D0C1EAC2A83DE1000AB3A48 /* Vault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vault.swift; sourceTree = "<group>"; };
 		3D0C1EAE2A83DE1F00AB3A48 /* Phrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phrase.swift; sourceTree = "<group>"; };
 		3D0C1EB02A83DE3000AB3A48 /* DecodedPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodedPhrase.swift; sourceTree = "<group>"; };
-		3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTest.swift; sourceTree = "<group>"; };
+		3D0C1EB32A83E17D00AB3A48 /* CensoUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CensoUITest.swift; sourceTree = "<group>"; };
 		3D16F0B32B5B0F8800999440 /* Censo (Integration).xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Censo (Integration).xctestplan"; sourceTree = SOURCE_ROOT; };
 		3D23ACBF2AAB8ECB00F55C5D /* FacetecUIKitWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecUIKitWrapper.swift; sourceTree = "<group>"; };
 		3D23ACC52AAB8ECB00F55C5D /* FacetecAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacetecAuth.swift; sourceTree = "<group>"; };
@@ -467,6 +469,8 @@
 		6CD6DAE72ABB4E8000974035 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		6CD6DB022ABCA0DD00974035 /* ApproverDebug (Integration).entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "ApproverDebug (Integration).entitlements"; sourceTree = "<group>"; };
 		6CD6DB032ABCA30500974035 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6CE241702B6832DE00B5F588 /* TestSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSettings.swift; sourceTree = "<group>"; };
+		6CE241722B692F2F00B5F588 /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		6CF507F02B18DFA90013CD7C /* AccessOnAnotherDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessOnAnotherDevice.swift; sourceTree = "<group>"; };
 		6CF507F62B1A48440013CD7C /* LanguageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelection.swift; sourceTree = "<group>"; };
 		6CFB21AB2AB8856800F06BA3 /* ValueWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueWrapperTests.swift; sourceTree = "<group>"; };
@@ -748,7 +752,9 @@
 		3D0C1EB22A83DF5B00AB3A48 /* CensoUITests */ = {
 			isa = PBXGroup;
 			children = (
-				3D0C1EB32A83E17D00AB3A48 /* SampleTest.swift */,
+				3D0C1EB32A83E17D00AB3A48 /* CensoUITest.swift */,
+				6CE241702B6832DE00B5F588 /* TestSettings.swift */,
+				6CE241722B692F2F00B5F588 /* TestHelper.swift */,
 			);
 			path = CensoUITests;
 			sourceTree = "<group>";
@@ -1611,7 +1617,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DCAAD9C2B51E6E400D5C093 /* SampleTest.swift in Sources */,
+				6CE241732B692F2F00B5F588 /* TestHelper.swift in Sources */,
+				6CE241712B6832DE00B5F588 /* TestSettings.swift in Sources */,
+				3DCAAD9C2B51E6E400D5C093 /* CensoUITest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

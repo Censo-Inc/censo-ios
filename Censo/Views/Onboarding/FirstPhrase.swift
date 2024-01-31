@@ -159,7 +159,7 @@ struct FirstTimePhrase: View {
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            .accessibilityIdentifier("existingPhraseButton")
+            .accessibilityIdentifier("haveMyOwnButton")
         }
         .padding(.horizontal)
         .padding([.horizontal, .bottom])
@@ -202,6 +202,7 @@ struct AddYourOwnPhrase: View {
                             .frame(width: 32, height: 32)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("enterPhraseButton")
                     Text("Input")
                         .font(.title2)
                         .fontWeight(.semibold)
@@ -219,6 +220,7 @@ struct AddYourOwnPhrase: View {
                             .frame(width: 32, height: 32)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("photoPhraseButton")
                     Text("Photo")
                         .font(.title2)
                         .fontWeight(.semibold)
@@ -236,6 +238,7 @@ struct AddYourOwnPhrase: View {
                             .frame(width: 32, height: 32)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("pastePhraseButton")
                     Text("Paste")
                         .font(.title2)
                         .fontWeight(.semibold)

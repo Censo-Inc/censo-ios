@@ -58,6 +58,7 @@ struct DashboardTab: View {
                 }
                 .padding([.top], 10)
                 .buttonStyle(RoundedButtonStyle())
+                .accessibilityIdentifier("addSeedPhraseButton")
 
                 Spacer().padding()
 
@@ -82,6 +83,7 @@ struct DashboardTab: View {
                     }
                     .padding([.top], 10)
                     .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("addApprovers")
                 } else {
                     Text("Your approvers:")
                         .font(.title2)

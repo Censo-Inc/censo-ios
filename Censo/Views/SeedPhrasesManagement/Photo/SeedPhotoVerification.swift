@@ -44,7 +44,7 @@ struct SeedPhotoVerification: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
-                .accessibilityIdentifier("next")
+                .accessibilityIdentifier("usePhoto")
                 
                 Button {
                     onRetake()
@@ -54,7 +54,7 @@ struct SeedPhotoVerification: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
-                .accessibilityIdentifier("retake")
+                .accessibilityIdentifier("retakePhoto")
             }
         }
         .padding()

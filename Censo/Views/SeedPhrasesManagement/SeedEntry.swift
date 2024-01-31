@@ -57,6 +57,7 @@ struct SeedEntry: View {
                     }
                     .padding(5)
                     .disabled(words.last?.isEmpty ?? false)
+                    .accessibilityIdentifier("enterWordButton")
 
                     Button {
                         finish()
@@ -66,6 +67,7 @@ struct SeedEntry: View {
                     }
                     .padding(5)
                     .disabled(words.isEmpty)
+                    .accessibilityIdentifier("finishButton")
                 }
                 .buttonStyle(RoundedButtonStyle())
             }

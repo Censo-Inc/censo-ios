@@ -82,6 +82,7 @@ struct AdditionalPhrase: View {
                                 }
                                 .buttonStyle(RoundedButtonStyle())
                                 .padding(.bottom, 5)
+                                .accessibilityIdentifier("generatePhraseButton")
                                 
                                 Button {
                                     step = .haveMyOwn
@@ -95,7 +96,7 @@ struct AdditionalPhrase: View {
                                     .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(RoundedButtonStyle())
-                                .accessibilityIdentifier("existingPhraseButton")
+                                .accessibilityIdentifier("haveMyOwnButton")
                             case .haveMyOwn:
                                 Text("How do you want to provide your seed phrase?")
                                     .font(.title2)
@@ -121,6 +122,7 @@ struct AdditionalPhrase: View {
                                                 .frame(width: 32, height: 32)
                                         }
                                         .buttonStyle(RoundedButtonStyle())
+                                        .accessibilityIdentifier("enterPhraseButton")
                                         Text("Input")
                                             .font(.title2)
                                             .fontWeight(.semibold)
@@ -138,6 +140,7 @@ struct AdditionalPhrase: View {
                                                 .frame(width: 32, height: 32)
                                         }
                                         .buttonStyle(RoundedButtonStyle())
+                                        .accessibilityIdentifier("photoPhraseButton")
                                         Text("Photo")
                                             .font(.title2)
                                             .fontWeight(.semibold)
@@ -155,6 +158,7 @@ struct AdditionalPhrase: View {
                                                 .frame(width: 32, height: 32)
                                         }
                                         .buttonStyle(RoundedButtonStyle())
+                                        .accessibilityIdentifier("pastePhraseButton")
                                         Text("Paste")
                                             .font(.title2)
                                             .fontWeight(.semibold)

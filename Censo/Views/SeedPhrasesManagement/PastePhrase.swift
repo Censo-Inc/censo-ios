@@ -109,6 +109,7 @@ struct PastePhrase: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
+                    .accessibilityIdentifier("pasteFromClipboardButton")
                     
                 }
             }
