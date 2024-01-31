@@ -76,7 +76,7 @@ struct ReplaceAuthentication : View {
                                 .padding(.vertical)
                                 .frame(maxWidth: .infinity)
                             } else {
-                                Text("Your face scan will be replaced and and immediately available for accessing your seed phrases. The previous face scan will be permanently removed from our storage.")
+                                Text("Your face scan will be replaced and immediately available for accessing your seed phrases. The previous face scan will be permanently removed from our storage.")
                                     .font(.subheadline)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
