@@ -38,7 +38,7 @@ struct RenameSeedPhrase: View {
                         Text("Enter a label...")
                     }
                     .textFieldStyle(RoundedTextFieldStyle())
-                    .accessibilityIdentifier("labelTextField")
+                    .accessibilityIdentifier("renameTextField")
                     
                     Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
                         .multilineTextAlignment(.center)

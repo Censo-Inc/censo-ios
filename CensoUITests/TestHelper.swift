@@ -11,51 +11,31 @@ import XCTest
 class TestHelper {
     static let app = TestSettings.shared.app!
     
-    static func onboard() {
+    static func onboard(phraseInputButton: String) {
         
         acceptTermsAndConditions()
 
-        let getStarted = app.buttons["getStarted"]
-        XCTAssertTrue(getStarted.waitForExistence(timeout: 5))
-        getStarted.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "getStarted")
         
         if let password = TestSettings.shared.password {
             let passwordLink = app.staticTexts["usePasswordLink"]
             XCTAssertTrue(passwordLink.waitForExistence(timeout: 5))
-            
             passwordLink.tap()
             
-            // Can test invalid password length
-            let passwordField = app.secureTextFields["passwordField"]
-            XCTAssertTrue(passwordField.waitForExistence(timeout: 5))
+            app.enterSecureText(fieldIdentifier: "passwordField", secureText: password, enterReturn: false)
+            app.enterSecureText(fieldIdentifier: "passwordConfirmField", secureText: password, enterReturn: true)
             
-            passwordField.tap()
-            passwordField.typeText(password)
-            
-            let passwordConfirmField = app.secureTextFields["passwordConfirmField"]
-            XCTAssertTrue(passwordConfirmField.waitForExistence(timeout: 5))
-            
-            passwordConfirmField.tap()
-            passwordConfirmField.typeText(password)
-            passwordConfirmField.typeText("\n")
-            
-            let createPasswordButton = app.buttons["createPasswordButton"]
-            XCTAssertTrue(createPasswordButton.waitForExistence(timeout: 5))
-            createPasswordButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "createPasswordButton")
         } else {
-            let beginFaceSanButton = app.buttons["beginFaceSanButton"]
-            XCTAssertTrue(beginFaceSanButton.waitForExistence(timeout: 5))
-            beginFaceSanButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "beginFaceSanButton")
         }
 
-        addPhrase(inputButton: "generatePhraseButton", label: "Generated Phrase", expectPaywall: false, onboarding: true)
-        let noThanksButton = app.buttons["noThanksButton"]
-        XCTAssertTrue(noThanksButton.waitForExistence(timeout: 5))
-        noThanksButton.tap()
+        addPhrase(inputButton: phraseInputButton, label: TestSettings.shared.firstPhraseLabel, expectPaywall: false, onboarding: true)
         
-        let homeTab = app.buttons["Home"]
-        XCTAssertTrue(homeTab.waitForExistence(timeout: 5))
-        XCTAssertTrue(homeTab.isSelected)
+        app.waitForButtonAndTap(buttonIdentifier: "noThanksButton")
+        
+        app.waitForButtonAndTap(buttonIdentifier: "Home")
+        XCTAssertTrue(app.buttons["Home"].isSelected)
         
         XCTAssertTrue(app.buttons["My Phrases"].exists)
         XCTAssertTrue(app.buttons["Settings"].exists)
@@ -64,87 +44,65 @@ class TestHelper {
     static func addPhrase(inputButton: String, label: String, expectPaywall: Bool, onboarding: Bool) {
         
         if !onboarding {
-            let homeTab = app.buttons["Home"]
-            XCTAssertTrue(homeTab.waitForExistence(timeout: 30))
-            homeTab.tap()
-            
-            let addSeedPhraseButton = app.buttons["addSeedPhraseButton"]
-            XCTAssertTrue(addSeedPhraseButton.waitForExistence(timeout: 5))
-            addSeedPhraseButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "Home")
+            app.waitForButtonAndTap(buttonIdentifier: "addSeedPhraseButton")
         }
         
         TestHelper.selectAddPhraseOption(inputType: inputButton)
         
         switch inputButton {
         case "enterPhraseButton":
-            let enterFirstWordButton = app.buttons["enterWordButton"]
-            XCTAssertTrue(enterFirstWordButton.waitForExistence(timeout: 5))
-            enterFirstWordButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "enterWordButton")
             
             let words = TestSettings.shared.words
             words.enumerated().forEach { (index, word) in
-                let wordEntryTextField = app.textFields["wordEntryTextField"]
-                XCTAssertTrue(wordEntryTextField.waitForExistence(timeout: 5))
+                app.enterText(fieldIdentifier: "wordEntryTextField", inputText: word)
                 
-                wordEntryTextField.tap()
-                wordEntryTextField.typeText(word)
-                
-                let wordButton = app.buttons[word]
-                XCTAssertTrue(wordButton.waitForExistence(timeout: 5))
-                wordButton.tap()
-                
-                let enterNextWordButton = app.buttons["enterWordButton"]
-                XCTAssertTrue(enterNextWordButton.waitForExistence(timeout: 5))
+                app.waitForButtonAndTap(buttonIdentifier: word)
+
                 XCTAssertTrue(app.staticTexts["\(index+1) word\(index > 0 ? "s" : "") total"].exists)
                 XCTAssertTrue(app.staticTexts[word].exists)
+                XCTAssertTrue(app.staticTexts[TestHelper.getWordText(index: index + 1)].exists)
+                
                 if word == words.last {
-                    app.buttons["finishButton"].tap()
+                    app.waitForButtonAndTap(buttonIdentifier: "finishButton")
                 } else {
-                    enterNextWordButton.tap()
+                    app.waitForButtonAndTap(buttonIdentifier: "enterWordButton")
                 }
             }
             reviewAndSaveSeedPhrase(label: label, expectPaywall: expectPaywall, numWords: words.count, expectedWords: words)
             
         case "pastePhraseButton":
             let words = TestSettings.shared.words
-            let pasteFromClipboardButton = app.buttons["pasteFromClipboardButton"]
-            XCTAssertTrue(pasteFromClipboardButton.waitForExistence(timeout: 5))
-            pasteFromClipboardButton.tap()
             
+            // XCUIApplication framework does not handle paste alerts and the tap() of the button hangs for 60 seconds.
+            // On returning we respond to the Allow Paste alert which makes the test continue
+            app.waitForButtonAndTap(buttonIdentifier: "pasteFromClipboardButton")
             if TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].exists {
                 TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].tap()
             }
-
             reviewAndSaveSeedPhrase(label: label, expectPaywall: expectPaywall, numWords: words.count, expectedWords: words)
             
         case "generatePhraseButton":
-            let generateButton = app.buttons["generateButton"]
-            XCTAssertTrue(generateButton.waitForExistence(timeout: 5))
-            generateButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "generateButton")
             reviewAndSaveSeedPhrase(label: label, expectPaywall: false, numWords: 24, expectedWords: nil)
             
         case "photoPhraseButton":
             
-            let startPhoto = app.buttons["startPhoto"]
-            XCTAssertTrue(startPhoto.waitForExistence(timeout: 5))
-            startPhoto.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "startPhoto")
             
             if TestSettings.shared.springboardApp.alerts.buttons["Allow"].exists {
                 TestSettings.shared.springboardApp.alerts.buttons["Allow"].tap()
             }
-            let takeAPhoto = app.buttons["takeAPhoto"]
-            XCTAssertTrue(takeAPhoto.waitForExistence(timeout: 5))
-            takeAPhoto.tap()
+            
+            app.waitForButtonAndTap(buttonIdentifier: "takeAPhoto")
             
             if TestSettings.shared.springboardApp.alerts.buttons["Allow"].exists {
                 TestSettings.shared.springboardApp.alerts.buttons["Allow"].tap()
-                takeAPhoto.tap()
+                app.waitForButtonAndTap(buttonIdentifier: "takeAPhoto")
             }
             
-            let usePhoto = app.buttons["usePhoto"]
-            XCTAssertTrue(usePhoto.waitForExistence(timeout: 5))
-            usePhoto.tap()
-            
+            app.waitForButtonAndTap(buttonIdentifier: "usePhoto")
             
             reviewAndSaveSeedPhrase(label: label, expectPaywall: false, numWords: 0, expectedWords: nil)
             
@@ -154,18 +112,30 @@ class TestHelper {
     }
     
     static func acceptTermsAndConditions() {
-        let reviewButton = app.buttons["reviewTermsButton"]
-        XCTAssertTrue(reviewButton.waitForExistence(timeout: 50))
-
-        reviewButton.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "reviewTermsButton")
 
         let terms = app.webViews["termsWebView"]
         XCTAssertTrue(terms.waitForExistence(timeout: 5))
 
-        let acceptButton = app.buttons["acceptTermsButton"]
-        XCTAssertTrue(acceptButton.waitForExistence(timeout: 5))
-
-        acceptButton.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "acceptTermsButton")
+    }
+    
+    static func validateHomeScreen(numPhrases: Int, numApprovers: Int) {
+        app.waitForButtonAndTap(buttonIdentifier: "Home")
+        XCTAssertTrue(app.staticTexts["\(numPhrases == 1 ? "It is" : "They are") stored securely and accessible only to you."].exists)
+        XCTAssertTrue(app.staticTexts["\(numPhrases)"].exists)
+        XCTAssertTrue(app.staticTexts["You have"].exists)
+        XCTAssertTrue(app.staticTexts["seed phrase\(numPhrases == 1 ? "" : "s")."].exists)
+        if numApprovers == 0 {
+            XCTAssertTrue(app.staticTexts["\nYou can increase security by adding approvers."].exists)
+        }
+    }
+    
+    static func validateMyPhrasesScreen(expectedPhraseLabels: [String]) {
+        app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
+        expectedPhraseLabels.forEach { label in
+            XCTAssertTrue(app.staticTexts[label].exists)
+        }
     }
     
     static func reviewAndSaveSeedPhrase(label: String, expectPaywall: Bool, numWords: Int, expectedWords: [String]?) {
@@ -181,33 +151,18 @@ class TestHelper {
                 }
             }
             
-            let nextButton = app.buttons["nextButton"]
-            XCTAssertTrue(nextButton.waitForExistence(timeout: 5))
-            nextButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "nextButton")
         }
         
-        let labelTextField = app.textFields["labelTextField"]
-        XCTAssertTrue(labelTextField.waitForExistence(timeout: 5))
-
-        labelTextField.tap()
-        labelTextField.typeText(label)
-
-        let saveButton = app.buttons["saveButton"]
-        XCTAssertTrue(saveButton.waitForExistence(timeout: 5))
-        saveButton.tap()
+        app.enterText(fieldIdentifier: "labelTextField", inputText: label)
+        app.waitForButtonAndTap(buttonIdentifier: "saveButton")
         
         if expectPaywall {
-            let purchaseYearlyButton = app.buttons["purchaseYearlyButton"]
-            XCTAssertTrue(purchaseYearlyButton.waitForExistence(timeout: 5))
             XCTAssertTrue(app.buttons["purchaseMonthlyButton"].waitForExistence(timeout: 5))
-            purchaseYearlyButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "purchaseYearlyButton")
         }
 
-        let okButton = app.buttons["okButton"]
-        XCTAssertTrue(okButton.waitForExistence(timeout: 5))
-
-        okButton.tap()
-
+        app.waitForButtonAndTap(buttonIdentifier: "okButton")
     }
     
     private static func getWordText(index: Int) -> String {
@@ -223,15 +178,16 @@ class TestHelper {
     }
     
     static func selectAddPhraseOption(inputType: String) {
-        
         if inputType != "generatePhraseButton" {
-            let haveMyOwnButton = app.buttons["haveMyOwnButton"]
-            XCTAssertTrue(haveMyOwnButton.waitForExistence(timeout: 5))
-            haveMyOwnButton.tap()
+            app.waitForButtonAndTap(buttonIdentifier: "haveMyOwnButton")
         }
+        app.waitForButtonAndTap(buttonIdentifier: inputType)
+    }
+    
+    static func dumpElement(_ element: XCUIElement) {
+        print("buttons: \(element.buttons.debugDescription)")
+        print("textFields: \(element.textFields.debugDescription)")
+        print("staticTexts: \(element.staticTexts.debugDescription)")
         
-        let addPhraseButton = app.buttons[inputType]
-        XCTAssertTrue(addPhraseButton.waitForExistence(timeout: 5))
-        addPhraseButton.tap()
     }
 }

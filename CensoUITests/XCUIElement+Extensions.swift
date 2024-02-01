@@ -1,0 +1,76 @@
+//
+//  XCUI+Extensions.swift
+//  CensoUITests
+//
+//  Created by Brendan Flood on 1/30/24.
+//
+
+import Foundation
+import XCTest
+
+extension XCUIElement {
+    /**
+     Removes any current text in the field before typing in the new value
+     - Parameter text: the text to enter into the field
+     */
+    func clearAndEnterText(text: String) {
+        guard let stringValue = self.value as? String else {
+            XCTFail("Tried to clear and enter text into a non string value")
+            return
+        }
+
+        self.tap()
+        
+        let deleteString = String(repeating: "\u{8}", count: stringValue.count)
+
+        self.typeText(deleteString)
+        self.typeText(text)
+    }
+    
+    
+    func waitForButtonAndTap(buttonIdentifier: String) {
+        let app = TestSettings.shared.app!
+        let button = app.buttons[buttonIdentifier]
+        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        button.tap()
+    }
+    
+    func waitForStaticText(text: String) {
+        let app = TestSettings.shared.app!
+        let staticText = app.staticTexts[text]
+        XCTAssertTrue(staticText.waitForExistence(timeout: 5))
+    }
+    
+    func enterText(fieldIdentifier: String, inputText: String) {
+        enterText(fieldIdentifier: fieldIdentifier, inputText: inputText, expectedDefaultValue: nil)
+    }
+    
+    func enterText(fieldIdentifier: String, inputText: String, expectedDefaultValue: String?) {
+        let app = TestSettings.shared.app!
+        let textField = app.textFields[fieldIdentifier]
+        XCTAssertTrue(textField.waitForExistence(timeout: 5))
+        if let expectedDefaultValue {
+            XCTAssertEqual(textField.value as? String, expectedDefaultValue)
+        }
+        textField.clearAndEnterText(text: inputText)
+    }
+    
+    func waitForAlert(alertIdentifier: String) -> XCUIElement {
+        let app = TestSettings.shared.app!
+        let alert = app.alerts[alertIdentifier]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        return alert
+    }
+    
+    func enterSecureText(fieldIdentifier: String, secureText: String, enterReturn: Bool) {
+        let app = TestSettings.shared.app!
+        let secureTextField = app.secureTextFields[fieldIdentifier]
+        XCTAssertTrue(secureTextField.waitForExistence(timeout: 5))
+        
+        secureTextField.tap()
+        secureTextField.typeText(secureText)
+        if enterReturn {
+            secureTextField.typeText("\n")
+        }
+    }
+}

@@ -52,6 +52,7 @@ struct PhrasesTab: View {
                                         .renderingMode(.template).padding([.trailing], 4)
                                 }
                             }
+                            .accessibilityIdentifier("seedPhraseEdit\(i)Button")
                             
                             Text(ownerState.vault.seedPhrases[i].label)
                                 .font(.system(size: 18, weight: .medium))
@@ -118,6 +119,7 @@ struct PhrasesTab: View {
                     .buttonStyle(RoundedButtonStyle())
                     .disabled(deletingAccess)
                     .padding([.horizontal, .bottom])
+                    .accessibilityIdentifier("cancelAccessButton")
                 } else {
                     Button {
                         showingAccess = true
@@ -130,6 +132,7 @@ struct PhrasesTab: View {
                     .disabled(ownerState.vault.seedPhrases.isEmpty)
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
+                    .accessibilityIdentifier("startAccessButton")
                 }
                 
                 Button {
@@ -141,6 +144,7 @@ struct PhrasesTab: View {
                         .frame(maxWidth: 208)
                 }
                 .buttonStyle(RoundedButtonStyle())
+                .accessibilityIdentifier("addSeedPhraseButton")
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Seed Phrases"))
@@ -194,9 +198,11 @@ struct PhrasesTab: View {
                 TextField(text: $deleteConfirmationText) {
                     Text(deleteConfirmationMessage(i))
                 }
+                .accessibilityIdentifier("deleteConfirmationTextField")
                 Button("Cancel", role: .cancel) {
                     deleteConfirmationText = ""
                 }
+                .accessibilityIdentifier("cancelDeleteConfirmationButton")
                 Button("Confirm", role: .destructive) {
                     if (deleteConfirmationText == deleteConfirmationMessage(i)) {
                         deletePhrase(ownerState.vault.seedPhrases[i])
@@ -205,6 +211,7 @@ struct PhrasesTab: View {
                     }
                     deleteConfirmationText = ""
                 }
+                .accessibilityIdentifier("confirmDeleteConfirmationButton")
             } message: { i in
                 Text("You are about to delete this phrase. If you are sure, type:\n\"\(deleteConfirmationMessage(i))\"")
             }

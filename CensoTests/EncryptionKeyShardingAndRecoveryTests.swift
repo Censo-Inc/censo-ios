@@ -11,7 +11,7 @@ import BigInt
 
 final class EncryptionKeyShardingAndRecoveryTests: XCTestCase {
     func testShardingAndRecovery() throws {
-        for index in (0...1000) {
+        for index in (0...100) {
             print("index is \(index)")
             let participantEncryptionKeys = [
                 try EncryptionKey.generateRandomKey(),

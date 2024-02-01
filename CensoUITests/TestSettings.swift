@@ -15,6 +15,7 @@ class TestSettings {
     var springboardApp: XCUIApplication!
     var password: String? = nil
     var isSimulator: Bool = false
+    var firstPhraseLabel: String = "FirstPhrase"
     let words = ["uncle", "bar", "tissue", "bus", "cabin", "segment", "miss", "staff", "wise", "country", "ranch", "ketchup"]
     
     private init() {
