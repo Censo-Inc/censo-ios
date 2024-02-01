@@ -11,14 +11,14 @@ import Moya
 import Sentry
 
 struct EnterAccessVerificationCode : View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var policy: API.Policy
     var approval: API.Access.ThisDevice.Approval
     var approver: API.TrustedApprover
+    
     var intent: API.Access.Intent
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onSuccess: (API.OwnerState) -> Void
     
     @State private var verificationCode: [Int] = []
@@ -196,7 +196,7 @@ struct EnterAccessVerificationCode : View {
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
+        ownerRepository.getUser { result in
             switch result {
             case .success(let user):
                 if let access = user.ownerState.thisDeviceAccess,
@@ -204,10 +204,10 @@ struct EnterAccessVerificationCode : View {
                     if approval.status == .approved {
                         onSuccess(user.ownerState)
                     } else {
-                        onOwnerStateUpdated(user.ownerState)
+                        ownerStateStoreController.replace(user.ownerState)
                     }
                 } else {
-                    onOwnerStateUpdated(user.ownerState)
+                    ownerStateStoreController.replace(user.ownerState)
                 }
             default:
                 break
@@ -217,7 +217,7 @@ struct EnterAccessVerificationCode : View {
     
     private func submitVerificationCode(_ code: String) {
         submitting = true
-        let deviceKey = session.deviceKey
+        let deviceKey = ownerRepository.deviceKey
         guard let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: deviceKey),
               let devicePublicKey = try? Base58EncodedPublicKey(data: deviceKey.publicExternalRepresentation())
         else {
@@ -229,20 +229,17 @@ struct EnterAccessVerificationCode : View {
         
         self.error = nil
         
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .submitAccessTotpVerification(
-                participantId: approver.participantId,
-                payload: API.SubmitAccessTotpVerificationApiRequest(
-                    signature: signature,
-                    timeMillis: timeMillis,
-                    ownerDevicePublicKey: devicePublicKey
-                )
+        ownerRepository.submitAccessTotpVerification(
+            approver.participantId,
+            API.SubmitAccessTotpVerificationApiRequest(
+                signature: signature,
+                timeMillis: timeMillis,
+                ownerDevicePublicKey: devicePublicKey
             )
-        ) { (result: Result<API.SubmitAccessTotpVerificationApiResponse, MoyaError>) in
+        ) { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
             case .failure(let error):
                 self.error = error
             }
@@ -253,78 +250,78 @@ struct EnterAccessVerificationCode : View {
 
 #if DEBUG
 #Preview("initial") {
-    NavigationView {
-        let policy = API.Policy.sample2Approvers
-        let approver = policy.approvers.last!
-        
-        EnterAccessVerificationCode(
-            session: .sample,
-            policy: policy,
-            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
-            approver: approver,
-            intent: .accessPhrases,
-            onOwnerStateUpdated: { _ in },
-            onSuccess: { _ in }
-        ).foregroundColor(.Censo.primaryForeground)
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let policy = API.Policy.sample2Approvers
+            let approver = policy.approvers.last!
+            
+            EnterAccessVerificationCode(
+                policy: policy,
+                approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .initial),
+                approver: approver,
+                intent: .accessPhrases,
+                onSuccess: { _ in }
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }
 
 #Preview("entercode") {
-    NavigationView {
-        let policy = API.Policy.sample2Approvers
-        let approver = policy.approvers.last!
-        
-        EnterAccessVerificationCode(
-            session: .sample,
-            policy: policy,
-            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
-            approver: approver,
-            intent: .accessPhrases,
-            onOwnerStateUpdated: { _ in },
-            onSuccess: { _ in }
-        )
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
-    }.foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let policy = API.Policy.sample2Approvers
+            let approver = policy.approvers.last!
+            
+            EnterAccessVerificationCode(
+                policy: policy,
+                approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForVerification),
+                approver: approver,
+                intent: .accessPhrases,
+                onSuccess: { _ in }
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
 }
 
 #Preview("rejected") {
-    NavigationView {
-        let policy = API.Policy.sample2Approvers
-        let approver = policy.approvers.last!
-        
-        EnterAccessVerificationCode(
-            session: .sample,
-            policy: policy,
-            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
-            approver: approver,
-            intent: .accessPhrases,
-            onOwnerStateUpdated: { _ in },
-            onSuccess: { _ in }
-        )
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
-    }.foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let policy = API.Policy.sample2Approvers
+            let approver = policy.approvers.last!
+            
+            EnterAccessVerificationCode(
+                policy: policy,
+                approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .rejected),
+                approver: approver,
+                intent: .accessPhrases,
+                onSuccess: { _ in }
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
 }
 
 #Preview("waiting") {
-    NavigationView {
-        let policy = API.Policy.sample2Approvers
-        let approver = policy.approvers.last!
-        
-        EnterAccessVerificationCode(
-            session: .sample,
-            policy: policy,
-            approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
-            approver: approver,
-            intent: .accessPhrases,
-            onOwnerStateUpdated: { _ in },
-            onSuccess: { _ in }
-        )
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
-    }.foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let policy = API.Policy.sample2Approvers
+            let approver = policy.approvers.last!
+            
+            EnterAccessVerificationCode(
+                policy: policy,
+                approval: API.Access.ThisDevice.Approval(participantId: approver.participantId, approvalId: "approval_id", status: .waitingForApproval),
+                approver: approver,
+                intent: .accessPhrases,
+                onSuccess: { _ in }
+            )
+            .navigationTitle(Text("Access"))
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
 }
 #endif

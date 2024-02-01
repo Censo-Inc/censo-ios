@@ -40,7 +40,7 @@ extension EncryptionKey {
         })
     }
     
-    static func recover(_ encryptedShards: [API.EncryptedShard], _ session: Session) throws -> EncryptionKey {
+    static func recover(_ encryptedShards: [API.EncryptedShard], _ userIdentifier: String, _ deviceKey: DeviceKey) throws -> EncryptionKey {
         let points = try encryptedShards.map { encryptedShard in
             let decryptedShard: Data
             
@@ -48,13 +48,13 @@ extension EncryptionKey {
                 guard let entropy = encryptedShard.ownerEntropy else {
                     throw CensoError.invalidEntropy
                 }
-                guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: session.userCredentials.userIdentifier, entropy: entropy.data) else {
+                guard let ownerApproverKey = encryptedShard.participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy.data) else {
                     SentrySDK.captureWithTag(error: CensoError.failedToRetrieveApproverKey, tagValue: "Approver Key")
                     throw CensoError.failedToRetrieveApproverKey
                 }
                 decryptedShard = try ownerApproverKey.decrypt(base64EncodedString: encryptedShard.encryptedShard)
             } else {
-                decryptedShard = try session.deviceKey.decrypt(data: encryptedShard.encryptedShard.data)
+                decryptedShard = try deviceKey.decrypt(data: encryptedShard.encryptedShard.data)
             }
             
             return Point(

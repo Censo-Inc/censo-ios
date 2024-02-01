@@ -7,13 +7,9 @@
 import Foundation
 import SwiftUI
 import UIKit
-import Moya
 
 struct HomeScreen: View {
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum TabId {
         case dashboard
@@ -29,10 +25,7 @@ struct HomeScreen: View {
             TabView(selection: $selectedTab) {
                 VStack {
                     DashboardTab(
-                        session: session,
                         ownerState: ownerState,
-                        reloadOwnerState: reloadOwnerState,
-                        onOwnerStateUpdated: onOwnerStateUpdated,
                         parentTabViewSelectedTab: $selectedTab
                     )
                     tabDivider()
@@ -46,12 +39,7 @@ struct HomeScreen: View {
                 .tag(TabId.dashboard)
                     
                 VStack {
-                    PhrasesTab(
-                        session: session,
-                        ownerState: ownerState,
-                        reloadOwnerState: reloadOwnerState,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
+                    PhrasesTab(ownerState: ownerState)
                     tabDivider()
                 }
                 .tabItem {
@@ -63,11 +51,7 @@ struct HomeScreen: View {
                 .tag(TabId.phrases)
                 
                 VStack {
-                    SettingsTab(
-                        session: session,
-                        ownerState: ownerState,
-                        onOwnerStateUpdated: onOwnerStateUpdated
-                    )
+                    SettingsTab(ownerState: ownerState)
                     tabDivider()
                 }
                 .tabItem {
@@ -230,89 +214,85 @@ extension API.SeedPhrase {
 
 struct CensoHomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        HomeScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                access: nil,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+        LoggedInOwnerPreviewContainer {
+            HomeScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    access: nil,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
         
-        HomeScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample2Approvers,
-                vault: .sample,
-                access: nil,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+        LoggedInOwnerPreviewContainer {
+            HomeScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample2Approvers,
+                    vault: .sample,
+                    access: nil,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
         
-        HomeScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample2Approvers,
-                vault: .sample,
-                access: .thisDevice(API.Access.ThisDevice(
-                    guid: "",
-                    status: API.Access.Status.timelocked,
-                    createdAt: Date(),
-                    unlocksAt: Date().addingTimeInterval(7200),
-                    expiresAt: Date(),
-                    approvals: [],
-                    intent: .accessPhrases
-                )),
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+        LoggedInOwnerPreviewContainer {
+            HomeScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample2Approvers,
+                    vault: .sample,
+                    access: .thisDevice(API.Access.ThisDevice(
+                        guid: "",
+                        status: API.Access.Status.timelocked,
+                        createdAt: Date(),
+                        unlocksAt: Date().addingTimeInterval(7200),
+                        expiresAt: Date(),
+                        approvals: [],
+                        intent: .accessPhrases
+                    )),
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
         
-        HomeScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample2Approvers,
-                vault: .sample,
-                access: .thisDevice(API.Access.ThisDevice(
-                    guid: "",
-                    status: API.Access.Status.available,
-                    createdAt: Date(),
-                    unlocksAt: Date().addingTimeInterval(7200),
-                    expiresAt: Date(),
-                    approvals: [],
-                    intent: .accessPhrases
-                )),
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+        LoggedInOwnerPreviewContainer {
+            HomeScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample2Approvers,
+                    vault: .sample,
+                    access: .thisDevice(API.Access.ThisDevice(
+                        guid: "",
+                        status: API.Access.Status.available,
+                        createdAt: Date(),
+                        unlocksAt: Date().addingTimeInterval(7200),
+                        expiresAt: Date(),
+                        approvals: [],
+                        intent: .accessPhrases
+                    )),
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
     }
 }
 #endif

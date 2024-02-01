@@ -7,13 +7,12 @@
 
 import SwiftUI
 import Sentry
-import Moya
 
 struct Keep1Phrase: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.apiProvider) var apiProvider
-    @Binding var ownerState: API.OwnerState
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    var ownerState: API.OwnerState
     @State var selectedPhrase: Int?
     @State private var confirmDeletion = false
     @State private var deleteInProgress = false
@@ -98,18 +97,15 @@ struct Keep1Phrase: View {
                 case .ready(let ready):
                     deleteInProgress = true
                     let selectedPhraseId = ready.vault.seedPhrases[selectedPhrase!].guid
-                    apiProvider.decodableRequest(
-                        with: session,
-                        endpoint: .deleteMultipleSeedPhrases(
-                            guids: ready.vault.seedPhrases
-                                .filter {$0.guid != selectedPhraseId }
-                                .map { $0.guid }
-                        )
-                    ) { (result: Result<API.DeleteSeedPhraseApiResponse, MoyaError>) in
+                    ownerRepository.deleteMultipleSeedPhrases(
+                        ready.vault.seedPhrases
+                            .filter {$0.guid != selectedPhraseId }
+                            .map { $0.guid }
+                    ) { result in
                         deleteInProgress = false
                         switch result {
                         case .success(let response):
-                            ownerState = response.ownerState
+                            ownerStateStoreController.replace(response.ownerState)
                         case .failure(let error):
                             SentrySDK.captureWithTag(error: error, tagValue: "Delete Multiple Phrases")
                         }
@@ -134,18 +130,19 @@ struct Keep1Phrase: View {
 
 #if DEBUG
 #Preview {
-    Keep1Phrase(
-        ownerState: .constant(.ready(API.OwnerState.Ready(
-            policy: .sample,
-            vault: .sample,
-            authType: .facetec,
-            subscriptionStatus: .none,
-            timelockSetting: .sample,
-            subscriptionRequired: true,
-            onboarded: true,
-            canRequestAuthenticationReset: false
-        ))),
-        session: .sample
-    )
+    LoggedInOwnerPreviewContainer {
+        Keep1Phrase(
+            ownerState: .ready(API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .none,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            ))
+        )
+    }
 }
 #endif

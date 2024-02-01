@@ -13,12 +13,11 @@ struct AccessAvailableViewParams {
 }
 
 struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     var intent: API.Access.Intent
     
     @ViewBuilder var accessAvailableView: (AccessAvailableViewParams) -> AccessAvailableView
@@ -67,13 +66,11 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                 switch (access.status) {
                 case .requested:
                     AccessApproval(
-                        session: session,
-                        policy: ownerState.policy,
                         access: access,
+                        policy: ownerState.policy,
                         onCancel: {
                             deleteAccess(onSuccess: { dismiss() })
-                        },
-                        onOwnerStateUpdated: onOwnerStateUpdated
+                        }
                     )
                 case .timelocked:
                     ProgressView()
@@ -90,17 +87,14 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     }
     
     private func requestAccess() {
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .requestAccess(API.RequestAccessApiRequest(intent: intent))
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+        ownerRepository.requestAccess(API.RequestAccessApiRequest(intent: intent), { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
             case .failure(let error):
                 showError(error)
             }
-        }
+        })
     }
     
     private func deleteAccessAndDismiss() {
@@ -110,10 +104,10 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     }
     
     private func deleteAccess(onSuccess: @escaping () -> Void = {}) {
-        apiProvider.decodableRequest(with: session, endpoint: .deleteAccess) { (result: Result<API.DeleteAccessApiResponse, MoyaError>) in
+        ownerRepository.deleteAccess { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
                 onSuccess()
             case .failure(let error):
                 showError(error)
@@ -122,14 +116,7 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
-            switch result {
-            case .success(let user):
-                onOwnerStateUpdated(user.ownerState)
-            default:
-                break
-            }
-        }
+        ownerStateStoreController.reload()
     }
     
     private func showError(_ error: Error) {
@@ -144,39 +131,39 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
     let policy = API.Policy.sample2Approvers
     
     return NavigationView {
-        RequestAccess(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: policy,
-                vault: .sample,
-                access: .thisDevice(API.Access.ThisDevice(
-                    guid: "",
-                    status: API.Access.Status.requested,
-                    createdAt: Date(),
-                    unlocksAt: Date(),
-                    expiresAt: Date(),
-                    approvals: policy.approvers.map({
-                        API.Access.ThisDevice.Approval(
-                            participantId: $0.participantId,
-                            approvalId: "",
-                            status: .initial
-                        )
-                    }),
-                    intent: .accessPhrases
-                )),
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            onOwnerStateUpdated: { _ in },
-            intent: .accessPhrases,
-            accessAvailableView: { _ in
-                Text("Access available")
-            }
-        ).foregroundColor(Color.Censo.primaryForeground)
+        LoggedInOwnerPreviewContainer {
+            RequestAccess(
+                ownerState: API.OwnerState.Ready(
+                    policy: policy,
+                    vault: .sample,
+                    access: .thisDevice(API.Access.ThisDevice(
+                        guid: "",
+                        status: API.Access.Status.requested,
+                        createdAt: Date(),
+                        unlocksAt: Date(),
+                        expiresAt: Date(),
+                        approvals: policy.approvers.map({
+                            API.Access.ThisDevice.Approval(
+                                participantId: $0.participantId,
+                                approvalId: "",
+                                status: .initial
+                            )
+                        }),
+                        intent: .accessPhrases
+                    )),
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                ),
+                intent: .accessPhrases,
+                accessAvailableView: { _ in
+                    Text("Access available")
+                }
+            )
+        }
     }
 }
 #endif

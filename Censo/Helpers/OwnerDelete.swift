@@ -9,17 +9,17 @@ import Foundation
 import Moya
 
 
-func deleteOwner(apiProvider: MoyaProvider<API>, session: Session, ownerState: API.OwnerState, onSuccess: @escaping () -> Void, onFailure: @escaping (Error) -> Void) {
-    apiProvider.request(with: session, endpoint: .deleteUser) { result in
+func deleteOwner(_ ownerRepository: OwnerRepository, _ ownerState: API.OwnerState, onSuccess: @escaping () -> Void, onFailure: @escaping (Error) -> Void) {
+    ownerRepository.deleteUser { result in
         switch result {
         case .success:
             switch ownerState {
             case .ready(let ready):
                 if let ownerTrustedApprover = ready.policy.approvers.first(where: { $0.isOwner }) {
-                    session.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
+                    ownerRepository.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
                 }
                 if let ownerProspectApprover = ready.policySetup?.owner {
-                    session.deleteApproverKey(participantId: ownerProspectApprover.participantId)
+                    ownerRepository.deleteApproverKey(participantId: ownerProspectApprover.participantId)
                 }
             case .initial:
                 break

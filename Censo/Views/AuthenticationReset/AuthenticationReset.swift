@@ -7,14 +7,12 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct AuthenticationReset: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onExit: () -> Void
     
     @State private var confirmExit = false
@@ -69,21 +67,18 @@ struct AuthenticationReset: View {
                 switch (reset.status) {
                 case .requested:
                     PendingAuthResetOnThisDevice(
-                        session: session,
                         authType: ownerState.authType,
                         policy: ownerState.policy,
                         authReset: reset,
                         onCancel: {
                             confirmExit = true
-                        },
-                        onOwnerStateUpdated: onOwnerStateUpdated
+                        }
                     )
                 case .approved:
                     ReplaceAuthentication(
-                        session: session,
                         authType: ownerState.authType == .facetec ? .facetec : .password,
-                        onComplete: { ownerState in
-                            onOwnerStateUpdated(ownerState)
+                        onComplete: { newOwnerState in
+                            ownerStateStoreController.replace(newOwnerState)
                             onExit()
                         },
                         onCancel: {
@@ -108,10 +103,10 @@ struct AuthenticationReset: View {
     }
     
     private func requestAuthenticationReset() {
-        apiProvider.decodableRequest(with: session, endpoint: .requestAuthenticationReset) { (result: Result<API.InitiateAuthenticationResetApiResponse, MoyaError>) in
+        ownerRepository.requestAuthenticationReset { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
             case .failure(let error):
                 showError(error)
             }
@@ -119,10 +114,10 @@ struct AuthenticationReset: View {
     }
     
     private func cancelAuthenticationReset(onSuccess: @escaping () -> Void = {}) {
-        apiProvider.decodableRequest(with: session, endpoint: .cancelAuthenticationReset) { (result: Result<API.CancelAuthenticationResetApiResponse, MoyaError>) in
+        ownerRepository.cancelAuthenticationReset { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
                 onSuccess()
             case .failure(let error):
                 showError(error)

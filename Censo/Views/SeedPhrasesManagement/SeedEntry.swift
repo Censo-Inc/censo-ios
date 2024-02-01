@@ -18,12 +18,10 @@ struct SeedEntry: View {
     @State private var showingVerification = false
     @State private var showingDismissAlert = false
 
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     var language: WordListLanguage
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: () -> Void
     var onBack: () -> Void
 
     var body: some View {
@@ -93,9 +91,7 @@ struct SeedEntry: View {
             .navigationDestination(isPresented: $showingVerification) {
                 SeedVerification(
                     words: words,
-                    session: session,
                     ownerState: ownerState,
-                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime,
                     onSuccess: onSuccess
                 )
@@ -137,15 +133,15 @@ struct SeedEntry: View {
 #if DEBUG
 struct SeedEntry_Previews: PreviewProvider {
     static var previews: some View {
-        SeedEntry(
-            session: .sample,
-            ownerState: .sample,
-            reloadOwnerState: {},
-            isFirstTime: true,
-            language: WordListLanguage.english,
-            onSuccess: { _ in },
-            onBack: { }
-        ).foregroundColor(Color.Censo.primaryForeground)
+        LoggedInOwnerPreviewContainer {
+            SeedEntry(
+                ownerState: .sample,
+                isFirstTime: true,
+                language: WordListLanguage.english,
+                onSuccess: { },
+                onBack: { }
+            )
+        }
     }
 }
 

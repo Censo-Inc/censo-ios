@@ -10,10 +10,8 @@ import SwiftUI
 import Moya
 
 struct LoginIdResetStartVerificationStep: View {
-    @Environment(\.apiProvider) var apiProvider
-    
     var enabled: Bool
-    var session: Session?
+    var ownerRepository: OwnerRepository?
     @Binding var tokens: Set<LoginIdResetToken>
     var onDeviceCreated: () -> Void
     
@@ -50,7 +48,7 @@ struct LoginIdResetStartVerificationStep: View {
                 })
                 .buttonStyle(RoundedButtonStyle())
                 .padding(.horizontal)
-                .disabled(!enabled || session == nil || creatingDevice)
+                .disabled(!enabled || ownerRepository == nil || creatingDevice)
             }
         )
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
@@ -65,15 +63,12 @@ struct LoginIdResetStartVerificationStep: View {
     }
     
     private func createDevice() {
-        guard let session = session else {
+        guard let ownerRepository = ownerRepository else {
             return
         }
         creatingDevice = true
         
-        apiProvider.request(
-            with: session,
-            endpoint: .createDevice
-        ) { result in
+        ownerRepository.createDevice({ result in
             switch result {
             case .success:
                 creatingDevice = false
@@ -81,7 +76,7 @@ struct LoginIdResetStartVerificationStep: View {
             case .failure(let error):
                 showError(error)
             }
-        }
+        })
     }
     
     private func showError(_ error: Error) {

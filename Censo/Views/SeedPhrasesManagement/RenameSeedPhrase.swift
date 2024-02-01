@@ -6,21 +6,20 @@
 //
 
 import SwiftUI
-import Moya
 
 struct RenameSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
     @StateObject private var label = PhraseLabel()
     @State private var inProgress = false
     @State private var showingError = false
     @State private var error: Error?
 
-    var session: Session
     var ownerState: API.OwnerState.Ready
     var editingIndex: Int
-    var onComplete: (API.OwnerState) -> Void
+    var onComplete: () -> Void
 
     var body: some View {
         NavigationView {
@@ -97,18 +96,16 @@ struct RenameSeedPhrase: View {
     
     private func updateSeedPhraseLabel() {
         inProgress = true
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .updateSeedPhrase(
-                guid: ownerState.vault.seedPhrases[editingIndex].guid,
-                label: label.value
-            )
-        ) { (result: Result<API.UpdateSeedPhraseApiResponse, MoyaError>) in
+        ownerRepository.updateSeedPhrase(
+            guid: ownerState.vault.seedPhrases[editingIndex].guid,
+            label: label.value
+        ) { result in
             inProgress = false
 
             switch result {
             case .success(let payload):
-                onComplete(payload.ownerState)
+                ownerStateStoreController.replace(payload.ownerState)
+                onComplete()
             case .failure(let error):
                 showError(error)
             }
@@ -118,6 +115,12 @@ struct RenameSeedPhrase: View {
 
 #if DEBUG
 #Preview {
-    RenameSeedPhrase(session: .sample, ownerState: .sample, editingIndex: 0, onComplete: {_ in })
+    LoggedInOwnerPreviewContainer {
+        RenameSeedPhrase(
+            ownerState: .sample,
+            editingIndex: 0,
+            onComplete: {}
+        )
+    }
 }
 #endif

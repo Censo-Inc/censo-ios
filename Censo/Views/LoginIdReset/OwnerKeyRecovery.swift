@@ -11,11 +11,10 @@ import Moya
 import Sentry
 
 struct OwnerKeyRecovery: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var step: Step = .requestingAccess
     @State private var showSheet: Bool = false
@@ -27,12 +26,6 @@ struct OwnerKeyRecovery: View {
         case recoveringKey(encryptedShards: [API.EncryptedShard])
         case recovered(ownerState: API.OwnerState)
         case cleanup
-    }
-    
-    init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
-        self.session = session
-        self.ownerState = ownerState
-        self.onOwnerStateUpdated = onOwnerStateUpdated
     }
     
     var body: some View {
@@ -50,14 +43,14 @@ struct OwnerKeyRecovery: View {
                 
                 LoginIdResetStartVerificationStep(
                     enabled: false,
-                    session: session,
+                    ownerRepository: ownerRepository,
                     tokens: Binding.constant([]),
                     onDeviceCreated: {}
                 )
                 
                 LoginIdResetInitKeyRecoveryStep(
                     enabled: true,
-                    session: session,
+                    loggedIn: true,
                     onButtonPressed: {
                         showSheet = true
                     }
@@ -67,13 +60,10 @@ struct OwnerKeyRecovery: View {
                         switch (step) {
                         case .requestingAccess:
                             RequestAccess(
-                                session: session,
                                 ownerState: ownerState,
-                                onOwnerStateUpdated: onOwnerStateUpdated,
                                 intent: .recoverOwnerKey,
                                 accessAvailableView: { _ in
                                     RetrieveAccessShards(
-                                        session: session,
                                         ownerState: ownerState,
                                         onSuccess: { encryptedShards in
                                             self.step = .recoveringKey(encryptedShards: encryptedShards)
@@ -118,7 +108,7 @@ struct OwnerKeyRecovery: View {
                             .navigationBarTitleDisplayMode(.inline)
                             .onAppear(perform: {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                    onOwnerStateUpdated(ownerState)
+                                    ownerStateStoreController.replace(ownerState)
                                 }
                             })
                         case .cleanup:
@@ -155,7 +145,8 @@ struct OwnerKeyRecovery: View {
                 
                 let intermediateKey = try EncryptionKey.recover(
                     shardsWithoutOwner,
-                    session
+                    ownerRepository.userIdentifier,
+                    ownerRepository.deviceKey
                 )
                 
                 if !(try intermediateKey.verifySignature(
@@ -170,7 +161,7 @@ struct OwnerKeyRecovery: View {
                 }
                 
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
-                let newOwnerApproverKey = try session.generateApproverKey(participantId: ownerParticipantId)
+                let newOwnerApproverKey = try ownerRepository.generateApproverKey(participantId: ownerParticipantId)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, intermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
                 
@@ -187,9 +178,8 @@ struct OwnerKeyRecovery: View {
                     .sortedByStringRepr()
                     .toBytes()
                 
-                apiProvider.decodableRequest(
-                    with: session,
-                    endpoint: .replacePolicyShards(API.ReplacePolicyShardsApiRequest(
+                ownerRepository.replacePolicyShards(
+                    API.ReplacePolicyShardsApiRequest(
                         intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
                         approverPublicKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
                         approverShards: try newIntermediateKey.shard(
@@ -206,24 +196,25 @@ struct OwnerKeyRecovery: View {
                         masterEncryptionPublicKey: masterPublicKey,
                         signatureByPreviousIntermediateKey: try intermediateKey.signature(for: newIntermediateKey.publicKeyData()),
                         masterKeySignature: try newOwnerApproverKey.signature(for: masterPublicKey.data)
-                    ))
-                ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                    switch result {
-                    case .success(let response):
-                        do {
-                            try session.persistApproverKey(participantId: ownerParticipantId, key: newOwnerApproverKey, entropy: ownerEntropy)
-                            step = .recovered(ownerState: response.ownerState)
-                        } catch {
-                            SentrySDK.captureWithTag(error: error, tagValue: "Owners approver key recovery")
-                            showError(CensoError.failedToPersistApproverKey)
-                            
-                            session.deleteApproverKey(participantId: ownerParticipantId)
-                            self.step = .cleanup
+                    ),
+                    { result in
+                        switch result {
+                        case .success(let response):
+                            do {
+                                try ownerRepository.persistApproverKey(participantId: ownerParticipantId, key: newOwnerApproverKey, entropy: ownerEntropy)
+                                step = .recovered(ownerState: response.ownerState)
+                            } catch {
+                                SentrySDK.captureWithTag(error: error, tagValue: "Owners approver key recovery")
+                                showError(CensoError.failedToPersistApproverKey)
+                                
+                                ownerRepository.deleteApproverKey(participantId: ownerParticipantId)
+                                self.step = .cleanup
+                            }
+                        case .failure(let error):
+                            showError(error)
                         }
-                    case .failure(let error):
-                        showError(error)
                     }
-                }
+                )
             } catch {
                 SentrySDK.captureWithTag(error: error, tagValue: "Owners approver key recovery")
                 showError(CensoError.failedToRecoverPrivateKey)
@@ -233,18 +224,15 @@ struct OwnerKeyRecovery: View {
     
     private func deleteAccessIfExists(onSuccess: @escaping () -> Void) {
         if ownerState.access != nil {
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .deleteAccess
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            ownerRepository.deleteAccess({ result in
                 switch result {
                 case .success(let success):
-                    onOwnerStateUpdated(success.ownerState)
+                    ownerStateStoreController.replace(success.ownerState)
                     onSuccess()
                 case .failure(let error):
                     showError(error)
                 }
-            }
+            })
         } else {
             onSuccess()
         }

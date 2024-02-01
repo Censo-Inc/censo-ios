@@ -7,15 +7,12 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct PendingAuthResetOnThisDevice : View {
-    var session: Session
     var authType: API.AuthType
     var policy: API.Policy
     var authReset: API.AuthenticationReset.ThisDevice
     var onCancel: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
         case chooseApprover(selected: API.TrustedApprover?)
@@ -24,13 +21,11 @@ struct PendingAuthResetOnThisDevice : View {
     
     @State private var step: Step = .chooseApprover(selected: nil)
     
-    init(session: Session, authType: API.AuthType, policy: API.Policy, authReset: API.AuthenticationReset.ThisDevice, onCancel: @escaping () -> Void, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
-        self.session = session
+    init(authType: API.AuthType, policy: API.Policy, authReset: API.AuthenticationReset.ThisDevice, onCancel: @escaping () -> Void) {
         self.authType = authType
         self.policy = policy
         self.authReset = authReset
         self.onCancel = onCancel
-        self.onOwnerStateUpdated = onOwnerStateUpdated
         self._step = State(initialValue: .chooseApprover(selected: nil))
     }
     
@@ -58,12 +53,10 @@ struct PendingAuthResetOnThisDevice : View {
         case .getApproval(let approver):
             let approval = authReset.approvalForApprover(approver)!
             GetAuthResetApproval(
-                session: session,
                 authType: authType,
                 policy: policy,
                 approval: approval,
                 approver: approver,
-                onOwnerStateUpdated: onOwnerStateUpdated,
                 onSuccess: {
                     if authReset.status != .approved {
                         step = .chooseApprover(selected: nil)
@@ -85,31 +78,30 @@ struct PendingAuthResetOnThisDevice : View {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        let policy: API.Policy = .sample2Approvers
-        
-        PendingAuthResetOnThisDevice(
-            session: .sample,
-            authType: .facetec,
-            policy: policy,
-            authReset: API.AuthenticationReset.ThisDevice(
-                guid: "",
-                status: .requested,
-                createdAt: Date(),
-                expiresAt: Date(),
-                approvals: policy.approvers.map({
-                    return API.AuthenticationReset.ThisDevice.Approval(
-                        guid: $0.participantId.value,
-                        participantId: $0.participantId,
-                        totpSecret: "35JV5AD2RJYIMH2J",
-                        status: .initial
-                    )
-                })
-            ),
-            onCancel: {},
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            let policy: API.Policy = .sample2Approvers
+            
+            PendingAuthResetOnThisDevice(
+                authType: .facetec,
+                policy: policy,
+                authReset: API.AuthenticationReset.ThisDevice(
+                    guid: "",
+                    status: .requested,
+                    createdAt: Date(),
+                    expiresAt: Date(),
+                    approvals: policy.approvers.map({
+                        return API.AuthenticationReset.ThisDevice.Approval(
+                            guid: $0.participantId.value,
+                            participantId: $0.participantId,
+                            totpSecret: "35JV5AD2RJYIMH2J",
+                            status: .initial
+                        )
+                    })
+                ),
+                onCancel: {}
+            )
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

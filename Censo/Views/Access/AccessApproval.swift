@@ -7,14 +7,14 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct AccessApproval : View {
-    var session: Session
-    var policy: API.Policy
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var access: API.Access.ThisDevice
+    var policy: API.Policy
+    
     var onCancel: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
         case chooseApprover(selected: API.TrustedApprover?)
@@ -23,15 +23,6 @@ struct AccessApproval : View {
     }
     
     @State private var step: Step = .chooseApprover(selected: nil)
-    
-    init(session: Session, policy: API.Policy, access: API.Access.ThisDevice, onCancel: @escaping () -> Void, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
-        self.session = session
-        self.policy = policy
-        self.access = access
-        self.onCancel = onCancel
-        self.onOwnerStateUpdated = onOwnerStateUpdated
-        self._step = State(initialValue: .chooseApprover(selected: nil))
-    }
     
     var body: some View {
         let navigationTitle: String = switch (access.intent) {
@@ -65,17 +56,15 @@ struct AccessApproval : View {
         case .enterTotp(let approver):
             let approval = access.approvals.first(where: {$0.participantId == approver.participantId})!
             EnterAccessVerificationCode(
-                session: session,
                 policy: policy,
                 approval: approval,
                 approver: approver,
                 intent: access.intent,
-                onOwnerStateUpdated: onOwnerStateUpdated,
                 onSuccess: { ownerState in
                     if let access = ownerState.thisDeviceAccess, access.isApproved {
                         step = .approved(ownerState: ownerState)
                     } else {
-                        onOwnerStateUpdated(ownerState)
+                        ownerStateStoreController.replace(ownerState)
                         step = .chooseApprover(selected: nil)
                     }
                 }
@@ -95,7 +84,7 @@ struct AccessApproval : View {
             AccessApproved()
                 .onAppear(perform: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        onOwnerStateUpdated(ownerState)
+                        ownerStateStoreController.replace(ownerState)
                     }
                 })
         }

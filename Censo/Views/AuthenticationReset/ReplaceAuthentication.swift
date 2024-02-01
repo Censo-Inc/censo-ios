@@ -10,9 +10,8 @@ import SwiftUI
 import Moya
 
 struct ReplaceAuthentication : View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
     
-    var session: Session
     var authType: AuthType
     var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
@@ -104,14 +103,9 @@ struct ReplaceAuthentication : View {
             })
         case .replace(newAuthType: AuthType.password):
             CreatePassword { cryptedPassword in
-                apiProvider.decodableRequest(
-                    with: session,
-                    endpoint: .replaceAuthentication(
-                        API.ReplaceAuthenticationApiRequest(
-                            authentication: .password(.init(cryptedPassword: cryptedPassword))
-                        )
-                    )
-                ) { (result: Result<API.ReplacePasswordApiResponse, MoyaError>) in
+                ownerRepository.replaceAuthentication(API.ReplaceAuthenticationApiRequest(
+                    authentication: .password(.init(cryptedPassword: cryptedPassword))
+                )) { result in
                     switch result {
                     case .success(let response):
                         step = .done(response.ownerState)
@@ -140,17 +134,22 @@ struct ReplaceAuthentication : View {
                 Text(error.localizedDescription)
             }
         case .replace(newAuthType: AuthType.facetec):
-            FacetecAuth<API.ReplaceBiometryApiResponse>(session: session) { facetecBiometry in
-                    .replaceAuthentication(
+            FacetecAuth<API.ReplaceBiometryApiResponse>(
+                onFaceScanReady: { facetecBiometry, completion in
+                    ownerRepository.replaceAuthentication(
                         API.ReplaceAuthenticationApiRequest(
                             authentication: .facetecBiometry(facetecBiometry)
-                        )
+                        ),
+                        completion
                     )
-            } onSuccess: { response in
-                step = .done(response.ownerState)
-            } onCancelled: {
-                step = .initial
-            }
+                },
+                onSuccess: { response in
+                    step = .done(response.ownerState)
+                },
+                onCancelled: {
+                    step = .initial
+                }
+            )
         case .done(let ownerState):
             VStack {
                 ZStack {
@@ -185,33 +184,33 @@ struct ReplaceAuthentication : View {
 
 #if DEBUG
 #Preview("biometry") {
-    NavigationStack {
-        ReplaceAuthentication(
-            session: .sample,
-            authType: .facetec,
-            onComplete: { _ in },
-            onCancel: {}
-        )
-        .navigationTitle("Biometry Reset")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            ReplaceAuthentication(
+                authType: .facetec,
+                onComplete: { _ in },
+                onCancel: {}
+            )
+            .navigationTitle("Biometry Reset")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 
 
 #Preview("password") {
-    NavigationStack {
-        ReplaceAuthentication(
-            session: .sample,
-            authType: .password,
-            onComplete: { _ in },
-            onCancel: {}
-        )
-        .navigationTitle("Password Reset")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            ReplaceAuthentication(
+                authType: .password,
+                onComplete: { _ in },
+                onCancel: {}
+            )
+            .navigationTitle("Password Reset")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

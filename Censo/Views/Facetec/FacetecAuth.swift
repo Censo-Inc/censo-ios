@@ -9,7 +9,7 @@ import Moya
 import FaceTecSDK
 
 struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
 
     @State private var step: Step = .idle
 
@@ -20,8 +20,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
         case failure(Error)
     }
 
-    var session: Session
-    var onReadyToUploadResults: ResultsReadyCallback
+    var onFaceScanReady: FaceScanReadyCallback<ResponseType>
     var onSuccess: (ResponseType) -> Void
     var onCancelled: () -> Void
 
@@ -39,15 +38,12 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     Text("Skipping biometry...")
                 }
                 .onAppear {
-                    apiProvider.decodableRequest(
-                        with: session,
-                        endpoint: onReadyToUploadResults(
-                            API.Authentication.FacetecBiometry(
-                                verificationId: initBiometryResponse.id,
-                                faceScan: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                                auditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                                lowQualityAuditTrailImage: session.userCredentials.userIdentifier.data(using: .utf8)!.base64EncodedString()
-                            )
+                    onFaceScanReady(
+                        API.Authentication.FacetecBiometry(
+                            verificationId: initBiometryResponse.id,
+                            faceScan: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                            auditTrailImage: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString(),
+                            lowQualityAuditTrailImage: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString()
                         )
                     ) { (result: Result<ResponseType, MoyaError>) in
                         switch result {
@@ -63,7 +59,6 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     .sheet(isPresented: .constant(true)) {
                         NavigationView {
                             FacetecUIKitWrapper(
-                                session: session,
                                 verificationId: initBiometryResponse.id,
                                 sessionToken: initBiometryResponse.sessionToken,
                                 onBack: {
@@ -72,7 +67,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                                 onError: { error in
                                     step = .failure(error)
                                 },
-                                onReadyToUploadResults: onReadyToUploadResults,
+                                onFaceScanReady: onFaceScanReady,
                                 onSuccess: onSuccess
                             )
                             .interactiveDismissDisabled()
@@ -106,7 +101,7 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
     private func prepareBiometryVerification() {
         step = .loading
 
-        apiProvider.decodableRequest(with: session, endpoint: .initBiometryVerification) { (result: Result<API.InitBiometryVerificationApiResponse, MoyaError>) in
+        ownerRepository.initBiometryVerification { result in
             switch result {
             case .success(let response):
 #if INTEGRATION
@@ -212,7 +207,7 @@ extension UIImage {
 #if DEBUG
 struct FacetecAuth_Previews: PreviewProvider {
     static var previews: some View {
-        FacetecAuth<API.UnlockApiResponse>(session: .sample, onReadyToUploadResults: {_ in .user}) { _ in } onCancelled: {}
+        FacetecAuth<API.UnlockApiResponse>(onFaceScanReady: {_, _ in }, onSuccess: { _ in }, onCancelled: {})  
     }
 }
 

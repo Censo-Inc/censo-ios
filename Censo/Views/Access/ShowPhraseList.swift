@@ -6,14 +6,9 @@
 //
 
 import SwiftUI
-import Moya
 
 struct ShowPhraseList: View {
-    @Environment(\.apiProvider) var apiProvider
-    
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     var viewedPhrases: [Int]
     var onPhraseSelected: (Int) -> Void
     var onFinished: () -> Void
@@ -21,7 +16,6 @@ struct ShowPhraseList: View {
     
     var body: some View {
         VStack {
-            
             Spacer()
             
             Text("Select the seed phrase you would like to access:")
@@ -100,16 +94,15 @@ struct ShowPhraseList: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        ShowPhraseList(
-            session: .sample,
-            ownerState: .sample,
-            onOwnerStateUpdated: {_ in },
-            viewedPhrases: [1],
-            onPhraseSelected: {_ in },
-            onFinished: {}
-        )
-        .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            ShowPhraseList(
+                ownerState: .sample,
+                viewedPhrases: [1],
+                onPhraseSelected: {_ in },
+                onFinished: {}
+            )
+        }
     }
 }
 #endif

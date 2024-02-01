@@ -7,11 +7,7 @@
 import SwiftUI
 
 struct DashboardTab: View {
-    
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
     @State private var error: Error?
@@ -20,9 +16,6 @@ struct DashboardTab: View {
     @Binding var parentTabViewSelectedTab: HomeScreen.TabId
     
     var body: some View {
-        let vault = ownerState.vault
-        let policy = ownerState.policy
-        
         ScrollView {
             Spacer()
             
@@ -35,15 +28,15 @@ struct DashboardTab: View {
                         Text("You have")
                             .font(.title2)
                             .fontWeight(.semibold)
-                        Text("\(vault.seedPhrases.count)")
+                        Text("\(ownerState.vault.seedPhrases.count)")
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                        Text("seed phrase\(vault.seedPhrases.count == 1 ? "" : "s").")
+                        Text("seed phrase\(ownerState.vault.seedPhrases.count == 1 ? "" : "s").")
                             .font(.title2)
                             .fontWeight(.semibold)
                     }
                 }
-                Text("\(vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
+                Text("\(ownerState.vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
                     .font(.title3)
                     .padding()
                     .multilineTextAlignment(.center)
@@ -62,7 +55,7 @@ struct DashboardTab: View {
 
                 Spacer().padding()
 
-                if (policy.externalApproversCount == 0) {
+                if (ownerState.policy.externalApproversCount == 0) {
                     Text("\nYou can increase security by adding approvers.")
                         .font(.title2)
                         .fontWeight(.semibold)
@@ -103,20 +96,11 @@ struct DashboardTab: View {
             }.frame(maxWidth: 322)
         }
         .sheet(isPresented: $showingAddPhrase, content: {
-            AdditionalPhrase(
-                ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                session: session,
-                onComplete: onOwnerStateUpdated
-            )
+            AdditionalPhrase(ownerState: ownerState)
         })
         .sheet(isPresented: $showingApproversSetup, content: {
             NavigationView {
-                ApproversSetup(
-                    session: session,
-                    ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated
-                )
+                ApproversSetup(ownerState: ownerState)
             }
         })
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
@@ -138,24 +122,19 @@ public extension UIFont {
 
 #if DEBUG
 #Preview {
-    VStack {
+    LoggedInOwnerPreviewContainer {
         @State var selectedTab = HomeScreen.TabId.dashboard
         DashboardTab(
-            session: .sample,
             ownerState: .sample,
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )
-        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 
 #Preview {
-    VStack {
+    LoggedInOwnerPreviewContainer {
         @State var selectedTab = HomeScreen.TabId.dashboard
         DashboardTab(
-            session: .sample,
             ownerState: API.OwnerState.Ready(
                 policy: .sample2Approvers,
                 vault: .sample,
@@ -166,11 +145,8 @@ public extension UIFont {
                 onboarded: true,
                 canRequestAuthenticationReset: false
             ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in },
             parentTabViewSelectedTab: $selectedTab
         )
-        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

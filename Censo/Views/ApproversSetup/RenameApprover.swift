@@ -7,25 +7,24 @@
 
 import Foundation
 import SwiftUI
-import Moya
 import Sentry
 
 struct RenameApprover: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var policySetup: API.PolicySetup
     var approver: API.ProspectApprover
-    var onComplete: (API.OwnerState) -> Void
+    var onComplete: () -> Void
     
     @StateObject private var newName = ApproverNickname()
     @State private var submitting = false
     @State private var showingError = false
     @State private var error: Error?
     
-    init(session: Session, policySetup: API.PolicySetup, approver: API.ProspectApprover, onComplete: @escaping (API.OwnerState) -> Void) {
-        self.session = session
+    init(policySetup: API.PolicySetup, approver: API.ProspectApprover, onComplete: @escaping () -> Void) {
         self.policySetup = policySetup
         self.approver = approver
         self.onComplete = onComplete
@@ -108,18 +107,18 @@ struct RenameApprover: View {
                     return .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: approver.participantId,
                         label: approver.participantId == approverToRename.participantId ? newName.value : approver.label,
-                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: ownerRepository.deviceKey)
                     ))
                 }
             })
             
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            ownerRepository.setupPolicy(
+                API.SetupPolicyApiRequest(threshold: 2, approvers: approvers)
+            ) { result in
                 switch result {
                 case .success(let response):
-                    onComplete(response.ownerState)
+                    ownerStateStoreController.replace(response.ownerState)
+                    onComplete()
                 case .failure(let error):
                     showError(error)
                 }
@@ -133,24 +132,24 @@ struct RenameApprover: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        RenameApprover(
-            session: .sample,
-            policySetup: policySetup,
-            approver: policySetup.approvers[1],
-            onComplete: { _ in }
-        )
-        .navigationTitle(Text("Activate Neo"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                } label: {
-                    Image(systemName: "chevron.left")
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            RenameApprover(
+                policySetup: policySetup,
+                approver: policySetup.approvers[1],
+                onComplete: {}
+            )
+            .navigationTitle(Text("Activate Neo"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
                 }
-            }
-        })
+            })
+        }
     }
-    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

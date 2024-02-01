@@ -8,12 +8,15 @@
 import Foundation
 import Sentry
 
-struct Session : Equatable {
-    var deviceKey: DeviceKey
-    var userCredentials: UserCredentials
-}
-
-extension Session {
+final class Session : ObservableObject {
+    private(set) var deviceKey: DeviceKey
+    private(set) var userCredentials: UserCredentials
+    
+    init(deviceKey: DeviceKey, userCredentials: UserCredentials) {
+        self.deviceKey = deviceKey
+        self.userCredentials = userCredentials
+    }
+    
     func getOrCreateApproverKey(participantId: ParticipantId, entropy: Data) throws -> EncryptionKey {
         let userIdentifier = self.userCredentials.userIdentifier
         let existingKey = participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy)

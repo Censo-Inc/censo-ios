@@ -24,12 +24,10 @@ struct GeneratePhrase: View {
     @State private var showingVerification = false
     @State private var phrase: [String] = []
     
-    var language: WordListLanguage
-    var onComplete: (API.OwnerState) -> Void
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
+    var language: WordListLanguage
     var isFirstTime: Bool
+    var onComplete: () -> Void
     
     var body: some View {
         NavigationStack {
@@ -97,14 +95,13 @@ struct GeneratePhrase: View {
             .navigationDestination(isPresented: $showingVerification, destination: {
                 SeedVerification(
                     words: phrase,
-                    session: session,
                     ownerState: ownerState,
-                    reloadOwnerState: reloadOwnerState,
-                    isFirstTime: isFirstTime
-                ) { ownerState in
-                    onComplete(ownerState)
-                    dismiss()
-                }
+                    isFirstTime: isFirstTime,
+                    onSuccess: {
+                        onComplete()
+                        dismiss()
+                    }
+                )
             })
         }
     }
@@ -164,13 +161,13 @@ struct WordCountOption: View {
 
 #if DEBUG
 #Preview {
-    GeneratePhrase(
-        language: WordListLanguage.english,
-        onComplete: {_ in },
-        session: .sample,
-        ownerState: .sample,
-        reloadOwnerState: {},
-        isFirstTime: false
-    )
+    LoggedInOwnerPreviewContainer {
+        GeneratePhrase(
+            ownerState: .sample,
+            language: WordListLanguage.english,
+            isFirstTime: false,
+            onComplete: {}
+        )
+    }
 }
 #endif

@@ -8,21 +8,18 @@ import SwiftUI
 import Moya
 import FaceTecSDK
 
-typealias ResultsReadyCallback = (API.Authentication.FacetecBiometry) -> API.Endpoint
-
 protocol BiometryVerificationResponse : Decodable {
     var scanResultBlob: String {get set}
 }
 
+typealias FaceScanReadyCallback<ResponseType: BiometryVerificationResponse> = (API.Authentication.FacetecBiometry, @escaping (Result<ResponseType, MoyaError>) -> Void) -> Void
+    
 struct FacetecUIKitWrapper<ResponseType: BiometryVerificationResponse>: UIViewControllerRepresentable {
-    @Environment(\.apiProvider) var apiProvider
-
-    var session: Session
     var verificationId: String
     var sessionToken: String
     var onBack: () -> Void
     var onError: (Error) -> Void
-    var onReadyToUploadResults: ResultsReadyCallback
+    var onFaceScanReady: FaceScanReadyCallback<ResponseType>
     var onSuccess: (ResponseType) -> Void
 
     typealias UIViewControllerType = UIViewController
@@ -40,12 +37,10 @@ struct FacetecUIKitWrapper<ResponseType: BiometryVerificationResponse>: UIViewCo
 
     func makeCoordinator() -> Coordinator {
         FacetecUIKitWrapperCoordinator(
-            session: session,
-            apiProvider: apiProvider,
             verificationId: verificationId,
             onBack: onBack,
             onError: onError,
-            onReadyToUploadResults: onReadyToUploadResults,
+            onFaceScanReady: onFaceScanReady,
             onSuccess: onSuccess
         )
     }
@@ -56,22 +51,18 @@ struct FaceTecSessionError: Error {
 }
 
 class FacetecUIKitWrapperCoordinator<ResponseType: BiometryVerificationResponse>: NSObject, FaceTecFaceScanProcessorDelegate {
-    var session: Session
-    var apiProvider: MoyaProvider<API>
     var verificationId: String
     var onBack: () -> Void
     var onError: (Error) -> Void
-    var onReadyToUploadResults: ResultsReadyCallback
+    var onFaceScanReady: FaceScanReadyCallback<ResponseType>
     var onSuccess: (ResponseType) -> Void
     var response: ResponseType? = nil
 
-    init(session: Session, apiProvider: MoyaProvider<API>, verificationId: String, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onReadyToUploadResults: @escaping ResultsReadyCallback, onSuccess: @escaping (ResponseType) -> Void) {
-        self.session = session
-        self.apiProvider = apiProvider
+    init(verificationId: String, onBack: @escaping () -> Void, onError: @escaping (Error) -> Void, onFaceScanReady: @escaping FaceScanReadyCallback<ResponseType>, onSuccess: @escaping (ResponseType) -> Void) {
         self.verificationId = verificationId
         self.onBack = onBack
         self.onError = onError
-        self.onReadyToUploadResults = onReadyToUploadResults
+        self.onFaceScanReady = onFaceScanReady
         self.onSuccess = onSuccess
     }
 
@@ -90,16 +81,13 @@ class FacetecUIKitWrapperCoordinator<ResponseType: BiometryVerificationResponse>
     }
 
     private func uploadResultsToServer(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) { // Send facescan to server
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: onReadyToUploadResults(
-                API.Authentication.FacetecBiometry(
-                    verificationId: verificationId,
-                    faceScan: sessionResult.faceScanBase64 ?? "",
-                    auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
-                    lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
-                )
-           )
+        onFaceScanReady(
+            API.Authentication.FacetecBiometry(
+                verificationId: verificationId,
+                faceScan: sessionResult.faceScanBase64 ?? "",
+                auditTrailImage: sessionResult.auditTrailCompressedBase64?.first ?? "",
+                lowQualityAuditTrailImage: sessionResult.lowQualityAuditTrailCompressedBase64?.first ?? ""
+            )
         ) { [weak self] (result: Result<ResponseType, MoyaError>) in
             switch result {
             case .success(let response):

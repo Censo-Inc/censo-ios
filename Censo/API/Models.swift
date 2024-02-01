@@ -172,7 +172,7 @@ extension API {
         }
     }
     
-    struct ReplacePolicyApiResponse {
+    struct ReplacePolicyApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
@@ -192,7 +192,7 @@ extension API {
         }
     }
     
-    struct ReplacePolicyShardsApiResponse {
+    struct ReplacePolicyShardsApiResponse : Decodable {
         var ownerState: OwnerState
     }
     

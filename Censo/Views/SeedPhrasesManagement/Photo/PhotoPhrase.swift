@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct PhotoPhrase: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
     @State private var showingSave = false
     @State private var imageData: Data = Data()
     
-    var onComplete: (API.OwnerState) -> Void
-    var onBack: () -> Void
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
+    var onBack: () -> Void
     
     var body: some View {
         NavigationStack {
@@ -40,13 +36,10 @@ struct PhotoPhrase: View {
             .navigationDestination(isPresented: $showingSave) {
                 SaveSeedPhrase(
                     seedPhrase: .image(imageData: imageData),
-                    session: session,
                     ownerState: ownerState,
-                    reloadOwnerState: reloadOwnerState,
                     isFirstTime: isFirstTime,
-                    onSuccess: { ownerState in
+                    onSuccess: {
                         showingSave = false
-                        onComplete(ownerState)
                         dismiss()
                     }
                 )
@@ -57,14 +50,12 @@ struct PhotoPhrase: View {
 
 #if DEBUG
 #Preview {
-    PhotoPhrase(
-        onComplete: {_ in},
-        onBack: {},
-        session: .sample,
-        ownerState: .sample,
-        reloadOwnerState: {},
-        isFirstTime: true
-    )
-    .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        PhotoPhrase(
+            ownerState: .sample,
+            isFirstTime: true,
+            onBack: {}
+        )
+    }
 }
 #endif

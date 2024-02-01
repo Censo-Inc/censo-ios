@@ -8,11 +8,10 @@ import SwiftUI
 import Moya
 
 struct SettingsTab: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
     @State private var error: Error?
@@ -88,11 +87,7 @@ struct SettingsTab: View {
             .padding(.horizontal)
         }
         .sheet(isPresented: $showApproversRemoval, content: {
-            InitApproversRemovalFlow(
-                session: session,
-                ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated
-            )
+            InitApproversRemovalFlow(ownerState: ownerState)
         })
         .sheet(isPresented: $showPushNotificationSettings, content: {
             PushNotificationSettings {
@@ -126,7 +121,7 @@ struct SettingsTab: View {
     
     private func deleteUser() {
         resetInProgress = true
-        deleteOwner(apiProvider: apiProvider, session: session, ownerState: .ready(ownerState), onSuccess: {
+        deleteOwner(ownerRepository, .ready(ownerState), onSuccess: {
             resetInProgress = false
             pushNotificationsEnabled = nil
         }, onFailure: { error in
@@ -137,11 +132,11 @@ struct SettingsTab: View {
             
     private func enableOrDisableTimelock(enable: Bool) {
         timelockUpdateInProgress = true
-        apiProvider.decodableRequest(with: session, endpoint: enable ? .enableTimelock : .disableTimelock) { (result: Result<API.TimelockApiResponse, MoyaError>) in
+        ownerRepository.enableOrDisableTimelock(enable) { result in
             timelockUpdateInProgress = false
             switch result {
             case .success(let payload):
-                onOwnerStateUpdated(payload.ownerState)
+                ownerStateStoreController.replace(payload.ownerState)
             case .failure(let err):
                 showError(err)
             }
@@ -150,7 +145,7 @@ struct SettingsTab: View {
     
     private func cancelDisableTimelock() {
         timelockUpdateInProgress = true
-        apiProvider.request(with: session, endpoint: .cancelDisabledTimelock) { result in
+        ownerRepository.cancelDisabledTimelock { result in
             switch result {
             case .success:
                 refreshState()
@@ -162,11 +157,11 @@ struct SettingsTab: View {
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
+        ownerRepository.getUser { result in
             timelockUpdateInProgress = false
             switch result {
             case .success(let user):
-                onOwnerStateUpdated(user.ownerState)
+                ownerStateStoreController.replace(user.ownerState)
             default:
                 break
             }
@@ -174,10 +169,10 @@ struct SettingsTab: View {
     }
     
     private func lock() {
-        apiProvider.decodableRequest(with: session, endpoint: .lock) { (result: Result<API.LockApiResponse, MoyaError>) in
+        ownerRepository.lock { result in
             switch result {
             case .success(let payload):
-                onOwnerStateUpdated(payload.ownerState)
+                ownerStateStoreController.replace(payload.ownerState)
             case .failure(let err):
                 showError(err)
             }
@@ -193,53 +188,53 @@ struct SettingsTab: View {
 
 #if DEBUG
 #Preview("Enable Timelock") {
-    SettingsTab(
-        session: .sample,
-        ownerState: API.OwnerState.Ready(
-            policy: .sample2Approvers,
-            vault: .sample,
-            authType: .facetec,
-            subscriptionStatus: .active,
-            timelockSetting: .sample,
-            subscriptionRequired: true,
-            onboarded: true,
-            canRequestAuthenticationReset: false
-        ),
-        onOwnerStateUpdated: {_ in }
-    )
+    LoggedInOwnerPreviewContainer {
+        SettingsTab(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )
+        )
+    }
 }
 
 #Preview("Disable Timelock") {
-    SettingsTab(
-        session: .sample,
-        ownerState: API.OwnerState.Ready(
-            policy: .sample2Approvers,
-            vault: .sample,
-            authType: .facetec,
-            subscriptionStatus: .active,
-            timelockSetting: .sample2,
-            subscriptionRequired: true,
-            onboarded: true,
-            canRequestAuthenticationReset: false
-        ),
-        onOwnerStateUpdated: {_ in }
-    )
+    LoggedInOwnerPreviewContainer {
+        SettingsTab(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample2,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )
+        )
+    }
 }
 
 #Preview("Cancel Disable Timelock") {
-    SettingsTab(
-        session: .sample,
-        ownerState: API.OwnerState.Ready(
-            policy: .sample2Approvers,
-            vault: .sample,
-            authType: .facetec,
-            subscriptionStatus: .active,
-            timelockSetting: .sample3,
-            subscriptionRequired: true,
-            onboarded: true,
-            canRequestAuthenticationReset: false
-        ),
-        onOwnerStateUpdated: {_ in }
-    )
+    LoggedInOwnerPreviewContainer {
+        SettingsTab(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample3,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )
+        )
+    }
 }
 #endif

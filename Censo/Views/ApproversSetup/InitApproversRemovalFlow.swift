@@ -6,16 +6,15 @@
 //
 
 import SwiftUI
-import Moya
 import Sentry
 
 struct InitApproversRemovalFlow: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
         case creatingPolicySetup
@@ -47,11 +46,8 @@ struct InitApproversRemovalFlow: View {
                     }
             case .replacingPolicy:
                 ReplacePolicy(
-                    session: session,
                     ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated,
-                    onSuccess: { ownerState in
-                        onOwnerStateUpdated(ownerState)
+                    onSuccess: {
                         self.step = .done
                     },
                     onCanceled: {
@@ -83,13 +79,10 @@ struct InitApproversRemovalFlow: View {
             ]
         )
         
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .setupPolicy(setupPolicyRequest)
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+        ownerRepository.setupPolicy(setupPolicyRequest) { result in
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
                 self.step = .replacingPolicy
             case .failure(let error):
                 showError(error)

@@ -7,17 +7,16 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct ActivateApprover : View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var policySetup: API.PolicySetup
     var approver: API.ProspectApprover
     var onComplete: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     
     enum Mode {
@@ -64,11 +63,9 @@ struct ActivateApprover : View {
             })
         case .rename:
             RenameApprover(
-                session: session,
                 policySetup: policySetup,
                 approver: approver,
-                onComplete: { ownerState in
-                    onOwnerStateUpdated(ownerState)
+                onComplete: { 
                     mode = .activate
                 }
             )
@@ -235,7 +232,7 @@ struct ActivateApprover : View {
                             
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret,
-                               let totpSecret = try? session.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
+                               let totpSecret = try? ownerRepository.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
                                 RotatingTotpPinView(
                                     totpSecret: totpSecret,
                                     style: .owner
@@ -316,14 +313,7 @@ struct ActivateApprover : View {
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
-            switch result {
-            case .success(let user):
-                onOwnerStateUpdated(user.ownerState)
-            default:
-                break
-            }
-        }
+        ownerStateStoreController.reload()
     }
     
     private func confirmApprover(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) {
@@ -338,23 +328,20 @@ struct ActivateApprover : View {
             let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
             guard let participantIdData = participantId.value.data(using: .hexadecimal),
                   let timeMillisData = String(timeMillis).data(using: .utf8),
-                  let signature = try? session.deviceKey.signature(for: status.approverPublicKey.data + participantIdData + timeMillisData) else {
+                  let signature = try? ownerRepository.deviceKey.signature(for: status.approverPublicKey.data + participantIdData + timeMillisData) else {
                 confirmationSucceeded = false
                 return
             }
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .confirmApprover(
-                    API.ConfirmApproverApiRequest(
-                        participantId: participantId,
-                        keyConfirmationSignature: signature,
-                        keyConfirmationTimeMillis: timeMillis
-                    )
+            ownerRepository.confirmApprover(
+                API.ConfirmApproverApiRequest(
+                    participantId: participantId,
+                    keyConfirmationSignature: signature,
+                    keyConfirmationTimeMillis: timeMillis
                 )
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            ) { result in
                 switch result {
                 case .success(let response):
-                    onOwnerStateUpdated(response.ownerState)
+                    ownerStateStoreController.replace(response.ownerState)
                 case .failure:
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         confirmApprover(participantId: participantId, status: status) // keep trying
@@ -367,7 +354,7 @@ struct ActivateApprover : View {
     }
 
     private func verifyApproverSignature(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) throws -> Bool {
-        guard let totpSecret = try? session.deviceKey.decrypt(data: status.deviceEncryptedTotpSecret.data),
+        guard let totpSecret = try? ownerRepository.deviceKey.decrypt(data: status.deviceEncryptedTotpSecret.data),
               let timeMillisBytes = String(status.timeMillis).data(using: .utf8),
               let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.approverPublicKey) else {
             return false
@@ -386,19 +373,16 @@ struct ActivateApprover : View {
     }
     
     private func rejectApproverVerification(participantId: ParticipantId) {
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .rejectApproverVerification(participantId)
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    onOwnerStateUpdated(response.ownerState)
-                case .failure:
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        rejectApproverVerification(participantId: participantId) // keep trying
-                    }
+        ownerRepository.rejectApproverVerification(participantId) { result in
+            switch result {
+            case .success(let response):
+                ownerStateStoreController.replace(response.ownerState)
+            case .failure:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    rejectApproverVerification(participantId: participantId) // keep trying
                 }
             }
+        }
     }
 }
 
@@ -437,31 +421,29 @@ let policySetup = API.PolicySetup(
 )
 
 #Preview("Activation Pending") {
-    NavigationView {
-        let session = Session.sample
-        
-        ActivateApprover(
-            session: session,
-            policySetup: policySetup,
-            approver: policySetup.approvers[1],
-            onComplete: { },
-            onOwnerStateUpdated: { _ in }
-        )
-        .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let session = Session.sample
+            
+            ActivateApprover(
+                policySetup: policySetup,
+                approver: policySetup.approvers[1],
+                onComplete: { }
+            )
+        }
     }
 }
 
 #Preview("Activation Confirmed") {
-    NavigationView {
-        let session = Session.sample
-        ActivateApprover(
-            session: session,
-            policySetup: policySetup,
-            approver: policySetup.approvers[1],
-            onComplete: { },
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            let session = Session.sample
+            ActivateApprover(
+                policySetup: policySetup,
+                approver: policySetup.approvers[1],
+                onComplete: { }
+            )
+        }
     }
-    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

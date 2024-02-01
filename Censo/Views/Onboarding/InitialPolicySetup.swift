@@ -9,12 +9,11 @@ import SwiftUI
 import Moya
 
 struct InitialPolicySetup: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
 
-    var session: Session
     var ownerState: API.OwnerState.Initial
-    var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
     
     @State private var showingError = false
@@ -43,27 +42,22 @@ struct InitialPolicySetup: View {
                 if (usePasswordAuth) {
                     NavigationStack {
                         CreatePassword { cryptedPassword in
-                            apiProvider.decodableRequest(
-                                with: session,
-                                endpoint: .createPolicyWithPassword(
-                                    API.CreatePolicyWithPasswordApiRequest(
-                                        intermediatePublicKey: createPolicyParams.intermediatePublicKey,
-                                        encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
-                                        masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
-                                        participantId: createPolicyParams.participantId,
-                                        encryptedShard: createPolicyParams.encryptedShard,
-                                        approverPublicKey: createPolicyParams.approverPublicKey,
-                                        approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
-                                        password: API.Authentication.Password(cryptedPassword: cryptedPassword),
-                                        masterKeySignature: createPolicyParams.masterKeySignature
-                                    )
-                                )
-                            ) { (result: Result<API.CreatePolicyWithPasswordApiResponse, MoyaError>) in
+                            ownerRepository.createPassword(API.CreatePolicyWithPasswordApiRequest(
+                                intermediatePublicKey: createPolicyParams.intermediatePublicKey,
+                                encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
+                                masterEncryptionPublicKey: createPolicyParams.masterEncryptionPublicKey,
+                                participantId: createPolicyParams.participantId,
+                                encryptedShard: createPolicyParams.encryptedShard,
+                                approverPublicKey: createPolicyParams.approverPublicKey,
+                                approverPublicKeySignatureByIntermediateKey: createPolicyParams.approverPublicKeySignatureByIntermediateKey,
+                                password: API.Authentication.Password(cryptedPassword: cryptedPassword),
+                                masterKeySignature: createPolicyParams.masterKeySignature
+                            )) { result in
                                 switch result {
                                 case .failure:
                                     dismiss()
                                 case .success(let response):
-                                    onComplete(response.ownerState)
+                                    ownerStateStoreController.replace(response.ownerState)
                                 }
                             }
                         }
@@ -79,10 +73,10 @@ struct InitialPolicySetup: View {
                             }
                         })
                     }
-                    
                 } else {
-                    FacetecAuth<API.CreatePolicyApiResponse>(session: session) { facetecBiometry in
-                            .createPolicy(
+                    FacetecAuth<API.CreatePolicyApiResponse>(
+                        onFaceScanReady: { facetecBiometry, completion in
+                            ownerRepository.createPolicy(
                                 API.CreatePolicyApiRequest(
                                     intermediatePublicKey: createPolicyParams.intermediatePublicKey,
                                     encryptedMasterPrivateKey: createPolicyParams.encryptedMasterPrivateKey,
@@ -94,14 +88,18 @@ struct InitialPolicySetup: View {
                                     biometryVerificationId: facetecBiometry.verificationId,
                                     biometryData: facetecBiometry,
                                     masterKeySignature: createPolicyParams.masterKeySignature
-                                )
+                                ),
+                                completion
                             )
-                    } onSuccess: { response in
-                        onComplete(response.ownerState)
-                    } onCancelled: {
-                        self.createPolicyParams = nil
-                        dismiss()
-                    }
+                        },
+                        onSuccess: { response in
+                            ownerStateStoreController.replace(response.ownerState)
+                        },
+                        onCancelled: {
+                            self.createPolicyParams = nil
+                            dismiss()
+                        }
+                    )
                 }
             } else {
                 GeometryReader { geometry in
@@ -201,7 +199,7 @@ struct InitialPolicySetup: View {
     private func startPolicyCreation() {
         do {
             let participantId: ParticipantId = .random()
-            let ownerApproverKey = try session.getOrCreateApproverKey(participantId: participantId, entropy: ownerState.entropy.data)
+            let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(participantId: participantId, entropy: ownerState.entropy.data)
             let ownerApproverPublicKey = try ownerApproverKey.publicExternalRepresentation()
             let intermediateEncryptionKey = try EncryptionKey.generateRandomKey()
             let masterEncryptionKey = try EncryptionKey.generateRandomKey()
@@ -228,7 +226,11 @@ struct InitialPolicySetup: View {
 
 #if DEBUG
 #Preview {
-    InitialPolicySetup(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false), onComplete: {_ in}, onCancel: {})
-        .foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        InitialPolicySetup(
+            ownerState: API.OwnerState.Initial(authType: .none, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false),
+            onCancel: {}
+        )
+    }
 }
 #endif

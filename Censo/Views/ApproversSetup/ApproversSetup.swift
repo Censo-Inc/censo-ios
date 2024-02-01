@@ -7,15 +7,14 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct ApproversSetup: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
         case intro
@@ -48,17 +47,13 @@ struct ApproversSetup: View {
     @State private var deletingPolicySetup = false
     @State private var showLearnMore = false
 
-    init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void, step: Step) {
-        self.session = session
+    init(ownerState: API.OwnerState.Ready, step: Step) {
         self.ownerState = ownerState
-        self.onOwnerStateUpdated = onOwnerStateUpdated
         self._step = State(initialValue: step)
     }
     
-    init(session: Session, ownerState: API.OwnerState.Ready, onOwnerStateUpdated: @escaping (API.OwnerState) -> Void) {
-        self.session = session
+    init(ownerState: API.OwnerState.Ready) {
         self.ownerState = ownerState
-        self.onOwnerStateUpdated = onOwnerStateUpdated
         self._step = State(initialValue: .intro)
     }
     
@@ -195,34 +190,27 @@ struct ApproversSetup: View {
                 }
             case .setupPrimary:
                 SetupApprover(
-                    session: session,
                     policySetup: ownerState.policySetup,
                     isPrimary: true,
                     onComplete: {
                         step = .setupAlternate
                     },
-                    onOwnerStateUpdated: onOwnerStateUpdated,
                     onBack: {
                         step = .intro
                     }
                 )
             case .setupAlternate:
                 SetupApprover(
-                    session: session,
                     policySetup: ownerState.policySetup,
                     isPrimary: false,
                     onComplete: {
                         step = .replacingPolicy
-                    },
-                    onOwnerStateUpdated: onOwnerStateUpdated
+                    }
                 )
             case .replacingPolicy:
                 ReplacePolicy(
-                    session: session,
                     ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated,
-                    onSuccess: { ownerState in
-                        onOwnerStateUpdated(ownerState)
+                    onSuccess: {
                         self.step = .done
                     },
                     onCanceled: {
@@ -255,14 +243,11 @@ struct ApproversSetup: View {
     
     private func deletePolicySetup() {
         deletingPolicySetup = true
-        apiProvider.decodableRequest(
-            with: session,
-            endpoint: .deletePolicySetup
-        ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+        ownerRepository.deletePolicySetup { result in
             deletingPolicySetup = false
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
                 dismiss()
             case .failure(let error):
                 showError(error)
@@ -273,22 +258,22 @@ struct ApproversSetup: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        ApproversSetup(
-            session: Session.sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                policySetup: policySetup,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            ApproversSetup(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    policySetup: policySetup,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
     }
 }
 #endif

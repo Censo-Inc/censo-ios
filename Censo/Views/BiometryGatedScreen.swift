@@ -7,15 +7,14 @@
 
 import Foundation
 import SwiftUI
-import Moya
 
 struct BiometryGatedScreen<Content: View>: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.scenePhase) var scenePhase
     
-    var session: Session
-    @Binding var ownerState: API.OwnerState
-    var reloadOwnerState: () -> Void
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
+    var ownerState: API.OwnerState
     var onUnlockExpired: () -> Void
     @ViewBuilder var content: () -> Content
     
@@ -56,12 +55,7 @@ struct BiometryGatedScreen<Content: View>: View {
                         }
                 } else {
                     LockScreen(
-                        session: session,
-                        ownerState: ready,
-                        reloadOwnerState: reloadOwnerState,
-                        onOwnerStateUpdated: {
-                            ownerState = $0
-                        }
+                        ownerState: ready
                     )
                 }
             default:
@@ -71,10 +65,10 @@ struct BiometryGatedScreen<Content: View>: View {
     }
     
     private func prolongUnlock() {
-        apiProvider.decodableRequest(with: session, endpoint: .prolongUnlock) { (result: Result<API.ProlongUnlockApiResponse, MoyaError>) in
+        ownerRepository.prolongUnlock { result in
             switch result {
             case .success(let response):
-                ownerState = response.ownerState
+                ownerStateStoreController.replace(response.ownerState)
             case .failure:
                 break
             }
@@ -85,70 +79,66 @@ struct BiometryGatedScreen<Content: View>: View {
 
 #if DEBUG
 #Preview("ReadyUnlocked") {
-    let session = Session.sample
-    
-    @State var ownerState1 = API.OwnerState.ready(.init(
-        policy: .sample,
-        vault: .sample,
-        unlockedForSeconds: UnlockedDuration(value: 600),
-        authType: .facetec,
-        subscriptionStatus: .active,
-        timelockSetting: .sample,
-        subscriptionRequired: true,
-        onboarded: true,
-        canRequestAuthenticationReset: false
-    ))
-    return BiometryGatedScreen(
-        session: session,
-        ownerState: $ownerState1,
-        reloadOwnerState: {},
-        onUnlockExpired: {}
-    ) {
-        VStack {
-            Text("test")
+    LoggedInOwnerPreviewContainer {
+        BiometryGatedScreen(
+            ownerState: API.OwnerState.ready(.init(
+                policy: .sample,
+                vault: .sample,
+                unlockedForSeconds: UnlockedDuration(value: 600),
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )),
+            onUnlockExpired: {}
+        ) {
+            VStack {
+                Text("test")
+            }
         }
     }
 }
 
 #Preview("ReadyLocked") {
-    let session = Session.sample
-    @State var ownerState2 = API.OwnerState.ready(.init(
-        policy: .sample,
-        vault: .sample,
-        unlockedForSeconds: nil,
-        authType: .facetec,
-        subscriptionStatus: .active,
-        timelockSetting: .sample,
-        subscriptionRequired: true,
-        onboarded: true,
-        canRequestAuthenticationReset: false
-    ))
-    return BiometryGatedScreen(
-        session: session,
-        ownerState: $ownerState2,
-        reloadOwnerState: {},
-        onUnlockExpired: {}
-    ) {
-        VStack {
-            Text("test")
+    LoggedInOwnerPreviewContainer {
+        BiometryGatedScreen(
+            ownerState: API.OwnerState.ready(.init(
+                policy: .sample,
+                vault: .sample,
+                unlockedForSeconds: nil,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            )),
+            onUnlockExpired: {}
+        ) {
+            VStack {
+                Text("test")
+            }
         }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("Initial") {
-    let session = Session.sample
-    @State var ownerState3 = API.OwnerState.initial(API.OwnerState.Initial(authType: .facetec, entropy: .sample, subscriptionStatus: .active, subscriptionRequired: false))
-    return BiometryGatedScreen(
-        session: session,
-        ownerState: $ownerState3,
-        reloadOwnerState: {},
-        onUnlockExpired: {}
-    ) {
-        VStack {
-            Text("test")
+    LoggedInOwnerPreviewContainer {
+        BiometryGatedScreen(
+            ownerState: API.OwnerState.initial(API.OwnerState.Initial(
+                authType: .facetec,
+                entropy: .sample,
+                subscriptionStatus: .active,
+                subscriptionRequired: false
+            )),
+            onUnlockExpired: {}
+        ) {
+            VStack {
+                Text("test")
+            }
         }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

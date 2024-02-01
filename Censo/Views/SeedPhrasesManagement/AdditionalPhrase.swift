@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AdditionalPhrase: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
     enum Step {
@@ -24,9 +23,6 @@ struct AdditionalPhrase: View {
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
 
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var session: Session
-    var onComplete: (API.OwnerState) -> Void
     
     var body: some View {
         switch step {
@@ -202,13 +198,10 @@ struct AdditionalPhrase: View {
             }
         case .addPhrase:
             SeedEntry(
-                session: session,
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
                 isFirstTime: false,
                 language: currentLanguage(),
-                onSuccess: { ownerState in
-                    onComplete(ownerState)
+                onSuccess: {
                     dismiss()
                 },
                 onBack: {
@@ -217,39 +210,31 @@ struct AdditionalPhrase: View {
             )
         case .pastePhrase:
             PastePhrase(
-                onComplete: { ownerState in
-                    onComplete(ownerState)
+                ownerState: ownerState,
+                isFirstTime: false,
+                onComplete: {
                     dismiss()
                 },
                 onBack: {
                     step = .haveMyOwn
-                },
-                session: session,
-                ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: false
+                }
             )
         case .photoPhrase:
             PhotoPhrase(
-                onComplete: onComplete,
+                ownerState: ownerState,
+                isFirstTime: false,
                 onBack: {
                     step = .haveMyOwn
-                },
-                session: session,
-                ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: false
+                }
             )
         case .generatePhrase:
             GeneratePhrase(
-                language: currentLanguage(),
-                onComplete: { ownerState in
-                    onComplete(ownerState)
-                    dismiss()
-                }, session: session,
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: false
+                language: currentLanguage(),
+                isFirstTime: false,
+                onComplete: {
+                    dismiss()
+                }
             )
         }
     }
@@ -261,22 +246,21 @@ struct AdditionalPhrase: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        AdditionalPhrase(
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample1Phrase,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            reloadOwnerState: {},
-            session: .sample,
-            onComplete: {_ in }
-        ).foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            AdditionalPhrase(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample1Phrase,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
     }
 }
 #endif

@@ -7,19 +7,18 @@
 
 import Foundation
 import SwiftUI
-import Moya
 import Sentry
 import Base32
 
 struct GetAuthResetApproval : View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var authType: API.AuthType
+    
     var policy: API.Policy
     var approval: API.AuthenticationReset.ThisDevice.Approval
     var approver: API.TrustedApprover
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
+    
     var onSuccess: () -> Void
     
     @State private var showingError = false
@@ -174,13 +173,6 @@ struct GetAuthResetApproval : View {
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
-            switch result {
-            case .success(let user):
-                onOwnerStateUpdated(user.ownerState)
-            default:
-                break
-            }
-        }
+        ownerStateStoreController.reload()
     }
 }

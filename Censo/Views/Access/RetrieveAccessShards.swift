@@ -9,9 +9,8 @@ import SwiftUI
 import Moya
 
 struct RetrieveAccessShards: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
     var onSuccess: ([API.EncryptedShard]) -> Void
     var onCancelled: () -> Void
@@ -24,12 +23,11 @@ struct RetrieveAccessShards: View {
             }
         case .facetec:
             FacetecAuth<API.RetrieveAccessShardsApiResponse>(
-                session: session,
-                onReadyToUploadResults: { biometryData in
-                    return .retrieveAccessShards(API.RetrieveAccessShardsApiRequest(
+                onFaceScanReady: { biometryData, completion in
+                    ownerRepository.retrieveAccessShards(API.RetrieveAccessShardsApiRequest(
                         biometryVerificationId: biometryData.verificationId,
                         biometryData: biometryData
-                    ))
+                    ), completion)
                 },
                 onSuccess: { response in
                     onSuccess(response.encryptedShards)
@@ -38,12 +36,10 @@ struct RetrieveAccessShards: View {
             )
         case .password:
             PasswordAuth<API.RetrieveAccessShardsWithPasswordApiResponse>(
-                session: session,
-                submitTo: { password in
-                    return .retrieveAccessShardsWithPassword(
-                        API.RetrieveAccessShardsWithPasswordApiRequest(
-                            password: password
-                        )
+                submit: { password, completion in
+                    ownerRepository.retrieveAccessShardsWithPassword(
+                        API.RetrieveAccessShardsWithPasswordApiRequest(password: password),
+                        completion
                     )
                 },
                 onSuccess: { response in

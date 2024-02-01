@@ -5,17 +5,15 @@
 //  Created by Anton Onyshchenko on 01.12.23.
 //
 import SwiftUI
-import Moya
 import Sentry
 
 struct ReplacePolicy: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: () -> Void
     var onCanceled: () -> Void
     var intent: Intent
     
@@ -39,13 +37,10 @@ struct ReplacePolicy: View {
             switch (step) {
             case .requestingAccess:
                 RequestAccess(
-                    session: session,
                     ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated,
                     intent: .replacePolicy,
                     accessAvailableView: { _ in
                         RetrieveAccessShards(
-                            session: session,
                             ownerState: ownerState,
                             onSuccess: { encryptedShards in
                                 self.step = .replacingPolicy(encryptedShards: encryptedShards)
@@ -119,18 +114,15 @@ struct ReplacePolicy: View {
                 let ownerOldParticipantId = ownerState.policy.approvers.first!.participantId
                 
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
-                let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, session)
+                let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, ownerRepository.userIdentifier, ownerRepository.deviceKey)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: policySetupOwner.participantId, entropy: entropy.data)
+                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(participantId: policySetupOwner.participantId, entropy: entropy.data)
                 
-                apiProvider.request(
-                    with: session,
-                    endpoint: .ownerCompletion(
-                        API.CompleteOwnerApprovershipApiRequest(
-                            participantId: policySetup.owner!.participantId,
-                            approverPublicKey: try ownerApproverKey.publicExternalRepresentation()
-                        )
+                ownerRepository.completeOwnerApprovership(
+                    API.CompleteOwnerApprovershipApiRequest(
+                        participantId: policySetup.owner!.participantId,
+                        approverPublicKey: try ownerApproverKey.publicExternalRepresentation()
                     )
                 ) { ownerCompletionResult in
                     do {
@@ -153,9 +145,8 @@ struct ReplacePolicy: View {
                                 .sortedByStringRepr()
                                 .toBytes()
                             
-                            apiProvider.decodableRequest(
-                                with: session,
-                                endpoint: .replacePolicy(API.ReplacePolicyApiRequest(
+                            ownerRepository.replacePolicy(
+                                API.ReplacePolicyApiRequest(
                                     intermediatePublicKey: try newIntermediateKey.publicExternalRepresentation(),
                                     approverPublicKeysSignatureByIntermediateKey: try newIntermediateKey.signature(for: concatenatedApproverPublicKeys),
                                     approverShards: try newIntermediateKey.shard(
@@ -175,12 +166,13 @@ struct ReplacePolicy: View {
                                     masterEncryptionPublicKey: masterPublicKey,
                                     signatureByPreviousIntermediateKey: try oldIntermediateKey.signature(for: newIntermediateKey.publicKeyData()),
                                     masterKeySignature: try ownerApproverKey.signature(for: masterPublicKey.data)
-                                ))
-                            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+                                )
+                            ) { result in
                                 switch result {
                                 case .success(let response):
-                                    session.deleteApproverKey(participantId: ownerOldParticipantId)
-                                    onSuccess(response.ownerState)
+                                    ownerRepository.deleteApproverKey(participantId: ownerOldParticipantId)
+                                    ownerStateStoreController.replace(response.ownerState)
+                                    onSuccess()
                                 case .failure(let error):
                                     showError(error)
                                 }
@@ -204,7 +196,7 @@ struct ReplacePolicy: View {
             do {
                 guard let participantIdData = approver.participantId.value.data(using: .hexadecimal),
                       let timeMillisData = String(confirmed.timeMillis).data(using: .utf8),
-                      let base58DevicePublicKey = (try? session.deviceKey.publicExternalRepresentation())?.base58EncodedPublicKey(),
+                      let base58DevicePublicKey = (try? ownerRepository.deviceKey.publicExternalRepresentation())?.base58EncodedPublicKey(),
                       let devicePublicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: base58DevicePublicKey) else {
                     return false
                 }
@@ -223,13 +215,10 @@ struct ReplacePolicy: View {
     
     private func deleteAccessIfExists(onSuccess: @escaping () -> Void) {
         if ownerState.access != nil {
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .deleteAccess
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            ownerRepository.deleteAccess { result in
                 switch result {
                 case .success(let success):
-                    onOwnerStateUpdated(success.ownerState)
+                    ownerStateStoreController.replace(success.ownerState)
                     onSuccess()
                 case .failure(let error):
                     showError(error)

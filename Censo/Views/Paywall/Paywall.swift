@@ -8,15 +8,12 @@
 import Foundation
 import SwiftUI
 import Sentry
-import Moya
 import StoreKit
 
 struct Paywall: View {
     var monthlyOffer: Product
     var yearlyOffer: Product
-    @Binding var ownerState: API.OwnerState
-    var reloadOwnerState: () -> Void
-    var session: Session
+    var ownerState: API.OwnerState
     var purchase: (Product) -> Void
     var restorePurchases: () -> Void
     var redemptionFlowEnded: () -> Void
@@ -202,7 +199,7 @@ struct Paywall: View {
             }
         }
         .sheet(isPresented: $displaySubscriptionDecline) {
-            SubscriptionDecline(ownerState: $ownerState, reloadOwnerState: reloadOwnerState, session: session)
+            SubscriptionDecline(ownerState: ownerState)
         }
         .alert("Error", isPresented: $displayError) {
             Button {

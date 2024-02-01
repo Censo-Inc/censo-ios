@@ -14,13 +14,11 @@ struct SeedVerification: View {
     @State private var showingDismissAlert = false
 
     var words: [String]
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
     var requestedLabel: String? = nil
     var onClose: (() -> Void)? = nil
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: () -> Void
 
     var body: some View {
         GeometryReader { geometry in
@@ -85,9 +83,7 @@ struct SeedVerification: View {
         .navigationDestination(isPresented: $showingSave) {
             SaveSeedPhrase(
                 seedPhrase: .bip39(words: words),
-                session: session,
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
                 isFirstTime: isFirstTime,
                 requestedLabel: requestedLabel,
                 onSuccess: onSuccess
@@ -99,11 +95,25 @@ struct SeedVerification: View {
 #if DEBUG
 struct SeedVerification_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            SeedVerification(words: ["sample", "word"], session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true) { _ in }.foregroundColor(.Censo.primaryForeground)
+        LoggedInOwnerPreviewContainer {
+            NavigationStack {
+                SeedVerification(
+                    words: ["sample", "word"],
+                    ownerState: .sample,
+                    isFirstTime: true,
+                    onSuccess: {}
+                ).foregroundColor(.Censo.primaryForeground)
+            }
         }
-        NavigationStack {
-            SeedVerification(words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"], session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true) { _ in }
+        LoggedInOwnerPreviewContainer {
+            NavigationStack {
+                SeedVerification(
+                    words: ["donor", "tower", "topic", "path", "obey", "intact", "lyrics", "list", "hair", "slice", "cluster", "grunt"],
+                    ownerState: .sample,
+                    isFirstTime: true,
+                    onSuccess: {}
+                )
+            }
         }
     }
 }

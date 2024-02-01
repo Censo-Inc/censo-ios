@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CryptoKit
-import Moya
 
 enum PhraseValidityError: Error, LocalizedError {
     case invalid(BIP39InvalidReason)
@@ -24,7 +23,6 @@ enum PhraseValidityError: Error, LocalizedError {
 }
 
 struct PastePhrase: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
     @State private var showingError = false
@@ -32,12 +30,10 @@ struct PastePhrase: View {
     @State private var pastedPhrase: String = ""
     @State private var showingVerification = false
     
-    var onComplete: (API.OwnerState) -> Void
-    var onBack: () -> Void
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
     var isFirstTime: Bool
+    var onComplete: () -> Void
+    var onBack: () -> Void
     
     var body: some View {
         NavigationStack {
@@ -134,14 +130,13 @@ struct PastePhrase: View {
             .navigationDestination(isPresented: $showingVerification, destination: {
                 SeedVerification(
                     words: BIP39.splitToWords(phrase: pastedPhrase),
-                    session: session,
                     ownerState: ownerState,
-                    reloadOwnerState: reloadOwnerState,
-                    isFirstTime: isFirstTime
-                ) { ownerState in
-                    onComplete(ownerState)
-                    dismiss()
-                }
+                    isFirstTime: isFirstTime,
+                    onSuccess: {
+                        onComplete()
+                        dismiss()
+                    }
+                )
             })
         }
     }
@@ -166,14 +161,13 @@ struct PastePhrase: View {
 
 #if DEBUG
 #Preview {
-    PastePhrase(
-        onComplete: {_ in},
-        onBack: {},
-        session: .sample,
-        ownerState: .sample,
-        reloadOwnerState: {},
-        isFirstTime: true
-    )
-    .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        PastePhrase(
+            ownerState: .sample,
+            isFirstTime: true,
+            onComplete: {},
+            onBack: {}
+        )
+    }
 }
 #endif

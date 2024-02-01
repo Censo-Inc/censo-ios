@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-import Moya
 import CryptoKit
 
 struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     @StateObject private var label = PhraseLabel()
     @State private var showingDismissAlert = false
     @State private var inProgress = false
@@ -21,17 +22,16 @@ struct SaveSeedPhrase: View {
     @State private var showPaywall = false
 
     var seedPhrase: SeedPhrase
-    var session: Session
-    @State var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
+    var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
     var requestedLabel: String?
-    var onSuccess: (API.OwnerState) -> Void
+    var onSuccess: () -> Void
 
     var body: some View {
         if let newOwnerState {
             PhraseSaveSuccess(isFirstTime: isFirstTime) {
-                onSuccess(newOwnerState)
+                ownerStateStoreController.replace(newOwnerState)
+                onSuccess()
             }
             .navigationTitle(Text("Add Seed Phrase"))
             .navigationBarTitleDisplayMode(.inline)
@@ -113,19 +113,8 @@ struct SaveSeedPhrase: View {
             .sheet(isPresented: $showPaywall, content: {
                 NavigationStack {
                     PaywallGatedScreen(
-                        session: session,
-                        ownerState: Binding(
-                            get: { .ready(ownerState) },
-                            set: { newOwnerState in
-                                switch newOwnerState {
-                                case .ready(let ready):
-                                    ownerState = ready
-                                case .initial:
-                                    break
-                                }
-                            }),
+                        ownerState: .ready(ownerState),
                         ignoreSubscriptionRequired: true,
-                        reloadOwnerState: reloadOwnerState,
                         onCancel: { dismiss() }) {
                             ProgressView().onAppear {
                                 save()
@@ -142,7 +131,6 @@ struct SaveSeedPhrase: View {
                             }
                         })
                 }
-                
             })
         }
     }
@@ -154,7 +142,7 @@ struct SaveSeedPhrase: View {
             }
             // first verify the master key signature if it is available
             if (ownerState.policy.masterKeySignature != nil) {
-                let ownerApproverKey = try session.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerEntropy.data)
+                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerEntropy.data)
                 let verified = try ownerApproverKey.verifySignature(for: ownerState.vault.publicMasterEncryptionKey.data, signature: ownerState.policy.masterKeySignature!)
                 if (!verified) {
                     showError(CensoError.cannotVerifyMasterKeySignature)
@@ -166,15 +154,13 @@ struct SaveSeedPhrase: View {
                 .generateFromPublicExternalRepresentation(base58PublicKey: ownerState.vault.publicMasterEncryptionKey)
                 .encrypt(data: phraseData)
 
-            let payload = API.StoreSeedPhraseApiRequest(
+            inProgress = true
+
+            ownerRepository.storeSeedPhrase(API.StoreSeedPhraseApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: phraseData).compactMap { String(format: "%02x", $0) }.joined(),
                 label: label.value
-            )
-
-            inProgress = true
-
-            apiProvider.decodableRequest(with: session, endpoint: .storeSeedPhrase(payload)) { (result: Result<API.StoreSeedPhraseApiResponse, MoyaError>) in
+            )) { result in
                 inProgress = false
 
                 switch result {
@@ -201,10 +187,16 @@ struct SaveSeedPhrase: View {
 #if DEBUG
 struct SaveSeedPhrase_Preview: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            SaveSeedPhrase(seedPhrase: .bip39(words: [""]), session: .sample, ownerState: .sample, reloadOwnerState: {}, isFirstTime: true, onSuccess: { _ in })
+        LoggedInOwnerPreviewContainer {
+            NavigationStack {
+                SaveSeedPhrase(
+                    seedPhrase: .bip39(words: [""]),
+                    ownerState: .sample,
+                    isFirstTime: true,
+                    onSuccess: {}
+                )
+            }
         }
-        .foregroundColor(Color.Censo.primaryForeground)
     }
 }
 #endif

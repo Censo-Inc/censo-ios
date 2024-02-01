@@ -290,7 +290,9 @@
 		E4D376872AE83999005809F7 /* GetLiveWithApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */; };
 		E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D376882AE839C6005809F7 /* ActivateApprover.swift */; };
 		E4D3768D2AE83A24005809F7 /* ApproversSetupDone.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */; };
+		E4DD267C2B67E12700DA182E /* OwnerStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD267B2B67E12700DA182E /* OwnerStateStore.swift */; };
 		E4DD267E2B6802D000DA182E /* BeginFaceScanButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD267D2B6802D000DA182E /* BeginFaceScanButton.swift */; };
+		E4DD26802B6A4C9C00DA182E /* OwnerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DD267F2B6A4C9C00DA182E /* OwnerRepository.swift */; };
 		E4EFFAF42AFE62A100AA1FA0 /* FaceTec.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */; };
 		E4EFFAFB2B03C20300AA1FA0 /* Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */; };
 		E4FB35652B18A01E00D75E26 /* PhrasesAccessAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB35642B18A01E00D75E26 /* PhrasesAccessAvailable.swift */; };
@@ -550,7 +552,9 @@
 		E4D376862AE83999005809F7 /* GetLiveWithApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLiveWithApprover.swift; sourceTree = "<group>"; };
 		E4D376882AE839C6005809F7 /* ActivateApprover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateApprover.swift; sourceTree = "<group>"; };
 		E4D3768C2AE83A24005809F7 /* ApproversSetupDone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproversSetupDone.swift; sourceTree = "<group>"; };
+		E4DD267B2B67E12700DA182E /* OwnerStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerStateStore.swift; sourceTree = "<group>"; };
 		E4DD267D2B6802D000DA182E /* BeginFaceScanButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeginFaceScanButton.swift; sourceTree = "<group>"; };
+		E4DD267F2B6A4C9C00DA182E /* OwnerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnerRepository.swift; sourceTree = "<group>"; };
 		E4EFFAF32AFE62A100AA1FA0 /* FaceTec.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = FaceTec.strings; sourceTree = "<group>"; };
 		E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Subscriptions.storekit; path = Censo/Subscriptions.storekit; sourceTree = SOURCE_ROOT; };
 		E4FB35642B18A01E00D75E26 /* PhrasesAccessAvailable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhrasesAccessAvailable.swift; sourceTree = "<group>"; };
@@ -645,6 +649,7 @@
 				3DE0B9792ABA2EDB0001F3A3 /* UserCredentials.swift */,
 				3D23ACFB2AB269CF00F55C5D /* RemoteResult.swift */,
 				3D55E6012B51B6DC0096F612 /* Maintenance.swift */,
+				E4DD267B2B67E12700DA182E /* OwnerStateStore.swift */,
 				E4EFFAFA2B03C20300AA1FA0 /* Subscriptions.storekit */,
 				3D3796932A8C226D00913581 /* API */,
 				6CB230C82A9D1354009FAE91 /* Helpers */,
@@ -816,6 +821,7 @@
 				3DE0B97E2ABA57160001F3A3 /* MoyaProvider+Session.swift */,
 				3D28C0112B06723600E261AA /* MoyaProvider+Async.swift */,
 				3D55E60C2B51B74E0096F612 /* MaintenancePlugin.swift */,
+				E4DD267F2B6A4C9C00DA182E /* OwnerRepository.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -1373,6 +1379,7 @@
 				E4DD267E2B6802D000DA182E /* BeginFaceScanButton.swift in Sources */,
 				3D28C00E2B0671B200E261AA /* AttestKeyGeneration.swift in Sources */,
 				6CC60F9A2AA7D8A5001A4454 /* Base58.swift in Sources */,
+				E4DD267C2B67E12700DA182E /* OwnerStateStore.swift in Sources */,
 				E4FB35672B18C0BF00D75E26 /* InitPhrasesAccessFlow.swift in Sources */,
 				3D0C1EAD2A83DE1000AB3A48 /* Vault.swift in Sources */,
 				6CF507F72B1A48440013CD7C /* LanguageSelection.swift in Sources */,
@@ -1466,6 +1473,7 @@
 				3DCAADA42B51ED5700D5C093 /* LearnMore.swift in Sources */,
 				6CF507F12B18DFA90013CD7C /* AccessOnAnotherDevice.swift in Sources */,
 				E4D376892AE839C6005809F7 /* ActivateApprover.swift in Sources */,
+				E4DD26802B6A4C9C00DA182E /* OwnerRepository.swift in Sources */,
 				6C86F2162AECB71B00E73EA1 /* WordList.swift in Sources */,
 				6CA032A22B596443005EE075 /* PhotoPhrase.swift in Sources */,
 				3DE0B97D2ABA56BA0001F3A3 /* SignIn.swift in Sources */,

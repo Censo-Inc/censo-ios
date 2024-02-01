@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct Welcome: View {
-    var session: Session
     var ownerState: API.OwnerState.Initial
-    var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
     @State var showInitialSetup = false
     
     var body: some View {
         if (showInitialSetup) {
             InitialPolicySetup(
-                session: session,
                 ownerState: ownerState,
-                onComplete: onComplete,
                 onCancel: { showInitialSetup = false }
             )
         } else {
@@ -94,6 +90,16 @@ struct Welcome: View {
 
 #if DEBUG
 #Preview {
-    Welcome(session: .sample, ownerState: API.OwnerState.Initial(authType: .none, entropy: .empty, subscriptionStatus: .none, subscriptionRequired: false), onComplete: {_ in}, onCancel: {})
+    LoggedInOwnerPreviewContainer {
+        Welcome(
+            ownerState: API.OwnerState.Initial(
+                authType: .none,
+                entropy: .empty,
+                subscriptionStatus: .none,
+                subscriptionRequired: false
+            ),
+            onCancel: {}
+        )
+    }
 }
 #endif

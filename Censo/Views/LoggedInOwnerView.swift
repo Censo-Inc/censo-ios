@@ -17,35 +17,41 @@ enum ImportPhase {
 }
 
 struct LoggedInOwnerView: View {
-    @Environment(\.apiProvider) var apiProvider
-    @Binding var pendingImport: Import?
+    private var apiProvider: MoyaProvider<API>
+    private var session: Session
+    @Binding private var pendingImport: Import?
+    
     @State private var importPhase: ImportPhase = .none
-    @RemoteResult<API.OwnerState, API> private var ownerStateResource
+    @StateObject private var ownerRepository: OwnerRepository
+    @StateObject private var ownerStateStore: OwnerStateStore
     @AppStorage("acceptedTermsOfUseVersion") var acceptedTermsOfUseVersion: String = ""
     @State private var refreshStatePublisher = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
     @State private var cancelOnboarding = false
     @State private var cancelKeyRecovery = false
     @State private var showingError = false
     @State private var error: Error?
-
-    var session: Session
+    
+    init(apiProvider: MoyaProvider<API>, session: Session, pendingImport: Binding<Import?>) {
+        self.apiProvider = apiProvider
+        self.session = session
+        self._pendingImport = pendingImport
+        let ownerRepository = OwnerRepository(apiProvider, session)
+        self._ownerRepository = StateObject(wrappedValue: ownerRepository)
+        self._ownerStateStore = StateObject(wrappedValue: OwnerStateStore(ownerRepository, session))
+    }
 
     var body: some View {
-        switch ownerStateResource {
+        switch ownerStateStore.loadingState {
         case .idle:
             ProgressView()
-                .onAppear(perform: reload)
+                .onAppear(perform: ownerStateStore.reload)
         case .loading:
             ProgressView()
         case .success(let ownerState):
             VStack {
                 if (acceptedTermsOfUseVersion == "v0.2") {
-                    let ownerStateBinding = Binding<API.OwnerState>(
-                        get: { ownerState },
-                        set: { replaceOwnerState(newOwnerState: $0) }
-                    )
-                    PaywallGatedScreen(session: session, ownerState: ownerStateBinding, reloadOwnerState: reload, onCancel: onCancelOnboarding) {
-                        BiometryGatedScreen(session: session, ownerState: ownerStateBinding, reloadOwnerState: reload, onUnlockExpired: reload) {
+                    PaywallGatedScreen(ownerState: ownerState, onCancel: onCancelOnboarding) {
+                        BiometryGatedScreen(ownerState: ownerState, onUnlockExpired: ownerStateStore.reload) {
                             switch pendingImport {
                             case .none:
                                 switch importPhase {
@@ -53,18 +59,14 @@ struct LoggedInOwnerView: View {
                                     switch ownerState {
                                     case .initial(let initial):
                                         Welcome(
-                                            session: session,
                                             ownerState: initial,
-                                            onComplete: replaceOwnerState,
                                             onCancel: onCancelOnboarding
                                         )
                                     case .ready(let ready):
-                                        if ready.policy.ownersApproverKeyRecoveryRequired(session) {
+                                        if ready.policy.ownersApproverKeyRecoveryRequired(ownerRepository) {
                                             NavigationStack {
                                                 OwnerKeyRecovery(
-                                                    session: session,
-                                                    ownerState: ready,
-                                                    onOwnerStateUpdated: replaceOwnerState
+                                                    ownerState: ready
                                                 )
                                                 .navigationBarTitleDisplayMode(.inline)
                                                 .toolbar(content: {
@@ -80,26 +82,18 @@ struct LoggedInOwnerView: View {
                                                     title: "Cancel Key Recovery",
                                                     numSeedPhrases: ready.vault.seedPhrases.count,
                                                     deleteRequested:$cancelKeyRecovery) {
-                                                        deleteOwner(apiProvider: apiProvider, session: session, ownerState: ownerState, onSuccess: {}, onFailure: showError)
+                                                        deleteOwner(ownerRepository, ownerState, onSuccess: {}, onFailure: showError)
                                                     }
                                             }
                                         } else {
                                             if !ready.onboarded {
                                                 FirstPhrase(
                                                     ownerState: ready,
-                                                    reloadOwnerState: reload,
-                                                    session: session,
-                                                    onComplete: replaceOwnerState,
                                                     onCancel: onCancelOnboarding
                                                 )
                                                 
                                             } else {
-                                                HomeScreen(
-                                                    session: session,
-                                                    ownerState: ready,
-                                                    reloadOwnerState: reload,
-                                                    onOwnerStateUpdated: replaceOwnerState
-                                                )
+                                                HomeScreen(ownerState: ready)
                                             }
                                         }
                                     }
@@ -116,16 +110,16 @@ struct LoggedInOwnerView: View {
                                             NavigationStack {
                                                 SeedVerification(
                                                     words: words,
-                                                    session: session,
                                                     ownerState: ready,
-                                                    reloadOwnerState: reload,
                                                     isFirstTime: false,
                                                     requestedLabel: importedPhrase.label,
-                                                    onClose: { importPhase = .none }
-                                                ) { ownerState in
-                                                    replaceOwnerState(newOwnerState: ownerState)
-                                                    importPhase = .none
-                                                }
+                                                    onClose: {
+                                                        importPhase = .none
+                                                    },
+                                                    onSuccess: {
+                                                        importPhase = .none
+                                                    }
+                                                )
                                             }
                                         }
                                         case .initial:
@@ -161,6 +155,8 @@ struct LoggedInOwnerView: View {
                     )
                 }
             }
+            .environmentObject(ownerStateStore.controller())
+            .environmentObject(ownerRepository)
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button { } label: { Text("OK") }
             } message: { error in
@@ -168,7 +164,7 @@ struct LoggedInOwnerView: View {
             }
             .alert("Exit Setup", isPresented: $cancelOnboarding) {
                 Button(role: .destructive) {
-                    deleteOwner(apiProvider: apiProvider, session: session, ownerState: ownerState, onSuccess: {}, onFailure: showError)
+                    deleteOwner(ownerRepository, ownerState, onSuccess: {}, onFailure: showError)
                 } label: { Text("Exit") }
                 Button(role: .cancel) {
                 } label: { Text("Cancel") }
@@ -176,11 +172,11 @@ struct LoggedInOwnerView: View {
                 Text("This will exit the setup process and delete **ALL** of your data. You will be required to start over again.")
             }
         case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
-            SignIn(session: session, onSuccess: reload) {
+            SignIn(session: session, onSuccess: ownerStateStore.reload) {
                 ProgressView("Signing in...")
             }
         case .failure(let error):
-            RetryView(error: error, action: reload)
+            RetryView(error: error, action: ownerStateStore.reload)
         }
     }
     
@@ -196,7 +192,7 @@ struct LoggedInOwnerView: View {
     private func checkForCompletedImport() {
         switch importPhase {
         case .completing(let accepted):
-            apiProvider.decodableRequest(with: session, endpoint: .getImportEncryptedData(channel: accepted.channel())) { (result: Result<GetImportDataByKeyResponse, MoyaError>) in
+            ownerRepository.getImportEncryptedData(accepted.channel()) { result in
                 switch result {
                 case .success(let response):
                     switch response.importState {
@@ -220,25 +216,13 @@ struct LoggedInOwnerView: View {
         }
     }
 
-    private func replaceOwnerState(newOwnerState: API.OwnerState) {
-        _ownerStateResource.replace(newOwnerState)
-    }
-    
-    private func reload() {
-        _ownerStateResource.reload(
-            with: apiProvider,
-            target: session.target(for: .user),
-            adaptSuccess: { (user: API.User) in user.ownerState }
-        )
-    }
-
     private func acceptImport(importToAccept: Import) {
         importPhase = .accepting
         guard let ownerProofSignature = try? session.deviceKey.signature(for: importToAccept.importKey.data) else {
             importPhase = .none
             return
         }
-        apiProvider.request(with: session, endpoint: .acceptImport(channel: importToAccept.channel(), ownerProof: API.OwnerProof(signature: ownerProofSignature))) { _ in
+        ownerRepository.acceptImport(importToAccept.channel(), API.OwnerProof(signature: ownerProofSignature)) { _ in
             importPhase = .completing(importToAccept)
         }
     }
@@ -284,6 +268,20 @@ extension API.PolicySetup {
 extension API.ProspectApprover {
     static var sample: Self {
         .init(invitationId: try! InvitationId(value: ""), label: "Jerry", participantId: .random(), status: .declined)
+    }
+}
+
+struct LoggedInOwnerPreviewContainer<Content : View> : View {
+    @ViewBuilder var content: () -> Content
+    
+    var body: some View {
+        content()
+            .foregroundColor(.Censo.primaryForeground)
+            .environmentObject(
+                OwnerStateStoreController(replace: { _ in }, reload: {})
+            )
+            .environmentObject(Session.sample)
+            .environmentObject(OwnerRepository(APIProviderEnvironmentKey.defaultValue, Session.sample))
     }
 }
 #endif

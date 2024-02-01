@@ -33,6 +33,7 @@ class LoginIdResetTokensStore: ObservableObject {
 }
 
 struct LoginIdReset: View {
+    @Environment(\.apiProvider) var apiProvider
     var tokens: Binding<Set<LoginIdResetToken>>
     var onComplete: () -> Void
     
@@ -59,7 +60,7 @@ struct LoginIdReset: View {
             },
             loggedInContent: { session in
                 LoginIdResetLoggedInSteps(
-                    session: session,
+                    ownerRepository: OwnerRepository(apiProvider, session),
                     step: $step,
                     tokens: tokens,
                     onComplete: onComplete
@@ -99,14 +100,14 @@ struct LoginIdResetLoggedOutSteps: View {
                     
                     LoginIdResetStartVerificationStep(
                         enabled: false,
-                        session: nil,
+                        ownerRepository: nil,
                         tokens: $tokens,
                         onDeviceCreated: { }
                     )
                     
                     LoginIdResetInitKeyRecoveryStep(
                         enabled: false,
-                        session: nil,
+                        loggedIn: false,
                         onButtonPressed: { }
                     )
                 }
@@ -133,9 +134,7 @@ struct LoginIdResetLoggedOutSteps: View {
 }
 
 struct LoginIdResetLoggedInSteps: View {
-    @Environment(\.apiProvider) var apiProvider
-    
-    var session: Session
+    var ownerRepository: OwnerRepository
     @Binding var step: LoginIdReset.Step
     @Binding var tokens: Set<LoginIdResetToken>
     var onComplete: () -> Void
@@ -158,7 +157,7 @@ struct LoginIdResetLoggedInSteps: View {
                         
                         LoginIdResetStartVerificationStep(
                             enabled: step == .startVerification,
-                            session: session,
+                            ownerRepository: ownerRepository,
                             tokens: $tokens,
                             onDeviceCreated: {
                                 self.step = .chooseVerificationMethod
@@ -171,7 +170,7 @@ struct LoginIdResetLoggedInSteps: View {
                         // and renders the OwnerKeyRecovery from which user can't exit
                         LoginIdResetInitKeyRecoveryStep(
                             enabled: false,
-                            session: session,
+                            loggedIn: true,
                             onButtonPressed: { }
                         )
                     }
@@ -212,14 +211,13 @@ struct LoginIdResetLoggedInSteps: View {
                 })
             case .resetWithBiometry:
                 FacetecAuth<API.ResetLoginIdApiResponse>(
-                    session: session,
-                    onReadyToUploadResults: { biometryData in
-                        return .resetLoginId(API.ResetLoginIdApiRequest(
-                            identityToken: session.userCredentials.userIdentifier,
+                    onFaceScanReady: { biometryData, completion in
+                        ownerRepository.resetLoginId(API.ResetLoginIdApiRequest(
+                            identityToken: ownerRepository.userIdentifier,
                             resetTokens: Array(tokens),
                             biometryVerificationId: biometryData.verificationId,
                             biometryData: biometryData
-                        ))
+                        ), completion)
                     },
                     onSuccess: { _ in
                         onComplete()
@@ -228,27 +226,18 @@ struct LoginIdResetLoggedInSteps: View {
                         step = .chooseVerificationMethod
                     }
                 )
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            step = .startVerification
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
-                    }
-                })
             case .resetWithPassword:
                 ScrollView {
                     WithResetLoginIdHeader {
                         PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
-                            session: session,
-                            submitTo: { password in
-                                return .resetLoginIdWithPassword(
+                            submit: { password, completion in
+                                ownerRepository.resetLoginIdWithPassword(
                                     API.ResetLoginIdWithPasswordApiRequest(
-                                        identityToken: session.userCredentials.userIdentifier,
+                                        identityToken: ownerRepository.userIdentifier,
                                         resetTokens: Array(tokens),
                                         password: password
-                                    )
+                                    ),
+                                    completion
                                 )
                             },
                             onSuccess: { _ in
@@ -271,6 +260,7 @@ struct LoginIdResetLoggedInSteps: View {
                 }
             }
         }
+        .environmentObject(ownerRepository)
     }
 }
 

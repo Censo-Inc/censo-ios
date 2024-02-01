@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct PhraseAccessIntro: View {
-    @Environment(\.apiProvider) var apiProvider
-
     var ownerState: API.OwnerState.Ready
-    var session: Session
     var onReadyToGetStarted: (WordListLanguage?) -> Void
     
     @State private var languageId: UInt8 = 0
@@ -115,7 +112,6 @@ struct SetupStep: View {
     NavigationView {
         PhraseAccessIntro(
             ownerState: .sample,
-            session: .sample,
             onReadyToGetStarted: {_ in}
         )
         .foregroundColor(Color.Censo.primaryForeground)

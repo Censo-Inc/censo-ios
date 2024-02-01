@@ -10,6 +10,7 @@ import Moya
 import CryptoKit
 
 struct ContentView: View {
+    @Environment(\.apiProvider) var apiProvider
     @Environment(\.scenePhase) private var scenePhase
     @State private var url: URL?
     @State private var showingError = false
@@ -52,8 +53,12 @@ struct ContentView: View {
                                     openURL(url)
                                 }
                         } else {
-                            LoggedInOwnerView(pendingImport: $pendingImport, session: session)
-                                .onOpenURL(perform: openURL)
+                            LoggedInOwnerView(
+                                apiProvider: apiProvider,
+                                session: session,
+                                pendingImport: $pendingImport
+                            )
+                            .onOpenURL(perform: openURL)
                         }
                     }
                 )

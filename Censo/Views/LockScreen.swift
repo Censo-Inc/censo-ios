@@ -6,22 +6,13 @@
 //
 
 import SwiftUI
-import Moya
 
 struct LockScreen: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
 
-//    enum Route: Hashable {
-//        case authenticate
-//        case resetAuth
-//    }
-//    
-//    @State private var navPath = NavigationPath()
     enum Route {
         case locked
         case authenticate
@@ -105,30 +96,31 @@ struct LockScreen: View {
             switch ownerState.authType {
             case .facetec:
                 FacetecAuth<API.UnlockApiResponse>(
-                    session: session,
-                    onReadyToUploadResults: { biometryData in
-                        return .unlock(API.UnlockApiRequest(biometryVerificationId: biometryData.verificationId, biometryData: biometryData))
+                    onFaceScanReady: { biometryData, completion in
+                        ownerRepository.unlock(
+                            API.UnlockApiRequest(biometryVerificationId: biometryData.verificationId, biometryData: biometryData),
+                            completion
+                        )
                     },
                     onSuccess: { response in
-                        onOwnerStateUpdated(response.ownerState)
+                        ownerStateStoreController.replace(response.ownerState)
                     },
                     onCancelled: {
                         route = .locked
-                        reloadOwnerState()
+                        ownerStateStoreController.reload()
                     }
                 )
             case .password:
                 NavigationStack {
                     PasswordAuth<API.UnlockWithPasswordApiResponse>(
-                        session: session,
-                        submitTo: { password in
-                            return .unlockWithPassword(API.UnlockWithPasswordApiRequest(password: password))
+                        submit: { password, completion in
+                            ownerRepository.unlockWithPassword(API.UnlockWithPasswordApiRequest(password: password), completion)
                         },
                         onSuccess: { response in
-                            onOwnerStateUpdated(response.ownerState)
+                        ownerStateStoreController.replace(response.ownerState)
                         },
                         onInvalidPassword: {
-                            reloadOwnerState()
+                            ownerStateStoreController.reload()
                         },
                         onAuthResetTriggered: ownerState.canRequestAuthenticationReset ? {
                             route = .resetAuth
@@ -155,9 +147,7 @@ struct LockScreen: View {
         case .resetAuth:
             NavigationStack {
                 AuthenticationReset(
-                    session: session,
                     ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated,
                     onExit: {
                         route = .locked
                     }
@@ -169,56 +159,50 @@ struct LockScreen: View {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        LockScreen(
-            session: .sample,
-            ownerState: .sample,
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            LockScreen(
+                ownerState: API.OwnerState.Ready.sample
+            )
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("can reset biometry") {
-    NavigationStack {
-        LockScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: true
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            LockScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: true
+                )
+            )
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 
 #Preview("can reset password") {
-    NavigationStack {
-        LockScreen(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                authType: .password,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: true
-            ),
-            reloadOwnerState: {},
-            onOwnerStateUpdated: { _ in }
-        )
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            LockScreen(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    authType: .password,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: true
+                )
+            )
+        }
     }
-    .foregroundColor(.Censo.primaryForeground)
 }
 #endif

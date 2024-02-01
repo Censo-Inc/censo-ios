@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct FirstPhrase: View {
-    @Environment(\.apiProvider) var apiProvider
-
     @State private var addYourOwnPhrase = false
     @State private var showingGeneratePhrase = false
     @State private var showingAddPhrase = false
@@ -18,65 +16,60 @@ struct FirstPhrase: View {
     @State private var language: WordListLanguage = WordListLanguage.english
 
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var session: Session
-    var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
     
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                        VStack {
-                            Spacer()
-                            if addYourOwnPhrase {
-                                AddYourOwnPhrase(
-                                    onInputPhrase: { selectedLanguage in
-                                        language = selectedLanguage
-                                        showingAddPhrase = true
-                                    },
-                                    onPastePhrase: { showingPastePhrase = true },
-                                    onPhotoPhrase: { showingPhotoPhrase = true }
-                                )
-                                .navigationTitle("")
-                                .navigationBarTitleDisplayMode(.inline)
-                                .toolbar(content: {
-                                    ToolbarItem(placement: .navigationBarLeading) {
-                                        Button {
-                                            addYourOwnPhrase = false
-                                        } label: {
-                                            Image(systemName: "chevron.left")
-                                        }
-                                    }
-                                })
-                            } else {
-                                FirstTimePhrase(
-                                    onGeneratePhrase: { showingGeneratePhrase = true },
-                                    onAddYourOwnPhrase: { addYourOwnPhrase = true }
-                                )
-                                .onboardingCancelNavBar(onCancel: onCancel)
+                VStack {
+                    Spacer()
+                    if addYourOwnPhrase {
+                        AddYourOwnPhrase(
+                            onInputPhrase: { selectedLanguage in
+                                language = selectedLanguage
+                                showingAddPhrase = true
+                            },
+                            onPastePhrase: { showingPastePhrase = true },
+                            onPhotoPhrase: { showingPhotoPhrase = true }
+                        )
+                        .navigationTitle("")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    addYourOwnPhrase = false
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
                             }
-                        }
-                        .background {
-                            VStack {
-                                Spacer()
-                                    .frame(maxHeight: geometry.size.height * 0.05)
-                                Image("AddYourSeedPhrase")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: geometry.size.width * 0.8)
-                                Spacer()
-                            }
-                        }
+                        })
+                    } else {
+                        FirstTimePhrase(
+                            onGeneratePhrase: { showingGeneratePhrase = true },
+                            onAddYourOwnPhrase: { addYourOwnPhrase = true }
+                        )
+                        .onboardingCancelNavBar(onCancel: onCancel)
+                    }
+                }
+                .background {
+                    VStack {
+                        Spacer()
+                            .frame(maxHeight: geometry.size.height * 0.05)
+                        Image("AddYourSeedPhrase")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: geometry.size.width * 0.8)
+                        Spacer()
+                    }
+                }
             }
         }
         .sheet(isPresented: $showingAddPhrase, content: {
             SeedEntry(
-                session: session,
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
                 isFirstTime: true,
                 language: language,
-                onSuccess: onComplete,
+                onSuccess: {},
                 onBack: {
                     showingAddPhrase = false
                 }
@@ -84,32 +77,25 @@ struct FirstPhrase: View {
         })
         .sheet(isPresented: $showingPastePhrase, content: {
             PastePhrase(
-                onComplete: onComplete, 
-                onBack: { showingPastePhrase = false },
-                session: session, 
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: true
+                isFirstTime: true,
+                onComplete: {},
+                onBack: { showingPastePhrase = false }
             )
         })
         .sheet(isPresented: $showingPhotoPhrase, content: {
             PhotoPhrase(
-                onComplete: onComplete,
-                onBack: { showingPhotoPhrase = false },
-                session: session,
                 ownerState: ownerState,
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: true
+                isFirstTime: true,
+                onBack: { showingPhotoPhrase = false }
             )
         })
         .sheet(isPresented: $showingGeneratePhrase, content: {
             GeneratePhrase(
+                ownerState: ownerState,
                 language: WordListLanguage.english,
-                onComplete: onComplete, 
-                session: session,
-                ownerState: ownerState, 
-                reloadOwnerState: reloadOwnerState,
-                isFirstTime: true
+                isFirstTime: true,
+                onComplete: {}
             )
         })
     }
@@ -259,12 +245,11 @@ struct AddYourOwnPhrase: View {
 #if DEBUG
 
 #Preview {
-    FirstPhrase(
-        ownerState: .sample,
-        reloadOwnerState: {},
-        session: .sample,
-        onComplete: {_ in },
-        onCancel: {}
-    ).foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        FirstPhrase(
+            ownerState: .sample,
+            onCancel: {}
+        )
+    }
 }
 #endif

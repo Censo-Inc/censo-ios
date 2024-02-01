@@ -194,13 +194,13 @@ extension API {
             return approvers.first { $0.isOwner }
         }
         
-        func ownersApproverKeyRecoveryRequired(_ session: Session) -> Bool {
+        func ownersApproverKeyRecoveryRequired(_ ownerRepository: OwnerRepository) -> Bool {
             guard let ownerParticipantId = owner?.participantId,
                   let ownerEntropy = ownerEntropy else {
                 return false
             }
             
-            return !session.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy.data)
+            return !ownerRepository.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy.data)
         }
     }
     

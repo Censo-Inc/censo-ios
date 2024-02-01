@@ -10,10 +10,8 @@ import SwiftUI
 import Moya
 
 struct LoginIdResetInitKeyRecoveryStep : View {
-    @Environment(\.apiProvider) var apiProvider
-    
     var enabled: Bool
-    var session: Session?
+    var loggedIn: Bool
     var onButtonPressed: () -> Void
     
     @State private var inProgress: Bool = false
@@ -38,7 +36,7 @@ struct LoginIdResetInitKeyRecoveryStep : View {
                     .fontWeight(.semibold)
                     .padding(.bottom)
                 
-                Text("\(session == nil ? "Once your Apple ID is updated," : "Now that your Apple ID has been updated,") your key will need to be recovered. Assistance of both approvers is required to restore access to your seed phrases.")
+                Text("\(loggedIn ? "Now that your Apple ID has been updated," : "Once your Apple ID is updated,") your key will need to be recovered. Assistance of both approvers is required to restore access to your seed phrases.")
                     .font(.body)
                     .fontWeight(.regular)
                     .fixedSize(horizontal: false, vertical: true)

@@ -9,10 +9,7 @@ import SwiftUI
 import Moya
 
 struct PasswordAuth<ResponseType : Decodable>: View {
-    @Environment(\.apiProvider) var apiProvider
-    
-    var session: Session
-    var submitTo: (API.Authentication.Password) -> API.Endpoint
+    var submit: (API.Authentication.Password, @escaping (Result<ResponseType, MoyaError>) -> Void) -> Void
     var onSuccess: (ResponseType) -> Void
     var onInvalidPassword: (() -> Void)?
     var onAuthResetTriggered: (() -> Void)?
@@ -32,7 +29,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
                 .padding()
 
             SecureField("Enter your password...", text: $password) {
-               submit()
+                doSubmit()
             }
             .textFieldStyle(RoundedTextFieldStyle())
             .padding()
@@ -67,7 +64,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
             Divider()
 
             Button {
-                submit()
+                doSubmit()
             } label: {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
@@ -89,14 +86,13 @@ struct PasswordAuth<ResponseType : Decodable>: View {
         }
     }
     
-    private func submit() {
+    private func doSubmit() {
         disableContinue = true
         
         if let cryptedPassword = pbkdf2(password: password) {
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: submitTo(API.Authentication.Password(cryptedPassword: Base64EncodedString(data: cryptedPassword)))
-            ) { (result: Result<ResponseType, MoyaError>) in
+            submit(
+                API.Authentication.Password(cryptedPassword: Base64EncodedString(data: cryptedPassword))
+            ) { result in
                 switch result {
                 case .failure(MoyaError.underlying(CensoError.validation("Incorrect password"), _)):
                     invalidPassword = true
@@ -121,10 +117,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
 #if DEBUG
 #Preview {
     PasswordAuth<API.UnlockWithPasswordApiResponse>(
-        session: .sample,
-        submitTo: { password in
-            return .unlockWithPassword(API.UnlockWithPasswordApiRequest(password: password))
-        },
+        submit: { _, _ in },
         onSuccess: { _ in }
     )
 }

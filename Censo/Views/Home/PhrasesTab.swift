@@ -5,16 +5,12 @@
 //
 
 import SwiftUI
-import Moya
 
 struct PhrasesTab: View {
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    @Environment(\.apiProvider) var apiProvider
-    
-    var session: Session
     var ownerState: API.OwnerState.Ready
-    var reloadOwnerState: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     @State private var showingError = false
     @State private var error: Error?
@@ -152,28 +148,17 @@ struct PhrasesTab: View {
             .navigationBarBackButtonHidden(true)
             .padding(.horizontal)
             .sheet(isPresented: $showingAddPhrase, content: {
-                AdditionalPhrase(
-                    ownerState: ownerState,
-                    reloadOwnerState: reloadOwnerState,
-                    session: session,
-                    onComplete: onOwnerStateUpdated
-                )
+                AdditionalPhrase(ownerState: ownerState)
             })
             .sheet(isPresented: $showingAccess, content: {
-                InitPhrasesAccessFlow(
-                    session: session,
-                    ownerState: ownerState,
-                    onOwnerStateUpdated: onOwnerStateUpdated
-                )
+                InitPhrasesAccessFlow(ownerState: ownerState)
             })
             .sheet(isPresented: $showingRenameSheet, content: {
                 RenameSeedPhrase(
-                    session: session,
                     ownerState: ownerState,
                     editingIndex: editingIndex!,
-                    onComplete: { ownerState in
+                    onComplete: {
                         showingRenameSheet = false
-                        onOwnerStateUpdated(ownerState)
                     }
                 )
             })
@@ -245,10 +230,10 @@ struct PhrasesTab: View {
     
     func deletePhrase(_ seedPhrase: API.SeedPhrase) {
         phraseGuidsBeingDeleted.insert(seedPhrase.guid)
-        apiProvider.decodableRequest(with: session, endpoint: .deleteSeedPhrase(guid: seedPhrase.guid)) { (result: Result<API.DeleteSeedPhraseApiResponse, MoyaError>) in
+        ownerRepository.deleteSeedPhrase(seedPhrase.guid) { result in
             switch result {
             case .success(let payload):
-                onOwnerStateUpdated(payload.ownerState)
+                ownerStateStoreController.replace(payload.ownerState)
             case .failure(let error):
                 showError(error)
             }
@@ -258,11 +243,11 @@ struct PhrasesTab: View {
     
     private func deleteAccess(onSuccess: @escaping () -> Void = {}) {
         self.deletingAccess = true
-        apiProvider.decodableRequest(with: session, endpoint: .deleteAccess) { (result: Result<API.DeleteAccessApiResponse, MoyaError>) in
+        ownerRepository.deleteAccess { result in
             self.deletingAccess = false
             switch result {
             case .success(let response):
-                onOwnerStateUpdated(response.ownerState)
+                ownerStateStoreController.replace(response.ownerState)
             case .failure(let error):
                 self.showingError = true
                 self.error = error
@@ -271,14 +256,7 @@ struct PhrasesTab: View {
     }
     
     private func refreshState() {
-        apiProvider.decodableRequest(with: session, endpoint: .user) { (result: Result<API.User, MoyaError>) in
-            switch result {
-            case .success(let user):
-                onOwnerStateUpdated(user.ownerState)
-            default:
-                break
-            }
-        }
+        ownerStateStoreController.reload()
     }
     
     private func showError(_ error: Error) {
@@ -289,12 +267,10 @@ struct PhrasesTab: View {
 
 #if DEBUG
 #Preview {
-    PhrasesTab(
-        session: .sample,
-        ownerState: .sample,
-        reloadOwnerState: {},
-        onOwnerStateUpdated: { _ in }
-    )
-    .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        PhrasesTab(
+            ownerState: .sample
+        )
+    }
 }
 #endif

@@ -7,17 +7,16 @@
 
 import Foundation
 import SwiftUI
-import Moya
 import Sentry
 
 struct EnterApproverNickname: View {
-    @Environment(\.apiProvider) var apiProvider
     @Environment(\.dismiss) var dismiss
     
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
+    
     var policySetup: API.PolicySetup?
     var isPrimary: Bool
-    var onComplete: (API.OwnerState) -> Void
     var onBack: (() -> Void)?
     
     @StateObject private var nickname = ApproverNickname()
@@ -127,12 +126,12 @@ struct EnterApproverNickname: View {
                     .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: primaryApprover.participantId,
                         label: primaryApprover.label,
-                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: ownerRepository.deviceKey)
                     )),
                     .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
                         label: nickname.value,
-                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: ownerRepository.deviceKey)
                     ))
                 ]
             } else {
@@ -145,18 +144,15 @@ struct EnterApproverNickname: View {
                     .externalApprover(API.ApproverSetup.ExternalApprover(
                         participantId: newApproverParticipantId,
                         label: nickname.value,
-                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: session.deviceKey)
+                        deviceEncryptedTotpSecret: try .encryptedTotpSecret(deviceKey: ownerRepository.deviceKey)
                     ))
                 ]
             }
             
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers))
-            ) { (result: Result<API.OwnerStateResponse, MoyaError>) in
+            ownerRepository.setupPolicy(API.SetupPolicyApiRequest(threshold: 2, approvers: approvers)) { result in
                 switch result {
                 case .success(let response):
-                    onComplete(response.ownerState)
+                    ownerStateStoreController.replace(response.ownerState)
                 case .failure(let error):
                     showError(error)
                 }
@@ -170,23 +166,22 @@ struct EnterApproverNickname: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        ApproversSetup(
-            session: .sample,
-            ownerState: API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                policySetup: nil,
-                authType: .facetec,
-                subscriptionStatus: .active,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            ),
-            onOwnerStateUpdated: { _ in }
-        )
-        .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            ApproversSetup(
+                ownerState: API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    policySetup: nil,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            )
+        }
     }
 }
 #endif

@@ -8,17 +8,15 @@
 import Foundation
 import SwiftUI
 import StoreKit
-import Moya
 import Sentry
 import CryptoKit
 
 struct PaywallGatedScreen<Content: View>: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
+    @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var session: Session
-    @Binding var ownerState: API.OwnerState
+    var ownerState: API.OwnerState
     var ignoreSubscriptionRequired = false
-    var reloadOwnerState: () -> Void
     var onCancel: () -> Void
     @ViewBuilder var content: () -> Content
     
@@ -94,9 +92,7 @@ struct PaywallGatedScreen<Content: View>: View {
                     Paywall(
                         monthlyOffer: monthlyOffer,
                         yearlyOffer: yearlyOffer,
-                        ownerState: $ownerState,
-                        reloadOwnerState: reloadOwnerState,
-                        session: session,
+                        ownerState: ownerState,
                         purchase: purchase,
                         restorePurchases: restorePurchases,
                         redemptionFlowEnded: {
@@ -147,9 +143,8 @@ struct PaywallGatedScreen<Content: View>: View {
         _Concurrency.Task {
 #if INTEGRATION
             do {
-                let fakeTransactionId = "app_\(session.userCredentials.userIdentifierHash())_\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
+                let fakeTransactionId = "app_\(ownerRepository.userIdentifierHash)_\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
                 try await submitPurchaseToBackend(
-                    session,
                     fakeTransactionId,
                     AppStore.Environment.sandbox
                 )
@@ -163,7 +158,7 @@ struct PaywallGatedScreen<Content: View>: View {
                 
                 switch result {
                 case let .success(.verified(transaction)):
-                    try await submitPurchaseToBackend(session, String(transaction.originalID), transaction.environment)
+                    try await submitPurchaseToBackend(String(transaction.originalID), transaction.environment)
                     await transaction.finish()
                     actionInProgress = nil
                 case .success(.unverified):
@@ -197,7 +192,7 @@ struct PaywallGatedScreen<Content: View>: View {
                 await transaction.finish()
 #else
                 do {
-                    try await submitPurchaseToBackend(session, String(transaction.originalID), transaction.environment)
+                    try await submitPurchaseToBackend(String(transaction.originalID), transaction.environment)
                     await transaction.finish()
                 } catch {
                     showError(error)
@@ -207,26 +202,27 @@ struct PaywallGatedScreen<Content: View>: View {
         }
     }
     
-    private func submitPurchaseToBackend(_ session: Session, _ originalId: String, _ environment: AppStore.Environment) async throws {
-        ownerState = try await withCheckedThrowingContinuation { continuation in
-            apiProvider.decodableRequest(
-                with: session,
-                endpoint: .submitPurchase(API.SubmitPurchaseApiRequest(
-                    purchase: API.SubmitPurchaseApiRequest.Purchase(
-                        originalTransactionId: originalId,
-                        environment: environment.rawValue
+    private func submitPurchaseToBackend(_ originalId: String, _ environment: AppStore.Environment) async throws {
+        ownerStateStoreController.replace(
+            try await withCheckedThrowingContinuation { continuation in
+                ownerRepository.submitPurchase(
+                    API.SubmitPurchaseApiRequest(
+                        purchase: API.SubmitPurchaseApiRequest.Purchase(
+                            originalTransactionId: originalId,
+                            environment: environment.rawValue
+                        )
                     )
-                ))
-            ) { (result: Result<API.SubmitPurchaseApiResponse, MoyaError>) in
-                switch result {
-                case .success(let response):
-                    continuation.resume(returning: response.ownerState)
-                case .failure(let error):
-                    SentrySDK.captureWithTag(error: error, tagValue: "Submit Purchase")
-                    continuation.resume(throwing: error)
+                ) { (result: Result<API.SubmitPurchaseApiResponse, MoyaError>) in
+                    switch result {
+                    case .success(let response):
+                        continuation.resume(returning: response.ownerState)
+                    case .failure(let error):
+                        SentrySDK.captureWithTag(error: error, tagValue: "Submit Purchase")
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
-        }
+        )
     }
     
     private func restorePurchases() {
@@ -252,28 +248,24 @@ private extension UIApplication {
 import Moya
 
 #Preview {
-    let ownerState = Binding {
-        API.OwnerState.ready(
-            API.OwnerState.Ready(
-                policy: .sample,
-                vault: .sample,
-                authType: .facetec,
-                subscriptionStatus: .none,
-                timelockSetting: .sample,
-                subscriptionRequired: true,
-                onboarded: true,
-                canRequestAuthenticationReset: false
-            )
-        )
-    } set: { _ in }
-
-    return PaywallGatedScreen(
-        session: .sample,
-        ownerState: ownerState,
-        reloadOwnerState: {},
-        onCancel: {}
-    ) {
-        Text("Behind the paywall")
-    }.foregroundColor(.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        PaywallGatedScreen(
+            ownerState: API.OwnerState.ready(
+                API.OwnerState.Ready(
+                    policy: .sample,
+                    vault: .sample,
+                    authType: .facetec,
+                    subscriptionStatus: .none,
+                    timelockSetting: .sample,
+                    subscriptionRequired: true,
+                    onboarded: true,
+                    canRequestAuthenticationReset: false
+                )
+            ),
+            onCancel: {}
+        ) {
+            Text("Behind the paywall")
+        }
+    }
 }
 #endif

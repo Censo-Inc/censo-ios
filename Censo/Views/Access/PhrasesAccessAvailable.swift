@@ -7,16 +7,13 @@
 
 import Foundation
 import SwiftUI
-import Moya
 import Sentry
 
 struct PhrasesAccessAvailable: View {
-    @Environment(\.apiProvider) var apiProvider
+    @EnvironmentObject var ownerRepository: OwnerRepository
     
-    var session: Session
     var ownerState: API.OwnerState.Ready
     var onFinished: () -> Void
-    var onOwnerStateUpdated: (API.OwnerState) -> Void
     
     enum Step {
         case showingList
@@ -35,9 +32,7 @@ struct PhrasesAccessAvailable: View {
         switch (step) {
         case .showingList:
             ShowPhraseList(
-                session: session,
                 ownerState: ownerState,
-                onOwnerStateUpdated: onOwnerStateUpdated,
                 viewedPhrases: viewedPhrases,
                 onPhraseSelected: { selectedPhraseIndex in
                     self.step = .intro(phraseIndex: selectedPhraseIndex)
@@ -59,7 +54,6 @@ struct PhrasesAccessAvailable: View {
         case .intro(let phraseIndex):
             PhraseAccessIntro(
                 ownerState: ownerState,
-                session: session,
                 onReadyToGetStarted: { language in
                     self.step = .retrievingSeedPhrase(phraseIndex: phraseIndex, language: language)
                 }
@@ -101,7 +95,6 @@ struct PhrasesAccessAvailable: View {
                 }
         case .retrievingShards(let phraseIndex, let encryptedSeedPhrase, let language):
             RetrieveAccessShards(
-                session: session,
                 ownerState: ownerState,
                 onSuccess: { encryptedShards in
                     do {
@@ -153,7 +146,7 @@ struct PhrasesAccessAvailable: View {
     }
     
     func getSeedPhrase( phraseIndex: Int, onEncryptedSeedPhraseRetrieved: @escaping  (Base64EncodedString) -> Void) {
-        apiProvider.decodableRequest(with: session, endpoint: .getSeedPhrase(guid: ownerState.vault.seedPhrases[phraseIndex].guid)) { (result: Result<API.GetSeedPhraseApiResponse, MoyaError>) in
+        ownerRepository.getSeedPhrase(ownerState.vault.seedPhrases[phraseIndex].guid) { result in
             switch result {
             case .success(let payload):
                 onEncryptedSeedPhraseRetrieved(payload.encryptedSeedPhrase)
@@ -165,7 +158,7 @@ struct PhrasesAccessAvailable: View {
     
     private func recoverPhrase(_ encryptedShards: [API.EncryptedShard], _ encryptedSeedPhrase: Base64EncodedString, _ language: WordListLanguage?) throws -> SeedPhrase {
         do {
-            let intermediateKey = try EncryptionKey.recover(encryptedShards, session)
+            let intermediateKey = try EncryptionKey.recover(encryptedShards, ownerRepository.userIdentifier, ownerRepository.deviceKey)
             let masterKey = try EncryptionKey.generateFromPrivateKeyRaw(data: try intermediateKey.decrypt(base64EncodedString: ownerState.policy.encryptedMasterKey))
             let decryptedPhraseData = try masterKey.decrypt(base64EncodedString: encryptedSeedPhrase)
             return try SeedPhrase.fromData(data: decryptedPhraseData, language: language)
