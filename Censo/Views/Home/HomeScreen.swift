@@ -64,13 +64,14 @@ struct HomeScreen: View {
             }
             .accentColor(.Censo.primaryForeground)
         }
-        .padding(.vertical)
+        .padding(.top)
+        .padding(.bottom, 2)
     }
     
     private func tabDivider() -> some View {
         VStack {
             Spacer()
-            Divider().padding(.bottom, 20)
+            Divider().padding(.bottom, 2)
         }.frame(height: 30)
     }
 }
