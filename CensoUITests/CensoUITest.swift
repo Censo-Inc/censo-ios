@@ -26,7 +26,7 @@ final class CensoUITest: XCTestCase {
     }
     
     func test01_PastePhrase() throws {
-        TestHelper.addPhrase(inputButton: "pastePhraseButton", label: "Pasted Phrase", expectPaywall: true, onboarding: false)
+        TestHelper.addPhrase(inputButton: "pastePhraseButton", label: "Pasted Phrase", expectPaywall: false, onboarding: false)
         TestHelper.validateHomeScreen(numPhrases: 2, numApprovers: 0)
         TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel, "Pasted Phrase"])
     }

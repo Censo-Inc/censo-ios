@@ -41,78 +41,82 @@ struct PaywallGatedScreen<Content: View>: View {
     @State private var appStoreTransactionUpdatesTask: _Concurrency.Task<Void, Never>? = nil
     
     var body: some View {
-        Group {
-            if ownerState.subscriptionStatus == .active || (ownerState.subscriptionStatus == .none && !ownerState.subscriptionRequired && !ignoreSubscriptionRequired) {
-                content()
-            } else {
-                if let actionInProgress {
-                    if let error {
-                        RetryView(error: error, action: {
-                            self.error = nil
+        if Configuration.paywallDisabled {
+            content()
+        } else {
+            Group {
+                if ownerState.subscriptionStatus == .active || (ownerState.subscriptionStatus == .none && !ownerState.subscriptionRequired && !ignoreSubscriptionRequired) {
+                    content()
+                } else {
+                    if let actionInProgress {
+                        if let error {
+                            RetryView(error: error, action: {
+                                self.error = nil
+                                switch (actionInProgress) {
+                                case .loadingProduct: loadProduct()
+                                case .purchase(let product): purchase(product)
+                                case .restorePurchases: restorePurchases()
+                                case .backFromRedemption: self.actionInProgress = nil
+                                }
+                            })
+                        } else {
                             switch (actionInProgress) {
-                            case .loadingProduct: loadProduct()
-                            case .purchase(let product): purchase(product)
-                            case .restorePurchases: restorePurchases()
-                            case .backFromRedemption: self.actionInProgress = nil
-                            }
-                        })
-                    } else {
-                        switch (actionInProgress) {
-                        case .loadingProduct:
-                            ProgressView()
-                        case .purchase:
-                            ProgressView("Processing your subscription")
-                        case .restorePurchases:
-                            ProgressView("Restoring your subscription")
-                        case .backFromRedemption:
-                            // when the `.offerCodeRedemption` sheet closes, we don't know if the user actually
-                            // redeemed an offer code or just dismissed the sheet. If they redeemed a code,
-                            // `observeAppStoreTransactionUpdates()` will eventually see it, but it can take
-                            // a while. Show a progress view for a while to give us a change to see the transaction
-                            // and move on without confusing the user by showing the paywall again.
-                            ProgressView("Synchronizing subscriptions")
-                                .onAppear {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                                        switch self.actionInProgress {
-                                        case .backFromRedemption:
-                                            self.actionInProgress = nil
-                                        default:
-                                            break
+                            case .loadingProduct:
+                                ProgressView()
+                            case .purchase:
+                                ProgressView("Processing your subscription")
+                            case .restorePurchases:
+                                ProgressView("Restoring your subscription")
+                            case .backFromRedemption:
+                                // when the `.offerCodeRedemption` sheet closes, we don't know if the user actually
+                                // redeemed an offer code or just dismissed the sheet. If they redeemed a code,
+                                // `observeAppStoreTransactionUpdates()` will eventually see it, but it can take
+                                // a while. Show a progress view for a while to give us a change to see the transaction
+                                // and move on without confusing the user by showing the paywall again.
+                                ProgressView("Synchronizing subscriptions")
+                                    .onAppear {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                                            switch self.actionInProgress {
+                                            case .backFromRedemption:
+                                                self.actionInProgress = nil
+                                            default:
+                                                break
+                                            }
                                         }
                                     }
-                                }
                                 // for some reason, when the `.offerCodeRedemption` sheet closes, the keyboard pops open shortly afterwards
                                 // this hack keeps it closed:
-                                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                                    UIApplication.shared.closeKeyboard()
+                                    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                                        UIApplication.shared.closeKeyboard()
+                                    }
+                            }
+                        }
+                    } else if let monthlyOffer, let yearlyOffer {
+                        Paywall(
+                            monthlyOffer: monthlyOffer,
+                            yearlyOffer: yearlyOffer,
+                            ownerState: ownerState,
+                            purchase: purchase,
+                            restorePurchases: restorePurchases,
+                            redemptionFlowEnded: {
+                                if (actionInProgress == nil) {
+                                    actionInProgress = .backFromRedemption
                                 }
-                        }
+                            }
+                        )
+                        .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
+                    } else {
+                        ProgressView()
+                            .onAppear() { loadProduct() }
                     }
-                } else if let monthlyOffer, let yearlyOffer {
-                    Paywall(
-                        monthlyOffer: monthlyOffer,
-                        yearlyOffer: yearlyOffer,
-                        ownerState: ownerState,
-                        purchase: purchase,
-                        restorePurchases: restorePurchases,
-                        redemptionFlowEnded: {
-                          if (actionInProgress == nil) {
-                              actionInProgress = .backFromRedemption
-                          }
-                        }
-                    )
-                    .onboardingCancelNavBar(onboarding: ownerState.onboarding, onCancel: onCancel)
-                } else {
-                    ProgressView()
-                        .onAppear() { loadProduct() }
                 }
             }
-        }
-        .onAppear {
-            self.appStoreTransactionUpdatesTask = observeAppStoreTransactionUpdates()
-        }
-        .onDisappear {
-            self.appStoreTransactionUpdatesTask?.cancel()
+            .onAppear {
+                self.appStoreTransactionUpdatesTask = observeAppStoreTransactionUpdates()
+            }
+            .onDisappear {
+                self.appStoreTransactionUpdatesTask?.cancel()
+            }
         }
     }
     

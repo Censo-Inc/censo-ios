@@ -20,6 +20,7 @@ struct Configuration {
     static let sentryEnabled: Bool = stringValue(for: "SENTRY_ENVIRONMENT").lowercased() != "none"
     static let censoAuthBaseURL: URL = URLValue(for: "CENSO_AUTH_BASE_URL")
     static let minVersionURL: URL = URLValue(for: "MIN_VERSION_URL")
+    static let paywallDisabled: Bool = true
     static let appStoreMonthlyProductId: String = stringValue(for: "APP_STORE_PRODUCT_ID")
     static let appStoreYearlyProductId: String = stringValue(for: "APP_STORE_YEARLY_PRODUCT_ID")
 }

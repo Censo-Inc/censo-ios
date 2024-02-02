@@ -63,7 +63,7 @@ struct SaveSeedPhrase: View {
                     .padding(.vertical)
                     
                     Button {
-                        if (ownerState.vault.seedPhrases.count == 1) {
+                        if (ownerState.vault.seedPhrases.count == 1 && !Configuration.paywallDisabled) {
                             showPaywall = true
                         } else {
                             save()
