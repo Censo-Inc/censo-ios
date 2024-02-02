@@ -19,9 +19,8 @@ class TestSettings {
     let words = ["uncle", "bar", "tissue", "bus", "cabin", "segment", "miss", "staff", "wise", "country", "ranch", "ketchup"]
     
     private init() {
-        UIPasteboard.general.string = words.joined(separator: " ")
         app = XCUIApplication()
-        app.launchArguments = ["testing", "testAppleUserIdentifier-\(UUID().uuidString)"]
+        app.launchArguments = ["testing", "\(words.joined(separator: " "))", "testAppleUserIdentifier-\(UUID().uuidString)"]
         app.launch()
         springboardApp = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         isSimulator = !DCAppAttestService().isSupported

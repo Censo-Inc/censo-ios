@@ -76,6 +76,7 @@ struct ShowPhraseList: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .accessibilityIdentifier("finishedButton")
         }
         .padding()
         .alert("Exit accessing phrases", isPresented: $confirmExit) {

@@ -56,6 +56,7 @@ struct PhraseAccessIntro: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
+                .accessibilityIdentifier("getStarted")
                 
             }
             .padding()

@@ -34,6 +34,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         #if DEBUG
         if CommandLine.arguments.contains("testing") {
             self.testing = true
+            if CommandLine.arguments.count >= 3 {
+                UIPasteboard.general.string = CommandLine.arguments[2]
+            }
 
             Keychain.userCredentials = .init(idToken: "testIdToken".data(using: .utf8)!, userIdentifier: CommandLine.arguments.last!)
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)

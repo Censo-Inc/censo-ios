@@ -75,12 +75,9 @@ class TestHelper {
         case "pastePhraseButton":
             let words = TestSettings.shared.words
             
-            // XCUIApplication framework does not handle paste alerts and the tap() of the button hangs for 60 seconds.
-            // On returning we respond to the Allow Paste alert which makes the test continue
             app.waitForButtonAndTap(buttonIdentifier: "pasteFromClipboardButton")
-            if TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].exists {
-                TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].tap()
-            }
+            respondToPasteAlertIfPresent()
+            
             reviewAndSaveSeedPhrase(label: label, expectPaywall: expectPaywall, numWords: words.count, expectedWords: words)
             
         case "generatePhraseButton":
@@ -112,7 +109,9 @@ class TestHelper {
     }
     
     static func acceptTermsAndConditions() {
-        app.waitForButtonAndTap(buttonIdentifier: "reviewTermsButton")
+        let button = app.buttons["reviewTermsButton"]
+        XCTAssertTrue(button.waitForExistence(timeout: 30))
+        button.tap()
 
         let terms = app.webViews["termsWebView"]
         XCTAssertTrue(terms.waitForExistence(timeout: 5))
@@ -140,18 +139,7 @@ class TestHelper {
     
     static func reviewAndSaveSeedPhrase(label: String, expectPaywall: Bool, numWords: Int, expectedWords: [String]?) {
         if numWords > 0 {
-            for index in 1...numWords {
-                let word = app.staticTexts[getWordText(index: index)]
-                XCTAssertTrue(word.waitForExistence(timeout: 5))
-                if let expectedWords {
-                    XCTAssertTrue(app.staticTexts[expectedWords[index - 1]].exists)
-                }
-                if index != numWords {
-                    word.swipeLeft(velocity: .fast)
-                }
-            }
-            
-            app.waitForButtonAndTap(buttonIdentifier: "nextButton")
+            reviewWords(numWords: numWords, expectedWords: expectedWords, doneButtonIdentifier: "nextButton")
         }
         
         app.enterText(fieldIdentifier: "labelTextField", inputText: label)
@@ -163,6 +151,84 @@ class TestHelper {
         }
 
         app.waitForButtonAndTap(buttonIdentifier: "okButton")
+    }
+    
+    static func accessSeedPhrase(label: String, numWords: Int, expectedWords: [String]?) {
+        
+        app.waitForButtonAndTap(buttonIdentifier: label)
+        app.waitForButtonAndTap(buttonIdentifier: "getStarted")
+        
+        if let password = TestSettings.shared.password {
+            app.waitForStaticText(text: "Enter your password")
+            app.enterSecureText(fieldIdentifier: "passwordInputTextField", secureText: password, enterReturn: false)
+            app.waitForButtonAndTap(buttonIdentifier: "continueButton")
+        }
+        
+        XCTAssertTrue(app.buttons["doneViewingPhraseButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Access ends in: 15 min"].exists)
+        
+        if numWords != 0 {
+            XCTAssertTrue(app.staticTexts["swipe back and forth to review words"].exists)
+            
+            reviewWords(
+                numWords: numWords,
+                expectedWords: expectedWords,
+                doneButtonIdentifier: "doneViewingPhraseButton"
+            )
+        } else {
+            XCTAssertTrue(app.staticTexts["Zoom in to see the words"].exists)
+            app.waitForButtonAndTap(buttonIdentifier: "doneViewingPhraseButton")
+        }
+    }
+    
+    static func imagesByLabel(label: String) -> Int {
+        var count = 0
+        for i in 0..<app.images.count {
+            let element = app.images.element(boundBy: i)
+            if element.label == label {
+                count = count + 1
+            }
+        }
+        return count
+    }
+    
+    static func reviewWords(numWords: Int, expectedWords: [String]?, doneButtonIdentifier: String) {
+        for index in 1...numWords {
+            let word = app.staticTexts[getWordText(index: index)]
+            XCTAssertTrue(word.waitForExistence(timeout: 5))
+            if let expectedWords {
+                XCTAssertTrue(app.staticTexts[expectedWords[index - 1]].exists)
+            }
+            if index != numWords {
+                word.swipeLeft(velocity: .fast)
+            }
+        }
+        
+        app.waitForButtonAndTap(buttonIdentifier: doneButtonIdentifier)
+    }
+    
+    static func respondToPasteAlertIfPresent() {
+        if TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].exists {
+            TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].tap()
+        }
+    }
+    
+    static func monitorAndHandlePasteAlerts() {
+        // XCUIApplication framework does not handle paste alerts and the tap() of the button hangs for 60 seconds.
+        // this spins up a thread which checks for the alert after a few seconds. This should be called before the
+        // the button is tapped
+        class PasteAlertMonitorThread: Thread {
+            override func main() {
+                Thread.sleep(forTimeInterval: 5)
+                DispatchQueue.main.async {
+                    if TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].exists {
+                        TestSettings.shared.springboardApp.alerts.buttons["Allow Paste"].tap()
+                    }
+                }
+            }
+        }
+
+        PasteAlertMonitorThread().start()
     }
     
     private static func getWordText(index: Int) -> String {
@@ -188,6 +254,8 @@ class TestHelper {
         print("buttons: \(element.buttons.debugDescription)")
         print("textFields: \(element.textFields.debugDescription)")
         print("staticTexts: \(element.staticTexts.debugDescription)")
-        
+        print("secureText: \(element.secureTextFields.debugDescription)")
+        print("tabbars: \(element.tabBars.debugDescription)")
+        print("images: \(element.images.debugDescription)")
     }
 }

@@ -70,6 +70,7 @@ struct ShowPhrase: View {
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .padding()
+                .accessibilityIdentifier("doneViewingPhraseButton")
             }
             .frame(maxHeight: 80, alignment: .bottom)
             .padding()

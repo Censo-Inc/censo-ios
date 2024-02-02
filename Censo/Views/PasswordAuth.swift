@@ -33,6 +33,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
             }
             .textFieldStyle(RoundedTextFieldStyle())
             .padding()
+            .accessibilityIdentifier("passwordInputTextField")
 
             if invalidPassword {
                 Text("Password was invalid")
@@ -72,6 +73,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
             .buttonStyle(RoundedButtonStyle())
             .padding()
             .disabled(disableContinue)
+            .accessibilityIdentifier("continueButton")
         }
         .padding()
         .alert("Error", isPresented: $showingError, presenting: error) { _ in

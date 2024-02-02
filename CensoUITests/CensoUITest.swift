@@ -45,7 +45,7 @@ final class CensoUITest: XCTestCase {
         app.waitForButtonAndTap(buttonIdentifier: "saveButton")
         
         app.waitForStaticText(text: renamedPhraseLabel)
-        XCTAssertFalse(app.staticTexts["Generated"].exists)
+        XCTAssertFalse(app.staticTexts[phraseLabel].exists)
         
         TestSettings.shared.firstPhraseLabel = renamedPhraseLabel
         
@@ -69,7 +69,7 @@ final class CensoUITest: XCTestCase {
         XCTAssertTrue(alert.staticTexts["Delete Confirmation"].exists)
         XCTAssertTrue(alert.staticTexts["You are about to delete this phrase. If you are sure, type:\n\"Delete \(phraseLabel)\""].exists)
         let textField = alert.textFields.firstMatch
-        textField.clearAndEnterText(text: "Delete \(phraseLabel)")
+        textField.enterText(text: "Delete \(phraseLabel)")
         alert.waitForButtonAndTap(buttonIdentifier: "confirmDeleteConfirmationButton")
         
         app.waitForStaticText(text: "Seed Phrases")
@@ -92,6 +92,49 @@ final class CensoUITest: XCTestCase {
         TestHelper.addPhrase(inputButton: "photoPhraseButton", label: "Photo Phrase", expectPaywall: false, onboarding: false)
         TestHelper.validateHomeScreen(numPhrases: 3, numApprovers: 0)
         TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["Pasted Phrase", "Entered Word Phrase", "Photo Phrase"])
+    }
+    
+    func test06_Access() throws {
+        let app = TestSettings.shared.app!
+        app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
+        app.waitForButtonAndTap(buttonIdentifier: "startAccessButton")
+        app.waitForStaticText(text: "Select the seed phrase you would like to access:")
+        
+        XCTAssertTrue(app.buttons["Pasted Phrase"].exists)
+        XCTAssertTrue(app.buttons["Entered Word Phrase"].exists)
+        if TestSettings.shared.isSimulator {
+            XCTAssertEqual(2, TestHelper.imagesByLabel(label: "Forward"))
+        } else {
+            XCTAssertTrue(app.buttons["Photo Phrase"].exists)
+            XCTAssertEqual(3, TestHelper.imagesByLabel(label: "Forward"))
+        }
+        
+        TestHelper.accessSeedPhrase(
+            label: "Pasted Phrase",
+            numWords: TestSettings.shared.words.count,
+            expectedWords: TestSettings.shared.words
+        )
+        XCTAssertEqual(1, TestHelper.imagesByLabel(label: "Selected"))
+        
+        
+        TestHelper.accessSeedPhrase(
+            label: "Entered Word Phrase",
+            numWords: TestSettings.shared.words.count,
+            expectedWords: TestSettings.shared.words
+        )
+        XCTAssertEqual(2, TestHelper.imagesByLabel(label: "Selected"))
+        
+        if !TestSettings.shared.isSimulator {
+            TestHelper.accessSeedPhrase(
+                label: "Photo Phrase",
+                numWords: 0,
+                expectedWords: nil
+            )
+            XCTAssertEqual(3, TestHelper.imagesByLabel(label: "Selected"))
+        }
+        
+        app.waitForButtonAndTap(buttonIdentifier: "finishedButton")
+        
     }
 
 }
