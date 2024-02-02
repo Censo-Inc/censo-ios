@@ -14,17 +14,22 @@ struct Login: View {
         VStack {
             Spacer()
 
-            HStack {
-                Image("CensoText")
-                    .renderingMode(.template)
+            VStack {
+                Image("Entrance")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 104)
-                    .padding([.top], 8)
                 
-                Text("approver")
-                    .font(.system(size: 36, weight: .light))
-                    .padding(.leading, 5)
+                HStack {
+                    Image("CensoText")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 104)
+                        .padding([.top], 8)
+                    
+                    Text("approver")
+                        .font(.system(size: 36, weight: .light))
+                        .padding(.leading, 5)
+                }
             }
 
             Spacer()
@@ -33,6 +38,7 @@ struct Login: View {
                 Text("To continue, you need to Sign in with Apple.")
                     .font(.subheadline)
                     .padding(.horizontal)
+                    .padding(.bottom)
             }
             
             VStack {
@@ -41,16 +47,14 @@ struct Login: View {
                 Text("By tapping Sign in, you agree to our terms of use.")
                     .font(.caption)
                     .fontWeight(.medium)
-                    .padding(.bottom)
+                    .padding(.vertical)
                 
                 Divider()
                     .padding([.horizontal])
                 
                 LoginBottomLinks()
-                
             }
         }
-        
     }
 }
 

@@ -19,10 +19,10 @@ struct OperationCompletedView: View {
             HStack {
                 Spacer()
                 
-                Image(systemName: "checkmark.circle")
+                Image("CongratsFistBump")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 162, maxHeight: 162)
+                    .padding(.horizontal)
                 
                 Spacer()
             }
@@ -51,5 +51,5 @@ struct OperationCompletedView: View {
 }
 
 #Preview {
-    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}.foregroundColor(Color.Censo.primaryForeground)
+    OperationCompletedView(successText: "Thanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}.foregroundColor(Color.Censo.primaryForeground)
 }

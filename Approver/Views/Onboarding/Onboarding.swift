@@ -63,7 +63,7 @@ struct Onboarding: View {
                             )
                         } else {
                             OperationCompletedView(
-                                successText: "Congratulations. You're all done!\n\nThanks for helping \(currentState.ownerLabel ?? "someone") keep their crypto safe.\n\nYou may now close the app.",
+                                successText: "Thanks for helping \(currentState.ownerLabel ?? "someone") keep their crypto safe.\n\nYou may now close the app.",
                                 onSuccess: onSuccess
                             )
                             .navigationBarHidden(true)

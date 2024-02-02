@@ -81,7 +81,7 @@ struct Approval: View {
                     )
                     .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: reload, isIdleTimerDisabled: true))
                 case .complete:
-                    OperationCompletedView(successText: "Congratulations. You're all done!\n\nThanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
+                    OperationCompletedView(successText: "Thanks for helping someone keep their crypto safe.\n\nYou may now close the app.", onSuccess: onSuccess)
                         .navigationBarHidden(true)
                 default:
                     InvalidLinkView()
