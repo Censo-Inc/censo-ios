@@ -24,6 +24,14 @@ struct PasteLinkButton: View {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(RoundedButtonStyle())
+        .alert("Error", isPresented: $showingError, presenting: error) { _ in
+            Button("OK", role: .cancel, action: {
+                self.error = nil
+                self.showingError = false
+            })
+        } message: { error in
+            Text(error.localizedDescription)
+        }
     }
     
     private func handlePastedInfo() {

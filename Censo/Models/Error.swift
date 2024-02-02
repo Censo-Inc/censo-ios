@@ -96,7 +96,11 @@ extension CensoError: LocalizedError {
         case .accessAlreadyOnAnotherDevice:
             return NSLocalizedString("There is already an access on another device", comment: "another device access")
         case .invalidUrl(let url):
-            return NSLocalizedString("The link provided is not valid for this app: \(url)", comment: "Invalid url")
+            if url.isEmpty {
+                return NSLocalizedString("Invalid link", comment: "Invalid url")
+            } else {
+                return NSLocalizedString("The link provided is not valid for this app: \(url)", comment: "Invalid url")
+            }
         case .cannotVerifyKeyConfirmationSignature:
             return NSLocalizedString("Cannot verify key confirmation signature", comment: "Invalid signature")
         case .resourceNotFound:
