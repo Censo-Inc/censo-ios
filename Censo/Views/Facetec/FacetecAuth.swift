@@ -41,9 +41,9 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                     onFaceScanReady(
                         API.Authentication.FacetecBiometry(
                             verificationId: initBiometryResponse.id,
-                            faceScan: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                            auditTrailImage: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString(),
-                            lowQualityAuditTrailImage: ownerRepository.userIdentifier.data(using: .utf8)!.base64EncodedString()
+                            faceScan: "",
+                            auditTrailImage: "",
+                            lowQualityAuditTrailImage: ""
                         )
                     ) { (result: Result<ResponseType, MoyaError>) in
                         switch result {
