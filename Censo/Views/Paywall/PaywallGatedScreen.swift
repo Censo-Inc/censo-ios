@@ -216,7 +216,7 @@ struct PaywallGatedScreen<Content: View>: View {
                             environment: environment.rawValue
                         )
                     )
-                ) { (result: Result<API.SubmitPurchaseApiResponse, MoyaError>) in
+                ) { result in
                     switch result {
                     case .success(let response):
                         continuation.resume(returning: response.ownerState)
