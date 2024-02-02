@@ -16,7 +16,26 @@ enum ImportPhase {
     case completed(ImportedPhrase)
 }
 
+// A wrapper to the actual view that was introduced
+// to inject MoyaProvider from the environment into LoggedInOwnerViewInternal
+// that needs it in the initializer.
+// This has to do with AppAttest sitting between ContentView and LoggedInOwnerViewInternal
+// and replacing the MoyaProvider in the environment with one that knows about attestation
 struct LoggedInOwnerView: View {
+    @Environment(\.apiProvider) var apiProvider
+    var session: Session
+    @Binding var pendingImport: Import?
+    
+    var body: some View {
+        LoggedInOwnerViewInternal(
+            apiProvider: apiProvider,
+            session: session,
+            pendingImport: $pendingImport
+        )
+    }
+}
+
+private struct LoggedInOwnerViewInternal: View {
     private var apiProvider: MoyaProvider<API>
     private var session: Session
     @Binding private var pendingImport: Import?

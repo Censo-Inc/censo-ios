@@ -54,7 +54,6 @@ struct ContentView: View {
                                 }
                         } else {
                             LoggedInOwnerView(
-                                apiProvider: apiProvider,
                                 session: session,
                                 pendingImport: $pendingImport
                             )
