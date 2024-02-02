@@ -27,7 +27,6 @@ struct SeedVerification: View {
                 Spacer()
                 
                 WordList(words: words)
-                    .padding(.horizontal)
                     .frame(height: geometry.size.height * 0.4)
                 
                 Button {
