@@ -80,6 +80,9 @@ struct ApproverHome: View {
                 OwnerLoginIdReset(session: session, user: $user)
             })
         }
+        .onDisappear {
+            showOwnerLoginIdReset = false
+        }
     }
 }
 
