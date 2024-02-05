@@ -11,6 +11,7 @@ import Moya
 struct SettingsItem: View {
     var title: String
     var buttonText: String
+    var buttonIdentifier: String? = nil
     var description: String
     var buttonDisabled: Bool = false
     var onSelected: () -> Void
@@ -31,6 +32,7 @@ struct SettingsItem: View {
                 }
                 .buttonStyle(RoundedButtonStyle(tint: .light))
                 .disabled(buttonDisabled)
+                .accessibilityIdentifier(buttonIdentifier ?? "\(buttonText)Button")
             }
             
             Text(description)

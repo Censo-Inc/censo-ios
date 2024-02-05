@@ -82,9 +82,9 @@ struct ShowPhraseList: View {
         .alert("Exit accessing phrases", isPresented: $confirmExit) {
             Button {
                 onFinished()
-            } label: { Text("Confirm") }
+            } label: { Text("Confirm") }.accessibilityIdentifier("confirmExitAccessingPhrasesButton")
             Button {
-            } label: { Text("Cancel") }
+            } label: { Text("Cancel") }.accessibilityIdentifier("cancelExitAccessingPhrasesButton")
         } message: {
             Text("Are you all finished accessing phrases? If you exit you will need to \(ownerState.policy.externalApproversCount > 0 ? "request approval" : "wait for the timelock period") to access your phrases again.")
         }

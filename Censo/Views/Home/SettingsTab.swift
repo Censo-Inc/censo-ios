@@ -51,11 +51,11 @@ struct SettingsTab: View {
                 }
                 
                 if ownerState.timelockSetting.currentTimelockInSeconds == nil {
-                    SettingsItem(title: "Enable Timelock", buttonText: "Enable", description: "Enabling the timelock adds additional safety when accessing seed phrases. After requesting access to seed phrases, you will need to wait for \(ownerState.timelockSetting.defaultTimelockInSeconds.toDisplayDuration()) before being able to view them.", buttonDisabled: timelockUpdateInProgress) {
+                    SettingsItem(title: "Enable Timelock", buttonText: "Enable", buttonIdentifier: "enableTimelockButton", description: "Enabling the timelock adds additional safety when accessing seed phrases. After requesting access to seed phrases, you will need to wait for \(ownerState.timelockSetting.defaultTimelockInSeconds.toDisplayDuration()) before being able to view them.", buttonDisabled: timelockUpdateInProgress) {
                         enableOrDisableTimelock(enable: true)
                     }
                 } else if let disabledAt = ownerState.timelockSetting.disabledAt {
-                    SettingsItem(title: "Cancel Disable Timelock", buttonText: "Cancel", description: "Waiting \(disabledAt.toDisplayDuration()) before disabling the timelock. If you want to leave the timelock enabled, you can cancel now.", buttonDisabled: timelockUpdateInProgress) {
+                    SettingsItem(title: "Cancel Disable Timelock", buttonText: "Cancel", buttonIdentifier: "cancelDisableTimelockButton", description: "Waiting \(disabledAt.toDisplayDuration()) before disabling the timelock. If you want to leave the timelock enabled, you can cancel now.", buttonDisabled: timelockUpdateInProgress) {
                         cancelDisableRequested = true
                     }
                     .onReceive(timer) { _ in
@@ -64,17 +64,17 @@ struct SettingsTab: View {
                         }
                     }
                 } else {
-                    SettingsItem(title: "Disable Timelock", buttonText: "Disable", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled.", buttonDisabled: timelockUpdateInProgress) {
+                    SettingsItem(title: "Disable Timelock", buttonText: "Disable", buttonIdentifier: "disableTimelockButton", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled.", buttonDisabled: timelockUpdateInProgress) {
                         enableOrDisableTimelock(enable: false)
                     }
                 }
                 
-                SettingsItem(title: "Delete My Data", buttonText: "Delete", description: "This will securely delete all of your information stored in the Censo app.  After completing this, you will no longer have access to any seed phrases you have entered.  This operation cannot be undone.", buttonDisabled: resetInProgress) {
+                SettingsItem(title: "Delete My Data", buttonText: "Delete", buttonIdentifier: "deleteMyDataButton", description: "This will securely delete all of your information stored in the Censo app.  After completing this, you will no longer have access to any seed phrases you have entered.  This operation cannot be undone.", buttonDisabled: resetInProgress) {
                     resetRequested = true
                 }
                 
                 if pushNotificationsEnabled != "true" {
-                    SettingsItem(title: "Allow Push Notification", buttonText: "Enable", description: "Enable notifications to receive security and update alerts from Censo.") {
+                    SettingsItem(title: "Allow Push Notification", buttonText: "Enable", buttonIdentifier: "enablePushNotificaionButton", description: "Enable notifications to receive security and update alerts from Censo.") {
                         showPushNotificationSettings = true
                     }
                 }
@@ -109,9 +109,10 @@ struct SettingsTab: View {
         .alert("Cancel Disable Timelock", isPresented: $cancelDisableRequested) {
             Button {
                 cancelDisableTimelock()
-            } label: { Text("Confirm") }
+            } label: { Text("Confirm") }.accessibilityIdentifier("ConfirmCancelDisableTimelockButton")
             Button {
-            } label: { Text("Cancel") }
+            } label: { Text("Cancel") }.accessibilityIdentifier("CancelCancelDisableTimelockButton")
+                
         } message: {
             Text("This will cancel the pending request to disable the timelock\nAre you sure?")
         }

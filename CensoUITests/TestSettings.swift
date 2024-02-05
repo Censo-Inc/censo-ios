@@ -16,14 +16,19 @@ class TestSettings {
     var password: String? = nil
     var isSimulator: Bool = false
     var firstPhraseLabel: String = "FirstPhrase"
+    let userIdentifier: String = "testAppleUserIdentifier-\(UUID().uuidString)"
     let words = ["uncle", "bar", "tissue", "bus", "cabin", "segment", "miss", "staff", "wise", "country", "ranch", "ketchup"]
     
     private init() {
         app = XCUIApplication()
-        app.launchArguments = ["testing", "\(words.joined(separator: " "))", "testAppleUserIdentifier-\(UUID().uuidString)"]
+        app.launchArguments = ["testing", "\(words.joined(separator: " "))", userIdentifier]
         app.launch()
         springboardApp = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         isSimulator = !DCAppAttestService().isSupported
+    }
+    
+    func restartApp() {
+        app.launch()
     }
     
 }

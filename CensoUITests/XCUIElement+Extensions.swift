@@ -14,7 +14,7 @@ extension XCUIElement {
      - Parameter text: the text to enter into the field
      */
     func enterText(text: String) {
-        guard let stringValue = self.value as? String else {
+        guard let _ = self.value as? String else {
             XCTFail("Tried to clear and enter text into a non string value")
             return
         }
@@ -24,11 +24,15 @@ extension XCUIElement {
     }
     
     
-    func waitForButtonAndTap(buttonIdentifier: String) {
+    func waitForButtonAndTap(buttonIdentifier: String, timeout: TimeInterval = 5) {
+        waitForButton(buttonIdentifier: buttonIdentifier, timeout: timeout).tap()
+    }
+    
+    func waitForButton(buttonIdentifier: String, timeout: TimeInterval = 5) -> XCUIElement {
         let app = TestSettings.shared.app!
         let button = app.buttons[buttonIdentifier]
-        XCTAssertTrue(button.waitForExistence(timeout: 5))
-        button.tap()
+        XCTAssertTrue(button.waitForExistence(timeout: timeout))
+        return button
     }
     
     func waitForStaticText(text: String) {
@@ -37,11 +41,7 @@ extension XCUIElement {
         XCTAssertTrue(staticText.waitForExistence(timeout: 5))
     }
     
-    func enterText(fieldIdentifier: String, inputText: String) {
-        enterText(fieldIdentifier: fieldIdentifier, inputText: inputText, expectedDefaultValue: nil)
-    }
-    
-    func enterText(fieldIdentifier: String, inputText: String, expectedDefaultValue: String?) {
+    func enterText(fieldIdentifier: String, inputText: String, expectedDefaultValue: String? = nil) {
         let app = TestSettings.shared.app!
         let textField = app.textFields[fieldIdentifier]
         XCTAssertTrue(textField.waitForExistence(timeout: 5))

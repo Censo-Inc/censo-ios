@@ -24,7 +24,7 @@ struct DeleteAllDataAlert: ViewModifier {
                 }
                 Button("Cancel", role: .cancel) {
                     deleteConfirmation = ""
-                }
+                }.accessibilityIdentifier("cancelDeleteAllDataButton")
                 Button("Confirm", role: .destructive) {
                     if (deleteConfirmation == deleteConfirmationMessage()) {
                         deleteConfirmation = ""
@@ -32,17 +32,17 @@ struct DeleteAllDataAlert: ViewModifier {
                     } else {
                         incorrectConfirmation = true
                     }
-                }
+                }.accessibilityIdentifier("confirmDeleteAllDataButton")
             } message: {
                 Text("This action will delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
             }
             .alert("Confirmation does not match", isPresented: $incorrectConfirmation) {
                 Button("Cancel", role: .cancel) {
                     deleteConfirmation = ""
-                }
+                }.accessibilityIdentifier("cancelConfirmationDoesNotMatchButton")
                 Button("Retry", role: .destructive) {
                     deleteRequested = true
-                }
+                }.accessibilityIdentifier("retryConfirmationDoesNotMatchButton")
             }
     }
     

@@ -109,9 +109,7 @@ class TestHelper {
     }
     
     static func acceptTermsAndConditions() {
-        let button = app.buttons["reviewTermsButton"]
-        XCTAssertTrue(button.waitForExistence(timeout: 30))
-        button.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "reviewTermsButton", timeout: 30)
 
         let terms = app.webViews["termsWebView"]
         XCTAssertTrue(terms.waitForExistence(timeout: 5))
@@ -133,7 +131,10 @@ class TestHelper {
     static func validateMyPhrasesScreen(expectedPhraseLabels: [String]) {
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
         expectedPhraseLabels.forEach { label in
-            XCTAssertTrue(app.staticTexts[label].exists)
+            XCTAssertTrue(app.staticTexts[label].exists, {
+                dumpElement(app)
+                return label
+            }())
         }
     }
     
@@ -153,7 +154,7 @@ class TestHelper {
         app.waitForButtonAndTap(buttonIdentifier: "okButton")
     }
     
-    static func accessSeedPhrase(label: String, numWords: Int, expectedWords: [String]?) {
+    static func accessSeedPhrase(label: String, numWords: Int, expectedWords: [String]? = nil) {
         
         app.waitForButtonAndTap(buttonIdentifier: label)
         app.waitForButtonAndTap(buttonIdentifier: "getStarted")
@@ -255,7 +256,10 @@ class TestHelper {
         print("textFields: \(element.textFields.debugDescription)")
         print("staticTexts: \(element.staticTexts.debugDescription)")
         print("secureText: \(element.secureTextFields.debugDescription)")
-        print("tabbars: \(element.tabBars.debugDescription)")
+        print("navigationBars: \(element.navigationBars.debugDescription)")
         print("images: \(element.images.debugDescription)")
+        print("alerts: \(element.alerts.debugDescription)")
+        print("scroolbars: \(element.scrollBars.debugDescription)")
+        print("scroolviews: \(element.scrollViews.debugDescription)")
     }
 }

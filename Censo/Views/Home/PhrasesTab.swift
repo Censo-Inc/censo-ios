@@ -128,7 +128,7 @@ struct PhrasesTab: View {
                     .disabled(ownerState.vault.seedPhrases.isEmpty)
                     .buttonStyle(RoundedButtonStyle())
                     .padding()
-                    .accessibilityIdentifier("startAccessButton")
+                    .accessibilityIdentifier("\(getAccessButtonLabel()) Button")
                 }
                 
                 Button {
@@ -165,9 +165,9 @@ struct PhrasesTab: View {
             .alert("Cancel access", isPresented: $confirmAccessCancelation) {
                 Button {
                     deleteAccess()
-                } label: { Text("Confirm") }
+                } label: { Text("Confirm") }.accessibilityIdentifier("confirmCancelAccessButton")
                 Button {
-                } label: { Text("Cancel") }
+                } label: { Text("Cancel") }.accessibilityIdentifier("cancelCancelAccessButton")
             } message: {
                 Text("If you cancel access you will need to wait for the timelock period to access your phrases again. Are you sure?")
             }
