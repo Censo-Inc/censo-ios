@@ -18,6 +18,7 @@ struct Login: View {
                 Image("Entrance")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .padding(.horizontal)
                 
                 HStack {
                     Image("CensoText")
