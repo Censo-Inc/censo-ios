@@ -31,11 +31,8 @@ struct SettingsTab: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Settings")
-                .font(.largeTitle)
-            Spacer()
-            ScrollView {
+        NavigationView {
+            List {
                 SettingsItem(title: "Lock App", buttonText: "Lock", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
                     lock()
                 }
@@ -82,9 +79,10 @@ struct SettingsTab: View {
                     }
                 }
                 
-                Spacer()
             }
-            .padding(.horizontal)
+            .navigationBarTitle("Settings", displayMode: .inline)
+            .listStyle(.plain)
+            .scrollIndicators(ScrollIndicatorVisibility.hidden)
         }
         .sheet(isPresented: $showApproversRemoval, content: {
             InitApproversRemovalFlow(ownerState: ownerState)
