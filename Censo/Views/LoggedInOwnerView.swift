@@ -68,7 +68,7 @@ private struct LoggedInOwnerViewInternal: View {
             ProgressView()
         case .success(let ownerState):
             VStack {
-                if (acceptedTermsOfUseVersion == "v0.2") {
+                if (acceptedTermsOfUseVersion == "v0.3") {
                     PaywallGatedScreen(ownerState: ownerState, onCancel: onCancelOnboarding) {
                         BiometryGatedScreen(ownerState: ownerState, onUnlockExpired: ownerStateStore.reload) {
                             switch pendingImport {
@@ -162,9 +162,9 @@ private struct LoggedInOwnerViewInternal: View {
                     }
                 } else {
                     TermsOfUse(
-                        text: TermsOfUse.v0_2,
+                        text: TermsOfUse.v0_3,
                         onAccept: {
-                            acceptedTermsOfUseVersion = "v0.2"
+                            acceptedTermsOfUseVersion = "v0.3"
                         }
                     )
                     .onboardingCancelNavBar(
