@@ -45,12 +45,6 @@ struct AdditionalPhrase: View {
                             switch step {
                                 
                             case .intro:
-                                if (ownerState.vault.seedPhrases.count == 1) {
-                                    Text("Storing one seed phrase with Censo is free, but to store more than one you’ll need a subscription. Go ahead and enter your seed phrase now, we’ll ask you to subscribe when you’re ready to save it.")
-                                        .font(.subheadline)
-                                        .padding(.bottom)
-                                        .padding(.trailing)
-                                }
                                 LanguageSelection(
                                     text: Text("You can add one of your own, or generate a new seed phrase with Censo and add that. The current language is \(currentLanguage().displayName()). You may change it **here**"
                                               ).font(.subheadline),
