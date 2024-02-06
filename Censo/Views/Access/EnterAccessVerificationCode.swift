@@ -31,19 +31,6 @@ struct EnterAccessVerificationCode : View {
     
     var body: some View {
         ScrollView {
-            VStack {
-                let title = switch (intent) {
-                case .accessPhrases: "Request access"
-                case .replacePolicy, .recoverOwnerKey: "Request approval"
-                }
-                
-                Text(title)
-                    .font(.title)
-                    .bold()
-                
-            }
-            .padding(.bottom)
-            
             VStack(spacing: 0) {
                 HStack(alignment: .top, spacing: 20) {
                     VStack {

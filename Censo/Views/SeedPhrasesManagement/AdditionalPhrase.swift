@@ -45,10 +45,6 @@ struct AdditionalPhrase: View {
                             switch step {
                                 
                             case .intro:
-                                Text("Add another seed phrase")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                    .padding(.vertical)
                                 if (ownerState.vault.seedPhrases.count == 1) {
                                     Text("Storing one seed phrase with Censo is free, but to store more than one you’ll need a subscription. Go ahead and enter your seed phrase now, we’ll ask you to subscribe when you’re ready to save it.")
                                         .font(.subheadline)
@@ -169,6 +165,7 @@ struct AdditionalPhrase: View {
                         .padding(.leading)
                         .padding(.horizontal)
                         .navigationBarTitleDisplayMode(.inline)
+                        .navigationTitle("Add another seed phrase")
                         .toolbar(content: {
                             switch step {
                             case .intro:

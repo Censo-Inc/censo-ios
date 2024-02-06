@@ -43,7 +43,6 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if let onBack {
@@ -69,8 +68,8 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationTitle(Text("Verify \(approver.label)"))
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Rename approver")
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
@@ -82,11 +81,6 @@ struct ActivateApprover : View {
             })
         case .activate:
             ScrollView {
-                Text("Verify \(approver.label)")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom)
-                
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 20) {
                         VStack {
@@ -289,7 +283,7 @@ struct ActivateApprover : View {
                 .padding([.leading, .trailing], 32)
             }
             .padding([.top], 24)
-            .navigationTitle(Text(isPrimary ? "Add Approver" : "Add Second Approver"))
+            .navigationTitle(Text("Verify \(approver.label)"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

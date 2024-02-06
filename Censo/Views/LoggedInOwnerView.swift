@@ -88,6 +88,7 @@ private struct LoggedInOwnerViewInternal: View {
                                                     ownerState: ready
                                                 )
                                                 .navigationBarTitleDisplayMode(.inline)
+                                                .navigationTitle("Reset Login ID")
                                                 .toolbar(content: {
                                                     ToolbarItem(placement: .navigationBarLeading) {
                                                         Button {

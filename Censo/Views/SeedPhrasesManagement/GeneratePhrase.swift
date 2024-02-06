@@ -71,7 +71,7 @@ struct GeneratePhrase: View {
                 .accessibilityIdentifier("generateButton")
             }
             .multilineTextAlignment(.center)
-            .navigationTitle(Text("Add Seed Phrase"))
+            .navigationTitle(Text("Generate seed phrase"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar(content: {

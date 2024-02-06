@@ -50,7 +50,7 @@ struct SeedVerification: View {
             }
         )
         .multilineTextAlignment(.center)
-        .navigationTitle(Text("Add Seed Phrase"))
+        .navigationTitle(Text("Review seed phrase"))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {

@@ -20,17 +20,12 @@ struct Owners: View {
         
         NavigationView {
             VStack {
-                Text("Who I'm Helping")
-                    .font(.title2)
-                    .bold()
-                    .padding(.vertical)
-                
                 Text("You are helping these people keep their crypto safe:")
                     .font(.subheadline)
                     .padding(.vertical)
                     .fixedSize(horizontal: false, vertical: true)
                 
-                ScrollView {
+                List {
                     VStack(spacing: 30) {
                         ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
                             OwnerPill(
@@ -42,13 +37,14 @@ struct Owners: View {
                             )
                         }
                     }
+                    .listRowSeparator(.hidden)
                     .padding()
                 }
-                
-                Spacer()
+                .listStyle(.plain)
+                .scrollIndicators(ScrollIndicatorVisibility.hidden)
             }
             .padding(.horizontal, 32)
-            .navigationTitle(Text(""))
+            .navigationTitle(Text("Who I'm Helping"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar(content: {

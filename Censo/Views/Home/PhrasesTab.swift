@@ -34,8 +34,7 @@ struct PhrasesTab: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                
-                ScrollView {
+                List {
                     ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
                         ZStack(alignment: .leading) {
                             Button {
@@ -56,6 +55,8 @@ struct PhrasesTab: View {
                                 .padding([.bottom, .leading, .top])
                                 .padding([.trailing], 35)
                         }
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
                         .frame(height: 100)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -66,8 +67,10 @@ struct PhrasesTab: View {
                         .padding(.top)
                     }
                 }
+                .padding(.bottom)
+                .listStyle(.plain)
+                .scrollIndicators(ScrollIndicatorVisibility.hidden)
                 .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
-                    
                     Button  {
                         showingEditSheet = false
                         showingRenameSheet = true
@@ -105,7 +108,7 @@ struct PhrasesTab: View {
                         confirmAccessCancelation = true
                     } label: {
                         HStack {
-                            Text("Cancel Access")
+                            Text("Cancel access")
                                 .font(.headline)
                                 .fontWeight(.semibold)
                             
@@ -134,16 +137,16 @@ struct PhrasesTab: View {
                 Button {
                     showingAddPhrase = true
                 } label: {
-                    Text("Add Seed Phrase")
+                    Text("Add seed phrase")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .frame(maxWidth: 208)
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .accessibilityIdentifier("addSeedPhraseButton")
+                .padding(.bottom)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Text("Seed Phrases"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .padding(.horizontal)
@@ -223,9 +226,9 @@ struct PhrasesTab: View {
               access.intent == .accessPhrases,
               access.status == .available
         else {
-            return ownerState.policy.externalApproversCount > 0 ? "Request Access" : "Begin Access"
+            return ownerState.policy.externalApproversCount > 0 ? "Request access" : "Begin access"
         }
-        return "Show Seed Phrase\(ownerState.vault.seedPhrases.count > 1 ? "s" : "")"
+        return "Show seed phrase\(ownerState.vault.seedPhrases.count > 1 ? "s" : "")"
     }
     
     func deletePhrase(_ seedPhrase: API.SeedPhrase) {

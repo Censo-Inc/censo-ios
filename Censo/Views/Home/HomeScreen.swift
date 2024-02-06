@@ -18,6 +18,18 @@ struct HomeScreen: View {
     }
     
     @State private var selectedTab = TabId.dashboard
+    
+    init(ownerState: API.OwnerState.Ready) {
+        self.ownerState = ownerState
+        
+        let standardTabBarAppearence = UITabBarAppearance.init(idiom: .phone)
+        standardTabBarAppearence.configureWithTransparentBackground()
+        UITabBar.appearance().standardAppearance = standardTabBarAppearence
+        
+        let scrollEdgeTabBarAppearance = UITabBarAppearance.init(idiom: .phone)
+        scrollEdgeTabBarAppearance.configureWithTransparentBackground()
+        UITabBar.appearance().scrollEdgeAppearance = scrollEdgeTabBarAppearance
+    }
                     
     var body: some View {
         VStack {
@@ -50,7 +62,7 @@ struct HomeScreen: View {
                 }
                 .tag(TabId.phrases)
                 
-                VStack {
+                VStack(spacing: 0) {
                     SettingsTab(ownerState: ownerState)
                     tabDivider()
                 }
@@ -69,10 +81,9 @@ struct HomeScreen: View {
     }
     
     private func tabDivider() -> some View {
-        VStack {
-            Spacer()
+        VStack(spacing: 0) {
             Divider().padding(.bottom, 2)
-        }.frame(height: 30)
+        }
     }
 }
 
@@ -189,7 +200,7 @@ extension API.TimelockSetting {
 extension API.Vault {
     static var sample: Self {
         .init(
-            seedPhrases: [.sample, .sample2, .sample3],
+            seedPhrases: [.sample, .sample2, .sample3, .sample4, .sample5],
             publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
         )
     }
@@ -210,6 +221,12 @@ extension API.SeedPhrase {
     }
     static var sample3: Self {
         .init(guid: "guid3", seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", createdAt: Date())
+    }
+    static var sample4: Self {
+        .init(guid: "guid4", seedPhraseHash: .sample, label: "Wallet 1", createdAt: Date())
+    }
+    static var sample5: Self {
+        .init(guid: "guid5", seedPhraseHash: .sample, label: "Wallet 2", createdAt: Date())
     }
 }
 

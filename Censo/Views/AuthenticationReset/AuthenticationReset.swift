@@ -136,3 +136,40 @@ struct AuthenticationReset: View {
         self.error = error
     }
 }
+
+#if DEBUG
+#Preview {
+    LoggedInOwnerPreviewContainer {
+        NavigationStack {
+            let policy = API.Policy.sample2Approvers
+            AuthenticationReset(
+                ownerState: API.OwnerState.Ready(
+                    policy: policy,
+                    vault: .sample,
+                    authType: .facetec,
+                    subscriptionStatus: .active,
+                    timelockSetting: .sample,
+                    subscriptionRequired: false,
+                    onboarded: true,
+                    canRequestAuthenticationReset: true,
+                    authenticationReset: API.AuthenticationReset.thisDevice(.init(
+                        guid: "",
+                        status: .requested,
+                        createdAt: Date(),
+                        expiresAt: Date(),
+                        approvals: policy.approvers.map({
+                            return API.AuthenticationReset.ThisDevice.Approval(
+                                guid: $0.participantId.value,
+                                participantId: $0.participantId,
+                                totpSecret: "12345",
+                                status: .initial
+                            )
+                        })
+                    ))
+                ),
+                onExit: {}
+            )
+        }
+    }
+}
+#endif

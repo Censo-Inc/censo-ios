@@ -14,11 +14,6 @@ struct SeedPhotoIntro: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("Take a photo")
-                .font(.title)
-                .bold()
-                .multilineTextAlignment(.center)
-            
             Spacer()
                 .frame(maxHeight: 50)
             
@@ -86,7 +81,7 @@ struct SeedPhotoIntro: View {
             
         }
         .padding()
-        .navigationTitle(Text("Seed Phrase Photo"))
+        .navigationTitle(Text("Seed phrase photo"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

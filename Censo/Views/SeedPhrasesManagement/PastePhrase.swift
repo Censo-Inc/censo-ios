@@ -39,10 +39,6 @@ struct PastePhrase: View {
         NavigationStack {
             VStack {
                 VStack(spacing: 0) {
-                    Text("Paste seed phrase")
-                        .font(.title)
-                        .bold()
-                    
                     Spacer()
                         .frame(maxHeight: 50)
 
@@ -112,6 +108,7 @@ struct PastePhrase: View {
             .padding()
             .frame(maxWidth: .infinity)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Paste seed phrase")
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

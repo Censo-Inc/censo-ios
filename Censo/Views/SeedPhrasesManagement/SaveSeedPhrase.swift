@@ -33,7 +33,7 @@ struct SaveSeedPhrase: View {
                 ownerStateStoreController.replace(newOwnerState)
                 onSuccess()
             }
-            .navigationTitle(Text("Add Seed Phrase"))
+            .navigationTitle(Text("Seed phrase saved"))
             .navigationBarTitleDisplayMode(.inline)
         } else {
             NavigationStack {
@@ -83,7 +83,7 @@ struct SaveSeedPhrase: View {
                 }
                 .padding(30)
                 .buttonStyle(RoundedButtonStyle())
-                .navigationTitle(Text("Add Seed Phrase"))
+                .navigationTitle(Text("Save seed phrase"))
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarBackButtonHidden(true)
                 .toolbar(content: {

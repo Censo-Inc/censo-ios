@@ -26,9 +26,6 @@ struct RenameSeedPhrase: View {
             VStack(alignment: .leading, spacing: 20) {
                 Spacer()
                 
-                Text("Rename seed phrase")
-                    .font(.title2.bold())
-                
                 Text("Give your seed phrase a different label")
                     .fixedSize(horizontal: false, vertical: true)
                 
@@ -65,7 +62,7 @@ struct RenameSeedPhrase: View {
             }
             .padding(30)
             .buttonStyle(RoundedButtonStyle())
-            .navigationTitle(Text("Rename Seed Phrase"))
+            .navigationTitle(Text("Rename seed phrase"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar(content: {

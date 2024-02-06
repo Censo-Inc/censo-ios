@@ -27,7 +27,7 @@ struct Keep1Phrase: View {
             case .initial:
                 EmptyView()
             case .ready(let ready):
-                ScrollView {
+                List {
                     ForEach(0..<ready.vault.seedPhrases.count, id: \.self) { i in
                         Button {
                             selectedPhrase = i
@@ -58,9 +58,13 @@ struct Keep1Phrase: View {
                                     .foregroundColor(.Censo.gray224)
                             )
                         }
-                        .padding()
+                        .padding(.horizontal)
+                        .listRowSeparator(.hidden)
                     }
                 }
+                .padding(.bottom)
+                .listStyle(.plain)
+                .scrollIndicators(ScrollIndicatorVisibility.hidden)
             }
             Button {
                 confirmDeletion = true

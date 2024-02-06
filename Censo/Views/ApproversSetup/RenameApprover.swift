@@ -35,11 +35,6 @@ struct RenameApprover: View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
-            Text("Rename approver")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .padding(.bottom)
-            
             VStack(spacing: 0) {
                 TextField(text: $newName.value) {}
                 .textFieldStyle(RoundedTextFieldStyle())

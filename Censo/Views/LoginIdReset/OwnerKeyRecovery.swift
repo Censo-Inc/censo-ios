@@ -30,7 +30,7 @@ struct OwnerKeyRecovery: View {
     
     var body: some View {
         ScrollView {
-            WithResetLoginIdHeader {
+            VStack(spacing: 0) {
                 LoginIdResetCollectTokensStep(
                     enabled: false,
                     tokens: Binding.constant([])
@@ -55,81 +55,83 @@ struct OwnerKeyRecovery: View {
                         showSheet = true
                     }
                 )
-                .sheet(isPresented: $showSheet) {
-                    NavigationView {
-                        switch (step) {
-                        case .requestingAccess:
-                            RequestAccess(
-                                ownerState: ownerState,
-                                intent: .recoverOwnerKey,
-                                accessAvailableView: { _ in
-                                    RetrieveAccessShards(
-                                        ownerState: ownerState,
-                                        onSuccess: { encryptedShards in
-                                            self.step = .recoveringKey(encryptedShards: encryptedShards)
-                                        },
-                                        onCancelled: {
-                                            self.step = .cleanup
-                                        }
-                                    )
-                                }
-                            )
-                        case .recoveringKey(let encryptedShards):
-                            ProgressView("Recovering key")
-                                .onAppear {
-                                    recoverOwnerApproverKey(encryptedShards)
-                                }
-                                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                                    Button {
+            }
+            .padding(.top)
+            .padding(.horizontal)
+            .sheet(isPresented: $showSheet) {
+                NavigationView {
+                    switch (step) {
+                    case .requestingAccess:
+                        RequestAccess(
+                            ownerState: ownerState,
+                            intent: .recoverOwnerKey,
+                            accessAvailableView: { _ in
+                                RetrieveAccessShards(
+                                    ownerState: ownerState,
+                                    onSuccess: { encryptedShards in
+                                        self.step = .recoveringKey(encryptedShards: encryptedShards)
+                                    },
+                                    onCancelled: {
                                         self.step = .cleanup
-                                    } label: {
-                                        Text("OK")
                                     }
-                                } message: { error in
-                                    Text(error.localizedDescription)
+                                )
+                            }
+                        )
+                    case .recoveringKey(let encryptedShards):
+                        ProgressView("Recovering key")
+                            .onAppear {
+                                recoverOwnerApproverKey(encryptedShards)
+                            }
+                            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                                Button {
+                                    self.step = .cleanup
+                                } label: {
+                                    Text("OK")
                                 }
-                        case .recovered(let ownerState):
-                            VStack {
-                                ZStack {
-                                    Image("AccessApproved")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .padding(.top)
-                                    
-                                    VStack(alignment: .center) {
-                                        Spacer()
-                                        Text("You are all set!")
-                                            .font(.system(size: UIFont.textStyleSize(.largeTitle) * 1.5, weight: .medium))
-                                        Spacer()
-                                    }
+                            } message: { error in
+                                Text(error.localizedDescription)
+                            }
+                    case .recovered(let ownerState):
+                        VStack {
+                            ZStack {
+                                Image("AccessApproved")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .padding(.top)
+                                
+                                VStack(alignment: .center) {
+                                    Spacer()
+                                    Text("You are all set!")
+                                        .font(.system(size: UIFont.textStyleSize(.largeTitle) * 1.5, weight: .medium))
+                                    Spacer()
                                 }
                             }
-                            .frame(maxHeight: .infinity)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .onAppear(perform: {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                    ownerStateStoreController.replace(ownerState)
-                                }
-                            })
-                        case .cleanup:
-                            ProgressView()
-                                .onAppear {
-                                    deleteAccessIfExists(onSuccess: {
-                                        showSheet = false
-                                    })
-                                }
-                                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                                    Button {
-                                        self.error = nil
-                                        self.showingError = false
-                                        self.showSheet = false
-                                    } label: {
-                                        Text("OK")
-                                    }
-                                } message: { error in
-                                    Text(error.localizedDescription)
-                                }
                         }
+                        .frame(maxHeight: .infinity)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .onAppear(perform: {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                ownerStateStoreController.replace(ownerState)
+                            }
+                        })
+                    case .cleanup:
+                        ProgressView()
+                            .onAppear {
+                                deleteAccessIfExists(onSuccess: {
+                                    showSheet = false
+                                })
+                            }
+                            .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                                Button {
+                                    self.error = nil
+                                    self.showingError = false
+                                    self.showSheet = false
+                                } label: {
+                                    Text("OK")
+                                }
+                            } message: { error in
+                                Text(error.localizedDescription)
+                            }
                     }
                 }
             }

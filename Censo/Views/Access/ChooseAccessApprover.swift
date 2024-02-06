@@ -41,10 +41,6 @@ struct ChooseAccessApprover : View {
                 
                 switch (intent) {
                 case .accessPhrases:
-                    Text("Request access")
-                        .font(.title2)
-                        .bold()
-                
                     Text("""
                     Seed phrase access requires the assistance of \(
                         approvers.map { $0.label }.joined(separator: " or ")
@@ -56,10 +52,6 @@ struct ChooseAccessApprover : View {
                     """)
                     .font(.subheadline)
                 case .replacePolicy:
-                    Text("Remove approvers")
-                        .font(.title2)
-                        .bold()
-                
                     Text("""
                     This will make you the sole approver when complete, and allow you to optionally add new approvers.
                     """)
@@ -76,10 +68,6 @@ struct ChooseAccessApprover : View {
                     """)
                     .font(.subheadline)
                 case .recoverOwnerKey:
-                    Text("Request approval")
-                        .font(.title2)
-                        .bold()
-                
                     Text("""
                     Key recovery requires the assistance from both of your approvers.
                     

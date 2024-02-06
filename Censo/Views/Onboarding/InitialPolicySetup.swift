@@ -62,6 +62,9 @@ struct InitialPolicySetup: View {
                             }
                         }
                         .navigationBarTitleDisplayMode(.inline)
+                        .navigationTitle("Create a password")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarBackButtonHidden(true)
                         .toolbar(content: {
                             ToolbarItem(placement: .navigationBarLeading) {
                                 Button {
@@ -119,11 +122,6 @@ struct InitialPolicySetup: View {
                             Spacer()
                             
                             VStack(alignment: .leading) {
-                                Text("Anonymously scan your face")
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .font(.title2)
-                                    .bold()
-                                
                                 Text(try! AttributedString(markdown: "[To use the Censo App without biometric authentication, tap here to use a password instead.](#)"))
                                     .font(.subheadline)
                                     .tint(Color.Censo.primaryForeground)
@@ -156,7 +154,7 @@ struct InitialPolicySetup: View {
                             .padding(.horizontal)
                         }
                     }
-                    .onboardingCancelNavBar(onCancel: onCancel, showAsBack: true)
+                    .onboardingCancelNavBar(navigationTitle: "Anonymously scan your face", onCancel: onCancel, showAsBack: true)
                 }
             }
         }

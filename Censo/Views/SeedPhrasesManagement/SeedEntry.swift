@@ -70,7 +70,7 @@ struct SeedEntry: View {
                 .buttonStyle(RoundedButtonStyle())
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Text("Add Seed Phrase"))
+            .navigationTitle(Text("Seed phrase input"))
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if (words.isEmpty) {

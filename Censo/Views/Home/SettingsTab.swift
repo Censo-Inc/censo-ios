@@ -31,59 +31,58 @@ struct SettingsTab: View {
     }
 
     var body: some View {
-        NavigationView {
-            List {
-                SettingsItem(title: "Lock App", buttonText: "Lock", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
-                    lock()
-                }
-
-                let externalApprovers = ownerState.policy.approvers
-                    .filter({ !$0.isOwner })
-                
-                if externalApprovers.count > 0 {
-                    SettingsItem(title: "Remove Approvers", buttonText: "Remove", description: "Remove your approvers and return to yourself as the sole approval required for seed phrase access.  After doing this, you may optionally select new approvers to add.") {
-                        if ownerState.hasBlockingPhraseAccessRequest {
-                            showError(CensoError.cannotRemoveApproversWhileAccessInProgress)
-                        } else {
-                            showApproversRemoval = true
-                        }
-                    }
-                }
-                
-                if ownerState.timelockSetting.currentTimelockInSeconds == nil {
-                    SettingsItem(title: "Enable Timelock", buttonText: "Enable", buttonIdentifier: "enableTimelockButton", description: "Enabling the timelock adds additional safety when accessing seed phrases. After requesting access to seed phrases, you will need to wait for \(ownerState.timelockSetting.defaultTimelockInSeconds.toDisplayDuration()) before being able to view them.", buttonDisabled: timelockUpdateInProgress) {
-                        enableOrDisableTimelock(enable: true)
-                    }
-                } else if let disabledAt = ownerState.timelockSetting.disabledAt {
-                    SettingsItem(title: "Cancel Disable Timelock", buttonText: "Cancel", buttonIdentifier: "cancelDisableTimelockButton", description: "Waiting \(disabledAt.toDisplayDuration()) before disabling the timelock. If you want to leave the timelock enabled, you can cancel now.", buttonDisabled: timelockUpdateInProgress) {
-                        cancelDisableRequested = true
-                    }
-                    .onReceive(timer) { _ in
-                        if (Date.now >= disabledAt) {
-                            refreshState()
-                        }
-                    }
-                } else {
-                    SettingsItem(title: "Disable Timelock", buttonText: "Disable", buttonIdentifier: "disableTimelockButton", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled.", buttonDisabled: timelockUpdateInProgress) {
-                        enableOrDisableTimelock(enable: false)
-                    }
-                }
-                
-                SettingsItem(title: "Delete My Data", buttonText: "Delete", buttonIdentifier: "deleteMyDataButton", description: "This will securely delete all of your information stored in the Censo app.  After completing this, you will no longer have access to any seed phrases you have entered.  This operation cannot be undone.", buttonDisabled: resetInProgress) {
-                    resetRequested = true
-                }
-                
-                if pushNotificationsEnabled != "true" {
-                    SettingsItem(title: "Allow Push Notification", buttonText: "Enable", buttonIdentifier: "enablePushNotificaionButton", description: "Enable notifications to receive security and update alerts from Censo.") {
-                        showPushNotificationSettings = true
-                    }
-                }
-                
+        List {
+            SettingsItem(title: "Lock App", buttonText: "Lock", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
+                lock()
             }
-            .navigationBarTitle("Settings", displayMode: .inline)
-            .listStyle(.plain)
-            .scrollIndicators(ScrollIndicatorVisibility.hidden)
+            
+            let externalApprovers = ownerState.policy.approvers
+                .filter({ !$0.isOwner })
+            
+            if externalApprovers.count > 0 {
+                SettingsItem(title: "Remove Approvers", buttonText: "Remove", description: "Remove your approvers and return to yourself as the sole approval required for seed phrase access.  After doing this, you may optionally select new approvers to add.") {
+                    if ownerState.hasBlockingPhraseAccessRequest {
+                        showError(CensoError.cannotRemoveApproversWhileAccessInProgress)
+                    } else {
+                        showApproversRemoval = true
+                    }
+                }
+            }
+            
+            if ownerState.timelockSetting.currentTimelockInSeconds == nil {
+                SettingsItem(title: "Enable Timelock", buttonText: "Enable", buttonIdentifier: "enableTimelockButton", description: "Enabling the timelock adds additional safety when accessing seed phrases. After requesting access to seed phrases, you will need to wait for \(ownerState.timelockSetting.defaultTimelockInSeconds.toDisplayDuration()) before being able to view them.", buttonDisabled: timelockUpdateInProgress) {
+                    enableOrDisableTimelock(enable: true)
+                }
+            } else if let disabledAt = ownerState.timelockSetting.disabledAt {
+                SettingsItem(title: "Cancel Disable Timelock", buttonText: "Cancel", buttonIdentifier: "cancelDisableTimelockButton", description: "Waiting \(disabledAt.toDisplayDuration()) before disabling the timelock. If you want to leave the timelock enabled, you can cancel now.", buttonDisabled: timelockUpdateInProgress) {
+                    cancelDisableRequested = true
+                }
+                .onReceive(timer) { _ in
+                    if (Date.now >= disabledAt) {
+                        refreshState()
+                    }
+                }
+            } else {
+                SettingsItem(title: "Disable Timelock", buttonText: "Disable", buttonIdentifier: "disableTimelockButton", description: "Timelock (\(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration())) is enabled. You may initiate disabling the timelock but it will take \(ownerState.timelockSetting.currentTimelockInSeconds!.toDisplayDuration()) before the timelock is disabled.", buttonDisabled: timelockUpdateInProgress) {
+                    enableOrDisableTimelock(enable: false)
+                }
+            }
+            
+            SettingsItem(title: "Delete My Data", buttonText: "Delete", buttonIdentifier: "deleteMyDataButton", description: "This will securely delete all of your information stored in the Censo app.  After completing this, you will no longer have access to any seed phrases you have entered.  This operation cannot be undone.", buttonDisabled: resetInProgress) {
+                resetRequested = true
+            }
+            .listRowSeparator(pushNotificationsEnabled != "true" ? .visible : .hidden)
+            
+            if pushNotificationsEnabled != "true" {
+                SettingsItem(title: "Allow Push Notification", buttonText: "Enable", buttonIdentifier: "enablePushNotificaionButton", description: "Enable notifications to receive security and update alerts from Censo.") {
+                    showPushNotificationSettings = true
+                }
+                .listRowSeparator(.hidden)
+            }
         }
+        .padding(.bottom)
+        .listStyle(.plain)
+        .scrollIndicators(ScrollIndicatorVisibility.hidden)
         .sheet(isPresented: $showApproversRemoval, content: {
             InitApproversRemovalFlow(ownerState: ownerState)
         })
@@ -102,7 +101,7 @@ struct SettingsTab: View {
         )
         .deleteAllDataAlert(
             title: "Delete Data Confirmation",
-            numSeedPhrases: ownerState.vault.seedPhrases.count, 
+            numSeedPhrases: ownerState.vault.seedPhrases.count,
             deleteRequested: $resetRequested,
             onDelete: deleteUser
         )

@@ -20,6 +20,7 @@ struct PhraseAccessIntro: View {
                 Text("Ready to start your 15 minutes of access?")
                     .font(.title2)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding()
                 
                 LanguageSelection(
@@ -45,7 +46,7 @@ struct PhraseAccessIntro: View {
                         image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 minutes to access your seed phrase. If you need more time, you will have to scan your face again.")
                 }
                 .padding(.horizontal)
-                .padding(.vertical, 20)
+                .padding(.vertical)
                 
                 Button {
                     onReadyToGetStarted(languageId == 0 ? nil : WordListLanguage.fromId(id: languageId))

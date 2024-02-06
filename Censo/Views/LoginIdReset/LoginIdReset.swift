@@ -79,7 +79,7 @@ struct LoginIdResetLoggedOutSteps: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                WithResetLoginIdHeader {
+                VStack(spacing: 0) {
                     LoginIdResetCollectTokensStep(
                         enabled: step == .collectingTokens,
                         tokens: $tokens
@@ -111,6 +111,8 @@ struct LoginIdResetLoggedOutSteps: View {
                         onButtonPressed: { }
                     )
                 }
+                .padding(.top)
+                .padding(.horizontal)
             }
             .onAppear {
                 if tokens.count == resetTokensThreshold {
@@ -119,7 +121,7 @@ struct LoginIdResetLoggedOutSteps: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .toolbarBackground(Color.Censo.primaryBackground, for: .navigationBar)
+            .navigationTitle("Reset Login ID")
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
@@ -144,7 +146,7 @@ struct LoginIdResetLoggedInSteps: View {
             switch (step) {
             case .collectingTokens, .signIn, .startVerification:
                 ScrollView {
-                    WithResetLoginIdHeader {
+                    VStack(spacing: 0) {
                         LoginIdResetCollectTokensStep(
                             enabled: false,
                             tokens: $tokens
@@ -179,36 +181,36 @@ struct LoginIdResetLoggedInSteps: View {
                             self.step = .startVerification
                         }
                     }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden(true)
-                    .toolbarBackground(Color.Censo.primaryBackground, for: .navigationBar)
-                    .toolbar(content: {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                                Keychain.removeUserCredentials()
-                                onComplete()
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
-                        }
-                    })
-                }
-            case .chooseVerificationMethod:
-                WithResetLoginIdHeader {
-                    SelectIdentityVerificationMethod(step: $step)
+                    .padding(.top)
+                    .padding(.horizontal)
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarBackButtonHidden(true)
-                .toolbarBackground(Color.Censo.primaryBackground, for: .navigationBar)
+                .navigationTitle("Reset Login ID")
                 .toolbar(content: {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
-                            step = .startVerification
+                            Keychain.removeUserCredentials()
+                            onComplete()
                         } label: {
-                            Image(systemName: "chevron.left")
+                            Image(systemName: "xmark")
                         }
                     }
                 })
+            case .chooseVerificationMethod:
+                SelectIdentityVerificationMethod(step: $step)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarBackButtonHidden(true)
+                    .navigationTitle("Reset Login ID")
+                    .toolbar(content: {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                step = .startVerification
+                            } label: {
+                                Image(systemName: "chevron.left")
+                            }
+                        }
+                    })
             case .resetWithBiometry:
                 FacetecAuth<API.ResetLoginIdApiResponse>(
                     onFaceScanReady: { biometryData, completion in
@@ -228,58 +230,38 @@ struct LoginIdResetLoggedInSteps: View {
                 )
             case .resetWithPassword:
                 ScrollView {
-                    WithResetLoginIdHeader {
-                        PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
-                            submit: { password, completion in
-                                ownerRepository.resetLoginIdWithPassword(
-                                    API.ResetLoginIdWithPasswordApiRequest(
-                                        identityToken: ownerRepository.userIdentifier,
-                                        resetTokens: Array(tokens),
-                                        password: password
-                                    ),
-                                    completion
-                                )
-                            },
-                            onSuccess: { _ in
-                                onComplete()
-                            }
-                        )
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden(true)
-                    .toolbarBackground(Color.Censo.primaryBackground, for: .navigationBar)
-                    .toolbar(content: {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                                step = .chooseVerificationMethod
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
+                    PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
+                        submit: { password, completion in
+                            ownerRepository.resetLoginIdWithPassword(
+                                API.ResetLoginIdWithPasswordApiRequest(
+                                    identityToken: ownerRepository.userIdentifier,
+                                    resetTokens: Array(tokens),
+                                    password: password
+                                ),
+                                completion
+                            )
+                        },
+                        onSuccess: { _ in
+                            onComplete()
                         }
-                    })
+                    )
+                    .padding(.horizontal)
                 }
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden(true)
+                .navigationTitle("Reset Login ID")
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            step = .chooseVerificationMethod
+                        } label: {
+                            Image(systemName: "chevron.left")
+                        }
+                    }
+                })
             }
         }
         .environmentObject(ownerRepository)
-    }
-}
-
-struct WithResetLoginIdHeader<Content: View>: View {
-    @ViewBuilder var content: () -> Content
-    
-    var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            Text("Reset Login ID")
-                .fixedSize(horizontal: false, vertical: true)
-                .font(.title)
-                .fontWeight(.semibold)
-                .padding(.bottom, 32)
-            
-            VStack(spacing: 0) {
-                content()
-            }
-        }
-        .padding()
     }
 }
 
@@ -336,11 +318,20 @@ private let resetTokensThreshold = 2
 
 #Preview {
     NavigationView {
-        WithResetLoginIdHeader {
-            SelectIdentityVerificationMethod(
-                step: Binding.constant(.chooseVerificationMethod)
-            )
-        }
+        SelectIdentityVerificationMethod(
+            step: Binding.constant(.chooseVerificationMethod)
+        )
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .navigationTitle("Reset Login ID")
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                } label: {
+                    Image(systemName: "chevron.left")
+                }
+            }
+        })
     }
     .foregroundColor(.Censo.primaryForeground)
 }

@@ -21,7 +21,7 @@ struct ChooseOwner: View {
                 .padding(.vertical)
                 .fixedSize(horizontal: false, vertical: true)
             
-            ScrollView {
+            List {
                 VStack(spacing: 30) {
                     ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
                         Button {
@@ -36,10 +36,11 @@ struct ChooseOwner: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
                 .padding()
             }
-            
-            Spacer()
+            .listStyle(.plain)
+            .scrollIndicators(ScrollIndicatorVisibility.hidden)
             
             Divider()
             

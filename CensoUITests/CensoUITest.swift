@@ -72,13 +72,12 @@ final class CensoUITest: XCTestCase {
         textField.enterText(text: "Delete \(phraseLabel)")
         alert.waitForButtonAndTap(buttonIdentifier: "confirmDeleteConfirmationButton")
         
-        app.waitForStaticText(text: "Seed Phrases")
+        app.waitForStaticText(text: "Pasted Phrase")
         XCTAssertFalse(app.staticTexts[phraseLabel].exists)
         
         TestHelper.validateHomeScreen(numPhrases: 1, numApprovers: 0)
         TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["Pasted Phrase"])
     }
-    
     
     func test04_EnterPhrase() throws {
         TestHelper.addPhrase(inputButton: "enterPhraseButton", label: "Entered Word Phrase", expectPaywall: false, onboarding: false)
@@ -97,7 +96,7 @@ final class CensoUITest: XCTestCase {
     func test06_Access() throws {
         let app = TestSettings.shared.app!
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
-        app.waitForButtonAndTap(buttonIdentifier: "Begin Access Button")
+        app.waitForButtonAndTap(buttonIdentifier: "Begin access Button")
         app.waitForStaticText(text: "Select the seed phrase you would like to access:")
         
         XCTAssertTrue(app.buttons["Pasted Phrase"].exists)
@@ -181,7 +180,7 @@ final class CensoUITest: XCTestCase {
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
         
         // start the access
-        app.waitForButtonAndTap(buttonIdentifier: "Begin Access Button")
+        app.waitForButtonAndTap(buttonIdentifier: "Begin access Button")
         app.waitForStaticText(text: "Timelock expires in: less than 1 minute")
     
         // cancel the access
@@ -191,11 +190,11 @@ final class CensoUITest: XCTestCase {
         alert.waitForButtonAndTap(buttonIdentifier: "confirmCancelAccessButton")
         
         // when begin access appears start over
-        app.waitForButtonAndTap(buttonIdentifier: "Begin Access Button")
+        app.waitForButtonAndTap(buttonIdentifier: "Begin access Button")
         app.waitForStaticText(text: "Timelock expires in: less than 1 minute")
         
         // this waits for timelock to expire - it is 30 seconds + repeater app task runs every 30
-        app.waitForButtonAndTap(buttonIdentifier: "Show Seed Phrases Button", timeout: 70)
+        app.waitForButtonAndTap(buttonIdentifier: "Show seed phrases Button", timeout: 70)
         
         TestHelper.accessSeedPhrase(
             label: "Pasted Phrase",
@@ -215,7 +214,7 @@ final class CensoUITest: XCTestCase {
         alert = app.waitForAlert(alertIdentifier: "Exit accessing phrases")
         alert.waitForButtonAndTap(buttonIdentifier: "confirmExitAccessingPhrasesButton")
         
-        let _ = app.waitForButton(buttonIdentifier: "Begin Access Button")
+        let _ = app.waitForButton(buttonIdentifier: "Begin access Button")
     }
     
     func test09_DeleteAllDataSettings() throws {

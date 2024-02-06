@@ -32,7 +32,7 @@ struct FirstPhrase: View {
                             onPastePhrase: { showingPastePhrase = true },
                             onPhotoPhrase: { showingPhotoPhrase = true }
                         )
-                        .navigationTitle("")
+                        .navigationTitle("Add your first seed phrase")
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar(content: {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -48,7 +48,7 @@ struct FirstPhrase: View {
                             onGeneratePhrase: { showingGeneratePhrase = true },
                             onAddYourOwnPhrase: { addYourOwnPhrase = true }
                         )
-                        .onboardingCancelNavBar(onCancel: onCancel)
+                        .onboardingCancelNavBar(navigationTitle: "Add your first seed phrase", onCancel: onCancel)
                     }
                 }
                 .background {

@@ -31,13 +31,6 @@ struct GetLiveWithApprover : View {
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        
-                        Text("Verify \(approverName)")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding(.bottom)
-                        
-                        
                         Text("Verifying \(approverName) as an approver will take about 2 minutes. This verification should preferably take place while you’re on the phone or in-person to ensure that you are verifying the proper approver.")
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.subheadline)
@@ -71,26 +64,28 @@ struct GetLiveWithApprover : View {
                 .padding([.leading, .trailing], 32)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Verify \(approverName)")
     }
 }
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        GetLiveWithApprover(
-            approverName: "Neo",
-            onContinue: {}
-        )
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                } label: {
-                    Image(systemName: "xmark")
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            GetLiveWithApprover(
+                approverName: "Neo",
+                onContinue: {}
+            )
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
                 }
-            }
-        })
+            })
+        }
     }
-    .foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

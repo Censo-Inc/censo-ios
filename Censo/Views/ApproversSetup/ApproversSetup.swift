@@ -64,78 +64,76 @@ struct ApproversSetup: View {
             switch (step) {
             case .intro:
                 GeometryReader { geometry in
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            Spacer()
-                            Text("Add Approvers, increase your security")
-                                .font(.title)
-                                .bold()
-                                .padding(.vertical)
-                            
-                            Text("""
+                    VStack(alignment: .leading, spacing: 0) {
+                        Spacer()
+                        Text("Add approvers, increase your security")
+                            .font(.title3)
+                            .bold()
+                            .padding(.vertical)
+                        
+                        Text("""
                             If you use approvers, you will need to add a total of two.
-
+                            
                             Once you add them, whenever you want to access your seed phrases, you will need to request the help of one of your two approvers.
-
+                            
                             Approvers can be removed by you after you add them.
                             """
-                            )
-                            .font(.subheadline)
-                            .padding(.vertical)
-                            .fixedSize(horizontal: false, vertical: true)
-                            
-                            Spacer()
-                            
-                            Button {
-                                self.step = Step.fromOwnerState(ownerState)
-                            } label: {
-                                HStack {
-                                    Spacer()
-                                    Image("TwoPeopleWhite")
-                                        .renderingMode(.template)
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
-                                    Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
-                                        .font(.title3)
-                                        .fixedSize(horizontal: true, vertical: false)
-                                    Spacer()
-                                }
-                                .frame(maxWidth: .infinity)
+                        )
+                        .font(.subheadline)
+                        .padding(.vertical)
+                        .fixedSize(horizontal: false, vertical: true)
+                        
+                        Spacer()
+                        
+                        Button {
+                            self.step = Step.fromOwnerState(ownerState)
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Image("TwoPeopleWhite")
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
+                                    .font(.title3)
+                                    .fixedSize(horizontal: true, vertical: false)
+                                Spacer()
                             }
-                            .buttonStyle(RoundedButtonStyle())
-                            .padding(.top)
-                            
-                            if ownerState.policySetup != nil {
-                                Button {
-                                    showDeletePolicySetupConfirmation = true
-                                } label: {
-                                    Text("Cancel")
-                                        .font(.title3)
-                                        .tint(Color.Censo.darkBlue)
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .padding(.top)
-                            }
-                            
-                            Button {
-                                showLearnMore = true
-                            } label: {
-                                HStack {
-                                    Image(systemName: "info.circle")
-                                        .tint(.black)
-
-                                    Text("Learn more")
-                                        .tint(.black)
-                                }
-                            }
-                            .padding(.top)
                             .frame(maxWidth: .infinity)
-
-                            Spacer(minLength: 0)
                         }
-                        .padding([.leading, .trailing], 32)
-                        .frame(minHeight: geometry.size.height)
+                        .buttonStyle(RoundedButtonStyle())
+                        .padding(.top)
+                        
+                        if ownerState.policySetup != nil {
+                            Button {
+                                showDeletePolicySetupConfirmation = true
+                            } label: {
+                                Text("Cancel")
+                                    .font(.title3)
+                                    .tint(Color.Censo.darkBlue)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .padding(.top)
+                        }
+                        
+                        Button {
+                            showLearnMore = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "info.circle")
+                                    .tint(.black)
+                                
+                                Text("Learn more")
+                                    .tint(.black)
+                            }
+                        }
+                        .padding(.top)
+                        .frame(maxWidth: .infinity)
+                        
+                        Spacer(minLength: 0)
                     }
+                    .padding([.leading, .trailing], 32)
+                    .frame(minHeight: geometry.size.height)
                 }
                 .alert("Are you sure?", isPresented: $showDeletePolicySetupConfirmation) {
                     Button {
@@ -157,6 +155,7 @@ struct ApproversSetup: View {
                     Text(error.localizedDescription)
                 }
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Add approvers")
                 .toolbar(content: {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {

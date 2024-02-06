@@ -28,11 +28,6 @@ struct EnterApproverNickname: View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
-            Text("Name your \(isPrimary ? "first" : "second") approver")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .padding(.bottom)
-            
             Text("Give your approver a unique nickname so you can identify them.")
                 .font(.subheadline)
                 .padding(.bottom)
@@ -84,6 +79,7 @@ struct EnterApproverNickname: View {
         }
         .padding([.leading, .trailing], 32)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Name your \(isPrimary ? "first" : "second") approver")
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 if let onBack {

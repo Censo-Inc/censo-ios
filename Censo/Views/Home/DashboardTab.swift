@@ -16,9 +16,7 @@ struct DashboardTab: View {
     @Binding var parentTabViewSelectedTab: HomeScreen.TabId
     
     var body: some View {
-        ScrollView {
-            Spacer()
-            
+        VStack {
             VStack {
                 Spacer()
                 Button {
@@ -36,11 +34,13 @@ struct DashboardTab: View {
                             .fontWeight(.semibold)
                     }
                 }
+                
                 Text("\(ownerState.vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
                     .font(.title3)
                     .padding()
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
+                
                 Button {
                     showingAddPhrase = true
                 } label: {
@@ -49,11 +49,10 @@ struct DashboardTab: View {
                         .fontWeight(.regular)
                         .frame(maxWidth: 322, minHeight: 24)
                 }
-                .padding([.top], 10)
                 .buttonStyle(RoundedButtonStyle())
                 .accessibilityIdentifier("addSeedPhraseButton")
 
-                Spacer().padding()
+                Spacer()
 
                 if (ownerState.policy.externalApproversCount == 0) {
                     Text("\nYou can increase security by adding approvers.")

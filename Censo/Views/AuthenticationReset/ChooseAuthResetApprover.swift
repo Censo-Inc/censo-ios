@@ -41,10 +41,6 @@ struct ChooseAuthResetApprover : View {
                 
                 let resetType = authType == .facetec ? "Biometry" : "Password"
                 
-                Text("\(resetType) reset approval")
-                    .font(.title2)
-                    .bold()
-                
                 Text("""
                     \(resetType) reset requires the assistance from both of your approvers.
                     

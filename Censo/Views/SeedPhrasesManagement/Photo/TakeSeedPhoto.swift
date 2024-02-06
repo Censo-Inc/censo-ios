@@ -40,7 +40,7 @@ struct TakeSeedPhoto<Content: View>: View {
             .padding()
             .frame(maxHeight: 80, alignment: .bottom)
         }
-        .navigationTitle(Text("Seed Phrase Photo"))
+        .navigationTitle(Text("Seed phrase photo"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

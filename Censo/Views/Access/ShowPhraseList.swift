@@ -23,7 +23,7 @@ struct ShowPhraseList: View {
                 .fontWeight(.semibold)
                 .padding()
             
-            ScrollView {
+            List {
                 ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
                     Button {
                         onPhraseSelected(i)
@@ -55,12 +55,17 @@ struct ShowPhraseList: View {
                                         .font(.system(size: 28))
                                 }
                             }.frame(minWidth: 40)
-                            
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.top)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
                 }
             }
+            .padding(.bottom)
+            .listStyle(.plain)
+            .scrollIndicators(ScrollIndicatorVisibility.hidden)
             
             Spacer()
             
@@ -96,14 +101,21 @@ struct ShowPhraseList: View {
 #if DEBUG
 #Preview {
     LoggedInOwnerPreviewContainer {
-        NavigationView {
-            ShowPhraseList(
-                ownerState: .sample,
-                viewedPhrases: [1],
-                onPhraseSelected: {_ in },
-                onFinished: {}
-            )
+        VStack {
         }
+        .sheet(isPresented: Binding.constant(true), content: {
+            NavigationView {
+                ShowPhraseList(
+                    ownerState: .sample,
+                    viewedPhrases: [1],
+                    onPhraseSelected: {_ in },
+                    onFinished: {}
+                )
+                .navigationTitle(Text("Access"))
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden()
+            }
+        })
     }
 }
 #endif

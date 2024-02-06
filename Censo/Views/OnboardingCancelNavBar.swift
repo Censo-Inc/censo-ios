@@ -50,6 +50,10 @@ extension View {
         modifier(OnboardingCancelNavBar(onCancel: onCancel, showAsBack: showAsBack))
     }
     
+    func onboardingCancelNavBar(navigationTitle: String, onCancel: @escaping () -> Void, showAsBack: Bool = false) -> some View {
+        modifier(OnboardingCancelNavBar(onCancel: onCancel, navigationTitle: navigationTitle, showAsBack: showAsBack))
+    }
+    
     func onboardingCancelNavBar(onboarding: Bool, onCancel: @escaping () -> Void) -> some View {
         modifier(OnboardingCancelNavBar(onCancel: onCancel, onboarding: onboarding))
     }

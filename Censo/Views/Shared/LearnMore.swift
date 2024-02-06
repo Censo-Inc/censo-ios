@@ -22,11 +22,11 @@ struct LearnMore<Content>: View where Content: View {
                     .multilineTextAlignment(.center)
                 LearnMoreDivider()
                 ScrollView {
-                    content()
+                    content().padding(.horizontal)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding()
+            .padding(.vertical)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
