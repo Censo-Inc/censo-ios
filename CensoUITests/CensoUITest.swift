@@ -272,7 +272,7 @@ final class CensoUITest: XCTestCase {
         
         // access them
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
-        app.waitForButtonAndTap(buttonIdentifier: "Begin Access Button")
+        app.waitForButtonAndTap(buttonIdentifier: "Begin access Button")
         
         // access the japanese phrase in french
         TestHelper.accessSeedPhrase(
