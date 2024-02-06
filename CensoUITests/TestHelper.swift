@@ -41,20 +41,23 @@ class TestHelper {
         XCTAssertTrue(app.buttons["Settings"].exists)
     }
     
-    static func addPhrase(inputButton: String, label: String, expectPaywall: Bool, onboarding: Bool) {
+    static func addPhrase(inputButton: String, label: String, expectPaywall: Bool, onboarding: Bool, language: PhraseLanguage? = nil) {
         
         if !onboarding {
             app.waitForButtonAndTap(buttonIdentifier: "Home")
             app.waitForButtonAndTap(buttonIdentifier: "addSeedPhraseButton")
         }
         
+        if let language {
+            selectLanguage(language: language)
+        }
         TestHelper.selectAddPhraseOption(inputType: inputButton)
         
         switch inputButton {
         case "enterPhraseButton":
             app.waitForButtonAndTap(buttonIdentifier: "enterWordButton")
             
-            let words = TestSettings.shared.words
+            let words = TestSettings.shared.words()
             words.enumerated().forEach { (index, word) in
                 app.enterText(fieldIdentifier: "wordEntryTextField", inputText: word)
                 
@@ -73,7 +76,7 @@ class TestHelper {
             reviewAndSaveSeedPhrase(label: label, expectPaywall: expectPaywall, numWords: words.count, expectedWords: words)
             
         case "pastePhraseButton":
-            let words = TestSettings.shared.words
+            let words = TestSettings.shared.words()
             
             app.waitForButtonAndTap(buttonIdentifier: "pasteFromClipboardButton")
             respondToPasteAlertIfPresent()
@@ -108,6 +111,14 @@ class TestHelper {
         }
     }
     
+    static func selectLanguage(language: PhraseLanguage) {
+        app.waitForStaticText(text: "languagePickerText")
+        let staticText = app.staticTexts["languagePickerText"]
+        staticText.tap()
+        app.waitForButtonAndTap(buttonIdentifier: TestSettings.shared.languageButtonIdentifier[language]!)
+        TestSettings.shared.currentLanguage = language
+    }
+    
     static func acceptTermsAndConditions() {
         app.waitForButtonAndTap(buttonIdentifier: "reviewTermsButton", timeout: 30)
 
@@ -131,10 +142,7 @@ class TestHelper {
     static func validateMyPhrasesScreen(expectedPhraseLabels: [String]) {
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
         expectedPhraseLabels.forEach { label in
-            XCTAssertTrue(app.staticTexts[label].exists, {
-                dumpElement(app)
-                return label
-            }())
+            XCTAssertTrue(app.staticTexts[label].exists, label)
         }
     }
     
@@ -154,15 +162,16 @@ class TestHelper {
         app.waitForButtonAndTap(buttonIdentifier: "okButton")
     }
     
-    static func accessSeedPhrase(label: String, numWords: Int, expectedWords: [String]? = nil) {
+    static func accessSeedPhrase(label: String, numWords: Int, expectedWords: [String]? = nil, language: PhraseLanguage? = nil) {
         
         app.waitForButtonAndTap(buttonIdentifier: label)
+        if let language {
+            selectLanguage(language: language)
+        }
         app.waitForButtonAndTap(buttonIdentifier: "getStarted")
         
         if let password = TestSettings.shared.password {
-            app.waitForStaticText(text: "Enter your password")
-            app.enterSecureText(fieldIdentifier: "passwordInputTextField", secureText: password, enterReturn: false)
-            app.waitForButtonAndTap(buttonIdentifier: "continueButton")
+            enterPassword(password: password)
         }
         
         XCTAssertTrue(app.buttons["doneViewingPhraseButton"].waitForExistence(timeout: 5))
@@ -180,6 +189,20 @@ class TestHelper {
             XCTAssertTrue(app.staticTexts["Zoom in to see the words"].exists)
             app.waitForButtonAndTap(buttonIdentifier: "doneViewingPhraseButton")
         }
+    }
+    
+    static func enterPassword(password: String, shouldPass: Bool = true) {
+        app.waitForStaticText(text: "Enter your password")
+        app.enterSecureText(fieldIdentifier: "passwordInputTextField", secureText: password, enterReturn: false)
+        app.waitForButtonAndTap(buttonIdentifier: "continueButton")
+        if shouldPass {
+            if app.staticTexts["Password was invalid"].waitForExistence(timeout: 1) {
+                print(" ******* wrong password entered")
+                app.enterSecureText(fieldIdentifier: "passwordInputTextField", secureText: password, enterReturn: false)
+                app.waitForButtonAndTap(buttonIdentifier: "continueButton")
+            }
+        }
+        
     }
     
     static func imagesByLabel(label: String) -> Int {
@@ -201,11 +224,29 @@ class TestHelper {
                 XCTAssertTrue(app.staticTexts[expectedWords[index - 1]].exists)
             }
             if index != numWords {
-                word.swipeLeft(velocity: .fast)
+                word.swipeLeft()
             }
         }
         
         app.waitForButtonAndTap(buttonIdentifier: doneButtonIdentifier)
+    }
+    
+    static func lockAndUnlock() {
+        app.waitForButtonAndTap(buttonIdentifier: "Settings")
+        XCTAssertTrue(app.staticTexts["Lock App"].exists)
+        
+        app.waitForButtonAndTap(buttonIdentifier: "lockButton")
+        
+        let unlockButton = app.waitForButton(buttonIdentifier: "lockContinueButton")
+        XCTAssertFalse(app.staticTexts["Having trouble with password verification?"].exists)
+        unlockButton.tap()
+        if let password = TestSettings.shared.password {
+            enterPassword(password: "badpassword", shouldPass: false)
+            app.waitForStaticText(text: "Password was invalid")
+            enterPassword(password: password)
+        }
+
+        let _ = app.waitForButton(buttonIdentifier: "Home")
     }
     
     static func respondToPasteAlertIfPresent() {
@@ -251,15 +292,17 @@ class TestHelper {
         app.waitForButtonAndTap(buttonIdentifier: inputType)
     }
     
-    static func dumpElement(_ element: XCUIElement) {
-        print("buttons: \(element.buttons.debugDescription)")
-        print("textFields: \(element.textFields.debugDescription)")
-        print("staticTexts: \(element.staticTexts.debugDescription)")
-        print("secureText: \(element.secureTextFields.debugDescription)")
-        print("navigationBars: \(element.navigationBars.debugDescription)")
-        print("images: \(element.images.debugDescription)")
-        print("alerts: \(element.alerts.debugDescription)")
-        print("scroolbars: \(element.scrollBars.debugDescription)")
-        print("scroolviews: \(element.scrollViews.debugDescription)")
+    static func dumpApp() {
+        print("buttons: \(app.buttons.debugDescription)")
+        print("textFields: \(app.textFields.debugDescription)")
+        print("staticTexts: \(app.staticTexts.debugDescription)")
+        print("secureText: \(app.secureTextFields.debugDescription)")
+        print("navigationBars: \(app.navigationBars.debugDescription)")
+        print("images: \(app.images.debugDescription)")
+        print("alerts: \(app.alerts.debugDescription)")
+        print("scrollbars: \(app.scrollBars.debugDescription)")
+        print("scrollviews: \(app.scrollViews.debugDescription)")
+        print("menus: \(app.menus.debugDescription)")
+        print("User Identifier = \(TestSettings.shared.userIdentifier)")
     }
 }

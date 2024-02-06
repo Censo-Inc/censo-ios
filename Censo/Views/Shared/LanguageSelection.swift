@@ -18,10 +18,12 @@ struct LanguageSelection: View {
                     Text("\(language.localizedDisplayName())\n\(language.displayName())").tag(language.toId())
                 }
             }
+            .accessibilityIdentifier("languagePicker")
         } label: {
             text
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("languagePickerText")
         }
     }
 }

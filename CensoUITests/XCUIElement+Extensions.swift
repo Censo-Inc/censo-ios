@@ -21,6 +21,11 @@ extension XCUIElement {
 
         self.doubleTap()
         self.typeText(text)
+        if self.value as? String != text {
+            print("******* wrong text entered ******** ")
+            self.doubleTap()
+            self.typeText(text)
+        }
     }
     
     
@@ -63,7 +68,7 @@ extension XCUIElement {
         let secureTextField = app.secureTextFields[fieldIdentifier]
         XCTAssertTrue(secureTextField.waitForExistence(timeout: 5))
         
-        secureTextField.tap()
+        secureTextField.doubleTap()
         secureTextField.typeText(secureText)
         if enterReturn {
             secureTextField.typeText("\n")

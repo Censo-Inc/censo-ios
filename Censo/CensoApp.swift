@@ -37,6 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
             if CommandLine.arguments.count >= 3 {
                 UIPasteboard.general.string = CommandLine.arguments[2]
             }
+            UIApplication.shared.keyWindow?.layer.speed = 0
 
             Keychain.userCredentials = .init(idToken: "testIdToken".data(using: .utf8)!, userIdentifier: CommandLine.arguments.last!)
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)

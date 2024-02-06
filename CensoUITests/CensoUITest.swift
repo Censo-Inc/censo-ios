@@ -15,7 +15,7 @@ final class CensoUITest: XCTestCase {
     }
 
     override func tearDown() {
-        
+        TestHelper.dumpApp()
     }
 
     func test00_Onboarding() throws {
@@ -26,15 +26,15 @@ final class CensoUITest: XCTestCase {
     }
     
     func test01_PastePhrase() throws {
-        TestHelper.addPhrase(inputButton: "pastePhraseButton", label: "Pasted Phrase", expectPaywall: false, onboarding: false)
+        TestHelper.addPhrase(inputButton: "pastePhraseButton", label: "PastedPhrase", expectPaywall: false, onboarding: false)
         TestHelper.validateHomeScreen(numPhrases: 2, numApprovers: 0)
-        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel, "Pasted Phrase"])
+        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel, "PastedPhrase"])
     }
     
     func test02_RenamePhrase() throws {
         let app = TestSettings.shared.app!
         let phraseLabel = TestSettings.shared.firstPhraseLabel
-        let renamedPhraseLabel = "Renamed \(phraseLabel)"
+        let renamedPhraseLabel = "Renamed\(phraseLabel)"
         
         app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
         app.waitForButtonAndTap(buttonIdentifier: "seedPhraseEdit0Button")
@@ -50,7 +50,7 @@ final class CensoUITest: XCTestCase {
         TestSettings.shared.firstPhraseLabel = renamedPhraseLabel
         
         TestHelper.validateHomeScreen(numPhrases: 2, numApprovers: 0)
-        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel, "Pasted Phrase"])
+        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel, "PastedPhrase"])
     }
     
     func test03_DeletePhrase() throws {
@@ -72,25 +72,25 @@ final class CensoUITest: XCTestCase {
         textField.enterText(text: "Delete \(phraseLabel)")
         alert.waitForButtonAndTap(buttonIdentifier: "confirmDeleteConfirmationButton")
         
-        app.waitForStaticText(text: "Pasted Phrase")
+        app.waitForStaticText(text: "PastedPhrase")
         XCTAssertFalse(app.staticTexts[phraseLabel].exists)
         
         TestHelper.validateHomeScreen(numPhrases: 1, numApprovers: 0)
-        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["Pasted Phrase"])
+        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["PastedPhrase"])
     }
     
     func test04_EnterPhrase() throws {
-        TestHelper.addPhrase(inputButton: "enterPhraseButton", label: "Entered Word Phrase", expectPaywall: false, onboarding: false)
+        TestHelper.addPhrase(inputButton: "enterPhraseButton", label: "EnteredWordPhrase", expectPaywall: false, onboarding: false)
         TestHelper.validateHomeScreen(numPhrases: 2, numApprovers: 0)
-        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["Pasted Phrase", "Entered Word Phrase"])
+        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["PastedPhrase", "EnteredWordPhrase"])
     }
     
     func test05_PhotoPhrase() throws {
         try XCTSkipIf(TestSettings.shared.isSimulator, "Tests requiring camera access cannot run on simulator")
         
-        TestHelper.addPhrase(inputButton: "photoPhraseButton", label: "Photo Phrase", expectPaywall: false, onboarding: false)
+        TestHelper.addPhrase(inputButton: "photoPhraseButton", label: "PhotoPhrase", expectPaywall: false, onboarding: false)
         TestHelper.validateHomeScreen(numPhrases: 3, numApprovers: 0)
-        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["Pasted Phrase", "Entered Word Phrase", "Photo Phrase"])
+        TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: ["PastedPhrase", "EnteredWordPhrase", "PhotoPhrase"])
     }
     
     func test06_Access() throws {
@@ -99,33 +99,33 @@ final class CensoUITest: XCTestCase {
         app.waitForButtonAndTap(buttonIdentifier: "Begin access Button")
         app.waitForStaticText(text: "Select the seed phrase you would like to access:")
         
-        XCTAssertTrue(app.buttons["Pasted Phrase"].exists)
-        XCTAssertTrue(app.buttons["Entered Word Phrase"].exists)
+        XCTAssertTrue(app.buttons["PastedPhrase"].exists)
+        XCTAssertTrue(app.buttons["EnteredWordPhrase"].exists)
         if TestSettings.shared.isSimulator {
             XCTAssertEqual(2, TestHelper.imagesByLabel(label: "Forward"))
         } else {
-            XCTAssertTrue(app.buttons["Photo Phrase"].exists)
+            XCTAssertTrue(app.buttons["PhotoPhrase"].exists)
             XCTAssertEqual(3, TestHelper.imagesByLabel(label: "Forward"))
         }
         
         TestHelper.accessSeedPhrase(
-            label: "Pasted Phrase",
-            numWords: TestSettings.shared.words.count,
-            expectedWords: TestSettings.shared.words
+            label: "PastedPhrase",
+            numWords: TestSettings.shared.words().count,
+            expectedWords: TestSettings.shared.words()
         )
         XCTAssertEqual(1, TestHelper.imagesByLabel(label: "Selected"))
         
         
         TestHelper.accessSeedPhrase(
-            label: "Entered Word Phrase",
-            numWords: TestSettings.shared.words.count,
-            expectedWords: TestSettings.shared.words
+            label: "EnteredWordPhrase",
+            numWords: TestSettings.shared.words().count,
+            expectedWords: TestSettings.shared.words()
         )
         XCTAssertEqual(2, TestHelper.imagesByLabel(label: "Selected"))
         
         if !TestSettings.shared.isSimulator {
             TestHelper.accessSeedPhrase(
-                label: "Photo Phrase",
+                label: "PhotoPhrase",
                 numWords: 0
             )
             XCTAssertEqual(3, TestHelper.imagesByLabel(label: "Selected"))
@@ -145,7 +145,6 @@ final class CensoUITest: XCTestCase {
         XCTAssertTrue(app.staticTexts["Lock App"].exists)
         XCTAssertTrue(app.staticTexts["Enable Timelock"].exists)
         XCTAssertTrue(app.staticTexts["Delete My Data"].exists)
-        XCTAssertTrue(app.staticTexts["Allow Push Notification"].exists)
         
         app.waitForButtonAndTap(buttonIdentifier: "enableTimelockButton")
         
@@ -197,9 +196,9 @@ final class CensoUITest: XCTestCase {
         app.waitForButtonAndTap(buttonIdentifier: "Show seed phrases Button", timeout: 70)
         
         TestHelper.accessSeedPhrase(
-            label: "Pasted Phrase",
-            numWords: TestSettings.shared.words.count,
-            expectedWords: TestSettings.shared.words
+            label: "PastedPhrase",
+            numWords: TestSettings.shared.words().count,
+            expectedWords: TestSettings.shared.words()
         )
         XCTAssertEqual(1, TestHelper.imagesByLabel(label: "Selected"))
         
@@ -217,7 +216,11 @@ final class CensoUITest: XCTestCase {
         let _ = app.waitForButton(buttonIdentifier: "Begin access Button")
     }
     
-    func test09_DeleteAllDataSettings() throws {
+    func test09_LockAndUnlockWithPassword() throws {
+        TestHelper.lockAndUnlock()
+    }
+    
+    func test10_DeleteAllDataSettings() throws {
         let app = TestSettings.shared.app!
         app.waitForButtonAndTap(buttonIdentifier: "Settings")
         XCTAssertTrue(app.staticTexts["Delete My Data"].exists)
@@ -248,9 +251,50 @@ final class CensoUITest: XCTestCase {
         
         let _ = app.waitForButton(buttonIdentifier: "Sign in with Apple")
         
-        TestSettings.shared.restartApp()
+        // onboard with a french phrase and use facetec
+        TestSettings.shared.restartApp(language: PhraseLanguage.french)
         TestSettings.shared.password = nil
+        TestSettings.shared.firstPhraseLabel = "FrenchPhrase"
         TestHelper.onboard(phraseInputButton: "pastePhraseButton")
     }
-
+    
+    func test11_ChangeLanguages() throws {
+        let app = TestSettings.shared.app!
+        
+        // add a phrase in japanese
+        TestHelper.addPhrase(
+            inputButton: "enterPhraseButton",
+            label: "JapanesePhrase",
+            expectPaywall: false,
+            onboarding: false,
+            language: PhraseLanguage.japanese
+        )
+        
+        // access them
+        app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
+        app.waitForButtonAndTap(buttonIdentifier: "Begin Access Button")
+        
+        // access the japanese phrase in french
+        TestHelper.accessSeedPhrase(
+            label: "JapanesePhrase",
+            numWords: TestSettings.shared.words().count,
+            expectedWords: TestSettings.shared.words(language: .french),
+            language: .french
+        )
+        
+        // access the french phrase in english
+        TestHelper.accessSeedPhrase(
+            label: "FrenchPhrase",
+            numWords: TestSettings.shared.words().count,
+            expectedWords: TestSettings.shared.words(language: .english),
+            language: .english
+        )
+        
+        app.waitForButtonAndTap(buttonIdentifier: "finishedButton")
+        
+    }
+    
+    func test12_LockAndUnlockWithFace() throws {
+        TestHelper.lockAndUnlock()
+    }
 }

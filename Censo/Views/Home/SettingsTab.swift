@@ -32,7 +32,7 @@ struct SettingsTab: View {
 
     var body: some View {
         List {
-            SettingsItem(title: "Lock App", buttonText: "Lock", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
+            SettingsItem(title: "Lock App", buttonText: "Lock", buttonIdentifier: "lockButton", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
                 lock()
             }
             

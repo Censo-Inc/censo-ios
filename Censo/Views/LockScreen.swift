@@ -67,6 +67,7 @@ struct LockScreen: View {
                         }
                         .buttonStyle(RoundedButtonStyle())
                         .frame(maxWidth: 220)
+                        .accessibilityIdentifier("lockContinueButton")
                         
                         if ownerState.canRequestAuthenticationReset {
                             Text("Having trouble with \(ownerState.authType == .facetec ? "face" : "password") verification?")
