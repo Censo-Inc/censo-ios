@@ -29,7 +29,6 @@ struct PhotoPhrase: View {
                     onRetake: retakeClosure
                 )
             }
-            .padding()
             .frame(maxWidth: .infinity)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)

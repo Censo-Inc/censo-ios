@@ -16,7 +16,6 @@ struct SeedPhotoVerification: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            
             Spacer()
             
             if let uiImage = UIImage(data: imageData) {
@@ -29,21 +28,23 @@ struct SeedPhotoVerification: View {
                         .scaledToFit()
                         .frame(minWidth: 0, maxWidth: .infinity)
                 }
+                .padding()
             } else {
                 Text("Unable to render image").foregroundColor(.red)
             }
             
+            Spacer()
+            
             Group {
-                Divider()
-                
                 Button {
                     onSubmit(imageData)
                 } label: {
-                    Text("Use Photo")
+                    Text("Use photo")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
+                .padding(.horizontal)
+                .padding(.bottom)
                 .accessibilityIdentifier("usePhoto")
                 
                 Button {
@@ -53,13 +54,13 @@ struct SeedPhotoVerification: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
+                .padding(.horizontal)
+                .padding(.bottom)
                 .accessibilityIdentifier("retakePhoto")
             }
         }
-        .padding()
         .multilineTextAlignment(.leading)
-        .navigationTitle(Text("Seed Phrase Photo Verification"))
+        .navigationTitle(Text("Seed phrase photo verification"))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {

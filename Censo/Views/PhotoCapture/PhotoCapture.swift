@@ -29,7 +29,6 @@ struct PhotoCapture<Submission>: View where Submission : View {
                 onBack: controller.stopCapture
             ) {
                 CameraPreview(session: session)
-                    .aspectRatio(1, contentMode: .fit)
             }
         case (.none, .starting):
             ProgressView()

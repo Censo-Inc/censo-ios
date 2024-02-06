@@ -15,30 +15,32 @@ struct TakeSeedPhoto<Content: View>: View {
     @ViewBuilder var content: () -> Content
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 0) {
             Spacer()
             
             Text("Let's take a photo of your seed phrase")
+                .padding(.vertical)
 
             Spacer()
             
             content()
+                .aspectRatio(1, contentMode: .fit)
+                .padding(.horizontal)
             
-            Group {
-                Divider()
-                Button {
-                    onTakePhoto()
-                } label: {
-                    Text("Take a Photo")
-                        .font(.title2)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(RoundedButtonStyle())
-                .padding()
-                .accessibilityIdentifier("takeAPhoto")
+            Spacer()
+            
+            Button {
+                onTakePhoto()
+            } label: {
+                Text("Take a photo")
+                    .font(.title2)
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(RoundedButtonStyle())
             .padding()
-            .frame(maxHeight: 80, alignment: .bottom)
+            .accessibilityIdentifier("takeAPhoto")
+            
+            Spacer()
         }
         .navigationTitle(Text("Seed phrase photo"))
         .navigationBarTitleDisplayMode(.inline)
