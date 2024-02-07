@@ -297,4 +297,30 @@ final class CensoUITest: XCTestCase {
     func test12_LockAndUnlockWithFace() throws {
         TestHelper.lockAndUnlock()
     }
+
+    func test13_PromoCode() throws {
+        TestHelper.acceptTermsAndConditions()
+        
+        let app = TestSettings.shared.app!
+        
+        let getPromoCode = app.buttons["getPromoCode"]
+        XCTAssertTrue(getPromoCode.waitForExistence(timeout: 5))
+        getPromoCode.tap()
+        
+        let promoCodeEntry = app.textFields["promoCodeEntry"]
+        XCTAssertTrue(promoCodeEntry.waitForExistence(timeout: 5))
+        promoCodeEntry.tap()
+        promoCodeEntry.typeText("TESTCODE")
+
+        let submitPromoCodeButton = app.buttons["submitPromoCode"]
+        XCTAssertTrue(submitPromoCodeButton.waitForExistence(timeout: 5))
+        submitPromoCodeButton.tap()
+
+        let getStarted = TestSettings.shared.app!.buttons["getStarted"]
+        XCTAssertTrue(getStarted.waitForExistence(timeout: 5))
+        getStarted.tap()
+        
+        let beginFaceSanButton = app.buttons["beginFaceSanButton"]
+        XCTAssertTrue(beginFaceSanButton.waitForExistence(timeout: 5))
+    }
 }

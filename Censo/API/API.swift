@@ -71,6 +71,8 @@ struct API {
         case requestAuthenticationReset
         case cancelAuthenticationReset
         case replaceAuthentication(ReplaceAuthenticationApiRequest)
+        
+        case setPromoCode(code: String)
     }
 }
 
@@ -168,6 +170,8 @@ extension API: TargetType {
             return "v1/authentication-reset"
         case .replaceAuthentication:
             return "v1/authentication"
+        case .setPromoCode:
+            return "v1/promo-code"
         }
     }
 
@@ -215,7 +219,8 @@ extension API: TargetType {
              .enableTimelock,
              .disableTimelock,
              .createDevice,
-             .requestAuthenticationReset:
+             .requestAuthenticationReset,
+             .setPromoCode:
             return .post
         case .replacePolicy,
              .resetLoginId,
@@ -335,6 +340,10 @@ extension API: TargetType {
             ])
         case .replaceAuthentication(let request):
             return .requestJSONEncodable(request)
+        case .setPromoCode(let code):
+            return .requestJSONEncodable([
+                "code": code
+            ])
         }
     }
 
@@ -397,7 +406,8 @@ extension API: TargetType {
              .replacePolicyShards,
              .requestAuthenticationReset,
              .cancelAuthenticationReset,
-             .replaceAuthentication:
+             .replaceAuthentication,
+             .setPromoCode:
             return true
         }
     }

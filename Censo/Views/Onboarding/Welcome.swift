@@ -10,8 +10,14 @@ import SwiftUI
 struct Welcome: View {
     var ownerState: API.OwnerState.Initial
     var onCancel: () -> Void
-    @State var showInitialSetup = false
-    
+    @State private var showInitialSetup = false
+    @State private var getPromoCode = false
+    @State private var promoCode = ""
+    @State private var promoCodeAccepted = false
+    @State private var showPromoCodeAccepted = false
+    @State private var showingError = false
+    @State private var error: Error?
+
     var body: some View {
         if (showInitialSetup) {
             InitialPolicySetup(
@@ -59,6 +65,19 @@ struct Welcome: View {
                         
                         Spacer()
                         
+                        if (!promoCodeAccepted) {
+                            Button {
+                                getPromoCode = true
+                            } label: {
+                                Text("Have a promo code?")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(RoundedButtonStyle())
+                            .accessibilityIdentifier("getPromoCode")
+                        }
+                        
                         Button {
                             showInitialSetup = true
                         } label: {
@@ -82,10 +101,67 @@ struct Welcome: View {
                         }
                     }
                 })
+                .sheet(isPresented: $getPromoCode) {
+                    VStack {
+                        TextField(text: $promoCode) {
+                            Text("Enter promo code")
+                                .padding()
+                        }
+                        .accessibilityIdentifier("promoCodeEntry")
+
+                        Button {
+                            submitPromoCode()
+                        } label: {
+                            Text("Submit")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(RoundedButtonStyle())
+                        .accessibilityIdentifier("submitPromoCode")
+                    }
+                    .padding()
+                    .textFieldStyle(RoundedTextFieldStyle())
+                    .presentationDetents([.height(160)])
+                }
+                .alert("Error", isPresented: $showingError, presenting: error) { _ in
+                    Button {
+                        showingError = false
+                        error = nil
+                    } label: {
+                        Text("OK")
+                    }
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
+                .alert("Promo code accepted!", isPresented: $showPromoCodeAccepted) {
+                    Button {
+                        promoCodeAccepted = true
+                    } label: {
+                        Text("OK")
+                    }
+                } message: {
+                    Text("") // TODO - some explanatory text here TBD
+                }
             }
         }
     }
-    
+
+    func submitPromoCode() {
+        getPromoCode = false
+        let normalizedPromoCode = promoCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        apiProvider.request(with: session, endpoint: .setPromoCode(code: normalizedPromoCode)) { result in
+            promoCode = ""
+            switch result {
+            case .success:
+                showPromoCodeAccepted = true
+            case .failure(let error):
+                showingError = true
+                self.error = error
+            }
+            
+        }
+    }
 }
 
 #if DEBUG
