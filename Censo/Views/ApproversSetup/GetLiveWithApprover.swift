@@ -40,20 +40,18 @@ struct GetLiveWithApprover : View {
                             onContinue()
                         } label: {
                             Text("Verify now")
-                                .font(.title2)
-                                .fontWeight(.semibold)
+                                .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())
-                        .padding(.bottom)
+                        .padding(.vertical)
                         
                         if showResumeLater {
                             Button {
                                 dismiss()
                             } label: {
                                 Text("Resume later")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
+                                    .font(.headline)
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(RoundedButtonStyle())

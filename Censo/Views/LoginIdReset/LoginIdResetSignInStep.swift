@@ -39,7 +39,7 @@ struct LoginIdResetSignInStep: View {
                     enabled: enabled,
                     onSuccess: onSuccess
                 )
-                .frame(height: 58)
+                .frame(height: 54)
                 .padding(.horizontal)
             }
         )

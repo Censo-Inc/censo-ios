@@ -95,7 +95,7 @@ struct ApproversSetup: View {
                                     .resizable()
                                     .frame(width: 24, height: 24)
                                 Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
-                                    .font(.title3)
+                                    .font(.headline)
                                     .fixedSize(horizontal: true, vertical: false)
                                 Spacer()
                             }
@@ -109,11 +109,11 @@ struct ApproversSetup: View {
                                 showDeletePolicySetupConfirmation = true
                             } label: {
                                 Text("Cancel")
-                                    .font(.title3)
+                                    .font(.headline)
                                     .tint(Color.Censo.darkBlue)
                                     .frame(maxWidth: .infinity)
                             }
-                            .padding(.top)
+                            .padding(.vertical)
                         }
                         
                         Button {
@@ -127,10 +127,8 @@ struct ApproversSetup: View {
                                     .tint(.black)
                             }
                         }
-                        .padding(.top)
+                        .padding(.vertical)
                         .frame(maxWidth: .infinity)
-                        
-                        Spacer(minLength: 0)
                     }
                     .padding([.leading, .trailing], 32)
                     .frame(minHeight: geometry.size.height)

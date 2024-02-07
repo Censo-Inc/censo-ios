@@ -21,45 +21,45 @@ struct FirstPhrase: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                VStack {
-                    Spacer()
-                    if addYourOwnPhrase {
-                        AddYourOwnPhrase(
-                            onInputPhrase: { selectedLanguage in
-                                language = selectedLanguage
-                                showingAddPhrase = true
-                            },
-                            onPastePhrase: { showingPastePhrase = true },
-                            onPhotoPhrase: { showingPhotoPhrase = true }
-                        )
-                        .navigationTitle("Add your first seed phrase")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(content: {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    addYourOwnPhrase = false
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
-                            }
-                        })
-                    } else {
-                        FirstTimePhrase(
-                            onGeneratePhrase: { showingGeneratePhrase = true },
-                            onAddYourOwnPhrase: { addYourOwnPhrase = true }
-                        )
-                        .onboardingCancelNavBar(navigationTitle: "Add your first seed phrase", onCancel: onCancel)
-                    }
-                }
-                .background {
-                    VStack {
-                        Spacer()
-                            .frame(maxHeight: geometry.size.height * 0.05)
+                ZStack(alignment: .bottomTrailing) {
+                    VStack(alignment: .trailing) {
                         Image("AddYourSeedPhrase")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: geometry.size.width * 0.8)
+                            .frame(maxHeight: geometry.size.height * 0.5)
                         Spacer()
+                    }
+                    .padding(.top)
+                    
+                    VStack {
+                        Spacer()
+                        if addYourOwnPhrase {
+                            AddYourOwnPhrase(
+                                onInputPhrase: { selectedLanguage in
+                                    language = selectedLanguage
+                                    showingAddPhrase = true
+                                },
+                                onPastePhrase: { showingPastePhrase = true },
+                                onPhotoPhrase: { showingPhotoPhrase = true }
+                            )
+                            .navigationTitle("Add your first seed phrase")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar(content: {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button {
+                                        addYourOwnPhrase = false
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                    }
+                                }
+                            })
+                        } else {
+                            FirstTimePhrase(
+                                onGeneratePhrase: { showingGeneratePhrase = true },
+                                onAddYourOwnPhrase: { addYourOwnPhrase = true }
+                            )
+                            .onboardingCancelNavBar(navigationTitle: "Add your first seed phrase", onCancel: onCancel)
+                        }
                     }
                 }
             }
@@ -106,10 +106,10 @@ struct FirstTimePhrase: View {
     var onAddYourOwnPhrase: () -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
             Text("Time to add your first seed phrase")
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.semibold)
                 .fixedSize(horizontal: false, vertical: true)
             
@@ -117,38 +117,41 @@ struct FirstTimePhrase: View {
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical)
+            
             Button {
                 onGeneratePhrase()
             } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "wand.and.stars")
                         .resizable()
-                        .frame(width: 36, height: 36)
+                        .frame(width: 24, height: 24)
                     Text("Generate new phrase")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.headline)
                 }
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .padding(.vertical)
             .accessibilityIdentifier("generatePhraseButton")
 
             Button {
                 onAddYourOwnPhrase()
             } label: {
                 HStack(spacing: 10) {
-                    Image("ClipboardText").renderingMode(.template)
+                    Image("ClipboardText")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
                     Text("I have my own")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.headline)
                 }
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
+            .padding(.bottom)
             .accessibilityIdentifier("haveMyOwnButton")
         }
-        .padding(.horizontal)
-        .padding([.horizontal, .bottom])
+        .padding(.horizontal, 32)
     }
 }
 
@@ -160,10 +163,10 @@ struct AddYourOwnPhrase: View {
     @State private var languageId: UInt8 = WordListLanguage.english.toId()
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
             Text("How do you want to provide your seed phrase?")
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.semibold)
                 .fixedSize(horizontal: false, vertical: true)
             
@@ -190,7 +193,7 @@ struct AddYourOwnPhrase: View {
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("enterPhraseButton")
                     Text("Input")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
@@ -208,7 +211,7 @@ struct AddYourOwnPhrase: View {
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("photoPhraseButton")
                     Text("Photo")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
@@ -226,15 +229,14 @@ struct AddYourOwnPhrase: View {
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("pastePhraseButton")
                     Text("Paste")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
-                
             }
+            .padding(.vertical)
         }
-        .padding(.horizontal)
-        .padding([.horizontal, .bottom])
+        .padding(.horizontal, 32)
     }
     
     private func currentLanguage() ->  WordListLanguage {

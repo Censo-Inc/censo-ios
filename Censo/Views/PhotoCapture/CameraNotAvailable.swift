@@ -30,8 +30,8 @@ struct CameraNotAvailable: View {
             Button(action: {
                 UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
             }) {
-                Text("Open Settings App")
-                    .fontWeight(.bold)
+                Text("Open settings app")
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())

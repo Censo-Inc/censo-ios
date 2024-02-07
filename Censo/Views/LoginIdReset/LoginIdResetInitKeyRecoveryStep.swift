@@ -46,7 +46,7 @@ struct LoginIdResetInitKeyRecoveryStep : View {
                     onButtonPressed()
                 } label: {
                     Text("Recover my key")
-                        .font(.title3)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())

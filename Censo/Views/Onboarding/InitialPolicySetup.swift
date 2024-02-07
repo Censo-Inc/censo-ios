@@ -113,10 +113,10 @@ struct InitialPolicySetup: View {
                             Image("FaceScanHandWithPhone")
                                 .resizable()
                                 .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.9)
+                                .padding(.top)
                             Spacer()
                         }
                         .padding(.leading, geometry.size.width * 0.1)
-                        .padding(.top, 10)
                         
                         VStack(spacing: 0) {
                             Spacer()
@@ -149,9 +149,9 @@ struct InitialPolicySetup: View {
                                     }
                                 }
                                 .frame(maxWidth: .infinity)
+                                .padding(.bottom)
                             }
-                            .padding(.horizontal)
-                            .padding(.horizontal)
+                            .padding(.horizontal, 32)
                         }
                     }
                     .onboardingCancelNavBar(navigationTitle: "Anonymously scan your face", onCancel: onCancel, showAsBack: true)

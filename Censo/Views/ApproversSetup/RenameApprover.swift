@@ -38,7 +38,7 @@ struct RenameApprover: View {
             VStack(spacing: 0) {
                 TextField(text: $newName.value) {}
                 .textFieldStyle(RoundedTextFieldStyle())
-                .font(.title2)
+                .font(.headline)
                 .frame(maxWidth: .infinity)
                 
                 Text(newName.isTooLong ? "Can't be longer than \(newName.limit) characters" : " ")
@@ -58,8 +58,7 @@ struct RenameApprover: View {
                         ProgressView()
                     } else {
                         Text("Save")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.headline)
                     }
                 }
                 .frame(maxWidth: .infinity)

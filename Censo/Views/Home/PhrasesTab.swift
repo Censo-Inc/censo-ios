@@ -63,7 +63,6 @@ struct PhrasesTab: View {
                                 .strokeBorder(style: StrokeStyle(lineWidth: 1))
                                 .foregroundColor(.Censo.gray224)
                         )
-                        .padding(.horizontal)
                         .padding(.top)
                     }
                 }
@@ -89,8 +88,7 @@ struct PhrasesTab: View {
                     Text(ownerState.vault.seedPhrases[i].label)
                 }
 
-                Divider().frame(maxWidth: .infinity)
-                
+                Divider()
                 
                 if let timelockExpiration = timelockExpiration() {
                     HStack {
@@ -110,14 +108,12 @@ struct PhrasesTab: View {
                         HStack {
                             Text("Cancel access")
                                 .font(.headline)
-                                .fontWeight(.semibold)
-                            
                         }
-                        .frame(maxWidth: 208)
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
                     .disabled(deletingAccess)
-                    .padding([.horizontal, .bottom])
+                    .padding(.bottom)
                     .accessibilityIdentifier("cancelAccessButton")
                 } else {
                     Button {
@@ -125,12 +121,11 @@ struct PhrasesTab: View {
                     } label: {
                         Text(getAccessButtonLabel())
                             .font(.headline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: 208)
+                            .frame(maxWidth: .infinity)
                     }
                     .disabled(ownerState.vault.seedPhrases.isEmpty)
                     .buttonStyle(RoundedButtonStyle())
-                    .padding()
+                    .padding(.vertical)
                     .accessibilityIdentifier("\(getAccessButtonLabel()) Button")
                 }
                 
@@ -139,8 +134,7 @@ struct PhrasesTab: View {
                 } label: {
                     Text("Add seed phrase")
                         .font(.headline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: 208)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .accessibilityIdentifier("addSeedPhraseButton")
@@ -149,7 +143,7 @@ struct PhrasesTab: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .padding(.horizontal)
+            .padding(.horizontal, 32)
             .sheet(isPresented: $showingAddPhrase, content: {
                 AdditionalPhrase(ownerState: ownerState)
             })

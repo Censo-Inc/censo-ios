@@ -35,9 +35,9 @@ struct GeneratePhrase: View {
                 Spacer()
                 
                 Text("How long should the seed phrase be?")
-                    .font(.title2)
+                    .font(.title3)
                     .fontWeight(.semibold)
-                    .padding()
+                    .padding(.vertical)
                 
                 VStack(spacing: 20) {
                     ForEach(wordCountOptions, id: \.self) { wordCount in
@@ -49,27 +49,23 @@ struct GeneratePhrase: View {
                                 isSelected: selectedWordCount == wordCount
                             )
                             .buttonStyle(PlainButtonStyle())
-                            .padding(.horizontal)
                         }
                     }
                 }
-                .padding(.horizontal)
                 .padding(.bottom)
                 
                 Button {
                     generatePhrase()
                 } label: {
                     Text("Generate")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
-                        .padding(5)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
                 .padding(.bottom)
                 .accessibilityIdentifier("generateButton")
             }
+            .padding(.horizontal, 32)
             .multilineTextAlignment(.center)
             .navigationTitle(Text("Generate seed phrase"))
             .navigationBarTitleDisplayMode(.inline)

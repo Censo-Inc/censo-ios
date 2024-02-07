@@ -62,8 +62,7 @@ struct Welcome: View {
                             showInitialSetup = true
                         } label: {
                             Text("Get started")
-                                .font(.title2)
-                                .fontWeight(.semibold)
+                                .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())

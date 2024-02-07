@@ -54,6 +54,7 @@ struct PastePhrase: View {
                         
                         VStack(alignment: .leading, spacing: 0) {
                             Text("1. Copy your seed phrase")
+                                .fixedSize(horizontal: false, vertical: true)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .padding(.bottom)
@@ -80,6 +81,7 @@ struct PastePhrase: View {
                         
                         VStack(alignment: .leading, spacing: 0) {
                             Text("2. Tap the button below")
+                                .fixedSize(horizontal: false, vertical: true)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .padding(.bottom)
@@ -96,16 +98,16 @@ struct PastePhrase: View {
                     Button {
                         validatePhrase()
                     } label: {
-                        Text("Paste From Clipboard")
-                            .font(.title2)
+                        Text("Paste from clipboard")
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("pasteFromClipboardButton")
-                    
                 }
             }
-            .padding()
+            .padding(.vertical)
+            .padding(.horizontal, 32)
             .frame(maxWidth: .infinity)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Paste seed phrase")

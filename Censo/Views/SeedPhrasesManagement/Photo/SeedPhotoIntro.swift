@@ -73,14 +73,14 @@ struct SeedPhotoIntro: View {
                 onReadyToStart()
             } label: {
                 Text("Start")
-                    .font(.title2)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
             .accessibilityIdentifier("startPhoto")
-            
         }
-        .padding()
+        .padding(.vertical)
+        .padding(.horizontal, 32)
         .navigationTitle(Text("Seed phrase photo"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

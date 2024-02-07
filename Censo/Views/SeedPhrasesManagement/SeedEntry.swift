@@ -26,7 +26,7 @@ struct SeedEntry: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 TabView(selection: $wordIndex) {
                     ForEach(0..<words.count, id: \.self) { i in
                         Word(number: i + 1, language: language, word: .init(get: {
@@ -43,6 +43,7 @@ struct SeedEntry: View {
                 .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
 
                 Text("\(words.count) word\(words.count == 1 ? "" : "s") total")
+                    .padding(.vertical)
 
                 Divider()
 
@@ -51,9 +52,9 @@ struct SeedEntry: View {
                         showingAddWord = true
                     } label: {
                         Text("Enter \(words.isEmpty ? "first" : "next") word")
-                            .padding(5)
+                            .font(.headline)
+                            .padding(.horizontal)
                     }
-                    .padding(5)
                     .disabled(words.last?.isEmpty ?? false)
                     .accessibilityIdentifier("enterWordButton")
 
@@ -61,13 +62,14 @@ struct SeedEntry: View {
                         finish()
                     } label: {
                         Text("Finish")
-                            .padding(5)
+                            .font(.headline)
+                            .padding(.horizontal)
                     }
-                    .padding(5)
                     .disabled(words.isEmpty)
                     .accessibilityIdentifier("finishButton")
                 }
                 .buttonStyle(RoundedButtonStyle())
+                .padding(.vertical)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Seed phrase input"))

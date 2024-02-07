@@ -23,7 +23,6 @@ struct SeedVerification: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-            
                 Spacer()
                 
                 WordList(words: words)
@@ -33,10 +32,12 @@ struct SeedVerification: View {
                     showingSave = true
                 } label: {
                     Text("Next")
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
+                .padding(.vertical)
+                .padding(.horizontal, 32)
                 .accessibilityIdentifier("nextButton")
             }
         }

@@ -40,10 +40,10 @@ struct SeedPhotoVerification: View {
                     onSubmit(imageData)
                 } label: {
                     Text("Use photo")
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
                 .padding(.bottom)
                 .accessibilityIdentifier("usePhoto")
                 
@@ -51,13 +51,14 @@ struct SeedPhotoVerification: View {
                     onRetake()
                 } label: {
                     Text("Retake")
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding(.horizontal)
                 .padding(.bottom)
                 .accessibilityIdentifier("retakePhoto")
             }
+            .padding(.horizontal, 32)
         }
         .multilineTextAlignment(.leading)
         .navigationTitle(Text("Seed phrase photo verification"))

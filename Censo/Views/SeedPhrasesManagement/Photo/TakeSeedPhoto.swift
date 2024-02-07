@@ -20,6 +20,7 @@ struct TakeSeedPhoto<Content: View>: View {
             
             Text("Let's take a photo of your seed phrase")
                 .padding(.vertical)
+                .padding(.horizontal, 32)
 
             Spacer()
             
@@ -33,11 +34,12 @@ struct TakeSeedPhoto<Content: View>: View {
                 onTakePhoto()
             } label: {
                 Text("Take a photo")
-                    .font(.title2)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
-            .padding()
+            .padding(.vertical)
+            .padding(.horizontal, 32)
             .accessibilityIdentifier("takeAPhoto")
             
             Spacer()

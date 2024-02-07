@@ -43,7 +43,7 @@ struct LoginIdResetStartVerificationStep: View {
                 
                 Button(action: createDevice, label: {
                     Text("Start verification")
-                        .font(.title3)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(RoundedButtonStyle())

@@ -20,13 +20,14 @@ struct SettingsItem: View {
         VStack {
             HStack {
                 Text(title)
-                    .font(.title2)
+                    .font(.title3)
+                    .fontWeight(.semibold)
                 Spacer()
                 Button {
                     onSelected()
                 } label: {
                     Text(buttonText)
-                        .font(.body.bold())
+                        .font(.headline)
                         .padding(.horizontal)
                         .frame(minWidth: 80)
                 }

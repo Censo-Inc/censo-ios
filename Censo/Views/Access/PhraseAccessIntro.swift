@@ -18,10 +18,9 @@ struct PhraseAccessIntro: View {
             Spacer()
             VStack(alignment: .leading, spacing: 0) {
                 Text("Ready to start your 15 minutes of access?")
-                    .font(.title2)
+                    .font(.title3)
                     .fontWeight(.semibold)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding()
                 
                 LanguageSelection(
                     text: Text(
@@ -30,8 +29,7 @@ struct PhraseAccessIntro: View {
                     .font(.subheadline),
                     languageId: $languageId
                 )
-                .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.vertical)
                 
                 VStack(alignment: .leading) {
                     SetupStep(image: Image("PrivatePlace"), heading: "Go to a private place", content: "Make sure you are alone in your home or a secure area.")
@@ -45,7 +43,6 @@ struct PhraseAccessIntro: View {
                     SetupStep(
                         image: Image("Timer"), heading: "Access for 15 minutes", content: "You have 15 minutes to access your seed phrase. If you need more time, you will have to scan your face again.")
                 }
-                .padding(.horizontal)
                 .padding(.vertical)
                 
                 Button {
@@ -56,11 +53,11 @@ struct PhraseAccessIntro: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
                 .accessibilityIdentifier("getStarted")
                 
             }
-            .padding()
+            .padding(.horizontal, 32)
+            .padding(.bottom)
         }
     }
 }
@@ -111,12 +108,27 @@ struct SetupStep: View {
 
 #if DEBUG
 #Preview {
-    NavigationView {
-        PhraseAccessIntro(
-            ownerState: .sample,
-            onReadyToGetStarted: {_ in}
-        )
-        .foregroundColor(Color.Censo.primaryForeground)
+    LoggedInOwnerPreviewContainer {
+        VStack {}
+            .sheet(isPresented: Binding.constant(true), content: {
+                NavigationView {
+                    PhraseAccessIntro(
+                        ownerState: .sample,
+                        onReadyToGetStarted: {_ in}
+                    )
+                    .navigationTitle(Text("Access"))
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarBackButtonHidden(true)
+                    .toolbar(content: {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                            } label: {
+                                Image(systemName: "chevron.left")
+                            }
+                        }
+                    })
+                }
+            })
     }
 }
 #endif

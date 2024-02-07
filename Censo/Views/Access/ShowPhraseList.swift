@@ -15,13 +15,12 @@ struct ShowPhraseList: View {
     @State private var confirmExit = false
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
             Text("Select the seed phrase you would like to access:")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .padding()
+                .font(.body)
+                .padding(.vertical)
             
             List {
                 ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
@@ -42,22 +41,25 @@ struct ShowPhraseList: View {
                                 )
                                 .multilineTextAlignment(.leading)
                                 .buttonStyle(PlainButtonStyle())
+                            
                             Spacer()
-                            VStack {
+                            
+                            VStack(alignment: .trailing) {
                                 if viewedPhrases.contains(i) {
                                     Image(systemName: "checkmark.circle.fill")
-                                        .symbolRenderingMode(.palette)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
                                         .foregroundStyle(.white, Color.Censo.green)
-                                        .font(.system(size: 28))
                                 } else {
                                     Image(systemName: "chevron.forward")
-                                        .symbolRenderingMode(.palette)
-                                        .font(.system(size: 28))
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
                                 }
-                            }.frame(minWidth: 40)
+                            }
+                            .symbolRenderingMode(.palette)
+                            .frame(width: 24, height: 24)
                         }
                     }
-                    .padding(.horizontal)
                     .padding(.top)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets())
@@ -68,6 +70,9 @@ struct ShowPhraseList: View {
             .scrollIndicators(ScrollIndicatorVisibility.hidden)
             
             Spacer()
+            
+            Divider()
+                .padding(.bottom)
             
             Button {
                 if ownerState.policy.externalApproversCount > 0 || ownerState.timelockSetting.currentTimelockInSeconds != nil {
@@ -83,7 +88,8 @@ struct ShowPhraseList: View {
             .buttonStyle(RoundedButtonStyle())
             .accessibilityIdentifier("finishedButton")
         }
-        .padding()
+        .padding(.vertical)
+        .padding(.horizontal, 32)
         .alert("Exit accessing phrases", isPresented: $confirmExit) {
             Button {
                 onFinished()
@@ -101,8 +107,7 @@ struct ShowPhraseList: View {
 #if DEBUG
 #Preview {
     LoggedInOwnerPreviewContainer {
-        VStack {
-        }
+        VStack {}
         .sheet(isPresented: Binding.constant(true), content: {
             NavigationView {
                 ShowPhraseList(

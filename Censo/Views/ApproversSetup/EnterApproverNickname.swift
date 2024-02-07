@@ -37,8 +37,9 @@ struct EnterApproverNickname: View {
                     Text("Enter a nickname...")
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
-                .font(.title2)
+                .font(.headline)
                 .frame(maxWidth: .infinity)
+                .padding(.top)
                 
                 Text(nickname.isTooLong ? "Can't be longer than \(nickname.limit) characters" : " ")
                     .multilineTextAlignment(.center)
@@ -57,8 +58,7 @@ struct EnterApproverNickname: View {
                         ProgressView()
                     } else {
                         Text("Continue")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.headline)
                     }
                 }
                 .frame(maxWidth: .infinity)

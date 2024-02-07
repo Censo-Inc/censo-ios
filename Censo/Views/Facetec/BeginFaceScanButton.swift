@@ -27,9 +27,9 @@ struct BeginFaceScanButton : View {
                 Image("FaceScanBW")
                     .renderingMode(.template)
                     .resizable()
-                    .frame(width: 36, height: 36)
+                    .frame(width: 24, height: 24)
                 Text("Begin face scan")
-                    .font(.title2)
+                    .font(.headline)
                     .fontWeight(.semibold)
                 Spacer()
             }

@@ -260,8 +260,7 @@ struct ActivateApprover : View {
                         onComplete()
                     } label: {
                         Text("Continue")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())

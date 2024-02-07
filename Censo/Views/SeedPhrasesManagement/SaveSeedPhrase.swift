@@ -37,14 +37,16 @@ struct SaveSeedPhrase: View {
             .navigationBarTitleDisplayMode(.inline)
         } else {
             NavigationStack {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     Spacer()
                     
                     Text("Label your seed phrase")
-                        .font(.title2.bold())
+                        .font(.title3)
+                        .fontWeight(.semibold)
                     
                     Text("Give your seed phrase a unique label so you can easily identify it.")
                         .fixedSize(horizontal: false, vertical: true)
+                        .padding(.vertical)
                     
                     VStack(spacing: 0) {
                         TextField(text: $label.value) {
@@ -52,6 +54,7 @@ struct SaveSeedPhrase: View {
                         }
                         .textFieldStyle(RoundedTextFieldStyle())
                         .accessibilityIdentifier("labelTextField")
+                        .padding(.top)
                         
                         Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
                             .multilineTextAlignment(.center)
@@ -59,8 +62,8 @@ struct SaveSeedPhrase: View {
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
+                            .padding(.bottom)
                     }
-                    .padding(.vertical)
                     
                     Button {
                         if (ownerState.vault.seedPhrases.count == 1 && !Configuration.paywallDisabled) {
@@ -74,6 +77,7 @@ struct SaveSeedPhrase: View {
                                 ProgressView()
                             } else {
                                 Text("Save seed phrase")
+                                    .font(.headline)
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -81,7 +85,8 @@ struct SaveSeedPhrase: View {
                     .disabled(!label.isValid || inProgress)
                     .accessibilityIdentifier("saveButton")
                 }
-                .padding(30)
+                .padding(.vertical)
+                .padding(.horizontal, 32)
                 .buttonStyle(RoundedButtonStyle())
                 .navigationTitle(Text("Save seed phrase"))
                 .navigationBarTitleDisplayMode(.inline)

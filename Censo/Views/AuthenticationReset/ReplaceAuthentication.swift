@@ -51,7 +51,7 @@ struct ReplaceAuthentication : View {
                         VStack(alignment: .leading) {
                             Text(authType == .password ? "Replace your password" : "Replace your face scan")
                                 .fixedSize(horizontal: false, vertical: true)
-                                .font(.title2)
+                                .font(.title3)
                                 .bold()
                             
                             if authType == .password {

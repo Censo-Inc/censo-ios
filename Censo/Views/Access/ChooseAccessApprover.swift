@@ -110,7 +110,7 @@ struct ChooseAccessApprover : View {
                     }
                 } label: {
                     Text("Continue")
-                        .font(.title2)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())

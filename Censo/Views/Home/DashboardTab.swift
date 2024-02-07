@@ -24,13 +24,13 @@ struct DashboardTab: View {
                 } label: {
                     HStack(alignment: .lastTextBaseline) {
                         Text("You have")
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.semibold)
                         Text("\(ownerState.vault.seedPhrases.count)")
-                            .font(.largeTitle)
+                            .font(.title)
                             .fontWeight(.bold)
                         Text("seed phrase\(ownerState.vault.seedPhrases.count == 1 ? "" : "s").")
-                            .font(.title2)
+                            .font(.title3)
                             .fontWeight(.semibold)
                     }
                 }
@@ -46,8 +46,7 @@ struct DashboardTab: View {
                 } label: {
                     Text("Add seed phrase")
                         .font(.headline)
-                        .fontWeight(.regular)
-                        .frame(maxWidth: 322, minHeight: 24)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
                 .accessibilityIdentifier("addSeedPhraseButton")
@@ -56,7 +55,7 @@ struct DashboardTab: View {
 
                 if (ownerState.policy.externalApproversCount == 0) {
                     Text("\nYou can increase security by adding approvers.")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
@@ -70,15 +69,14 @@ struct DashboardTab: View {
                     } label: {
                         Text(ownerState.policySetup == nil ? "Add approvers" : "Resume adding approvers")
                             .font(.headline)
-                            .fontWeight(.regular)
-                            .frame(maxWidth: 322, minHeight: 24)
+                            .frame(maxWidth: .infinity)
                     }
-                    .padding([.top], 10)
+                    .padding(.top)
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("addApprovers")
                 } else {
                     Text("Your approvers:")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                         .multilineTextAlignment(.center)
                     
@@ -87,12 +85,12 @@ struct DashboardTab: View {
                           ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
                         }
                     }
-                    .padding([.top], 10)
-                    .padding([.leading, .trailing], 30)
+                    .padding(.top)
                 }
                 
                 Spacer()
-            }.frame(maxWidth: 322)
+            }
+            .padding(.horizontal, 32)
         }
         .sheet(isPresented: $showingAddPhrase, content: {
             AdditionalPhrase(ownerState: ownerState)

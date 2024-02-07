@@ -34,13 +34,12 @@ struct AdditionalPhrase: View {
                             Image("AddYourSeedPhrase")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(
-                                    maxHeight: geometry.size.height * 0.5)
+                                .frame(maxHeight: geometry.size.height * 0.5)
                             Spacer()
                         }
                         .padding(.top)
 
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Spacer()
                             switch step {
                                 
@@ -56,45 +55,45 @@ struct AdditionalPhrase: View {
                                 Button {
                                     step = .generatePhrase
                                 } label: {
-                                    HStack(spacing: 20) {
+                                    HStack(spacing: 10) {
                                         Image(systemName: "wand.and.stars")
                                             .resizable()
-                                            .frame(width: 30, height: 30)
+                                            .frame(width: 24, height: 24)
                                         Text("Generate phrase")
-                                            .font(.title2)
-                                            .fontWeight(.semibold)
+                                            .font(.headline)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(RoundedButtonStyle())
-                                .padding(.bottom, 5)
+                                .padding(.vertical)
                                 .accessibilityIdentifier("generatePhraseButton")
                                 
                                 Button {
                                     step = .haveMyOwn
                                 } label: {
                                     HStack(spacing: 10) {
-                                        Image("ClipboardText").renderingMode(.template)
+                                        Image("ClipboardText")
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
                                         Text("I have my own")
-                                            .font(.title2)
-                                            .fontWeight(.semibold)
+                                            .font(.headline)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(RoundedButtonStyle())
+                                .padding(.bottom)
                                 .accessibilityIdentifier("haveMyOwnButton")
                             case .haveMyOwn:
                                 Text("How do you want to provide your seed phrase?")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .fontWeight(.semibold)
-                                    .padding(.vertical)
                                 
                                 LanguageSelection(
-                                    text: Text("The current language for Paste or Input is \(currentLanguage().displayName()). You may change it **here**"
-                                              ).font(.subheadline),
+                                    text: Text("The current language for Paste or Input is \(currentLanguage().displayName()). You may change it **here**").font(.subheadline),
                                     languageId: $languageId
                                 )
-                                .padding(.bottom)
+                                .padding(.vertical)
                                 
                                 HStack(alignment: .bottom) {
                                     VStack {
@@ -110,7 +109,7 @@ struct AdditionalPhrase: View {
                                         .buttonStyle(RoundedButtonStyle())
                                         .accessibilityIdentifier("enterPhraseButton")
                                         Text("Input")
-                                            .font(.title2)
+                                            .font(.title3)
                                             .fontWeight(.semibold)
                                     }
                                     .frame(maxWidth: .infinity)
@@ -128,7 +127,7 @@ struct AdditionalPhrase: View {
                                         .buttonStyle(RoundedButtonStyle())
                                         .accessibilityIdentifier("photoPhraseButton")
                                         Text("Photo")
-                                            .font(.title2)
+                                            .font(.title3)
                                             .fontWeight(.semibold)
                                     }
                                     .frame(maxWidth: .infinity)
@@ -146,18 +145,17 @@ struct AdditionalPhrase: View {
                                         .buttonStyle(RoundedButtonStyle())
                                         .accessibilityIdentifier("pastePhraseButton")
                                         Text("Paste")
-                                            .font(.title2)
+                                            .font(.title3)
                                             .fontWeight(.semibold)
                                     }
                                     .frame(maxWidth: .infinity)
-                                    
                                 }
+                                .padding(.vertical)
                             case .addPhrase, .generatePhrase, .pastePhrase, .photoPhrase:
                                 EmptyView()
                             }
                         }
-                        .padding(.leading)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 32)
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle("Add another seed phrase")
                         .toolbar(content: {
@@ -238,20 +236,23 @@ struct AdditionalPhrase: View {
 #if DEBUG
 #Preview {
     LoggedInOwnerPreviewContainer {
-        NavigationView {
-            AdditionalPhrase(
-                ownerState: API.OwnerState.Ready(
-                    policy: .sample,
-                    vault: .sample1Phrase,
-                    authType: .facetec,
-                    subscriptionStatus: .active,
-                    timelockSetting: .sample,
-                    subscriptionRequired: true,
-                    onboarded: true,
-                    canRequestAuthenticationReset: false
-                )
-            )
-        }
+        Text("")
+            .sheet(isPresented: Binding.constant(true), content: {
+                NavigationView {
+                    AdditionalPhrase(
+                        ownerState: API.OwnerState.Ready(
+                            policy: .sample,
+                            vault: .sample1Phrase,
+                            authType: .facetec,
+                            subscriptionStatus: .active,
+                            timelockSetting: .sample,
+                            subscriptionRequired: true,
+                            onboarded: true,
+                            canRequestAuthenticationReset: false
+                        )
+                    )
+                }
+            })
     }
 }
 #endif

@@ -41,21 +41,18 @@ struct ShowPhrase: View {
                         .frame(height: 250)
                 }
             case .image(let imageData):
-                Group {
-                    if let uiImage = UIImage(data: imageData) {
-                        Text("Zoom in to see the words")
-                            .padding()
-                        ZoomableScrollView {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                            
-                        }
-                        .padding(.horizontal)
-                    } else {
-                        Text("Unable to render image").foregroundColor(.red)
+                if let uiImage = UIImage(data: imageData) {
+                    Text("Zoom in to see the words")
+                        .padding(.vertical)
+                    ZoomableScrollView {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding(.horizontal)
                     }
+                } else {
+                    Text("Unable to render image").foregroundColor(.red)
                 }
             }
             
@@ -65,19 +62,16 @@ struct ShowPhrase: View {
                     onComplete(true)
                 } label: {
                     Text("Done viewing phrase")
-                        .font(.title2)
-                        .padding([.horizontal])
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
-                .padding()
                 .accessibilityIdentifier("doneViewingPhraseButton")
             }
-            .frame(maxHeight: 80, alignment: .bottom)
-            .padding()
-            
+            .padding(.vertical)
+            .padding(.horizontal, 32)
         }
     }
-    
 }
 
 #if DEBUG

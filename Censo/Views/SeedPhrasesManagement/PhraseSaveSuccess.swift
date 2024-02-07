@@ -42,7 +42,7 @@ struct PhraseSaveSuccess: View {
                 }
             } label: {
                 Text("OK")
-                    .font(.title2)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())
