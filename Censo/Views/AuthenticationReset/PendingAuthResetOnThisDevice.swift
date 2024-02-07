@@ -95,12 +95,15 @@ struct PendingAuthResetOnThisDevice : View {
                             guid: $0.participantId.value,
                             participantId: $0.participantId,
                             totpSecret: "35JV5AD2RJYIMH2J",
-                            status: .initial
+                            status: .waitingForTotp
                         )
                     })
                 ),
                 onCancel: {}
             )
+            .navigationTitle("Biometry reset")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

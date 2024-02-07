@@ -97,7 +97,7 @@ struct AuthenticationReset: View {
         } message: {
             Text("\(resetType) reset will be cancelled and your progress will be lost.")
         }
-        .navigationTitle("\(resetType) Reset")
+        .navigationTitle("\(resetType) reset")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
     }

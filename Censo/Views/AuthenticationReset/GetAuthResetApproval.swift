@@ -28,7 +28,7 @@ struct GetAuthResetApproval : View {
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
-        ScrollView {
+        VStack {
             VStack(spacing: 0) {
                 HStack(alignment: .top, spacing: 20) {
                     VStack {
@@ -45,19 +45,17 @@ struct GetAuthResetApproval : View {
                         
                         Rectangle()
                             .fill(Color.Censo.darkBlue)
-                            .frame(maxWidth: 3, maxHeight: .infinity)
+                            .frame(minHeight: 40)
+                            .frame(maxWidth: 3, maxHeight: 80)
                     }
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Step 1:")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        Text("Share this link")
-                            .font(.title3)
+                        Text("Step 1: Share this link")
+                            .font(.headline)
                             .fontWeight(.semibold)
                         
                         Text("Share this link and have \(approver.label) click it or paste into their Approver app.")
-                            .font(.headline)
+                            .font(.subheadline)
                             .fontWeight(.regular)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.bottom, 4)
@@ -70,13 +68,13 @@ struct GetAuthResetApproval : View {
                                     Image("Export")
                                         .renderingMode(.template)
                                         .resizable()
-                                        .frame(width: 28, height: 28)
+                                        .frame(width: 24, height: 24)
                                         .padding(.vertical, 6)
-                                        .padding(.horizontal, 10)
+                                        .padding(.horizontal, 6)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .bold()
                                     Text("Share")
-                                        .font(.title3)
+                                        .font(.headline)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .padding(.trailing)
                                 }
@@ -86,6 +84,7 @@ struct GetAuthResetApproval : View {
                                 )
                             }
                             .padding(.bottom)
+                            .padding(.leading)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -101,25 +100,20 @@ struct GetAuthResetApproval : View {
                         .padding(.horizontal, 8)
 
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Step 2:")
-                            .font(.title3)
+                        Text("Step 2: Read Code")
+                            .font(.headline)
                             .fontWeight(.semibold)
-                        
-                        Text("Read Code")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 2)
                         
                         switch (approval.status) {
                         case .initial:
                             Text("Read the code that appears here and have \(approver.label) enter it in their Approver app.")
-                                .font(.headline)
+                                .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
                         case .waitingForTotp, .totpVerificationFailed:
                             if let totpSecretData = base32DecodeToData(approval.totpSecret) {
                                 Text("Read aloud this code and have \(approver.label) enter it into their Censo Approver app to authenticate you.")
-                                    .font(.headline)
+                                    .font(.subheadline)
                                     .fontWeight(.regular)
                                     .fixedSize(horizontal: false, vertical: true)
                                 
@@ -127,6 +121,7 @@ struct GetAuthResetApproval : View {
                                     totpSecret: totpSecretData,
                                     style: .owner
                                 )
+                                .padding(.top)
                             } else {
                                 Text("Error generating TOTP code")
                             }
@@ -145,7 +140,7 @@ struct GetAuthResetApproval : View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .padding([.bottom], 24)
+            .padding(.vertical)
             
             Spacer()
         }

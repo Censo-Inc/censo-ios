@@ -80,7 +80,7 @@ struct ActivateApprover : View {
                 }
             })
         case .activate:
-            ScrollView {
+            VStack {
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 20) {
                         VStack {
@@ -97,22 +97,20 @@ struct ActivateApprover : View {
                             
                             Rectangle()
                                 .fill(Color.Censo.darkBlue)
+                                .frame(minHeight: 20)
                                 .frame(maxWidth: 3, maxHeight: .infinity)
                         }
                         
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Step 1:")
-                                .font(.title3)
+                        VStack(alignment: .leading) {
+                            Text("Step 1: Share Approver App")
+                                .font(.headline)
                                 .fontWeight(.semibold)
-                            Text("Share Approver App")
-                                .font(.title3)
-                                .fontWeight(.semibold)
+                                .padding(.bottom, 2)
                             
                             Text("Share this link so \(approver.label) can download the Censo Approver app")
-                                .font(.headline)
+                                .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .padding(.bottom, 4)
                             
                             ShareLink(
                                 item: Configuration.approverAppURL
@@ -121,27 +119,27 @@ struct ActivateApprover : View {
                                     Image("Export")
                                         .renderingMode(.template)
                                         .resizable()
-                                        .frame(width: 28, height: 28)
+                                        .frame(width: 24, height: 24)
                                         .padding(.vertical, 6)
-                                        .padding(.horizontal, 10)
+                                        .padding(.horizontal, 6)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .bold()
                                     Text("Share")
-                                        .font(.title3)
+                                        .font(.headline)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .padding(.trailing)
                                 }
                                 .background(
                                     RoundedRectangle(cornerRadius: 20.0)
                                         .frame(width: 128)
-                                    )
+                                )
                             }
-                            .padding(.bottom)
+                            .padding(.leading)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.bottom, 8)
+                    .padding(.vertical)
                     
                     HStack(alignment: .top, spacing: 20) {
                         VStack {
@@ -158,22 +156,20 @@ struct ActivateApprover : View {
                                 )
                             Rectangle()
                                 .fill(Color.Censo.darkBlue)
+                                .frame(minHeight: 20)
                                 .frame(maxWidth: 3, maxHeight: .infinity)
                         }
                         
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Step 2:")
-                                .font(.title3)
+                        VStack(alignment: .leading) {
+                            Text("Step 2: Share Invite Link")
+                                .font(.headline)
                                 .fontWeight(.semibold)
-                            Text("Share Invite Link")
-                                .font(.title3)
-                                .fontWeight(.semibold)
+                                .padding(.bottom, 2)
                             
                             Text("Share this link and have \(approver.label) click it or paste into their Approver app")
-                                .font(.headline)
+                                .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .padding(.bottom, 4)
                             
                             if let invitationId = approver.invitationId {
                                 ShareLink(
@@ -183,12 +179,12 @@ struct ActivateApprover : View {
                                         Image("Export")
                                             .renderingMode(.template)
                                             .resizable()
-                                            .frame(width: 28, height: 28)
+                                            .frame(width: 24, height: 24)
                                             .padding(.vertical, 6)
-                                            .padding(.horizontal, 8)
+                                            .padding(.horizontal, 6)
                                             .foregroundColor(.Censo.aquaBlue)
                                         Text("Invite")
-                                            .font(.title3)
+                                            .font(.headline)
                                             .foregroundColor(.Censo.aquaBlue)
                                             .padding(.trailing)
                                     }
@@ -197,14 +193,13 @@ struct ActivateApprover : View {
                                             .frame(width: 128)
                                     )
                                 }
-                                .padding(.bottom)
+                                .padding(.leading)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.bottom, 5)
-                    
+                    .padding(.bottom)
                     
                     HStack(alignment: .top) {
                         Image("PhoneWaveform")
@@ -212,18 +207,12 @@ struct ActivateApprover : View {
                             .resizable()
                             .frame(width: 64, height: 64)
                             .padding(.horizontal, 8)
-
                         
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Step 3:")
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            
-                            Text("Read Code")
-                                .font(.title3)
+                        VStack(alignment: .leading) {
+                            Text("Step 3: Read Code")
+                                .font(.headline)
                                 .fontWeight(.semibold)
                                 .padding(.bottom, 2)
-                            
                             
                             if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret,
                                let totpSecret = try? ownerRepository.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
@@ -233,27 +222,26 @@ struct ActivateApprover : View {
                                 )
                             } else if approver.isConfirmed {
                                 Text("\(approver.label) is now verified!")
-                                    .font(.headline)
+                                    .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
                                 Text("Read code that appears here and have \(approver.label) enter it in their Approver app")
-                                    .font(.headline)
+                                    .font(.subheadline)
                                     .fontWeight(.regular)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .padding(.bottom)
                 }
-                .padding([.leading, .trailing], 32)
+                .padding(.horizontal)
                 
                 Spacer()
 
                 VStack(spacing: 0) {
                     Divider()
-                        .padding(.bottom)
 
                     ApproverPill(
                         isPrimary: isPrimary,
@@ -266,7 +254,7 @@ struct ActivateApprover : View {
                             )
                         }
                     )
-                    .padding(.bottom)
+                    .padding(.vertical)
                     
                     Button {
                         onComplete()
@@ -281,8 +269,9 @@ struct ActivateApprover : View {
                     .disabled(!approver.isConfirmed)
                 }
                 .padding([.leading, .trailing], 32)
+                .padding(.bottom)
             }
-            .padding([.top], 24)
+            .padding(.top)
             .navigationTitle(Text("Verify \(approver.label)"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
@@ -416,28 +405,31 @@ let policySetup = API.PolicySetup(
 
 #Preview("Activation Pending") {
     LoggedInOwnerPreviewContainer {
-        NavigationView {
-            let session = Session.sample
-            
-            ActivateApprover(
-                policySetup: policySetup,
-                approver: policySetup.approvers[1],
-                onComplete: { }
-            )
-        }
+        ProgressView()
+            .sheet(isPresented: Binding.constant(true), content: {
+                NavigationView {
+                    ActivateApprover(
+                        policySetup: policySetup,
+                        approver: policySetup.approvers[1],
+                        onComplete: { }
+                    )
+                }
+            })
     }
 }
 
 #Preview("Activation Confirmed") {
     LoggedInOwnerPreviewContainer {
-        NavigationView {
-            let session = Session.sample
-            ActivateApprover(
-                policySetup: policySetup,
-                approver: policySetup.approvers[1],
-                onComplete: { }
-            )
-        }
+        ProgressView()
+            .sheet(isPresented: Binding.constant(true), content: {
+                NavigationView {
+                    ActivateApprover(
+                        policySetup: policySetup,
+                        approver: policySetup.approvers[2],
+                        onComplete: { }
+                    )
+                }
+            })
     }
 }
 #endif

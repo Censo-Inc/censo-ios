@@ -46,44 +46,42 @@ struct ApproverPill: View {
             }
 
             VStack(alignment: .leading) {
-                Text("Approver")
-                    .font(.system(size: 14))
-                    .bold()
-                    .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
-                
                 Text(approver.label())
-                    .font(.system(size: 24))
+                    .font(.title3)
                     .bold()
                     .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
                 
-                switch approver {
-                case .prospect(let approver):
-                    switch approver.status {
-                    case .declined:
-                        Text("Declined")
-                            .foregroundColor(isDisabled ? .Censo.gray : .red)
-                    case .initial:
-                        Text("Not yet verified")
-                            .foregroundColor(isDisabled ? .Censo.gray : .Censo.gray)
-                    case .accepted:
-                        Text("Opened link in app")
-                            .foregroundColor(.Censo.gray)
-                    case .verificationSubmitted(let verificationSubmitted):
-                        Text("Checking Code")
-                            .foregroundColor(.Censo.gray)
-                            .onAppear {
-                                onVerificationSubmitted?(verificationSubmitted)
-                            }
-                    case .confirmed:
-                        Text("Verified")
+                Group {
+                    switch approver {
+                    case .prospect(let approver):
+                        switch approver.status {
+                        case .declined:
+                            Text("Declined")
+                                .foregroundColor(isDisabled ? .Censo.gray : .red)
+                        case .initial:
+                            Text("Not yet verified")
+                                .foregroundColor(isDisabled ? .Censo.gray : .Censo.gray)
+                        case .accepted:
+                            Text("Opened link in app")
+                                .foregroundColor(.Censo.gray)
+                        case .verificationSubmitted(let verificationSubmitted):
+                            Text("Checking Code")
+                                .foregroundColor(.Censo.gray)
+                                .onAppear {
+                                    onVerificationSubmitted?(verificationSubmitted)
+                                }
+                        case .confirmed:
+                            Text("Verified")
+                                .foregroundColor(isDisabled ? .Censo.gray : .Censo.green)
+                        case .ownerAsApprover(_):
+                            Text("")
+                        }
+                    case .trusted:
+                        Text("Active")
                             .foregroundColor(isDisabled ? .Censo.gray : .Censo.green)
-                    case .ownerAsApprover(_):
-                        Text("")
                     }
-                case .trusted:
-                    Text("Active")
-                        .foregroundColor(isDisabled ? .Censo.gray : .Censo.green)
                 }
+                .font(.subheadline)
             }
             
             Spacer()

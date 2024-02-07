@@ -30,7 +30,7 @@ struct EnterAccessVerificationCode : View {
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
-        ScrollView {
+        VStack(spacing: 0) {
             VStack(spacing: 0) {
                 HStack(alignment: .top, spacing: 20) {
                     VStack {
@@ -47,19 +47,17 @@ struct EnterAccessVerificationCode : View {
                         
                         Rectangle()
                             .fill(Color.Censo.darkBlue)
-                            .frame(maxWidth: 3, maxHeight: .infinity)
+                            .frame(minHeight: 40)
+                            .frame(maxWidth: 3, maxHeight: 80)
                     }
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Step 1:")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        Text("Share this link")
-                            .font(.title3)
+                        Text("Step 1: Share this link")
+                            .font(.headline)
                             .fontWeight(.semibold)
                         
                         Text("Share this link and have \(approver.label) click it or paste into their Approver app.")
-                            .font(.headline)
+                            .font(.subheadline)
                             .fontWeight(.regular)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.bottom, 4)
@@ -72,13 +70,13 @@ struct EnterAccessVerificationCode : View {
                                     Image("Export")
                                         .renderingMode(.template)
                                         .resizable()
-                                        .frame(width: 28, height: 28)
+                                        .frame(width: 24, height: 24)
                                         .padding(.vertical, 6)
-                                        .padding(.horizontal, 10)
+                                        .padding(.horizontal, 6)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .bold()
                                     Text("Share")
-                                        .font(.title3)
+                                        .font(.headline)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .padding(.trailing)
                                 }
@@ -87,6 +85,7 @@ struct EnterAccessVerificationCode : View {
                                         .frame(width: 128)
                                 )
                             }
+                            .padding(.leading)
                             .padding(.bottom)
                         }
                     }
@@ -104,18 +103,12 @@ struct EnterAccessVerificationCode : View {
 
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Step 2:")
-                            .font(.title3)
+                        Text("Step 2: Enter the Code")
+                            .font(.headline)
                             .fontWeight(.semibold)
                         
-                        Text("Enter the Code")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 2)
-                        
-    
                             Text("Have \(approver.label) read aloud the 6-digit code from their Approver app and enter it below.")
-                                .font(.headline)
+                                .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
                     }
@@ -123,7 +116,7 @@ struct EnterAccessVerificationCode : View {
                 }
                 .frame(maxWidth: .infinity)
             }
-            .padding([.bottom], 24)
+            .padding(.vertical)
             
             VStack(spacing: 0) {
                 if approval.status == .initial {
@@ -159,8 +152,8 @@ struct EnterAccessVerificationCode : View {
             }
             Spacer()
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 32)
+        .padding(.vertical)
+        .padding(.horizontal)
         .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
         .onReceive(remoteNotificationPublisher) { _ in
             refreshState()
