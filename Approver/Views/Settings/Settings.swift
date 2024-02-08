@@ -21,27 +21,24 @@ struct Settings: View {
     
     var body: some View {
         VStack {
-            Text("Settings")
-                .font(.title)
-                .padding(.vertical)
-            
-            Spacer()
-            
-            if user.approverStates.countActiveApprovers() > 1 {
-                SettingsItem(title: "Who I'm Helping", buttonText: "View", description: "View the people that you are an approver for.") {
+            List {
+                SettingsItem(title: "Who I'm helping", buttonText: "View", description: "View the people that you are an approver for.") {
                     showOwners = true
                 }
+                .listRowSeparator(.hidden)
+                
+                SettingsItem(title: "Delete data", buttonText: "Delete", description: "This will securely delete all of your information stored in the app.  After completing this, you will no longer be an approver.  This operation cannot be undone.") {
+                    showDeactivateAndDeleteConfirmation = true
+                }
+                .listRowSeparator(.hidden)
             }
-            
-            SettingsItem(title: "Delete Data", buttonText: "Delete", description: "This will securely delete all of your information stored in the app.  After completing this, you will no longer be an approver.  This operation cannot be undone.") {
-                showDeactivateAndDeleteConfirmation = true
-            }
-            
-            Spacer()
+            .listStyle(.plain)
+            .scrollIndicators(ScrollIndicatorVisibility.hidden)
         }
         .padding(.horizontal)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .navigationTitle("Settings")
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {

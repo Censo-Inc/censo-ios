@@ -30,20 +30,20 @@ struct GetLiveWithOwner: View {
                 switch (intent) {
                 case .accessApproval:
                     Text("Approve request")
-                        .font(.title2)
+                        .font(.title3)
                         .bold()
                         .padding(.vertical)
                     
                     Text("Approving a request will take about 2 minutes. This approval should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.\n\nIn the next step you will verify the identity of the person you are assisting before approving the request.")
-                        .font(.subheadline)
+                        .font(.body)
                 case .loginIdReset:
                     Text("Get live with the person that contacted you")
-                        .font(.title2)
+                        .font(.title3)
                         .bold()
                         .padding(.vertical)
                     
                     Text("This process should preferably take place while you’re on the phone or in-person to ensure that you are assisting the proper individual.")
-                        .font(.subheadline)
+                        .font(.body)
                 }
                 
                 Spacer()
@@ -52,7 +52,7 @@ struct GetLiveWithOwner: View {
                     onContinue()
                 } label: {
                     Text("Continue")
-                        .font(.title2)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())

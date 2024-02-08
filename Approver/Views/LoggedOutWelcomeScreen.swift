@@ -27,7 +27,7 @@ struct LoggedOutWelcomeScreen: View {
                     onContinue()
                 } label: {
                     Text("Continue")
-                        .font(.title3)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())

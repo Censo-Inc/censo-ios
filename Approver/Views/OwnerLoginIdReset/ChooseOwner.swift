@@ -17,27 +17,24 @@ struct ChooseOwner: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Please select the person that has contacted you:")
-                .font(.subheadline)
+                .font(.body)
                 .padding(.vertical)
                 .fixedSize(horizontal: false, vertical: true)
             
             List {
-                VStack(spacing: 30) {
-                    ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
-                        Button {
-                            selectedOwner = owner
-                        } label: {
-                            OwnerPill(
-                                participantId: owner.participantId,
-                                label: owner.label,
-                                isSelected: selectedOwner?.participantId == owner.participantId
-                            )
-                            .buttonStyle(PlainButtonStyle())
-                        }
+                ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
+                    Button {
+                        selectedOwner = owner
+                    } label: {
+                        OwnerPill(
+                            participantId: owner.participantId,
+                            label: owner.label,
+                            isSelected: selectedOwner?.participantId == owner.participantId
+                        )
+                        .buttonStyle(PlainButtonStyle())
                     }
+                    .listRowSeparator(.hidden)
                 }
-                .listRowSeparator(.hidden)
-                .padding()
             }
             .listStyle(.plain)
             .scrollIndicators(ScrollIndicatorVisibility.hidden)
@@ -50,7 +47,7 @@ struct ChooseOwner: View {
                 }
             } label: {
                 Text("Continue")
-                    .font(.title2)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle())

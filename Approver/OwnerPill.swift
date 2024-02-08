@@ -31,8 +31,7 @@ struct OwnerPill: View {
             
             VStack(alignment: .leading) {
                 Text(label ?? "-")
-                    .font(.system(size: 24))
-                    .bold()
+                    .font(.headline)
             }
             
             Spacer()

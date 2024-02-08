@@ -27,7 +27,7 @@ struct LoggedInWelcomeScreen: View {
                     onContinue()
                 } label: {
                     Text("Continue")
-                        .font(.title3)
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(RoundedButtonStyle())
@@ -43,7 +43,7 @@ struct LoggedInWelcomeScreen: View {
                     HStack {
                         Image("SettingsFilled").renderingMode(.template)
                         Text("Settings")
-                            .font(.title3)
+                            .font(.headline)
                     }
                 }
                 .frame(maxWidth: .infinity)

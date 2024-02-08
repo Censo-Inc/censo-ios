@@ -87,7 +87,6 @@ struct Onboarding: View {
             }
         }
         .multilineTextAlignment(.center)
-        .navigationTitle(Text(""))
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(isComplete)

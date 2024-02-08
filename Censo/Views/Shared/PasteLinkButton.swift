@@ -20,7 +20,7 @@ struct PasteLinkButton: View {
             handlePastedInfo()
         } label: {
             Text("Paste from clipboard")
-                .font(.title3)
+                .font(.headline)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(RoundedButtonStyle())

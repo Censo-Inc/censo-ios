@@ -21,30 +21,28 @@ struct Owners: View {
         NavigationView {
             VStack {
                 Text("You are helping these people keep their crypto safe:")
-                    .font(.subheadline)
+                    .font(.body)
                     .padding(.vertical)
                     .fixedSize(horizontal: false, vertical: true)
                 
                 List {
-                    VStack(spacing: 30) {
-                        ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
-                            OwnerPill(
-                                participantId: owner.participantId,
-                                label: owner.label,
-                                onEdit: {
-                                    labellingOwner = owner
-                                }
-                            )
-                        }
+                    ForEach(Array(owners.enumerated()), id: \.offset) { i, owner in
+                        OwnerPill(
+                            participantId: owner.participantId,
+                            label: owner.label,
+                            onEdit: {
+                                labellingOwner = owner
+                            }
+                        )
+                        .listRowSeparator(.hidden)
                     }
-                    .listRowSeparator(.hidden)
-                    .padding()
                 }
                 .listStyle(.plain)
                 .scrollIndicators(ScrollIndicatorVisibility.hidden)
             }
             .padding(.horizontal, 32)
-            .navigationTitle(Text("Who I'm Helping"))
+            .padding(.vertical)
+            .navigationTitle(Text("Who I'm helping"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar(content: {

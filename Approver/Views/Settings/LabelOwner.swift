@@ -33,13 +33,8 @@ struct LabelOwner: View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
             
-            Text("Name the person")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .padding(.bottom)
-            
             Text("Give this person a unique nickname so you can identify them.")
-                .font(.subheadline)
+                .font(.body)
                 .padding(.bottom)
 
             VStack(spacing: 0) {
@@ -47,8 +42,9 @@ struct LabelOwner: View {
                     Text("Enter a nickname...")
                 }
                 .textFieldStyle(RoundedTextFieldStyle())
-                .font(.title2)
+                .font(.headline)
                 .frame(maxWidth: .infinity)
+                .padding(.vertical)
                 
                 Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
                     .multilineTextAlignment(.center)
@@ -57,7 +53,6 @@ struct LabelOwner: View {
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
             }
-            .padding(.bottom)
             
             Button {
                 submit()
@@ -67,8 +62,7 @@ struct LabelOwner: View {
                         ProgressView()
                     } else {
                         Text("Save")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.headline)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -77,6 +71,7 @@ struct LabelOwner: View {
             .padding(.bottom)
             .disabled(submitting || !label.isValid)
         }
+        .navigationTitle("Name the person")
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button {
                 showingError = false

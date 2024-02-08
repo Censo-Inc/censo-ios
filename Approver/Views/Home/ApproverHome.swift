@@ -23,7 +23,7 @@ struct ApproverHome: View {
                 
                 if user.isActiveApprover {
                     Text("Received a link?")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                     
                     Text("If the person you are assisting has sent you a link, you can tap on it to continue.\n\nOr, simply copy the link to the clipboard and paste using the button below.")
@@ -59,14 +59,14 @@ struct ApproverHome: View {
                     Spacer()
                     
                     Text("Asked for login assistance?")
-                        .font(.title2)
+                        .font(.title3)
                         .fontWeight(.semibold)
                     
                     Button {
                         showOwnerLoginIdReset = true
                     } label: {
                         Text("Assist")
-                            .font(.title3)
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(RoundedButtonStyle())
