@@ -105,7 +105,7 @@ struct SettingsTab: View {
             deleteRequested: $resetRequested,
             onDelete: deleteUser
         )
-        .alert("Cancel Disable Timelock", isPresented: $cancelDisableRequested) {
+        .alert("Cancel disable timelock", isPresented: $cancelDisableRequested) {
             Button {
                 cancelDisableTimelock()
             } label: { Text("Confirm") }.accessibilityIdentifier("ConfirmCancelDisableTimelockButton")

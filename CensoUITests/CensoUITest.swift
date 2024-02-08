@@ -142,36 +142,36 @@ final class CensoUITest: XCTestCase {
     func test07_TimelockSettings() throws {
         let app = TestSettings.shared.app!
         app.waitForButtonAndTap(buttonIdentifier: "Settings")
-        XCTAssertTrue(app.staticTexts["Lock App"].exists)
-        XCTAssertTrue(app.staticTexts["Enable Timelock"].exists)
-        XCTAssertTrue(app.staticTexts["Delete My Data"].exists)
+        XCTAssertTrue(app.staticTexts["Lock app"].exists)
+        XCTAssertTrue(app.staticTexts["Enable timelock"].exists)
+        XCTAssertTrue(app.staticTexts["Delete my data"].exists)
         
         app.waitForButtonAndTap(buttonIdentifier: "enableTimelockButton")
         
-        app.waitForStaticText(text: "Disable Timelock")
+        app.waitForStaticText(text: "Disable timelock")
         app.waitForButtonAndTap(buttonIdentifier: "disableTimelockButton")
         
         // try to cancel it but then cancel the cancel
-        app.waitForStaticText(text: "Cancel Disable Timelock")
+        app.waitForStaticText(text: "Cancel disable timelock")
         app.waitForButtonAndTap(buttonIdentifier: "cancelDisableTimelockButton")
-        var alert = app.waitForAlert(alertIdentifier: "Cancel Disable Timelock")
+        var alert = app.waitForAlert(alertIdentifier: "Cancel disable timelock")
         alert.waitForButtonAndTap(buttonIdentifier: "CancelCancelDisableTimelockButton")
-        app.waitForStaticText(text: "Cancel Disable Timelock")
+        app.waitForStaticText(text: "Cancel disable timelock")
         
         // this waits for timelock to expire - it is 30 seconds + repeater app task runs every 30
         // re-enable, disable, then cancel the disable and confirm
         app.waitForButtonAndTap(buttonIdentifier: "enableTimelockButton", timeout: 70)
         
-        app.waitForStaticText(text: "Disable Timelock")
+        app.waitForStaticText(text: "Disable timelock")
         app.waitForButtonAndTap(buttonIdentifier: "disableTimelockButton")
         
         // confirm the cancellation this time
-        app.waitForStaticText(text: "Cancel Disable Timelock")
+        app.waitForStaticText(text: "Cancel disable timelock")
         app.waitForButtonAndTap(buttonIdentifier: "cancelDisableTimelockButton")
-        alert = app.waitForAlert(alertIdentifier: "Cancel Disable Timelock")
+        alert = app.waitForAlert(alertIdentifier: "Cancel disable timelock")
         alert.waitForButtonAndTap(buttonIdentifier: "ConfirmCancelDisableTimelockButton")
         
-        app.waitForStaticText(text: "Disable Timelock")
+        app.waitForStaticText(text: "Disable timelock")
     }
     
     func test08_AccessWithTimelock() throws {
@@ -223,7 +223,7 @@ final class CensoUITest: XCTestCase {
     func test10_DeleteAllDataSettings() throws {
         let app = TestSettings.shared.app!
         app.waitForButtonAndTap(buttonIdentifier: "Settings")
-        XCTAssertTrue(app.staticTexts["Delete My Data"].exists)
+        XCTAssertTrue(app.staticTexts["Delete my data"].exists)
         
         app.waitForButtonAndTap(buttonIdentifier: "deleteMyDataButton")
         

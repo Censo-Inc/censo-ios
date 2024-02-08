@@ -233,7 +233,7 @@ class TestHelper {
     
     static func lockAndUnlock() {
         app.waitForButtonAndTap(buttonIdentifier: "Settings")
-        XCTAssertTrue(app.staticTexts["Lock App"].exists)
+        XCTAssertTrue(app.staticTexts["Lock app"].exists)
         
         app.waitForButtonAndTap(buttonIdentifier: "lockButton")
         
