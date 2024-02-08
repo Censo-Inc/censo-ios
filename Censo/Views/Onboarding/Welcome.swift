@@ -141,7 +141,7 @@ struct Welcome: View {
                         Text("OK")
                     }
                 } message: {
-                    Text("") // TODO - some explanatory text here TBD
+                    Text("You'll get rewarded more when points arrive")
                 }
             }
         }
