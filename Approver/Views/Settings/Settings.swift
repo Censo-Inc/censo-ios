@@ -22,10 +22,12 @@ struct Settings: View {
     var body: some View {
         VStack {
             List {
-                SettingsItem(title: "Who I'm helping", buttonText: "View", description: "View the people that you are an approver for.") {
-                    showOwners = true
+                if user.approverStates.countActiveApprovers() > 1 {
+                    SettingsItem(title: "Who I'm helping", buttonText: "View", description: "View the people that you are an approver for.") {
+                        showOwners = true
+                    }
+                    .listRowSeparator(.hidden)
                 }
-                .listRowSeparator(.hidden)
                 
                 SettingsItem(title: "Delete data", buttonText: "Delete", description: "This will securely delete all of your information stored in the app.  After completing this, you will no longer be an approver.  This operation cannot be undone.") {
                     showDeactivateAndDeleteConfirmation = true
