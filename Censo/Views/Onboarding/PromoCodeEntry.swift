@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct PromoCodeEntry: View {
-    @Environment(\.apiProvider) var apiProvider
-    var session: Session
+    @EnvironmentObject var ownerRepository: OwnerRepository
     var onPromoCodeAccepted: () -> Void
     @State private var promoCode = ""
     @State private var getPromoCode = false
@@ -75,7 +74,7 @@ struct PromoCodeEntry: View {
     func submitPromoCode() {
         getPromoCode = false
         let normalizedPromoCode = promoCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        apiProvider.request(with: session, endpoint: .setPromoCode(code: normalizedPromoCode)) { result in
+        ownerRepository.setPromoCode(normalizedPromoCode) { result in
             promoCode = ""
             switch result {
             case .success:
@@ -91,6 +90,6 @@ struct PromoCodeEntry: View {
 
 #if DEBUG
 #Preview {
-    PromoCodeEntry(session: .sample, onPromoCodeAccepted: {})
+    PromoCodeEntry(onPromoCodeAccepted: {})
 }
 #endif

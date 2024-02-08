@@ -61,9 +61,10 @@ struct Welcome: View {
                         Spacer()
                         
                         if (!promoCodeAccepted) {
-                            PromoCodeEntry(session: session, onPromoCodeAccepted: {
+                            PromoCodeEntry() {
                                 promoCodeAccepted = true
-                            })
+                            }
+                            .padding(.vertical)
                         }
                         
                         Button {

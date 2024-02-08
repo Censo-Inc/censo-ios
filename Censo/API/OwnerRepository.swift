@@ -202,4 +202,8 @@ final class OwnerRepository : ObservableObject {
     func acceptImport(_ channel: String, _ ownerProof: API.OwnerProof, _ completion: @escaping Moya.Completion) {
         apiProvider.request(with: session, endpoint: .acceptImport(channel: channel, ownerProof: ownerProof), completion: completion)
     }
+    
+    func setPromoCode(_ code: String, _ completion: @escaping Moya.Completion) {
+        apiProvider.request(with: session, endpoint: .setPromoCode(code: code), completion: completion)
+    }
 }
