@@ -16,33 +16,35 @@ struct PhotoCapture<Submission>: View where Submission : View {
     @ViewBuilder var submission: (UIImage, @escaping RetakeClosure) -> Submission
 
     var body: some View {
-        switch (controller.photo, controller.state) {
-        case (.some(let uiImage), _):
-            submission(uiImage) {
-                controller.photo = nil
-            }
-        case (.none, .notAvailable):
-            CameraNotAvailable()
-        case (.none, .running(let session, _)):
-            TakeSeedPhoto(
-                onTakePhoto: controller.capturePhoto,
-                onBack: controller.stopCapture
-            ) {
-                CameraPreview(session: session)
-                    .aspectRatio(1, contentMode: .fit)
-            }
-        case (.none, .starting):
-            ProgressView()
-        case (.none, .readyToStart):
-            ProgressView()
-                .onAppear {
-                    controller.restartCapture()
+        VStack {
+            switch (controller.photo, controller.state) {
+            case (.some(let uiImage), _):
+                submission(uiImage) {
+                    controller.photo = nil
                 }
-        case (.none, .stopped):
-            SeedPhotoIntro(
-                onReadyToStart: controller.readyToStart,
-                onBack: onBack
-            )
+            case (.none, .notAvailable):
+                CameraNotAvailable()
+            case (.none, .running(let session, _)):
+                TakeSeedPhoto(
+                    onTakePhoto: controller.capturePhoto,
+                    onBack: controller.stopCapture
+                ) {
+                    CameraPreview(session: session)
+                        .aspectRatio(1, contentMode: .fit)
+                }
+            case (.none, .starting):
+                ProgressView()
+            case (.none, .readyToStart):
+                ProgressView()
+                    .onAppear {
+                        controller.restartCapture()
+                    }
+            case (.none, .stopped):
+                SeedPhotoIntro(
+                    onReadyToStart: controller.readyToStart,
+                    onBack: onBack
+                )
+            }
         }
     }
 }
