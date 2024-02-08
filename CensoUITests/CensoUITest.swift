@@ -299,28 +299,19 @@ final class CensoUITest: XCTestCase {
     }
 
     func test13_PromoCode() throws {
+        let app = TestSettings.shared.restartApp(language: PhraseLanguage.english, newUser: true)
         TestHelper.acceptTermsAndConditions()
         
-        let app = TestSettings.shared.app!
+        app.waitForButtonAndTap(buttonIdentifier: "getPromoCode")
         
-        let getPromoCode = app.buttons["getPromoCode"]
-        XCTAssertTrue(getPromoCode.waitForExistence(timeout: 5))
-        getPromoCode.tap()
-        
-        let promoCodeEntry = app.textFields["promoCodeEntry"]
-        XCTAssertTrue(promoCodeEntry.waitForExistence(timeout: 5))
-        promoCodeEntry.tap()
-        promoCodeEntry.typeText("TESTCODE")
+        app.enterText(fieldIdentifier: "promoCodeEntry", inputText: "TESTCODE")
 
-        let submitPromoCodeButton = app.buttons["submitPromoCode"]
-        XCTAssertTrue(submitPromoCodeButton.waitForExistence(timeout: 5))
-        submitPromoCodeButton.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "submitPromoCode")
+        let _ = app.waitForAlert(alertIdentifier: "Promo code accepted!")
+        app.waitForButtonAndTap(buttonIdentifier: "OK")
 
-        let getStarted = TestSettings.shared.app!.buttons["getStarted"]
-        XCTAssertTrue(getStarted.waitForExistence(timeout: 5))
-        getStarted.tap()
+        app.waitForButtonAndTap(buttonIdentifier: "getStarted")
         
-        let beginFaceSanButton = app.buttons["beginFaceSanButton"]
-        XCTAssertTrue(beginFaceSanButton.waitForExistence(timeout: 5))
+        let _ = app.waitForButton(buttonIdentifier: "beginFaceSanButton")
     }
 }

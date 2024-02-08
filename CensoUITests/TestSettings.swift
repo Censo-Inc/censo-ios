@@ -21,7 +21,7 @@ class TestSettings {
     var password: String? = nil
     var isSimulator: Bool = false
     var firstPhraseLabel: String = "FirstPhrase"
-    let userIdentifier: String = "testAppleUserIdentifier-\(UUID().uuidString)"
+    var userIdentifier: String = "testAppleUserIdentifier-\(UUID().uuidString)"
     var currentLanguage = PhraseLanguage.english
     let wordMap: [PhraseLanguage: [String]] = [
         .english: ["uncle", "bar", "tissue", "bus", "cabin", "segment", "miss", "staff", "wise", "country", "ranch", "ketchup"],
@@ -43,10 +43,14 @@ class TestSettings {
         isSimulator = !DCAppAttestService().isSupported
     }
     
-    func restartApp(language: PhraseLanguage) {
+    func restartApp(language: PhraseLanguage, newUser: Bool = false) -> XCUIApplication {
         currentLanguage = language
+        if newUser {
+            userIdentifier = "testAppleUserIdentifier-\(UUID().uuidString)"
+        }
         app.launchArguments = ["testing", "\(words().joined(separator: " "))", userIdentifier]
         app.launch()
+        return app
     }
     
     func words(language: PhraseLanguage? = nil) -> [String] {
