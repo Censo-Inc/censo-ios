@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct Welcome: View {
+    @Environment(\.apiProvider) var apiProvider
     var session: Session
     var ownerState: API.OwnerState.Initial
     var onComplete: (API.OwnerState) -> Void
     var onCancel: () -> Void
-    @State var showInitialSetup = false
-    
+    @State private var showInitialSetup = false
+    @State private var promoCodeAccepted = false
+
     var body: some View {
         if (showInitialSetup) {
             InitialPolicySetup(
@@ -62,12 +64,17 @@ struct Welcome: View {
                         
                         Spacer()
                         
+                        if (!promoCodeAccepted) {
+                            PromoCodeEntry(session: session, onPromoCodeAccepted: {
+                                promoCodeAccepted = true
+                            })
+                        }
+                        
                         Button {
                             showInitialSetup = true
                         } label: {
                             Text("Get started")
-                                .font(.title2)
-                                .fontWeight(.semibold)
+                                .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())
@@ -89,7 +96,6 @@ struct Welcome: View {
             }
         }
     }
-    
 }
 
 #if DEBUG
