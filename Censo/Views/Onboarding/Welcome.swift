@@ -21,35 +21,36 @@ struct Welcome: View {
         } else {
             NavigationStack {
                 VStack(alignment: .leading, spacing: 0) {
+                    Spacer()
                     
                     Text("Welcome to Censo")
-                        .font(.custom("SF Pro", size: 44, relativeTo: .largeTitle))
-                        .fontWeight(.bold)
-                        .padding()
+                        .font(.largeTitle)
+                        .padding(.vertical)
                     
                     Spacer()
                     
-                    Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                    VStack(alignment: .leading) {
-                        Spacer()
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Censo is a breakthrough in seed phrase security. Here’s how you get started:")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.bottom)
+                    
+                        Spacer().frame(maxHeight: 24)
+                        
                         SetupStep(
                             image: Image("Apple"),
                             heading: "Authenticate privately",
                             content: "No personal info collected, ever, from Apple or any other source.",
                             completionText: "Authenticated"
                         )
-                        Spacer().frame(maxHeight: 32)
+                        Spacer().frame(maxHeight: 24)
                         SetupStep(
                             image: Image("FaceScan"),
                             heading: "Scan your face (optional)",
                             content: "Important operations can be secured by anonymous biometrics."
                         )
-                        Spacer().frame(maxHeight: 32)
+                        Spacer().frame(maxHeight: 24)
                         SetupStep(
                             image: Image("PhraseEntry"),
                             heading: "Enter your seed phrase",
@@ -68,9 +69,9 @@ struct Welcome: View {
                         .buttonStyle(RoundedButtonStyle())
                         .accessibilityIdentifier("getStarted")
                     }
-                    .padding()
+                    .padding(.vertical)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 32)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {
                     ToolbarItem(placement: .navigationBarLeading) {
