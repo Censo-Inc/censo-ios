@@ -106,17 +106,15 @@ struct InitialPolicySetup: View {
                 }
             } else {
                 GeometryReader { geometry in
-                    ZStack(alignment: .bottom) {
-                        Spacer()
-                            .frame(maxHeight: geometry.size.height * 0.05)
-                        VStack {
+                    ZStack(alignment: .bottomTrailing) {
+                        VStack(alignment: .trailing) {
                             Image("FaceScanHandWithPhone")
                                 .resizable()
-                                .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.9)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxHeight: geometry.size.height * 0.8)                                .padding(.top)
                                 .padding(.top)
                             Spacer()
                         }
-                        .padding(.leading, geometry.size.width * 0.1)
                         
                         VStack(spacing: 0) {
                             Spacer()

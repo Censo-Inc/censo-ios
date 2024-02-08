@@ -35,15 +35,15 @@ struct ReplaceAuthentication : View {
         switch (step) {
         case .initial:
             GeometryReader { geometry in
-                ZStack(alignment: .bottom) {
-                    VStack {
+                ZStack(alignment: .bottomTrailing) {
+                    VStack(alignment: .trailing) {
                         Image("FaceScanHandWithPhone")
                             .resizable()
-                            .frame(maxWidth: geometry.size.width * 0.6, maxHeight: geometry.size.height * 0.7)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: geometry.size.height * 0.7)
+                            .padding(.top)
                         Spacer()
                     }
-                    .padding(.leading, geometry.size.width * 0.4)
-                    .padding(.top, geometry.size.width * 0.1)
                     
                     VStack(spacing: 0) {
                         Spacer()
