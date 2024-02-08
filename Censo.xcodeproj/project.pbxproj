@@ -230,6 +230,7 @@
 		BD8BC98E2ADD89F400DA979C /* FirstPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */; };
 		BD8BC9902ADD8D1B00DA979C /* PastePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */; };
 		BD8BC9922ADDC4E100DA979C /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8BC9912ADDC4E100DA979C /* BIP39.swift */; };
+		BD8FCDD52B7510360032E334 /* PromoCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8FCDD42B7510360032E334 /* PromoCodeEntry.swift */; };
 		BDC11F0A2B62EE6A009E306B /* OwnerDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F092B62EE6A009E306B /* OwnerDelete.swift */; };
 		BDC11F0E2B62F4BF009E306B /* ApproverDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F0D2B62F4BF009E306B /* ApproverDelete.swift */; };
 		BDC11F132B62FA36009E306B /* SubscriptionDecline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC11F122B62FA36009E306B /* SubscriptionDecline.swift */; };
@@ -495,6 +496,7 @@
 		BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstPhrase.swift; sourceTree = "<group>"; };
 		BD8BC98F2ADD8D1B00DA979C /* PastePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastePhrase.swift; sourceTree = "<group>"; };
 		BD8BC9912ADDC4E100DA979C /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
+		BD8FCDD42B7510360032E334 /* PromoCodeEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromoCodeEntry.swift; sourceTree = "<group>"; };
 		BDA52C3F2B1A53BD007001F5 /* ApproverRelease (Integration).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ApproverRelease (Integration).entitlements"; sourceTree = "<group>"; };
 		BDA52C402B1A53E0007001F5 /* ApproverRelease (Staging).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ApproverRelease (Staging).entitlements"; sourceTree = "<group>"; };
 		BDA52C412B1A53ED007001F5 /* ApproverDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ApproverDebug.entitlements; sourceTree = "<group>"; };
@@ -1033,6 +1035,7 @@
 				BD8BC98D2ADD89F400DA979C /* FirstPhrase.swift */,
 				BD19AE0D2B0525AA00282B86 /* CreatePassword.swift */,
 				BD8B28572B5EB04400C0BE80 /* Welcome.swift */,
+				BD8FCDD42B7510360032E334 /* PromoCodeEntry.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -1386,6 +1389,7 @@
 				E4D376852AE83977005809F7 /* EnterApproverNickname.swift in Sources */,
 				6C633D7D2B5F008B00049417 /* RenameSeedPhrase.swift in Sources */,
 				E46395712B4EC854005FE818 /* LoginIdResetStepView.swift in Sources */,
+				BD8FCDD52B7510360032E334 /* PromoCodeEntry.swift in Sources */,
 				3D28C0102B06721C00E261AA /* AttestKey.swift in Sources */,
 				E4C06F422B335940006A9B39 /* SettingsItem.swift in Sources */,
 				E475C8FF2B63FE530051CCD6 /* PaywallGatedScreen.swift in Sources */,
