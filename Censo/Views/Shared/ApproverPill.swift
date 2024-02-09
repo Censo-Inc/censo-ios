@@ -28,23 +28,14 @@ struct ApproverPill: View {
     var isDisabled: Bool = false
     var onEdit: (() -> Void)?
     var onVerificationSubmitted: ((API.ApproverStatus.VerificationSubmitted) -> Void)?
-    
     var body: some View {
         HStack(spacing: 0) {
-            if let isSelected {
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .resizable()
-                        .symbolRenderingMode(.palette)
-                        .frame(width: 12, height: 12)
-                        .padding([.trailing], 24)
-                        .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
-                } else {
-                    Text("")
-                        .padding(.trailing, 36)
-                }
-            }
-
+            Image(systemName: "person.fill")
+                .resizable()
+                .scaledToFit()
+                .padding([.trailing])
+                .frame(maxHeight: 42)
+                .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
             VStack(alignment: .leading) {
                 Text(approver.label())
                     .font(.title3)
@@ -96,8 +87,21 @@ struct ApproverPill: View {
                         .frame(width: 32, height: 32)
                 }
             }
+            if let isSelected {
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .symbolRenderingMode(.palette)
+                        .frame(width: 12, height: 12)
+                        .padding([.leading], 24)
+                        .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
+                } else {
+                    Text("")
+                        .padding(.leading, 36)
+                }
+            }
+
         }
-        .frame(maxWidth: .infinity)
         .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 16.0)
@@ -106,12 +110,12 @@ struct ApproverPill: View {
         )
     }
 }
-    
+
 #if DEBUG
 #Preview("without selection") {
     VStack {
         let trustedApprover = API.TrustedApprover(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedApprover.Attributes(onboardedAt: Date()))
-        ApproverPill(isPrimary: true, approver: .trusted(trustedApprover))
+        ApproverPill(isPrimary: true, approver: .trusted(trustedApprover), onEdit: {})
         ApproverPill(isPrimary: false, approver: .trusted(trustedApprover))
     }
     .padding()
@@ -129,7 +133,7 @@ struct ApproverPillsWithSelection_Previews: PreviewProvider {
         var body: some View {
             VStack {
                 ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
-                    ApproverPill(isPrimary: i == 0, approver: .trusted(approver), isSelected: approver.participantId == selectedApprover?.participantId)
+                    ApproverPill(isPrimary: i == 0, approver: .trusted(approver), isSelected: approver.participantId == selectedApprover?.participantId, onEdit: {})
                         .onTapGesture {
                             selectedApprover = approver
                         }
