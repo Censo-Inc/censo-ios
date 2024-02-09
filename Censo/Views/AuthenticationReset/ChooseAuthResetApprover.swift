@@ -58,7 +58,6 @@ struct ChooseAuthResetApprover : View {
                             selectedApprover = approver
                         } label: {
                             ApproverPill(
-                                isPrimary: i == 0,
                                 approver: .trusted(approver),
                                 isSelected: selectedApprover?.participantId == approver.participantId,
                                 isDisabled: isApproved

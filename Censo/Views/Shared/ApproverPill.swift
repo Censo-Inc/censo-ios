@@ -22,7 +22,6 @@ enum Approver {
 }
 
 struct ApproverPill: View {
-    var isPrimary: Bool
     var approver: Approver
     var isSelected: Bool?
     var isDisabled: Bool = false
@@ -34,7 +33,7 @@ struct ApproverPill: View {
                 .resizable()
                 .scaledToFit()
                 .padding([.trailing])
-                .frame(maxHeight: 42)
+                .frame(height: 42)
                 .foregroundColor(isDisabled ? .Censo.gray : .Censo.primaryForeground)
             VStack(alignment: .leading) {
                 Text(approver.label())
@@ -115,8 +114,8 @@ struct ApproverPill: View {
 #Preview("without selection") {
     VStack {
         let trustedApprover = API.TrustedApprover(label: "Neo", participantId: ParticipantId(bigInt: generateParticipantId()), isOwner: false, attributes: API.TrustedApprover.Attributes(onboardedAt: Date()))
-        ApproverPill(isPrimary: true, approver: .trusted(trustedApprover), onEdit: {})
-        ApproverPill(isPrimary: false, approver: .trusted(trustedApprover))
+        ApproverPill(approver: .trusted(trustedApprover), onEdit: {})
+        ApproverPill(approver: .trusted(trustedApprover))
     }
     .padding()
     .foregroundColor(Color.Censo.primaryForeground)
@@ -133,7 +132,7 @@ struct ApproverPillsWithSelection_Previews: PreviewProvider {
         var body: some View {
             VStack {
                 ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
-                    ApproverPill(isPrimary: i == 0, approver: .trusted(approver), isSelected: approver.participantId == selectedApprover?.participantId, onEdit: {})
+                    ApproverPill(approver: .trusted(approver), isSelected: approver.participantId == selectedApprover?.participantId, onEdit: {})
                         .onTapGesture {
                             selectedApprover = approver
                         }
@@ -161,7 +160,6 @@ struct ApproverPillsWithSelectionAndGrayedOut_Previews: PreviewProvider {
                 ForEach(Array(approvers.enumerated()), id: \.offset) { i, approver in
                     let isApproved = i == 1
                     ApproverPill(
-                        isPrimary: i == 0,
                         approver: .trusted(approver),
                         isSelected: approver.participantId == selectedApprover?.participantId,
                         isDisabled: isApproved

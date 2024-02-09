@@ -32,9 +32,7 @@ struct ActivateApprover : View {
     @State private var refreshStatePublisher = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
-    var body: some View {
-        let isPrimary = approver == policySetup.primaryApprover
-        
+    var body: some View {        
         switch(mode) {
         case .getLive:
             GetLive(
@@ -244,7 +242,6 @@ struct ActivateApprover : View {
                     Divider()
 
                     ApproverPill(
-                        isPrimary: isPrimary,
                         approver: .prospect(approver),
                         onEdit: { mode = .rename },
                         onVerificationSubmitted: { status in

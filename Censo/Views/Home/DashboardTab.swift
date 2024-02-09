@@ -16,47 +16,41 @@ struct DashboardTab: View {
     @Binding var parentTabViewSelectedTab: HomeScreen.TabId
     
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
+            Image("Dashboard")
+            Spacer()
             VStack {
-                Spacer()
-                Button {
-                    parentTabViewSelectedTab = .phrases
-                } label: {
-                    HStack(alignment: .lastTextBaseline) {
-                        Text("You have")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        Text("\(ownerState.vault.seedPhrases.count)")
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Text("seed phrase\(ownerState.vault.seedPhrases.count == 1 ? "" : "s").")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                    }
+                HStack(alignment: .lastTextBaseline) {
+                    Text("You have")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                    Text("\(ownerState.vault.seedPhrases.count)")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("seed phrase\(ownerState.vault.seedPhrases.count == 1 ? "" : "s").")
+                        .font(.title3)
+                        .fontWeight(.semibold)
                 }
-                
+
                 Text("\(ownerState.vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
                     .font(.title3)
                     .padding()
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                
-                Button {
-                    showingAddPhrase = true
-                } label: {
-                    Text("Add seed phrase")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(RoundedButtonStyle())
-                .accessibilityIdentifier("addSeedPhraseButton")
+            }
+            .padding(.vertical)
+            .clipShape(RoundedRectangle(cornerRadius: 16.0))
+            .background(
+                RoundedRectangle(cornerRadius: 16.0)
+                    .fill(Color.Censo.aquaBlue.opacity(0.24))
+            )
+            Spacer()
+                .frame(maxHeight: 32)
 
-                Spacer()
-
+            VStack(alignment: .leading) {
                 if (ownerState.policy.externalApproversCount == 0) {
                     Text("\nYou can increase security by adding approvers.")
-                        .font(.title3)
-                        .fontWeight(.semibold)
+                        .font(.title)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                     Button {
@@ -75,23 +69,22 @@ struct DashboardTab: View {
                     .buttonStyle(RoundedButtonStyle())
                     .accessibilityIdentifier("addApprovers")
                 } else {
-                    Text("Your approvers:")
-                        .font(.title3)
+                    Text("Your Approvers")
+                        .font(.title2)
                         .fontWeight(.semibold)
-                        .multilineTextAlignment(.center)
                     
                     VStack(spacing: 30) {
                         ForEach(Array(ownerState.policy.externalApprovers.enumerated()), id: \.offset) { i, approver in
-                          ApproverPill(isPrimary: i == 0, approver: .trusted(approver))
+                            ApproverPill(approver: .trusted(approver))
                         }
                     }
-                    .padding(.top)
                 }
-                
-                Spacer()
             }
-            .padding(.horizontal, 32)
+            .padding()
+
+            Spacer()
         }
+        .padding(.horizontal)
         .sheet(isPresented: $showingAddPhrase, content: {
             AdditionalPhrase(ownerState: ownerState)
         })
