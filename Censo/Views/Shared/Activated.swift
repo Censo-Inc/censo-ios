@@ -28,7 +28,7 @@ struct Activated: View {
                 if isApprovers {
                     VStack(spacing: 50) {
                         ForEach(Array(policy.externalApprovers.enumerated()), id: \.offset) { i, approver in
-                            ApproverPill(isPrimary: true, approver: .trusted(approver))
+                            ApproverPill(approver: .trusted(approver))
                         }
                     }
                     .padding(.horizontal, 32)
