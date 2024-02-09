@@ -16,12 +16,13 @@ func deleteOwner(_ ownerRepository: OwnerRepository, _ ownerState: API.OwnerStat
             switch ownerState {
             case .ready(let ready):
                 if let ownerTrustedApprover = ready.policy.approvers.first(where: { $0.isOwner }) {
-                    ownerRepository.deleteApproverKey(participantId: ownerTrustedApprover.participantId)
+                    ownerRepository.deleteApproverKey(keyId: ownerTrustedApprover.participantId)
                 }
                 if let ownerProspectApprover = ready.policySetup?.owner {
-                    ownerRepository.deleteApproverKey(participantId: ownerProspectApprover.participantId)
+                    ownerRepository.deleteApproverKey(keyId: ownerProspectApprover.participantId)
                 }
-            case .initial:
+            case .initial,
+                 .beneficiary:
                 break
             }
             NotificationCenter.default.post(name: Notification.Name.deleteUserDataNotification, object: nil)

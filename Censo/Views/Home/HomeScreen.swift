@@ -11,16 +11,20 @@ import UIKit
 struct HomeScreen: View {
     var ownerState: API.OwnerState.Ready
     
+    @ObservedObject var featureFlagState = FeatureFlagState.shared
+    
     enum TabId {
         case dashboard
         case phrases
         case settings
+        case legacy
     }
     
     @State private var selectedTab = TabId.dashboard
     
-    init(ownerState: API.OwnerState.Ready) {
+    init(ownerState: API.OwnerState.Ready, featureFlagState: FeatureFlagState = FeatureFlagState.shared) {
         self.ownerState = ownerState
+        self.featureFlagState = featureFlagState
         
         let standardTabBarAppearence = UITabBarAppearance.init(idiom: .phone)
         standardTabBarAppearence.configureWithTransparentBackground()
@@ -61,6 +65,20 @@ struct HomeScreen: View {
                     }
                 }
                 .tag(TabId.phrases)
+                
+                if featureFlagState.legacyEnabled() {
+                    VStack(spacing: 0) {
+                        LegacyTab(ownerState: ownerState)
+                        tabDivider()
+                    }
+                    .tabItem {
+                        VStack {
+                            Text("Legacy")
+                            Image("LegacyTab").renderingMode(.template)
+                        }
+                    }
+                    .tag(TabId.legacy)
+                }
                 
                 VStack(spacing: 0) {
                     SettingsTab(ownerState: ownerState)
@@ -178,6 +196,31 @@ extension API.Policy {
             approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data())
         )
     }
+    
+    static var sample2ApproversAndBeneficiary: Self {
+        .init(
+            createdAt: Date(),
+            approvers: [.sample, .sample2],
+            threshold: 2,
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
+            approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data()),
+            beneficiary: .sample
+        )
+    }
+    
+    static var sample2ApproversAndAcceptedBeneficiary: Self {
+        .init(
+            createdAt: Date(),
+            approvers: [.sample, .sample2],
+            threshold: 2,
+            encryptedMasterKey: Base64EncodedString(data: Data()),
+            intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
+            approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data()),
+            beneficiary: .sampleAccepted
+        )
+    }
+    
 }
 
 extension API.TimelockSetting {
@@ -230,87 +273,92 @@ extension API.SeedPhrase {
     }
 }
 
-struct CensoHomeScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        LoggedInOwnerPreviewContainer {
-            HomeScreen(
-                ownerState: API.OwnerState.Ready(
-                    policy: .sample,
-                    vault: .sample,
-                    access: nil,
-                    authType: .facetec,
-                    subscriptionStatus: .active,
-                    timelockSetting: .sample,
-                    subscriptionRequired: true,
-                    onboarded: true,
-                    canRequestAuthenticationReset: false
-                )
+#Preview("NoApproversWithLegacy") {
+    LoggedInOwnerPreviewContainer {
+        HomeScreen(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample,
+                vault: .sample,
+                access: nil,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            ),
+            featureFlagState: FeatureFlagState(["legacy"])
+        )
+    }
+}
+
+#Preview("ApproversWithLegacy") {
+    LoggedInOwnerPreviewContainer {
+        HomeScreen(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                access: nil,
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
+            ),
+            featureFlagState: FeatureFlagState(["legacy"])
+        )
+    }
+}
+
+#Preview("TimelockedAccess") {
+    LoggedInOwnerPreviewContainer {
+        HomeScreen(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                access: .thisDevice(API.Access.ThisDevice(
+                    guid: "",
+                    status: API.Access.Status.timelocked,
+                    createdAt: Date(),
+                    unlocksAt: Date().addingTimeInterval(7200),
+                    expiresAt: Date(),
+                    approvals: [],
+                    intent: .accessPhrases
+                )),
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
             )
-        }
-        
-        LoggedInOwnerPreviewContainer {
-            HomeScreen(
-                ownerState: API.OwnerState.Ready(
-                    policy: .sample2Approvers,
-                    vault: .sample,
-                    access: nil,
-                    authType: .facetec,
-                    subscriptionStatus: .active,
-                    timelockSetting: .sample,
-                    subscriptionRequired: true,
-                    onboarded: true,
-                    canRequestAuthenticationReset: false
-                )
+        )
+    }
+}
+#Preview("AvailableAccess") {
+    LoggedInOwnerPreviewContainer {
+        HomeScreen(
+            ownerState: API.OwnerState.Ready(
+                policy: .sample2Approvers,
+                vault: .sample,
+                access: .thisDevice(API.Access.ThisDevice(
+                    guid: "",
+                    status: API.Access.Status.available,
+                    createdAt: Date(),
+                    unlocksAt: Date().addingTimeInterval(7200),
+                    expiresAt: Date(),
+                    approvals: [],
+                    intent: .accessPhrases
+                )),
+                authType: .facetec,
+                subscriptionStatus: .active,
+                timelockSetting: .sample,
+                subscriptionRequired: true,
+                onboarded: true,
+                canRequestAuthenticationReset: false
             )
-        }
-        
-        LoggedInOwnerPreviewContainer {
-            HomeScreen(
-                ownerState: API.OwnerState.Ready(
-                    policy: .sample2Approvers,
-                    vault: .sample,
-                    access: .thisDevice(API.Access.ThisDevice(
-                        guid: "",
-                        status: API.Access.Status.timelocked,
-                        createdAt: Date(),
-                        unlocksAt: Date().addingTimeInterval(7200),
-                        expiresAt: Date(),
-                        approvals: [],
-                        intent: .accessPhrases
-                    )),
-                    authType: .facetec,
-                    subscriptionStatus: .active,
-                    timelockSetting: .sample,
-                    subscriptionRequired: true,
-                    onboarded: true,
-                    canRequestAuthenticationReset: false
-                )
-            )
-        }
-        
-        LoggedInOwnerPreviewContainer {
-            HomeScreen(
-                ownerState: API.OwnerState.Ready(
-                    policy: .sample2Approvers,
-                    vault: .sample,
-                    access: .thisDevice(API.Access.ThisDevice(
-                        guid: "",
-                        status: API.Access.Status.available,
-                        createdAt: Date(),
-                        unlocksAt: Date().addingTimeInterval(7200),
-                        expiresAt: Date(),
-                        approvals: [],
-                        intent: .accessPhrases
-                    )),
-                    authType: .facetec,
-                    subscriptionStatus: .active,
-                    timelockSetting: .sample,
-                    subscriptionRequired: true,
-                    onboarded: true,
-                    canRequestAuthenticationReset: false
-                )
-            )
-        }
+        )
     }
 }
 #endif

@@ -27,7 +27,7 @@ class TestHelper {
             
             app.waitForButtonAndTap(buttonIdentifier: "createPasswordButton")
         } else {
-            app.waitForButtonAndTap(buttonIdentifier: "beginFaceSanButton")
+            app.waitForButtonAndTap(buttonIdentifier: "beginFaceScanButton")
         }
 
         addPhrase(inputButton: phraseInputButton, label: TestSettings.shared.firstPhraseLabel, expectPaywall: false, onboarding: true)
@@ -44,7 +44,7 @@ class TestHelper {
     static func addPhrase(inputButton: String, label: String, expectPaywall: Bool, onboarding: Bool, language: PhraseLanguage? = nil) {
         
         if !onboarding {
-            app.waitForButtonAndTap(buttonIdentifier: "Home")
+            app.waitForButtonAndTap(buttonIdentifier: "My Phrases")
             app.waitForButtonAndTap(buttonIdentifier: "addSeedPhraseButton")
         }
         
@@ -137,6 +137,13 @@ class TestHelper {
         if numApprovers == 0 {
             XCTAssertTrue(app.staticTexts["\nYou can increase security by adding approvers."].exists)
         }
+    }
+    
+    static func validateLegacyScreen() {
+        app.waitForButtonAndTap(buttonIdentifier: "Legacy")
+        let addBeneficiaryButton = app.waitForButton(buttonIdentifier: "addBeneficiary")
+        XCTAssertFalse(addBeneficiaryButton.isEnabled)
+        XCTAssertTrue(app.staticTexts["You must add approvers before you can add a beneficiary."].exists)
     }
     
     static func validateMyPhrasesScreen(expectedPhraseLabels: [String]) {

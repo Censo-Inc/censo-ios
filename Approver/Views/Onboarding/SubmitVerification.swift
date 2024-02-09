@@ -85,7 +85,7 @@ struct SubmitVerification: View {
     
     private func submitVerificaton(code: String) {
         guard let entropy = approverState.phase.entropy,
-              let approverKey = try? session.getOrCreateApproverKey(participantId: approverState.participantId, entropy: entropy.data),
+              let approverKey = try? session.getOrCreateApproverKey(keyId: approverState.participantId, entropy: entropy.data),
               let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: approverKey),
               let approverPublicKey = try? approverKey.publicExternalRepresentation()
         else {

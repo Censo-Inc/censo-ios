@@ -141,7 +141,6 @@ struct PhrasesTab: View {
                 .padding(.bottom)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .padding(.horizontal, 32)
             .sheet(isPresented: $showingAddPhrase, content: {

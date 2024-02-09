@@ -43,12 +43,12 @@ class TestSettings {
         isSimulator = !DCAppAttestService().isSupported
     }
     
-    func restartApp(language: PhraseLanguage, newUser: Bool = false) -> XCUIApplication {
+    func restartApp(language: PhraseLanguage = .english, newUser: Bool = false, clipboardData: String? = nil) -> XCUIApplication {
         currentLanguage = language
         if newUser {
             userIdentifier = "testAppleUserIdentifier-\(UUID().uuidString)"
         }
-        app.launchArguments = ["testing", "\(words().joined(separator: " "))", userIdentifier]
+        app.launchArguments = ["testing", clipboardData ?? "\(words().joined(separator: " "))", userIdentifier]
         app.launch()
         return app
     }

@@ -73,6 +73,13 @@ struct API {
         case replaceAuthentication(ReplaceAuthenticationApiRequest)
         
         case setPromoCode(code: String)
+        case inviteBeneficiary(InviteBeneficiaryApiRequest)
+        case deleteBeneficiary
+        case acceptBeneficiaryInvitation(BeneficiaryInvitationId, AcceptBeneficiaryInvitationApiRequest)
+        case acceptBeneficiaryInvitationWithPassword(BeneficiaryInvitationId, AcceptBeneficiaryInvitationWithPasswordApiRequest)
+        case submitBeneficiaryVerification(BeneficiaryInvitationId, SubmitBeneficiaryVerificationApiRequest)
+        case activateBeneficiary(ActivateBeneficiaryApiRequest)
+        case rejectBeneficiaryVerification
     }
 }
 
@@ -172,6 +179,19 @@ extension API: TargetType {
             return "v1/authentication"
         case .setPromoCode:
             return "v1/promo-code"
+        case .inviteBeneficiary,
+             .deleteBeneficiary:
+            return "v1/policy/beneficiary"
+        case .acceptBeneficiaryInvitation(let invitationId, _):
+            return "v1/beneficiary-invitations/\(invitationId.value)/accept"
+        case .acceptBeneficiaryInvitationWithPassword(let invitationId, _):
+            return "v1/beneficiary-invitations/\(invitationId.value)/accept-password"
+        case .submitBeneficiaryVerification(let invitationId, _):
+            return "v1/beneficiary-invitations/\(invitationId.value)/verification"
+        case .activateBeneficiary:
+            return "v1/policy/beneficiary/activate"
+        case .rejectBeneficiaryVerification:
+            return "v1/policy/beneficiary/reject"
         }
     }
 
@@ -188,6 +208,7 @@ extension API: TargetType {
              .deleteMultipleSeedPhrases,
              .deleteAccess,
              .deletePolicySetup,
+             .deleteBeneficiary,
              .cancelDisabledTimelock,
              .cancelAuthenticationReset:
             return .delete
@@ -220,7 +241,13 @@ extension API: TargetType {
              .disableTimelock,
              .createDevice,
              .requestAuthenticationReset,
-             .setPromoCode:
+             .setPromoCode,
+             .inviteBeneficiary,
+             .acceptBeneficiaryInvitation,
+             .acceptBeneficiaryInvitationWithPassword,
+             .submitBeneficiaryVerification,
+             .activateBeneficiary,
+             .rejectBeneficiaryVerification:
             return .post
         case .replacePolicy,
              .resetLoginId,
@@ -236,6 +263,7 @@ extension API: TargetType {
         case .health,
              .user,
              .deleteUser,
+             .deleteBeneficiary,
              .initBiometryVerification,
              .rejectApproverVerification,
              .attestationChallenge,
@@ -248,7 +276,8 @@ extension API: TargetType {
              .cancelDisabledTimelock,
              .createDevice,
              .requestAuthenticationReset,
-             .cancelAuthenticationReset:
+             .cancelAuthenticationReset,
+             .rejectBeneficiaryVerification:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -344,6 +373,16 @@ extension API: TargetType {
             return .requestJSONEncodable([
                 "code": code
             ])
+        case .inviteBeneficiary(let request):
+            return .requestJSONEncodable(request)
+        case .acceptBeneficiaryInvitation(_, let request):
+            return .requestJSONEncodable(request)
+        case .acceptBeneficiaryInvitationWithPassword(_, let request):
+            return .requestJSONEncodable(request)
+        case .submitBeneficiaryVerification(_, let request):
+            return .requestJSONEncodable(request)
+        case .activateBeneficiary(let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -407,7 +446,14 @@ extension API: TargetType {
              .requestAuthenticationReset,
              .cancelAuthenticationReset,
              .replaceAuthentication,
-             .setPromoCode:
+             .setPromoCode,
+             .inviteBeneficiary,
+             .deleteBeneficiary,
+             .acceptBeneficiaryInvitation,
+             .acceptBeneficiaryInvitationWithPassword,
+             .submitBeneficiaryVerification,
+             .activateBeneficiary,
+             .rejectBeneficiaryVerification:
             return true
         }
     }

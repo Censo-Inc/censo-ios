@@ -25,12 +25,14 @@ struct LoggedInOwnerView: View {
     @Environment(\.apiProvider) var apiProvider
     var session: Session
     @Binding var pendingImport: Import?
+    @Binding var beneficiaryInvitationId: BeneficiaryInvitationId?
     
     var body: some View {
         LoggedInOwnerViewInternal(
             apiProvider: apiProvider,
             session: session,
-            pendingImport: $pendingImport
+            pendingImport: $pendingImport,
+            beneficiaryInvitationId: $beneficiaryInvitationId
         )
     }
 }
@@ -39,6 +41,7 @@ private struct LoggedInOwnerViewInternal: View {
     private var apiProvider: MoyaProvider<API>
     private var session: Session
     @Binding private var pendingImport: Import?
+    @Binding private var beneficiaryInvitationId: BeneficiaryInvitationId?
     
     @State private var importPhase: ImportPhase = .none
     @StateObject private var ownerRepository: OwnerRepository
@@ -49,11 +52,13 @@ private struct LoggedInOwnerViewInternal: View {
     @State private var cancelKeyRecovery = false
     @State private var showingError = false
     @State private var error: Error?
+    @State private var beneficiarySetup = false
     
-    init(apiProvider: MoyaProvider<API>, session: Session, pendingImport: Binding<Import?>) {
+    init(apiProvider: MoyaProvider<API>, session: Session, pendingImport: Binding<Import?>, beneficiaryInvitationId: Binding<BeneficiaryInvitationId?>) {
         self.apiProvider = apiProvider
         self.session = session
         self._pendingImport = pendingImport
+        self._beneficiaryInvitationId = beneficiaryInvitationId
         let ownerRepository = OwnerRepository(apiProvider, session)
         self._ownerRepository = StateObject(wrappedValue: ownerRepository)
         self._ownerStateStore = StateObject(wrappedValue: OwnerStateStore(ownerRepository, session))
@@ -77,10 +82,40 @@ private struct LoggedInOwnerViewInternal: View {
                                 case .none:
                                     switch ownerState {
                                     case .initial(let initial):
-                                        Welcome(
-                                            ownerState: initial,
-                                            onCancel: onCancelOnboarding
-                                        )
+                                        switch beneficiaryInvitationId {
+                                        case .none:
+                                            Welcome(
+                                                ownerState: initial,
+                                                onCancel: onCancelOnboarding
+                                            )
+                                        case .some(let invitationId):
+                                            BeneficiaryOnboarding(
+                                                beneficiaryInvitationId: invitationId,
+                                                onCancel: {
+                                                    beneficiaryInvitationId = nil
+                                                },
+                                                onDelete: {
+                                                    cancelOnboarding = true
+                                                }
+                                            )
+                                        }
+                                    case .beneficiary(let beneficiary):
+                                        switch beneficiary.phase {
+                                        case .accepted,
+                                            .verificationRejected,
+                                            .waitingForVerification:
+                                            BeneficiaryVerification(beneficiary: beneficiary)
+                                                .onboardingCancelNavBar {
+                                                    cancelOnboarding = true
+                                                }
+                                                .onAppear {
+                                                    beneficiarySetup = true
+                                                }
+                                        case .activated where beneficiarySetup:
+                                            BeneficiaryActivated()
+                                        case .activated:
+                                            BeneficiaryWelcomeBack()
+                                        }
                                     case .ready(let ready):
                                         if ready.policy.ownersApproverKeyRecoveryRequired(ownerRepository) {
                                             NavigationStack {
@@ -142,7 +177,8 @@ private struct LoggedInOwnerViewInternal: View {
                                                 )
                                             }
                                         }
-                                        case .initial:
+                                        case .initial,
+                                             .beneficiary:
                                             ProgressView().onAppear {
                                                 importPhase = .none
                                             }

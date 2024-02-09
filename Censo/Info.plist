@@ -21,6 +21,8 @@
 		<string>$(API_BASE_URL)</string>
 		<key>APPROVER_URL_SCHEME</key>
 		<string>${APPROVER_URL_SCHEME}</string>
+		<key>OWNER_URL_SCHEME</key>
+		<string>$(OWNER_URL_SCHEME)</string>
 		<key>APP_STORE_PRODUCT_ID</key>
 		<string>${APP_STORE_PRODUCT_ID}</string>
 		<key>APP_STORE_YEARLY_PRODUCT_ID</key>

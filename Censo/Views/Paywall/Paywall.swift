@@ -46,7 +46,8 @@ struct Paywall: View {
         let count = switch ownerState {
         case .ready(let ready):
             ready.vault.seedPhrases.count
-        case .initial:
+        case .initial,
+             .beneficiary:
             0
         }
         return if count < 2 {

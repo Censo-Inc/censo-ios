@@ -14,6 +14,7 @@ final class ValueWrapperTests: XCTestCase {
         var base58EncodedPublicKey: Base58EncodedPublicKey
         var base64EncodedString: Base64EncodedString
         var participantId: ParticipantId
+        var beneficiaryInvitationId: BeneficiaryInvitationId
     }
     
     func testWrappedValuesSuccess() throws {
@@ -21,18 +22,22 @@ final class ValueWrapperTests: XCTestCase {
         let base58EncodedPublicKey = try EncryptionKey.generateRandomKey().publicExternalRepresentation()
         let base64EncodedString = try Base64EncodedString(value: "hello world".data(using: .utf8)!.base64EncodedString())
         let participantId = ParticipantId(bigInt: generateParticipantId())
+        let beneficiaryInvitationId = try BeneficiaryInvitationId(value: "123456789")
         
-        let json = "{\"base58EncodedPublicKey\": \"\(base58EncodedPublicKey.value)\", \"base64EncodedString\": \"\(base64EncodedString.value)\", \"participantId\": \"\(participantId.value)\"}"
+        let json = "{\"base58EncodedPublicKey\": \"\(base58EncodedPublicKey.value)\", \"base64EncodedString\": \"\(base64EncodedString.value)\", \"participantId\": \"\(participantId.value)\", \"beneficiaryInvitationId\": \"\(beneficiaryInvitationId.value)\"}"
         
         let wrappedValues = try JSONDecoder().decode(WrappedValues.self, from: json.data(using: .utf8)!)
         XCTAssertEqual(base58EncodedPublicKey, wrappedValues.base58EncodedPublicKey)
         XCTAssertEqual(base64EncodedString, wrappedValues.base64EncodedString)
         XCTAssertEqual(participantId, wrappedValues.participantId)
+        XCTAssertEqual(beneficiaryInvitationId, wrappedValues.beneficiaryInvitationId)
         
         XCTAssertEqual(
             wrappedValues,
             try JSONDecoder().decode(WrappedValues.self, from: try JSONEncoder().encode(wrappedValues))
         )
+        
+        XCTAssertEqual(wrappedValues.beneficiaryInvitationId.url, URL(string: "censo-main-integration://beneficiary/\(beneficiaryInvitationId.value)")!)
     }
     
     func testWrappedValuesFailures() throws {

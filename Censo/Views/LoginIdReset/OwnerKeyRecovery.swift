@@ -163,7 +163,7 @@ struct OwnerKeyRecovery: View {
                 }
                 
                 let newIntermediateKey = try EncryptionKey.generateRandomKey()
-                let newOwnerApproverKey = try ownerRepository.generateApproverKey(participantId: ownerParticipantId)
+                let newOwnerApproverKey = try ownerRepository.generateApproverKey()
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, intermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
                 
@@ -203,13 +203,13 @@ struct OwnerKeyRecovery: View {
                         switch result {
                         case .success(let response):
                             do {
-                                try ownerRepository.persistApproverKey(participantId: ownerParticipantId, key: newOwnerApproverKey, entropy: ownerEntropy)
+                                try ownerRepository.persistApproverKey(keyId: ownerParticipantId, key: newOwnerApproverKey, entropy: ownerEntropy)
                                 step = .recovered(ownerState: response.ownerState)
                             } catch {
                                 SentrySDK.captureWithTag(error: error, tagValue: "Owners approver key recovery")
                                 showError(CensoError.failedToPersistApproverKey)
                                 
-                                ownerRepository.deleteApproverKey(participantId: ownerParticipantId)
+                                ownerRepository.deleteApproverKey(keyId: ownerParticipantId)
                                 self.step = .cleanup
                             }
                         case .failure(let error):

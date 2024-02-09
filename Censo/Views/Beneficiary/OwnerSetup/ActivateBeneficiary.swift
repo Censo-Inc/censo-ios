@@ -1,28 +1,26 @@
 //
-//  ActivateApprover.swift
+//  ActivateBeneficiary.swift
 //  Censo
 //
-//  Created by Anton Onyshchenko on 24.10.23.
+//  Created by Brendan Flood on 2/6/24.
 //
 
-import Foundation
 import SwiftUI
+import Sentry
 
-struct ActivateApprover : View {
+struct ActivateBeneficiary : View {
     @Environment(\.dismiss) var dismiss
     
     @EnvironmentObject var ownerRepository: OwnerRepository
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
-    var policySetup: API.PolicySetup
-    var approver: API.ProspectApprover
-    var onComplete: () -> Void
-    var onBack: (() -> Void)?
+    var beneficiary: API.Policy.Beneficiary
+    var policy: API.Policy
     
     enum Mode {
         case getLive
         case activate
-        case rename
+        case activated
     }
     
     @State private var mode: Mode = .getLive
@@ -33,50 +31,33 @@ struct ActivateApprover : View {
     private let remoteNotificationPublisher = NotificationCenter.default.publisher(for: .userDidReceiveRemoteNotification)
     
     var body: some View {
-        let isPrimary = approver == policySetup.primaryApprover
         
         switch(mode) {
         case .getLive:
             GetLive(
-                name: approver.label,
+                name: beneficiary.label,
+                isApprover: false,
                 onContinue: {
                     mode = .activate
                 }
             )
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if let onBack {
-                        Button {
-                            onBack()
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
-                    } else {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
                     }
                 }
             })
-        case .rename:
-            RenameApprover(
-                policySetup: policySetup,
-                approver: approver,
-                onComplete: { 
-                    mode = .activate
-                }
+        case .activated:
+            Activated(
+                policy: policy,
+                isApprovers: false
             )
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Rename approver")
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        mode = .activate
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+            .onAppear(perform: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    dismiss()
                 }
             })
         case .activate:
@@ -102,26 +83,25 @@ struct ActivateApprover : View {
                         }
                         
                         VStack(alignment: .leading) {
-                            Text("Step 1: Share Approver App")
+                            Text("Step 1: Share Censo App")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                                .padding(.bottom, 2)
+                                .padding(.bottom, 3)
                             
-                            Text("Share this link so \(approver.label) can download the Censo Approver app")
+                            Text("Share this link so \(beneficiary.label) can download the Censo app")
                                 .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
                             
                             ShareLink(
-                                item: Configuration.approverAppURL
+                                item: Configuration.ownerAppURL
                             ) {
                                 HStack(spacing: 0) {
                                     Image("Export")
                                         .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 24, height: 24)
-                                        .padding(.vertical, 6)
-                                        .padding(.horizontal, 6)
+                                        .padding([.horizontal, .vertical], 6)
                                         .foregroundColor(.Censo.aquaBlue)
                                         .bold()
                                     Text("Share")
@@ -132,9 +112,9 @@ struct ActivateApprover : View {
                                 .background(
                                     RoundedRectangle(cornerRadius: 20.0)
                                         .frame(width: 128)
-                                )
+                                    )
                             }
-                            .padding(.leading)
+                            .padding([.leading, .bottom])
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -164,14 +144,14 @@ struct ActivateApprover : View {
                             Text("Step 2: Share Invite Link")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                                .padding(.bottom, 2)
+                                .padding(.bottom, 3)
                             
-                            Text("Share this link and have \(approver.label) click it or paste into their Approver app")
+                            Text("Share this link and have \(beneficiary.label) tap on it to open the Censo app")
                                 .font(.subheadline)
                                 .fontWeight(.regular)
                                 .fixedSize(horizontal: false, vertical: true)
                             
-                            if let invitationId = approver.invitationId {
+                            if let invitationId = beneficiary.invitationId {
                                 ShareLink(
                                     item: invitationId.url
                                 ) {
@@ -193,7 +173,8 @@ struct ActivateApprover : View {
                                             .frame(width: 128)
                                     )
                                 }
-                                .padding(.leading)
+                                .padding([.leading, .bottom])
+                                .disabled(beneficiary.disableInvitationShare)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -201,31 +182,34 @@ struct ActivateApprover : View {
                     .frame(maxWidth: .infinity)
                     .padding(.bottom)
                     
+                    
                     HStack(alignment: .top) {
                         Image("PhoneWaveform")
                             .renderingMode(.template)
                             .resizable()
                             .frame(width: 64, height: 64)
                             .padding(.horizontal, 8)
+
                         
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 5) {
                             Text("Step 3: Read Code")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                                .padding(.bottom, 2)
+                                .padding(.bottom, 3)
                             
-                            if let deviceEncryptedTotpSecret = approver.deviceEncryptedTotpSecret,
+                            
+                            if let deviceEncryptedTotpSecret = beneficiary.deviceEncryptedTotpSecret,
                                let totpSecret = try? ownerRepository.deviceKey.decrypt(data: deviceEncryptedTotpSecret.data) {
                                 RotatingTotpPinView(
                                     totpSecret: totpSecret,
                                     style: .owner
                                 )
-                            } else if approver.isConfirmed {
-                                Text("\(approver.label) is now verified!")
+                            } else if beneficiary.isActivated {
+                                Text("\(beneficiary.label) is now activated!")
                                     .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                             } else {
-                                Text("Read code that appears here and have \(approver.label) enter it in their Approver app")
+                                Text("Read code that appears here and have \(beneficiary.label) enter it in the Censo app")
                                     .font(.subheadline)
                                     .fontWeight(.regular)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -242,36 +226,21 @@ struct ActivateApprover : View {
 
                 VStack(spacing: 0) {
                     Divider()
+                        .padding(.bottom)
 
-                    ApproverPill(
-                        isPrimary: isPrimary,
-                        approver: .prospect(approver),
-                        onEdit: { mode = .rename },
-                        onVerificationSubmitted: { status in
-                            confirmApprover(
-                                participantId: approver.participantId,
-                                status: status
-                            )
+                    BeneficiaryPill(
+                        beneficiary: beneficiary,
+                        onVerificationSubmitted: activateBeneficiary,
+                        onActivated: {
+                            mode = .activated
                         }
                     )
-                    .padding(.vertical)
-                    
-                    Button {
-                        onComplete()
-                    } label: {
-                        Text("Continue")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(RoundedButtonStyle())
                     .padding(.bottom)
-                    .disabled(!approver.isConfirmed)
                 }
                 .padding([.leading, .trailing], 32)
-                .padding(.bottom)
             }
-            .padding(.top)
-            .navigationTitle(Text("Verify \(approver.label)"))
+            .padding([.top], 24)
+            .navigationTitle(Text("Add beneficiary"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -298,47 +267,79 @@ struct ActivateApprover : View {
         ownerStateStoreController.reload()
     }
     
-    private func confirmApprover(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) {
+    private func activateBeneficiary(status: API.Policy.Beneficiary.Status.VerificationSubmitted) {
+        guard let ownerEntropy = policy.ownerEntropy else {
+            showError(CensoError.invalidEntropy)
+            return
+        }
+        
         var confirmationSucceeded = false
         do {
-            confirmationSucceeded = try verifyApproverSignature(participantId: participantId, status: status)
+            confirmationSucceeded = try verifyBeneficiarySignature(status: status)
         } catch {
             confirmationSucceeded = false
         }
+        
+        guard let ownerEntropy = policy.ownerEntropy else {
+            showError(CensoError.invalidEntropy)
+            return
+        }
 
         if confirmationSucceeded {
-            let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
-            guard let participantIdData = participantId.value.data(using: .hexadecimal),
-                  let timeMillisData = String(timeMillis).data(using: .utf8),
-                  let signature = try? ownerRepository.deviceKey.signature(for: status.approverPublicKey.data + participantIdData + timeMillisData) else {
-                confirmationSucceeded = false
-                return
-            }
-            ownerRepository.confirmApprover(
-                API.ConfirmApproverApiRequest(
-                    participantId: participantId,
-                    keyConfirmationSignature: signature,
-                    keyConfirmationTimeMillis: timeMillis
-                )
-            ) { result in
-                switch result {
-                case .success(let response):
-                    ownerStateStoreController.replace(response.ownerState)
-                case .failure:
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        confirmApprover(participantId: participantId, status: status) // keep trying
+            do {
+                
+                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(keyId: policy.owner!.participantId, entropy: ownerEntropy.data)
+                let ownerApproverKeyBytes = try ownerApproverKey.privateKeyRaw()
+                SentrySDK.addCrumb(category: "Beneficiary setup", message: "private key step")
+                let beneficiaryEncryptionKey = try EncryptionKey
+                    .generateFromPublicExternalRepresentation(base58PublicKey: status.beneficiaryPublicKey)
+                let encryptedOwnerKeyBytes = try beneficiaryEncryptionKey.encrypt(data: ownerApproverKeyBytes).data
+                SentrySDK.addCrumb(category: "Beneficiary setup", message: "encryption step")
+                
+                let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
+                guard let timeMillisData = String(timeMillis).data(using: .utf8),
+                      let signature = try? ownerApproverKey.signature(for: status.beneficiaryPublicKey.data + timeMillisData) else {
+                    throw CensoError.failedToCreateSignature
+                }
+                SentrySDK.addCrumb(category: "Beneficiary setup", message: "signature step")
+        
+                ownerRepository.activateBeneficiary(
+                    API.ActivateBeneficiaryApiRequest(
+                        keyConfirmationSignature: signature,
+                        keyConfirmationTimeMillis: timeMillis,
+                        encryptedKeys: try status.approverPublicKeys.map({
+                            let encryptedKey = try EncryptionKey
+                                .generateFromPublicExternalRepresentation(base58PublicKey: $0.publicKey).encrypt(data: encryptedOwnerKeyBytes)
+                            SentrySDK.addCrumb(category: "Beneficiary setup", message: "approver encryption step")
+                            return API.BeneficiaryEncryptedKey(
+                                participantId: $0.participantId,
+                                encryptedKey: encryptedKey
+                            )
+                        })
+                    )
+                ) { result in
+                    switch result {
+                    case .success(let response):
+                        ownerStateStoreController.replace(response.ownerState)
+                    case .failure:
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            activateBeneficiary(status: status) // keep trying
+                        }
                     }
                 }
+            } catch {
+                showError(error)
+                SentrySDK.captureWithTag(error: error, tagValue: "BeneficiaryVerification")
             }
         } else {
-            rejectApproverVerification(participantId: participantId)
+            rejectBeneficiaryVerification()
         }
     }
 
-    private func verifyApproverSignature(participantId: ParticipantId, status: API.ApproverStatus.VerificationSubmitted) throws -> Bool {
+    private func verifyBeneficiarySignature(status: API.Policy.Beneficiary.Status.VerificationSubmitted) throws -> Bool {
         guard let totpSecret = try? ownerRepository.deviceKey.decrypt(data: status.deviceEncryptedTotpSecret.data),
               let timeMillisBytes = String(status.timeMillis).data(using: .utf8),
-              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.approverPublicKey) else {
+              let publicKey = try? EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: status.beneficiaryPublicKey) else {
             return false
         }
 
@@ -354,14 +355,14 @@ struct ActivateApprover : View {
         return false
     }
     
-    private func rejectApproverVerification(participantId: ParticipantId) {
-        ownerRepository.rejectApproverVerification(participantId) { result in
+    private func rejectBeneficiaryVerification() {
+        ownerRepository.rejectBeneficiaryVerification() { result in
             switch result {
             case .success(let response):
                 ownerStateStoreController.replace(response.ownerState)
             case .failure:
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    rejectApproverVerification(participantId: participantId) // keep trying
+                    rejectBeneficiaryVerification() // keep trying
                 }
             }
         }
@@ -369,63 +370,14 @@ struct ActivateApprover : View {
 }
 
 #if DEBUG
-let policySetup = API.PolicySetup(
-    approvers: [
-        API.ProspectApprover(
-            invitationId: try! InvitationId(value: ""),
-            label: "Me",
-            participantId: .random(),
-            status: API.ApproverStatus.initial(.init(
-                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-            ))
-        ),
-        API.ProspectApprover(
-            invitationId: try! InvitationId(value: ""),
-            label: "Neo",
-            participantId: .random(),
-            status: API.ApproverStatus.initial(.init(
-                deviceEncryptedTotpSecret: Base64EncodedString(data: Data())
-            ))
-        ),
-        API.ProspectApprover(
-            invitationId: try! InvitationId(value: ""),
-            label: "John Wick",
-            participantId: .random(),
-            status: API.ApproverStatus.confirmed(.init(
-                approverKeySignature: .sample,
-                approverPublicKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
-                timeMillis: 123,
-                confirmedAt: Date.now
-            ))
-        )
-    ],
-    threshold: 2
-)
-
-#Preview("Activation Pending") {
+#Preview {
     LoggedInOwnerPreviewContainer {
-        ProgressView()
+        VStack {}
             .sheet(isPresented: Binding.constant(true), content: {
                 NavigationView {
-                    ActivateApprover(
-                        policySetup: policySetup,
-                        approver: policySetup.approvers[1],
-                        onComplete: { }
-                    )
-                }
-            })
-    }
-}
-
-#Preview("Activation Confirmed") {
-    LoggedInOwnerPreviewContainer {
-        ProgressView()
-            .sheet(isPresented: Binding.constant(true), content: {
-                NavigationView {
-                    ActivateApprover(
-                        policySetup: policySetup,
-                        approver: policySetup.approvers[2],
-                        onComplete: { }
+                    ActivateBeneficiary(
+                        beneficiary: .sampleAccepted,
+                        policy: .sample2ApproversAndBeneficiary
                     )
                 }
             })

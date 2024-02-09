@@ -14,6 +14,7 @@ struct APIProviderEnvironmentKey: EnvironmentKey {
             AuthPlugin(),
             ErrorResponsePlugin(),
             MaintenancePlugin(),
+            FeatureFlagPlugin()
         ]
     )
 }

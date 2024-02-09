@@ -23,6 +23,7 @@ final class CensoUITest: XCTestCase {
         TestHelper.onboard(phraseInputButton: "generatePhraseButton")
         TestHelper.validateHomeScreen(numPhrases: 1, numApprovers: 0)
         TestHelper.validateMyPhrasesScreen(expectedPhraseLabels: [TestSettings.shared.firstPhraseLabel])
+        TestHelper.validateLegacyScreen()
     }
     
     func test01_PastePhrase() throws {
@@ -298,8 +299,8 @@ final class CensoUITest: XCTestCase {
         TestHelper.lockAndUnlock()
     }
 
-    func test13_PromoCode() throws {
-        let app = TestSettings.shared.restartApp(language: PhraseLanguage.english, newUser: true)
+    func test13_PromoCodeAndWelcomeBackout() throws {
+        let app = TestSettings.shared.restartApp(newUser: true)
         TestHelper.acceptTermsAndConditions()
         
         app.waitForButtonAndTap(buttonIdentifier: "getPromoCode")
@@ -309,9 +310,45 @@ final class CensoUITest: XCTestCase {
         app.waitForButtonAndTap(buttonIdentifier: "submitPromoCode")
         let _ = app.waitForAlert(alertIdentifier: "Promo code accepted!")
         app.waitForButtonAndTap(buttonIdentifier: "OK")
+        XCTAssertFalse(app.buttons["getPromoCode"].exists)
 
         app.waitForButtonAndTap(buttonIdentifier: "getStarted")
         
-        let _ = app.waitForButton(buttonIdentifier: "beginFaceSanButton")
+        let _ = app.waitForButton(buttonIdentifier: "beginFaceScanButton")
+        
+        // back out to welcome
+        XCTAssertTrue(app.navigationBars["Anonymously scan your face"].exists)
+        app.waitForButtonAndTap(buttonIdentifier: "Back")
+        
+        let _ = app.waitForButton(buttonIdentifier: "getStarted")
+        XCTAssertFalse(app.buttons["getPromoCode"].exists)
+        
+        // close the welcome
+        app.waitForButtonAndTap(buttonIdentifier: "Close")
+        let _ = app.waitForAlert(alertIdentifier: "Exit Setup")
+        app.waitForButtonAndTap(buttonIdentifier: "Exit")
+        
+        let _ = app.waitForButton(buttonIdentifier: "Sign in with Apple")
+    }
+    
+    func test14_BeneficiaryWelcome() throws {
+        let app = TestSettings.shared.restartApp(newUser: true, clipboardData: "censo-main-integration://beneficiary/12345678790")
+        TestHelper.acceptTermsAndConditions()
+        
+        app.waitForButtonAndTap(buttonIdentifier: "becomeABeneficiaryButton")
+        
+        let pasteButton = app.waitForButton(buttonIdentifier: "pasteFromClipboardButton")
+        XCTAssertTrue(app.staticTexts["Becoming a beneficiary?"].exists)
+        pasteButton.tap()
+                
+        let _ = app.waitForButton(buttonIdentifier: "beginFaceScanButton")
+        XCTAssertTrue(app.navigationBars["Anonymously scan your face"].exists)
+        
+        app.waitForButtonAndTap(buttonIdentifier: "Close")
+        let _ = app.waitForAlert(alertIdentifier: "Exit Setup")
+        app.waitForButtonAndTap(buttonIdentifier: "Exit")
+        
+        let _ = app.waitForButton(buttonIdentifier: "Sign in with Apple")
+        
     }
 }

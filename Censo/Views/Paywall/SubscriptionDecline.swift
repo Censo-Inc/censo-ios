@@ -43,7 +43,8 @@ struct SubscriptionDecline: View {
                         }
                         .buttonStyle(RoundedButtonStyle())
                         .padding()
-                    case .initial:
+                    case .initial,
+                         .beneficiary:
                         EmptyView()
                     }
 
@@ -105,7 +106,8 @@ struct SubscriptionDecline: View {
     
     private func numSeedPhrases() -> Int {
         return switch ownerState {
-        case .initial:
+        case .initial,
+             .beneficiary:
             0
         case .ready(let ready):
             ready.vault.seedPhrases.count

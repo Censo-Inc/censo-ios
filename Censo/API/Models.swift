@@ -127,7 +127,7 @@ extension API {
         var masterKeySignature: Base64EncodedString
     }
     
-    struct CreatePolicyApiResponse: BiometryVerificationResponse {
+    struct AuthEnrollmentApiResponse: BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
     }
@@ -373,5 +373,57 @@ extension API {
     struct ReplaceBiometryApiResponse : BiometryVerificationResponse {
         var ownerState: OwnerState
         var scanResultBlob: String
+    }
+    
+    struct InviteBeneficiaryApiRequest: Encodable {
+        var label: String
+        var deviceEncryptedTotpSecret: Base64EncodedString
+    }
+    
+    struct InviteBeneficiaryApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct AcceptBeneficiaryInvitationApiRequest: Encodable {
+        var biometryVerificationId: String
+        var biometryData: Authentication.FacetecBiometry
+    }
+
+    struct AcceptBeneficiaryInvitationWithPasswordApiRequest: Encodable {
+        var password: Authentication.Password
+    }
+    
+    struct AcceptBeneficiaryInvitationWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct SubmitBeneficiaryVerificationApiRequest: Encodable {
+        var beneficiaryPublicKey: Base58EncodedPublicKey
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
+    }
+    
+    struct SubmitBeneficiaryVerificationApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct BeneficiaryEncryptedKey: Encodable {
+        var participantId: ParticipantId
+        var encryptedKey: Base64EncodedString
+    }
+    
+    struct ActivateBeneficiaryApiRequest: Encodable {
+        var keyConfirmationSignature: Base64EncodedString
+        var keyConfirmationTimeMillis: UInt64
+        var encryptedKeys: [BeneficiaryEncryptedKey]
+    }
+
+    
+    struct ActivateBeneficiaryApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct RejectBeneficiaryVerificationApiResponse: Decodable {
+        var ownerState: OwnerState
     }
 }

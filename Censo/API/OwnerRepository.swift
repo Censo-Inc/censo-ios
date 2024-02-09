@@ -35,24 +35,24 @@ final class OwnerRepository : ObservableObject {
         }
     }
     
-    func getOrCreateApproverKey(participantId: ParticipantId, entropy: Data) throws -> EncryptionKey {
-        return try session.getOrCreateApproverKey(participantId: participantId, entropy: entropy)
+    func getOrCreateApproverKey(keyId: KeyId, entropy: Data) throws -> EncryptionKey {
+        return try session.getOrCreateApproverKey(keyId: keyId, entropy: entropy)
     }
     
-    func generateApproverKey(participantId: ParticipantId) throws -> EncryptionKey {
-        return try session.generateApproverKey(participantId: participantId)
+    func generateApproverKey() throws -> EncryptionKey {
+        return try session.generateApproverKey()
     }
     
-    func persistApproverKey(participantId: ParticipantId, key: EncryptionKey, entropy: Data?) throws {
-        try session.persistApproverKey(participantId: participantId, key: key, entropy: entropy)
+    func persistApproverKey(keyId: KeyId, key: EncryptionKey, entropy: Data?) throws {
+        try session.persistApproverKey(keyId: keyId, key: key, entropy: entropy)
     }
     
-    func approverKeyExists(participantId: ParticipantId, entropy: Data) -> Bool {
-        return session.approverKeyExists(participantId: participantId, entropy: entropy)
+    func approverKeyExists(keyId: KeyId, entropy: Data) -> Bool {
+        return session.approverKeyExists(keyId: keyId, entropy: entropy)
     }
     
-    func deleteApproverKey(participantId: ParticipantId) {
-        session.deleteApproverKey(participantId: participantId)
+    func deleteApproverKey(keyId: KeyId) {
+        session.deleteApproverKey(keyId: keyId)
     }
     
     func getUser(_ completion: @escaping (Result<API.User, MoyaError>) -> Void) {
@@ -83,7 +83,7 @@ final class OwnerRepository : ObservableObject {
         apiProvider.decodableRequest(with: session, endpoint: .rejectApproverVerification(participantId), completion: completion)
     }
     
-    func createPolicy(_ payload: API.CreatePolicyApiRequest, _ completion: @escaping (Result<API.CreatePolicyApiResponse, MoyaError>) -> Void) {
+    func createPolicy(_ payload: API.CreatePolicyApiRequest, _ completion: @escaping (Result<API.AuthEnrollmentApiResponse, MoyaError>) -> Void) {
         apiProvider.decodableRequest(with: session, endpoint: .createPolicy(payload), completion: completion)
     }
     
@@ -205,5 +205,33 @@ final class OwnerRepository : ObservableObject {
     
     func setPromoCode(_ code: String, _ completion: @escaping Moya.Completion) {
         apiProvider.request(with: session, endpoint: .setPromoCode(code: code), completion: completion)
+    }
+
+    func inviteBeneficiary(_ payload: API.InviteBeneficiaryApiRequest, _ completion: @escaping (Result<API.InviteBeneficiaryApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .inviteBeneficiary(payload), completion: completion)
+    }
+    
+    func acceptBeneficiaryInvite(_ invitationId: BeneficiaryInvitationId, _ payload: API.AcceptBeneficiaryInvitationApiRequest, _ completion: @escaping (Result<API.AuthEnrollmentApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .acceptBeneficiaryInvitation(invitationId, payload), completion: completion)
+    }
+    
+    func acceptBeneficiaryInviteWithPassword(_ invitationId: BeneficiaryInvitationId, _ payload: API.AcceptBeneficiaryInvitationWithPasswordApiRequest, _ completion: @escaping (Result<API.AcceptBeneficiaryInvitationWithPasswordApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .acceptBeneficiaryInvitationWithPassword(invitationId, payload), completion: completion)
+    }
+    
+    func activateBeneficiary(_ payload: API.ActivateBeneficiaryApiRequest, _ completion: @escaping (Result<API.ActivateBeneficiaryApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .activateBeneficiary(payload), completion: completion)
+    }
+    
+    func rejectBeneficiaryVerification(_ completion: @escaping (Result<API.RejectBeneficiaryVerificationApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .rejectBeneficiaryVerification, completion: completion)
+    }
+    
+    func deleteBeneficiary(_ completion: @escaping (Result<API.OwnerStateResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .deleteBeneficiary, completion: completion)
+    }
+    
+    func submitBeneficiaryVerification(_ invitationId: BeneficiaryInvitationId, _ payload: API.SubmitBeneficiaryVerificationApiRequest, _ completion: @escaping (Result<API.SubmitBeneficiaryVerificationApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .submitBeneficiaryVerification(invitationId, payload), completion: completion)
     }
 }

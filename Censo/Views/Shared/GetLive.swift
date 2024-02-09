@@ -1,5 +1,5 @@
 //
-//  GetLiveWithApprover.swift
+//  GetLive.swift
 //  Censo
 //
 //  Created by Anton Onyshchenko on 24.10.23.
@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-struct GetLiveWithApprover : View {
+struct GetLive : View {
     @Environment(\.dismiss) var dismiss
-    var approverName: String
+    var name: String
+    var isApprover: Bool = true
     var showResumeLater = true
     var onContinue: () -> Void
     
@@ -31,7 +32,7 @@ struct GetLiveWithApprover : View {
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Verifying \(approverName) as an approver will take about 2 minutes. This verification should preferably take place while you’re on the phone or in-person to ensure that you are verifying the proper approver.")
+                        Text("Verifying \(name) as \(isApprover ? "an approver" : "a beneficiary") will take about 2 minutes. This verification should preferably take place while you’re on the phone or in-person to ensure that you are verifying the proper \(isApprover ? "approver" : "person").")
                             .fixedSize(horizontal: false, vertical: true)
                             .font(.subheadline)
                             .padding(.bottom)
@@ -63,16 +64,36 @@ struct GetLiveWithApprover : View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Verify \(approverName)")
+        .navigationTitle(isApprover ? "Verify \(name)" : "Add Beneficiary")
     }
 }
 
 #if DEBUG
-#Preview {
+#Preview("Approver") {
     LoggedInOwnerPreviewContainer {
         NavigationView {
-            GetLiveWithApprover(
-                approverName: "Neo",
+            GetLive(
+                name: "Neo",
+                onContinue: {}
+            )
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+            })
+        }
+    }
+}
+
+#Preview("Beneficiary") {
+    LoggedInOwnerPreviewContainer {
+        NavigationView {
+            GetLive(
+                name: "Ben Eficiary",
+                isApprover: false,
                 onContinue: {}
             )
             .toolbar(content: {

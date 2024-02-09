@@ -17,19 +17,19 @@ final class Session : ObservableObject {
         self.userCredentials = userCredentials
     }
     
-    func getOrCreateApproverKey(participantId: ParticipantId, entropy: Data) throws -> EncryptionKey {
+    func getOrCreateApproverKey(keyId: KeyId, entropy: Data) throws -> EncryptionKey {
         let userIdentifier = self.userCredentials.userIdentifier
-        let existingKey = participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy)
+        let existingKey = keyId.privateKey(userIdentifier: userIdentifier, entropy: entropy)
         if (existingKey == nil) {
-            let encryptionKey = try generateApproverKey(participantId: participantId)
-            try persistApproverKey(participantId: participantId, key: encryptionKey, entropy: entropy)
+            let encryptionKey = try generateApproverKey()
+            try persistApproverKey(keyId: keyId, key: encryptionKey, entropy: entropy)
             return encryptionKey
         } else {
             return existingKey!
         }
     }
     
-    func generateApproverKey(participantId: ParticipantId) throws -> EncryptionKey {
+    func generateApproverKey() throws -> EncryptionKey {
         guard let privateKey = try? generatePrivateKey() else {
             SentrySDK.captureWithTag(error: CensoError.failedToCreateApproverKey, tagValue: "Approver Key")
             throw CensoError.failedToCreateApproverKey
@@ -38,22 +38,22 @@ final class Session : ObservableObject {
         return try EncryptionKey.generateFromPrivateKeyX963(data: privateKey)
     }
     
-    func persistApproverKey(participantId: ParticipantId, key: EncryptionKey, entropy: Data?) throws {
+    func persistApproverKey(keyId: KeyId, key: EncryptionKey, entropy: Data?) throws {
         let userIdentifier = self.userCredentials.userIdentifier
         guard let encryptedKey = encryptPrivateKey(privateKey: try key.privateKeyX963(), userIdentifier: userIdentifier, entropy: entropy) else {
             SentrySDK.captureWithTag(error: CensoError.failedToPersistApproverKey, tagValue: "Approver Key")
             throw CensoError.failedToPersistApproverKey
         }
-        participantId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey, entropy: entropy)
+        keyId.persistEncodedPrivateKey(encodedPrivateKey: encryptedKey, entropy: entropy)
     }
     
-    func approverKeyExists(participantId: ParticipantId, entropy: Data) -> Bool {
+    func approverKeyExists(keyId: KeyId, entropy: Data) -> Bool {
         let userIdentifier = self.userCredentials.userIdentifier
-        return participantId.privateKey(userIdentifier: userIdentifier, entropy: entropy) != nil
+        return keyId.privateKey(userIdentifier: userIdentifier, entropy: entropy) != nil
     }
     
-    func deleteApproverKey(participantId: ParticipantId) {
-        participantId.deleteEncodedPrivateKey()
+    func deleteApproverKey(keyId: KeyId) {
+        keyId.deleteEncodedPrivateKey()
     }
     
     func deleteDeviceKey() {

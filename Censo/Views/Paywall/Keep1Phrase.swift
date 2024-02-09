@@ -24,7 +24,8 @@ struct Keep1Phrase: View {
                 .fontWeight(.bold)
                 .padding()
             switch ownerState {
-            case .initial:
+            case .initial,
+                    .beneficiary:
                 EmptyView()
             case .ready(let ready):
                 List {
@@ -96,7 +97,8 @@ struct Keep1Phrase: View {
         .alert("Confirm delete phrases", isPresented: $confirmDeletion) {
             Button("Confirm", role: .destructive) {
                 switch ownerState {
-                case .initial:
+                case .initial,
+                     .beneficiary:
                     break
                 case .ready(let ready):
                     deleteInProgress = true
@@ -125,7 +127,8 @@ struct Keep1Phrase: View {
                 } else {
                     Text("Please confirm that you want to delete your data.\nAre you sure?")
                 }
-            case .initial:
+            case .initial,
+                 .beneficiary:
                 Text("Please confirm that you want to delete your data.\nAre you sure?")
             }
         }

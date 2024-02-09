@@ -47,6 +47,12 @@ class ApproverNickname: LimitedLengthString {
     }
 }
 
+class BeneficiaryNickname: LimitedLengthString {
+    init(_ value: String = "") {
+        super.init(value, limit: 20)
+    }
+}
+
 class OwnerLabel: LimitedLengthString {
     init(_ value: String = "") {
         super.init(value, limit: 20)

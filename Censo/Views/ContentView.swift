@@ -16,8 +16,10 @@ struct ContentView: View {
     @State private var showingError = false
     @State private var currentError: Error?
     @State private var pendingImport: Import?
+    @State private var beneficiaryInvitationId: BeneficiaryInvitationId?
 
     @State private var showLoginIdResetFlow: Bool = false
+    @State private var showBeneficiaryLoggedOutWelcome: Bool = false
     @StateObject private var loginIdResetTokensStore = LoginIdResetTokensStore()
     
     var body: some View {
@@ -33,17 +35,23 @@ struct ContentView: View {
             } else {
                 Authentication(
                     loggedOutContent: { onSuccess in
-                        Login(
-                            onShowLoginIdResetFlow: {
-                                showLoginIdResetFlow = true
-                            },
-                            onSuccess: onSuccess
-                        )
-                        .onOpenURL(perform: {
-                            if $0.host != "reset" {
-                                self.url = $0
+                        if showBeneficiaryLoggedOutWelcome {
+                            BeneficiaryLoggedOutWelcome {
+                                showBeneficiaryLoggedOutWelcome = false
                             }
-                        })
+                        } else {
+                            Login(
+                                onShowLoginIdResetFlow: {
+                                    showLoginIdResetFlow = true
+                                },
+                                onSuccess: onSuccess
+                            )
+                            .onOpenURL(perform: {
+                                if $0.host != "reset" {
+                                    self.url = $0
+                                }
+                            })
+                        }
                     },
                     loggedInContent: { session in
                         if let url {
@@ -55,7 +63,8 @@ struct ContentView: View {
                         } else {
                             LoggedInOwnerView(
                                 session: session,
-                                pendingImport: $pendingImport
+                                pendingImport: $pendingImport,
+                                beneficiaryInvitationId: $beneficiaryInvitationId
                             )
                             .onOpenURL(perform: openURL)
                         }
@@ -82,6 +91,11 @@ struct ContentView: View {
                 }
             }
         }
+        .onOpenURL(perform: {
+            if $0.host == "beneficiary" {
+                self.showBeneficiaryLoggedOutWelcome = true
+            }
+        })
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
             Button("OK", role: .cancel, action: {
                 self.url = nil
@@ -96,6 +110,8 @@ struct ContentView: View {
         do {
             if url.host == "import" {
                 pendingImport = try Import.fromURL(url)
+            } else if url.host == "beneficiary" {
+                beneficiaryInvitationId = try BeneficiaryInvitationId.fromURL(url)
             } else {
                 throw CensoError.invalidUrl(url: "\(url)")
             }

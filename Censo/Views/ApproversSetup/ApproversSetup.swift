@@ -224,11 +224,6 @@ struct ApproversSetup: View {
                         dismiss()
                     }
                 })
-                .onAppear(perform: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        dismiss()
-                    }
-                })
             }
         }
     }

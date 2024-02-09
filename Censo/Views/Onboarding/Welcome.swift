@@ -12,12 +12,22 @@ struct Welcome: View {
     var onCancel: () -> Void
     @State private var showInitialSetup = false
     @State private var promoCodeAccepted = false
-
+    @State private var showBeneficiarySetup = false
+    
+    @ObservedObject var featureFlagState = FeatureFlagState.shared
+    
     var body: some View {
         if (showInitialSetup) {
             InitialPolicySetup(
                 ownerState: ownerState,
                 onCancel: { showInitialSetup = false }
+            )
+        } else if (showBeneficiarySetup) {
+            BeneficiaryOnboarding(
+                onCancel: {
+                    showBeneficiarySetup = false
+                },
+                onDelete: onCancel
             )
         } else {
             NavigationStack {
@@ -64,18 +74,31 @@ struct Welcome: View {
                             PromoCodeEntry() {
                                 promoCodeAccepted = true
                             }
-                            .padding(.vertical)
+                            .padding(.bottom)
                         }
                         
                         Button {
                             showInitialSetup = true
                         } label: {
-                            Text("Get started")
+                            Text("Secure your seed phrases")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(RoundedButtonStyle())
                         .accessibilityIdentifier("getStarted")
+                        
+                        if featureFlagState.legacyEnabled() {
+                            Button {
+                                showBeneficiarySetup = true
+                            } label: {
+                                Text("To become a beneficiary, tap here")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .accessibilityIdentifier("becomeABeneficiaryButton")
+                            .padding(.vertical, 3)
+                        }
                     }
                     .padding(.vertical)
                 }
@@ -106,6 +129,21 @@ struct Welcome: View {
                 subscriptionRequired: false
             ),
             onCancel: {}
+        )
+    }
+}
+
+#Preview("legacy") {
+    LoggedInOwnerPreviewContainer {
+        Welcome(
+            ownerState: API.OwnerState.Initial(
+                authType: .none,
+                entropy: .empty,
+                subscriptionStatus: .none,
+                subscriptionRequired: false
+            ),
+            onCancel: {},
+            featureFlagState: FeatureFlagState(["legacy"])
         )
     }
 }

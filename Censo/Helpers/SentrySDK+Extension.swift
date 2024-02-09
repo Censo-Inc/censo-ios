@@ -14,4 +14,12 @@ extension SentrySDK {
             scope.setTag(value: tagValue, key: "tag")
         }
     }
+    
+    static func addCrumb(category: String, message: String) {
+        let crumb = Breadcrumb()
+        crumb.level = SentryLevel.info
+        crumb.category = category
+        crumb.message = message
+        Self.addBreadcrumb(crumb)
+    }
 }

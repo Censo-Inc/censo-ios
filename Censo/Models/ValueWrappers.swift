@@ -96,7 +96,11 @@ struct Base64EncodedString: Codable, Equatable {
     static let empty: Base64EncodedString = Base64EncodedString(data: Data())
 }
 
-struct ParticipantId: Codable, Equatable, Hashable {
+protocol KeyId {
+    var value: String { get set }
+}
+
+struct ParticipantId: Codable, Equatable, Hashable, KeyId {
     var value: String
     var bigInt: BigInt
     

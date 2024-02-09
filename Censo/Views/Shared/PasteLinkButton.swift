@@ -24,6 +24,7 @@ struct PasteLinkButton: View {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(RoundedButtonStyle())
+        .accessibilityIdentifier("pasteFromClipboardButton")
         .alert("Error", isPresented: $showingError, presenting: error) { _ in
             Button("OK", role: .cancel, action: {
                 self.error = nil

@@ -147,7 +147,7 @@ struct SaveSeedPhrase: View {
             }
             // first verify the master key signature if it is available
             if (ownerState.policy.masterKeySignature != nil) {
-                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(participantId: ownerState.policy.owner!.participantId, entropy: ownerEntropy.data)
+                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(keyId: ownerState.policy.owner!.participantId, entropy: ownerEntropy.data)
                 let verified = try ownerApproverKey.verifySignature(for: ownerState.vault.publicMasterEncryptionKey.data, signature: ownerState.policy.masterKeySignature!)
                 if (!verified) {
                     showError(CensoError.cannotVerifyMasterKeySignature)

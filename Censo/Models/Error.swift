@@ -48,6 +48,8 @@ enum CensoError: Swift.Error, Equatable {
     case invalidPhraseData
     case invalidEntropy
     case invalidPolicySetup
+    case failedToSaveBeneficiaryName
+    case cannotEncryptOwnerKey
 }
 
 extension CensoError: LocalizedError {
@@ -137,6 +139,10 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Invalid entropy", comment: "Invalid entropy")
         case .invalidPolicySetup:
             return NSLocalizedString("Invalid policy setup", comment: "Invalid policy")
+        case .failedToSaveBeneficiaryName:
+            return NSLocalizedString("Failed to save beneficiary name", comment: "Beneficiary error")
+        case .cannotEncryptOwnerKey:
+            return NSLocalizedString("Cannot encrypt owner key", comment: "Beneficiary error")
         }
         
     }

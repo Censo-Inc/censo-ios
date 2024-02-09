@@ -117,7 +117,7 @@ struct ReplacePolicy: View {
                 let oldIntermediateKey = try EncryptionKey.recover(encryptedShards, ownerRepository.userIdentifier, ownerRepository.deviceKey)
                 let masterKey = try EncryptionKey.fromEncryptedPrivateKey(ownerState.policy.encryptedMasterKey, oldIntermediateKey)
                 let masterPublicKey = try masterKey.publicExternalRepresentation()
-                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(participantId: policySetupOwner.participantId, entropy: entropy.data)
+                let ownerApproverKey = try ownerRepository.getOrCreateApproverKey(keyId: policySetupOwner.participantId, entropy: entropy.data)
                 
                 ownerRepository.completeOwnerApprovership(
                     API.CompleteOwnerApprovershipApiRequest(
@@ -170,7 +170,7 @@ struct ReplacePolicy: View {
                             ) { result in
                                 switch result {
                                 case .success(let response):
-                                    ownerRepository.deleteApproverKey(participantId: ownerOldParticipantId)
+                                    ownerRepository.deleteApproverKey(keyId: ownerOldParticipantId)
                                     ownerStateStoreController.replace(response.ownerState)
                                     onSuccess()
                                 case .failure(let error):

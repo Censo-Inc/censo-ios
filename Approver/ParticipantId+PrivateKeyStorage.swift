@@ -16,7 +16,7 @@ enum KeyMigration: Swift.Error {
     case migrationCompleted
 }
 
-extension ParticipantId {
+extension KeyId {
     func persistEncodedPrivateKey(encodedPrivateKey: String, entropy: Data?) {
         if (entropy == nil) {
             NSUbiquitousKeyValueStore.default.set("|v2|\(encodedPrivateKey)", forKey: self.value)

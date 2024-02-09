@@ -8,7 +8,7 @@
 import Foundation
 
 extension API {
-    struct ProspectApprover: Codable, Equatable {
+    struct ProspectApprover: Decodable, Equatable {
         var invitationId: InvitationId?
         var label: String
         var participantId: ParticipantId
@@ -68,7 +68,7 @@ extension API {
         }
     }
     
-    enum ApproverStatus: Codable, Equatable {
+    enum ApproverStatus: Decodable, Equatable {
         case initial(Initial)
         case declined
         case accepted(Accepted)
@@ -133,29 +133,6 @@ extension API {
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
             }
         }
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: ApproverStatusCodingKeys.self)
-            switch self {
-            case .initial(let status):
-                try container.encode("Initial", forKey: .type)
-                try status.encode(to: encoder)
-            case .declined:
-                try container.encode("Declined", forKey: .type)
-            case .accepted(let status):
-                try container.encode("Accepted", forKey: .type)
-                try status.encode(to: encoder)
-            case .verificationSubmitted(let status):
-                try container.encode("VerificationSubmitted", forKey: .type)
-                try status.encode(to: encoder)
-            case .confirmed(let status):
-                try container.encode("Confirmed", forKey: .type)
-                try status.encode(to: encoder)
-            case .ownerAsApprover(let status):
-                try container.encode("OwnerAsApprover", forKey: .type)
-                try status.encode(to: encoder)
-            }
-        }
     }
     
     struct SeedPhrase: Codable, Equatable {
@@ -170,7 +147,7 @@ extension API {
         var publicMasterEncryptionKey: Base58EncodedPublicKey
     }
 
-    struct Policy: Codable {
+    struct Policy: Decodable {
         var createdAt: Date
         var approvers: [TrustedApprover]
         var threshold: UInt
@@ -179,6 +156,7 @@ extension API {
         var approverKeysSignatureByIntermediateKey: Base64EncodedString
         var masterKeySignature: Base64EncodedString?
         var ownerEntropy: Base64EncodedString?
+        var beneficiary: Beneficiary?
 
         var externalApprovers: [TrustedApprover] {
             return approvers
@@ -200,7 +178,105 @@ extension API {
                 return false
             }
             
-            return !ownerRepository.approverKeyExists(participantId: ownerParticipantId, entropy: ownerEntropy.data)
+            return !ownerRepository.approverKeyExists(keyId: ownerParticipantId, entropy: ownerEntropy.data)
+        }
+        
+        struct Beneficiary: Decodable, Equatable {
+            var label: String
+            var status: Status
+            
+            enum Status: Decodable, Equatable {
+                case initial(Initial)
+                case accepted(Accepted)
+                case verificationSubmitted(VerificationSubmitted)
+                case activated(Activated)
+                
+                struct ApproverPublicKey: Codable, Equatable {
+                    var participantId: ParticipantId
+                    var publicKey: Base58EncodedPublicKey
+                }
+                
+                struct Initial: Codable, Equatable {
+                    var deviceEncryptedTotpSecret: Base64EncodedString
+                    var invitationId: BeneficiaryInvitationId
+                }
+
+                struct Accepted: Codable, Equatable {
+                    var deviceEncryptedTotpSecret: Base64EncodedString
+                    var acceptedAt: Date
+                }
+                
+                struct VerificationSubmitted: Codable, Equatable {
+                    var deviceEncryptedTotpSecret: Base64EncodedString
+                    var signature: Base64EncodedString
+                    var timeMillis: Int64
+                    var beneficiaryPublicKey: Base58EncodedPublicKey
+                    var submittedAt: Date
+                    var approverPublicKeys: [ApproverPublicKey]
+                }
+
+                struct Activated: Codable, Equatable {
+                    var confirmedAt: Date
+                }
+                
+                enum ApproverStatusCodingKeys: String, CodingKey {
+                    case type
+                }
+                
+                init(from decoder: Decoder) throws {
+                    let container = try decoder.container(keyedBy: ApproverStatusCodingKeys.self)
+                    let type = try container.decode(String.self, forKey: .type)
+                    switch type {
+                    case "Initial":
+                        self = .initial(try Initial(from: decoder))
+                    case "Accepted":
+                        self = .accepted(try Accepted(from: decoder))
+                    case "VerificationSubmitted":
+                        self = .verificationSubmitted(try VerificationSubmitted(from: decoder))
+                    case "Activated":
+                        self = .activated(try Activated(from: decoder))
+                    default:
+                        throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
+                    }
+                }
+            }
+            
+            var isActivated: Bool {
+                get {
+                    switch (status) {
+                    case .activated: return true
+                    default: return false
+                    }
+                }
+            }
+            
+            var invitationId: BeneficiaryInvitationId? {
+                get {
+                    switch (status) {
+                    case .initial(let initial): return initial.invitationId
+                    default: return try? BeneficiaryInvitationId(value: "unknown")
+                    }
+                }
+            }
+            
+            var disableInvitationShare: Bool {
+                get {
+                    switch (status) {
+                    case .initial: return false
+                    default: return true
+                    }
+                }
+            }
+            
+            var deviceEncryptedTotpSecret: Base64EncodedString? {
+                get {
+                    switch (status) {
+                    case .accepted(let accepted): return accepted.deviceEncryptedTotpSecret
+                    case .verificationSubmitted(let verificationSubmitted): return verificationSubmitted.deviceEncryptedTotpSecret
+                    default: return nil
+                    }
+                }
+            }
         }
     }
     
@@ -293,7 +369,7 @@ extension API {
         }
     }
     
-    struct PolicySetup: Codable, Equatable {
+    struct PolicySetup: Decodable, Equatable {
         var approvers: [ProspectApprover]
         var threshold: Int
         
@@ -434,8 +510,9 @@ extension API {
         }
     }
     
-    enum OwnerState: Codable {
+    enum OwnerState: Decodable {
         case initial(Initial)
+        case beneficiary(Beneficiary)
         case ready(Ready)
         
         struct Initial: Codable {
@@ -445,7 +522,43 @@ extension API {
             var subscriptionRequired: Bool
         }
         
-        struct Ready: Codable {
+        struct Beneficiary: Decodable {
+            var invitationId: BeneficiaryInvitationId
+            var entropy: Base64EncodedString
+            var authType: AuthType
+            var phase: Phase
+            
+            enum Phase: Decodable, Equatable {
+                case accepted
+                case waitingForVerification
+                case verificationRejected
+                case activated
+                
+                enum BeneficiaryPhaseCodingKeys: String, CodingKey {
+                    case type
+                }
+                
+                init(from decoder: Decoder) throws {
+                    let container = try decoder.container(keyedBy: BeneficiaryPhaseCodingKeys.self)
+                    let type = try container.decode(String.self, forKey: .type)
+                    switch type {
+                    case "Accepted":
+                        self = .accepted
+                    case "WaitingForVerification":
+                        self = .waitingForVerification
+                    case "VerificationRejected":
+                        self = .verificationRejected
+                    case "Activated":
+                        self = .activated
+                    default:
+                        throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
+                    }
+                }
+            }
+        }
+        
+        
+        struct Ready: Decodable {
             var policy: Policy
             var vault: Vault
             var unlockedForSeconds: UnlockedDuration?
@@ -470,22 +583,12 @@ extension API {
             switch type {
             case "Initial":
                 self = .initial(try Initial(from: decoder))
+            case "Beneficiary":
+                self = .beneficiary(try Beneficiary(from: decoder))
             case "Ready":
                 self = .ready(try Ready(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid Owner State")
-            }
-        }
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: OwnerStateCodingKeys.self)
-            switch self {
-            case .initial(let initial):
-                try container.encode("Initial", forKey: .type)
-                try initial.encode(to: encoder)
-            case .ready(let ready):
-                try container.encode("Ready", forKey: .type)
-                try ready.encode(to: encoder)
             }
         }
         
@@ -494,6 +597,8 @@ extension API {
                 switch self {
                 case .initial(let initial):
                     return initial.authType
+                case .beneficiary(let beneficiary):
+                    return beneficiary.authType
                 case .ready(let ready):
                     return ready.authType
                 }
@@ -504,6 +609,7 @@ extension API {
             get {
                 switch (self) {
                 case .initial(let initial): return initial.subscriptionStatus
+                case .beneficiary: return SubscriptionStatus.none
                 case .ready(let ready): return ready.subscriptionStatus
                 }
             }
@@ -513,6 +619,7 @@ extension API {
             get {
                 switch (self) {
                 case .initial(let initial): return initial.subscriptionRequired
+                case .beneficiary: return false
                 case .ready(let ready): return ready.subscriptionRequired
                 }
             }
@@ -568,6 +675,19 @@ extension API.OwnerState.Ready {
     static var sample2Approvers: Self {
         API.OwnerState.Ready(
             policy: .sample2Approvers,
+            vault: .sample,
+            authType: .facetec,
+            subscriptionStatus: .active,
+            timelockSetting: .sample,
+            subscriptionRequired: true,
+            onboarded: true,
+            canRequestAuthenticationReset: false
+        )
+    }
+    
+    static var sample2ApproversAndBeneficiary: Self {
+        API.OwnerState.Ready(
+            policy: .sample2ApproversAndBeneficiary,
             vault: .sample,
             authType: .facetec,
             subscriptionStatus: .active,
