@@ -17,7 +17,6 @@ struct InvalidLinkView : View {
         }
         .multilineTextAlignment(.center)
         .navigationTitle(Text(""))
-        .toolbarBackground(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {

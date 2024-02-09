@@ -67,7 +67,6 @@ struct ShareOwnerLoginIdResetLink: View {
     
     return NavigationView {
         ShareOwnerLoginIdResetLink(link: URL(string: "censo-reset://token/XXX")!)
-            .toolbarBackground(.visible, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Login assistance"))
             .navigationBarBackButtonHidden(true)

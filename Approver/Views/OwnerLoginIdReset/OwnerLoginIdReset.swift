@@ -65,7 +65,6 @@ struct OwnerLoginIdReset: View {
                     ShareOwnerLoginIdResetLink(link: link)
                 }
             }
-            .toolbarBackground(.visible, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Text("Login assistance"))
             .navigationBarBackButtonHidden(true)

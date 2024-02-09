@@ -106,7 +106,6 @@ struct OwnerVerification: View {
                 }
             }
             .multilineTextAlignment(.center)
-            .toolbarBackground(.visible, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {

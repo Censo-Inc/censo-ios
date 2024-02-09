@@ -51,7 +51,6 @@ struct LoggedInView: View {
                         user: userBinding,
                         onUrlPasted: onUrlPasted
                     )
-                    .toolbarBackground(.hidden)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)
                     .toolbar(content: {

@@ -129,7 +129,6 @@ struct LockScreen: View {
                     )
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)
-                    .toolbarBackground(Color.Censo.primaryBackground, for: .navigationBar)
                     .toolbar(content: {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {

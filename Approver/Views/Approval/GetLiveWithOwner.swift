@@ -60,7 +60,6 @@ struct GetLiveWithOwner: View {
             .padding(.vertical)
             .padding(.horizontal, 32)
         }
-        .toolbarBackground(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar(content: {

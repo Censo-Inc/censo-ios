@@ -31,6 +31,7 @@ struct DashboardTab: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
+                .padding()
 
                 Text("\(ownerState.vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
                     .font(.title3)
@@ -38,7 +39,7 @@ struct DashboardTab: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.vertical)
+            .padding()
             .clipShape(RoundedRectangle(cornerRadius: 16.0))
             .background(
                 RoundedRectangle(cornerRadius: 16.0)

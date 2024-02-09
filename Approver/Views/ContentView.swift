@@ -37,7 +37,6 @@ struct ContentView: View {
                                 onSuccess()
                             }
                         )
-                        .toolbarBackground(.hidden)
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationBarBackButtonHidden(true)
                         .toolbar(content: {

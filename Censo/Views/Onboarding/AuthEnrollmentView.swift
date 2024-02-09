@@ -32,7 +32,6 @@ struct AuthEnrollmentView: View {
                         }
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationTitle("Create a password")
-                        .navigationBarTitleDisplayMode(.inline)
                         .navigationBarBackButtonHidden(true)
                         .toolbar(content: {
                             ToolbarItem(placement: .navigationBarLeading) {

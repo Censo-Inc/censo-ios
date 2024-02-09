@@ -59,7 +59,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func setupAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+        appearance.backgroundColor = UIColor.white
         appearance.titleTextAttributes = [.foregroundColor: UIColor.Censo.primaryForeground]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.Censo.primaryForeground]
         appearance.shadowImage = UIImage()
