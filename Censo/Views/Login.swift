@@ -38,15 +38,17 @@ struct Login: View {
             
             Spacer()
             VStack {
-                HStack(alignment: .top) {
+                HStack(alignment: .bottom) {
                     VStack {
                         Image("EyeSlash")
                             .renderingMode(.template)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
+                            .frame(height: 40)
                         Text("No personal info\ncollected, ever.")
                             .font(.footnote)
                             .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity)
                     VStack {
@@ -54,9 +56,11 @@ struct Login: View {
                             .renderingMode(.template)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
+                            .frame(height: 40)
                         Text("Multiple layers of \nauthentication.")
                             .font(.footnote)
                             .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -65,8 +69,7 @@ struct Login: View {
                     .padding()
                 
                 LoginBottomLinks()
-                
-            }.frame(height: 180)
+            }
         }
     }
 }
