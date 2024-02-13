@@ -28,19 +28,7 @@ struct ShowPhraseList: View {
                         onPhraseSelected(i)
                     } label: {
                         HStack {
-                            Text(ownerState.vault.seedPhrases[i].label)
-                                .font(.title2)
-                                .fontWeight(.medium)
-                                .padding([.leading])
-                                .foregroundColor(viewedPhrases.contains(i) ? .green : .Censo.primaryForeground)
-                                .frame(maxWidth: 300, minHeight: 107, alignment: .leading)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                        .foregroundColor(.Censo.gray224)
-                                )
-                                .multilineTextAlignment(.leading)
-                                .buttonStyle(PlainButtonStyle())
+                            SeedPhrasePill(seedPhrase: ownerState.vault.seedPhrases[i], isSelected: viewedPhrases.contains(i))
                             
                             Spacer()
                             

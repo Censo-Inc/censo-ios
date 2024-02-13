@@ -34,30 +34,7 @@ struct Keep1Phrase: View {
                             selectedPhrase = i
                         } label: {
                             let strikeThroughActive = selectedPhrase != nil && selectedPhrase != i
-                            HStack(alignment: .center) {
-                                Text(ready.vault.seedPhrases[i].label)
-                                    .font(.title2)
-                                    .fontWeight(.medium)
-                                    .padding([.horizontal])
-                                    .foregroundColor(selectedPhrase == i ? .Censo.green : .Censo.primaryForeground)
-                                    .strikethrough(strikeThroughActive)
-                                    .multilineTextAlignment(.leading)
-                                    .buttonStyle(PlainButtonStyle())
-                                if (selectedPhrase == i) {
-                                    Spacer()
-                                    Image(systemName: "checkmark")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(Color.Censo.green)
-                                        .font(.system(size: 20))
-                                        .padding([.horizontal], 10)
-                                }
-                            }
-                            .frame(maxWidth: 300, minHeight: 107, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                    .foregroundColor(.Censo.gray224)
-                            )
+                            SeedPhrasePill(seedPhrase: ready.vault.seedPhrases[i], isSelected: selectedPhrase == i, showSelectedCheckmark: true, strikeThrough: strikeThroughActive)
                         }
                         .padding(.horizontal)
                         .listRowSeparator(.hidden)

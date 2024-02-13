@@ -257,19 +257,19 @@ extension API.Vault {
 
 extension API.SeedPhrase {
     static var sample: Self {
-        .init(guid: "guid1", seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", createdAt: Date())
+        .init(guid: "guid1", seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", type: .binary, createdAt: Date())
     }
     static var sample2: Self {
-        .init(guid: "guid2", seedPhraseHash: .sample, label: "Robin Hood", createdAt: Date())
+        .init(guid: "guid2", seedPhraseHash: .sample, label: "Robin Hood", type: .binary, createdAt: Date())
     }
     static var sample3: Self {
-        .init(guid: "guid3", seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", createdAt: Date())
+        .init(guid: "guid3", seedPhraseHash: .sample, label: "SEED PHRASE WITH A VERY LONG NAME OF 50 CHARACTERS", type: .photo, createdAt: Date())
     }
     static var sample4: Self {
-        .init(guid: "guid4", seedPhraseHash: .sample, label: "Wallet 1", createdAt: Date())
+        .init(guid: "guid4", seedPhraseHash: .sample, label: "Wallet 1", type: .binary, createdAt: Date())
     }
     static var sample5: Self {
-        .init(guid: "guid5", seedPhraseHash: .sample, label: "Wallet 2", createdAt: Date())
+        .init(guid: "guid5", seedPhraseHash: .sample, label: "Wallet 2", type: .binary, createdAt: Date())
     }
 }
 

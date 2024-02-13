@@ -139,6 +139,7 @@ extension API {
         var guid: String
         var seedPhraseHash: Base64EncodedString
         var label: String
+        var type: SeedPhraseType
         var createdAt: Date
     }
     

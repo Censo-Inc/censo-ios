@@ -36,34 +36,11 @@ struct PhrasesTab: View {
             VStack(spacing: 0) {
                 List {
                     ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
-                        ZStack(alignment: .leading) {
-                            Button {
-                                showingEditSheet = true
-                                editingIndex = i
-                            } label: {
-                                HStack {
-                                    Spacer()
-                                    Image("Pencil")
-                                        .renderingMode(.template).padding([.trailing], 4)
-                                }
-                            }
-                            .accessibilityIdentifier("seedPhraseEdit\(i)Button")
-                            
-                            Text(ownerState.vault.seedPhrases[i].label)
-                                .font(.system(size: 18, weight: .medium))
-                                .multilineTextAlignment(.leading)
-                                .padding([.bottom, .leading, .top])
-                                .padding([.trailing], 35)
-                        }
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
-                        .frame(height: 100)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                .foregroundColor(.Censo.gray224)
-                        )
-                        .padding(.top)
+                        SeedPhrasePill(seedPhrase: ownerState.vault.seedPhrases[i], index: i, onEdit: {
+                            showingEditSheet = true
+                            editingIndex = i
+                        })
+                        .padding(.bottom)
                     }
                 }
                 .padding(.bottom)

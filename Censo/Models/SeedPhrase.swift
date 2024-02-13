@@ -44,3 +44,8 @@ extension SeedPhrase {
     }
     
 }
+
+enum SeedPhraseType: String, Codable {
+    case binary = "Binary"
+    case photo = "Photo"
+}
