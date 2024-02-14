@@ -60,7 +60,7 @@ struct LoginIdReset: View {
             },
             loggedInContent: { session in
                 LoginIdResetLoggedInSteps(
-                    ownerRepository: OwnerRepository(apiProvider, session),
+                    session: session,
                     step: $step,
                     tokens: tokens,
                     onComplete: onComplete
@@ -136,132 +136,161 @@ struct LoginIdResetLoggedOutSteps: View {
 }
 
 struct LoginIdResetLoggedInSteps: View {
-    var ownerRepository: OwnerRepository
+    @Environment(\.apiProvider) var apiProvider
+    var session: Session
     @Binding var step: LoginIdReset.Step
     @Binding var tokens: Set<LoginIdResetToken>
     var onComplete: () -> Void
     
     var body: some View {
-        NavigationView {
-            switch (step) {
-            case .collectingTokens, .signIn, .startVerification:
-                ScrollView {
-                    VStack(spacing: 0) {
-                        LoginIdResetCollectTokensStep(
-                            enabled: false,
-                            tokens: $tokens
-                        )
-                        
-                        LoginIdResetSignInStep(
-                            enabled: false,
-                            onSuccess: {}
-                        )
-                        
-                        LoginIdResetStartVerificationStep(
-                            enabled: step == .startVerification,
-                            ownerRepository: ownerRepository,
-                            tokens: $tokens,
-                            onDeviceCreated: {
-                                self.step = .chooseVerificationMethod
+        // We wrap internal view here to inject MoyaProvider from the environment into its initializer
+        // This has to do with AppAttest sitting between ContentView and this view
+        // and replacing the MoyaProvider in the environment with one that knows about attestation
+        InternalView(
+            apiProvider: apiProvider,
+            session: session,
+            step: $step,
+            tokens: $tokens,
+            onComplete: onComplete
+        )
+    }
+    
+    private struct InternalView: View {
+        @Binding var step: LoginIdReset.Step
+        @Binding var tokens: Set<LoginIdResetToken>
+        var onComplete: () -> Void
+        
+        @StateObject private var ownerRepository: OwnerRepository
+        
+        init(apiProvider: MoyaProvider<API>, session: Session, step: Binding<LoginIdReset.Step>, tokens: Binding<Set<LoginIdResetToken>>, onComplete: @escaping () -> Void) {
+            self._step = step
+            self._tokens = tokens
+            self.onComplete = onComplete
+            self._ownerRepository = StateObject(wrappedValue: OwnerRepository(apiProvider, session))
+        }
+        
+        var body: some View {
+            NavigationView {
+                switch (step) {
+                case .collectingTokens, .signIn, .startVerification:
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            LoginIdResetCollectTokensStep(
+                                enabled: false,
+                                tokens: $tokens
+                            )
+                            
+                            LoginIdResetSignInStep(
+                                enabled: false,
+                                onSuccess: {}
+                            )
+                            
+                            LoginIdResetStartVerificationStep(
+                                enabled: step == .startVerification,
+                                ownerRepository: ownerRepository,
+                                tokens: $tokens,
+                                onDeviceCreated: {
+                                    self.step = .chooseVerificationMethod
+                                }
+                            )
+                            
+                            // This button is enabled in OwnerKeyRecovery screen
+                            // where we have ownerState and can start the key recovery process.
+                            // LoggedInOwnerView detects that owner's approver key is missing
+                            // and renders the OwnerKeyRecovery from which user can't exit
+                            LoginIdResetInitKeyRecoveryStep(
+                                enabled: false,
+                                loggedIn: true,
+                                onButtonPressed: { }
+                            )
+                        }
+                        .onAppear {
+                            if tokens.count == resetTokensThreshold {
+                                self.step = .startVerification
                             }
-                        )
-                        
-                        // This button is enabled in OwnerKeyRecovery screen
-                        // where we have ownerState and can start the key recovery process.
-                        // LoggedInOwnerView detects that owner's approver key is missing
-                        // and renders the OwnerKeyRecovery from which user can't exit
-                        LoginIdResetInitKeyRecoveryStep(
-                            enabled: false,
-                            loggedIn: true,
-                            onButtonPressed: { }
-                        )
-                    }
-                    .onAppear {
-                        if tokens.count == resetTokensThreshold {
-                            self.step = .startVerification
                         }
+                        .padding(.top)
+                        .padding(.horizontal)
                     }
-                    .padding(.top)
-                    .padding(.horizontal)
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarBackButtonHidden(true)
-                .navigationTitle("Reset Login ID")
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            Keychain.removeUserCredentials()
-                            onComplete()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
-                    }
-                })
-            case .chooseVerificationMethod:
-                SelectIdentityVerificationMethod(step: $step)
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)
                     .navigationTitle("Reset Login ID")
                     .toolbar(content: {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {
-                                step = .startVerification
+                                Keychain.removeUserCredentials()
+                                onComplete()
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                        }
+                    })
+                case .chooseVerificationMethod:
+                    SelectIdentityVerificationMethod(step: $step)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarBackButtonHidden(true)
+                        .navigationTitle("Reset Login ID")
+                        .toolbar(content: {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    step = .startVerification
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
+                            }
+                        })
+                case .resetWithBiometry:
+                    FacetecAuth<API.ResetLoginIdApiResponse>(
+                        onFaceScanReady: { biometryData, completion in
+                            ownerRepository.resetLoginId(API.ResetLoginIdApiRequest(
+                                identityToken: ownerRepository.userIdentifier,
+                                resetTokens: Array(tokens),
+                                biometryVerificationId: biometryData.verificationId,
+                                biometryData: biometryData
+                            ), completion)
+                        },
+                        onSuccess: { _ in
+                            onComplete()
+                        },
+                        onCancelled: {
+                            step = .chooseVerificationMethod
+                        }
+                    )
+                case .resetWithPassword:
+                    ScrollView {
+                        PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
+                            submit: { password, completion in
+                                ownerRepository.resetLoginIdWithPassword(
+                                    API.ResetLoginIdWithPasswordApiRequest(
+                                        identityToken: ownerRepository.userIdentifier,
+                                        resetTokens: Array(tokens),
+                                        password: password
+                                    ),
+                                    completion
+                                )
+                            },
+                            onSuccess: { _ in
+                                onComplete()
+                            }
+                        )
+                        .padding(.horizontal)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarBackButtonHidden(true)
+                    .navigationTitle("Reset Login ID")
+                    .toolbar(content: {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                step = .chooseVerificationMethod
                             } label: {
                                 Image(systemName: "chevron.left")
                             }
                         }
                     })
-            case .resetWithBiometry:
-                FacetecAuth<API.ResetLoginIdApiResponse>(
-                    onFaceScanReady: { biometryData, completion in
-                        ownerRepository.resetLoginId(API.ResetLoginIdApiRequest(
-                            identityToken: ownerRepository.userIdentifier,
-                            resetTokens: Array(tokens),
-                            biometryVerificationId: biometryData.verificationId,
-                            biometryData: biometryData
-                        ), completion)
-                    },
-                    onSuccess: { _ in
-                        onComplete()
-                    },
-                    onCancelled: {
-                        step = .chooseVerificationMethod
-                    }
-                )
-            case .resetWithPassword:
-                ScrollView {
-                    PasswordAuth<API.ResetLoginIdWithPasswordApiResponse>(
-                        submit: { password, completion in
-                            ownerRepository.resetLoginIdWithPassword(
-                                API.ResetLoginIdWithPasswordApiRequest(
-                                    identityToken: ownerRepository.userIdentifier,
-                                    resetTokens: Array(tokens),
-                                    password: password
-                                ),
-                                completion
-                            )
-                        },
-                        onSuccess: { _ in
-                            onComplete()
-                        }
-                    )
-                    .padding(.horizontal)
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarBackButtonHidden(true)
-                .navigationTitle("Reset Login ID")
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            step = .chooseVerificationMethod
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
-                    }
-                })
             }
+            .environmentObject(ownerRepository)
         }
-        .environmentObject(ownerRepository)
     }
 }
 
