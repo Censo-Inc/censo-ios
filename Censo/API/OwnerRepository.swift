@@ -55,6 +55,33 @@ final class OwnerRepository : ObservableObject {
         session.deleteApproverKey(keyId: keyId)
     }
     
+    func encryptWithApproverPublicKey(data: Data, policy: API.Policy) throws -> Base64EncodedString {
+        guard let ownerEntropy = policy.ownerEntropy else {
+            throw CensoError.invalidEntropy
+        }
+        return try getOrCreateApproverKey(
+            keyId: policy.owner!.participantId,
+            entropy: ownerEntropy.data
+        ).publicExternalRepresentation().toEncryptionKey().encrypt(data: data)
+    }
+    
+    func decryptWithApproverKey(data: Base64EncodedString, policy: API.Policy) throws -> Data {
+        guard let ownerEntropy = policy.ownerEntropy else {
+            throw CensoError.invalidEntropy
+        }
+        return try getOrCreateApproverKey(
+            keyId: policy.owner!.participantId,
+            entropy: ownerEntropy.data
+        ).decrypt(base64EncodedString: data)
+    }
+    
+    func decryptStringWithApproverKey(data: Base64EncodedString, policy: API.Policy) throws -> String {
+        return String(
+            data: try decryptWithApproverKey(data: data, policy: policy),
+            encoding: .utf8
+        )!
+    }
+    
     func getUser(_ completion: @escaping (Result<API.User, MoyaError>) -> Void) {
         apiProvider.decodableRequest(with: session, endpoint: .user, completion: completion)
     }
@@ -171,8 +198,8 @@ final class OwnerRepository : ObservableObject {
         apiProvider.decodableRequest(with: session, endpoint: .storeSeedPhrase(payload), completion: completion)
     }
     
-    func updateSeedPhrase(guid: String, label: String, _ completion: @escaping (Result<API.UpdateSeedPhraseApiResponse, MoyaError>) -> Void) {
-        apiProvider.decodableRequest(with: session, endpoint: .updateSeedPhrase(guid: guid, label: label), completion: completion)
+    func updateSeedPhraseMetaInfo(guid: String, _ update: API.UpdateSeedPhraseMetaInfoApiRequest.Update, _ completion: @escaping (Result<API.UpdateSeedPhraseMetaInfoApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .updateSeedPhraseMetaInfo(guid: guid, payload: API.UpdateSeedPhraseMetaInfoApiRequest(update: update)), completion: completion)
     }
     
     func deleteSeedPhrase(_ guid: String, _ completion: @escaping (Result<API.DeleteSeedPhraseApiResponse, MoyaError>) -> Void) {
@@ -233,5 +260,9 @@ final class OwnerRepository : ObservableObject {
     
     func submitBeneficiaryVerification(_ invitationId: BeneficiaryInvitationId, _ payload: API.SubmitBeneficiaryVerificationApiRequest, _ completion: @escaping (Result<API.SubmitBeneficiaryVerificationApiResponse, MoyaError>) -> Void) {
         apiProvider.decodableRequest(with: session, endpoint: .submitBeneficiaryVerification(invitationId, payload), completion: completion)
+    }
+    
+    func updateApproversContactInfo(_ contactInfos: [API.UpdateBeneficiaryApproverContactInfoApiRequest.ApproverContactInfo], _ completion: @escaping (Result<API.UpdateBeneficiaryApproverContactInfoApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .updateApproverContactInfo(API.UpdateBeneficiaryApproverContactInfoApiRequest(approverContacts: contactInfos)), completion: completion)
     }
 }

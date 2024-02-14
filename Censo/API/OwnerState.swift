@@ -135,12 +135,29 @@ extension API {
         }
     }
     
-    struct SeedPhrase: Codable, Equatable {
+    struct ApproverContactInfo: Decodable, Equatable {
+        var participantId: ParticipantId
+        var encryptedContactInfo: Base64EncodedString
+    }
+    
+    struct BeneficiaryKeyInfo: Decodable, Equatable {
+        var publicKey: Base58EncodedPublicKey
+        var keySignature: Base64EncodedString
+        var keyTimeMillis: Int64
+    }
+    
+    struct SeedPhrase: Codable, Equatable, Hashable {
         var guid: String
         var seedPhraseHash: Base64EncodedString
         var label: String
         var type: SeedPhraseType
+        var encryptedNotes: SeedPhraseEncryptedNotes?
         var createdAt: Date
+    }
+    
+    struct SeedPhraseEncryptedNotes : Codable, Equatable, Hashable {
+        var ownerApproverKeyEncryptedText: Base64EncodedString
+        var masterKeyEncryptedText: Base64EncodedString
     }
     
     struct Vault: Codable {
@@ -192,22 +209,22 @@ extension API {
                 case verificationSubmitted(VerificationSubmitted)
                 case activated(Activated)
                 
-                struct ApproverPublicKey: Codable, Equatable {
+                struct ApproverPublicKey: Decodable, Equatable {
                     var participantId: ParticipantId
                     var publicKey: Base58EncodedPublicKey
                 }
                 
-                struct Initial: Codable, Equatable {
+                struct Initial: Decodable, Equatable {
                     var deviceEncryptedTotpSecret: Base64EncodedString
                     var invitationId: BeneficiaryInvitationId
                 }
 
-                struct Accepted: Codable, Equatable {
+                struct Accepted: Decodable, Equatable {
                     var deviceEncryptedTotpSecret: Base64EncodedString
                     var acceptedAt: Date
                 }
                 
-                struct VerificationSubmitted: Codable, Equatable {
+                struct VerificationSubmitted: Decodable, Equatable {
                     var deviceEncryptedTotpSecret: Base64EncodedString
                     var signature: Base64EncodedString
                     var timeMillis: Int64
@@ -216,8 +233,10 @@ extension API {
                     var approverPublicKeys: [ApproverPublicKey]
                 }
 
-                struct Activated: Codable, Equatable {
+                struct Activated: Decodable, Equatable {
                     var confirmedAt: Date
+                    var approverContactInfo: [ApproverContactInfo]
+                    var beneficiaryKeyInfo: BeneficiaryKeyInfo
                 }
                 
                 enum ApproverStatusCodingKeys: String, CodingKey {
@@ -275,6 +294,26 @@ extension API {
                     case .accepted(let accepted): return accepted.deviceEncryptedTotpSecret
                     case .verificationSubmitted(let verificationSubmitted): return verificationSubmitted.deviceEncryptedTotpSecret
                     default: return nil
+                    }
+                }
+            }
+            
+            func contactInfo(forParticipantId: ParticipantId) -> ApproverContactInfo? {
+                switch (status) {
+                case .activated(let activated):
+                    return activated.approverContactInfo.first(where: { $0.participantId == forParticipantId })
+                default:
+                    return nil
+                }
+            }
+            
+            var beneficiaryKeyInfo: BeneficiaryKeyInfo? {
+                get {
+                    switch (status) {
+                    case .activated(let activated):
+                        return activated.beneficiaryKeyInfo
+                    default:
+                        return nil
                     }
                 }
             }

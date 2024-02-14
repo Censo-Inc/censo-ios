@@ -217,6 +217,7 @@ extension API.Policy {
             encryptedMasterKey: Base64EncodedString(data: Data()),
             intermediateKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2"),
             approverKeysSignatureByIntermediateKey: Base64EncodedString(data: Data()),
+            ownerEntropy: Base64EncodedString(data: "test".data(using: .utf8)!),
             beneficiary: .sampleAccepted
         )
     }
@@ -241,16 +242,18 @@ extension API.TimelockSetting {
 }
 
 extension API.Vault {
+    static var samplePublicMasterEncryptionKey = try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+    
     static var sample: Self {
         .init(
             seedPhrases: [.sample, .sample2, .sample3, .sample4, .sample5],
-            publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+            publicMasterEncryptionKey: samplePublicMasterEncryptionKey
         )
     }
     static var sample1Phrase: Self {
         .init(
             seedPhrases: [.sample],
-            publicMasterEncryptionKey: try! Base58EncodedPublicKey(value: "PQVchxggKG9sQRNx9Yi6Yu5gSCeLQFmxuCzmx1zmNBdRVoCTPeab1F612GE4N7UZezqGBDYUB25yGuFzWsob9wY2")
+            publicMasterEncryptionKey: samplePublicMasterEncryptionKey
         )
     }
 }
@@ -258,6 +261,15 @@ extension API.Vault {
 extension API.SeedPhrase {
     static var sample: Self {
         .init(guid: "guid1", seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", type: .binary, createdAt: Date())
+    }
+    static var sampleWithNotes: Self {
+        .init(guid: "guid1", seedPhraseHash: .sample, label: "Yankee Hotel Foxtrot", type: .binary,
+              encryptedNotes: API.SeedPhraseEncryptedNotes(
+                ownerApproverKeyEncryptedText: try! Base64EncodedString(value: ""),
+                masterKeyEncryptedText: try! Base64EncodedString(value: "")
+              ),
+              createdAt: Date()
+        )
     }
     static var sample2: Self {
         .init(guid: "guid2", seedPhraseHash: .sample, label: "Robin Hood", type: .binary, createdAt: Date())

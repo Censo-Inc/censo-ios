@@ -33,6 +33,7 @@ struct SeedPhrasePill: View {
                 .frame(height: 42)
                 .foregroundColor(isDisabled ? .Censo.gray : isSelected == true ? .Censo.green : .Censo.primaryForeground)
                 .padding(.leading)
+            
             VStack(alignment: .leading) {
                 Text(seedPhrase.label)
                     .font(.system(size: 18, weight: .medium))

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CryptoKit
+import Sentry
 
 struct SaveSeedPhrase: View {
     @Environment(\.dismiss) var dismiss
@@ -14,18 +15,35 @@ struct SaveSeedPhrase: View {
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
     @StateObject private var label = PhraseLabel()
-    @State private var showingDismissAlert = false
+    @State private var encryptedNotes: API.SeedPhraseEncryptedNotes?
     @State private var inProgress = false
     @State private var newOwnerState: API.OwnerState?
     @State private var showingError = false
     @State private var error: Error?
     @State private var showPaywall = false
+    
+    enum EditStep {
+        case addNotes
+        case setLabel
+    }
+    @State private var editStep: EditStep = .addNotes
 
     var seedPhrase: SeedPhrase
     var ownerState: API.OwnerState.Ready
     var isFirstTime: Bool
     var requestedLabel: String?
     var onSuccess: () -> Void
+    private var canAddNotes: Bool
+    
+    init(seedPhrase: SeedPhrase, ownerState: API.OwnerState.Ready, isFirstTime: Bool, requestedLabel: String? = nil, onSuccess: @escaping () -> Void) {
+        self.canAddNotes = ownerState.policy.beneficiary?.isActivated == true
+        self._editStep = State(initialValue: canAddNotes ? .addNotes : .setLabel)
+        self.seedPhrase = seedPhrase
+        self.ownerState = ownerState
+        self.isFirstTime = isFirstTime
+        self.requestedLabel = requestedLabel
+        self.onSuccess = onSuccess
+    }
 
     var body: some View {
         if let newOwnerState {
@@ -33,75 +51,88 @@ struct SaveSeedPhrase: View {
                 ownerStateStoreController.replace(newOwnerState)
                 onSuccess()
             }
-            .navigationTitle(Text("Seed phrase saved"))
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationInlineTitle("Seed phrase saved")
         } else {
             NavigationStack {
-                VStack(alignment: .leading, spacing: 0) {
-                    Spacer()
-                    
-                    Text("Label your seed phrase")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    
-                    Text("Give your seed phrase a unique label so you can easily identify it.")
-                        .fixedSize(horizontal: false, vertical: true)
+                Group {
+                    switch (editStep) {
+                    case .addNotes:
+                        EnterInfoForBeneficiary.SeedPhraseNotes.NotesEditor(
+                            policy: ownerState.policy,
+                            publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                            initialValue: self.encryptedNotes,
+                            saveButtonLabel: "Continue",
+                            onSave: { newValue in
+                                self.encryptedNotes = newValue
+                                self.editStep = .setLabel
+                            }
+                        )
+                        .navigationInlineTitle("Add notes for beneficiary")
+                    case .setLabel:
+                        VStack(alignment: .leading, spacing: 0) {
+                            Spacer()
+                            
+                            Text("Label your seed phrase")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            Text("Give your seed phrase a unique label so you can easily identify it.")
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.vertical)
+                            
+                            VStack(spacing: 0) {
+                                TextField(text: $label.value) {
+                                    Text("Enter a label...")
+                                }
+                                .textFieldStyle(RoundedTextFieldStyle())
+                                .accessibilityIdentifier("labelTextField")
+                                .padding(.top)
+                                
+                                Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
+                                    .multilineTextAlignment(.center)
+                                    .foregroundStyle(Color.red)
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
+                            }
+                            
+                            Button {
+                                if (ownerState.vault.seedPhrases.count == 1 && !Configuration.paywallDisabled) {
+                                    showPaywall = true
+                                } else {
+                                    save()
+                                }
+                            } label: {
+                                Group {
+                                    if inProgress {
+                                        ProgressView()
+                                    } else {
+                                        Text("Save seed phrase")
+                                            .font(.headline)
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(RoundedButtonStyle())
+                            .disabled(!label.isValid || inProgress)
+                            .accessibilityIdentifier("saveButton")
+                        }
                         .padding(.vertical)
-                    
-                    VStack(spacing: 0) {
-                        TextField(text: $label.value) {
-                            Text("Enter a label...")
-                        }
-                        .textFieldStyle(RoundedTextFieldStyle())
-                        .accessibilityIdentifier("labelTextField")
-                        .padding(.top)
-                        
-                        Text(label.isTooLong ? "Can't be longer than \(label.limit) characters" : " ")
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(Color.red)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
-                    }
-                    
-                    Button {
-                        if (ownerState.vault.seedPhrases.count == 1 && !Configuration.paywallDisabled) {
-                            showPaywall = true
-                        } else {
-                            save()
-                        }
-                    } label: {
-                        Group {
-                            if inProgress {
-                                ProgressView()
-                            } else {
-                                Text("Save seed phrase")
-                                    .font(.headline)
+                        .padding(.horizontal, 32)
+                        .navigationInlineTitle("Save seed phrase")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                if canAddNotes {
+                                    BackButton(action: {
+                                        self.editStep = .addNotes
+                                    })
+                                } else {
+                                    BackButton()
+                                }
                             }
                         }
-                        .frame(maxWidth: .infinity)
                     }
-                    .disabled(!label.isValid || inProgress)
-                    .accessibilityIdentifier("saveButton")
-                }
-                .padding(.vertical)
-                .padding(.horizontal, 32)
-                .buttonStyle(RoundedButtonStyle())
-                .navigationTitle(Text("Save seed phrase"))
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarBackButtonHidden(true)
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        BackButton()
-                    }
-                })
-                .alert("Are you sure?", isPresented: $showingDismissAlert) {
-                    Button(role: .destructive, action: { dismiss() }) {
-                        Text("Exit")
-                    }
-                } message: {
-                    Text("Your progress will be lost")
                 }
                 .alert("Error", isPresented: $showingError, presenting: error) { _ in
                     Button { } label: { Text("OK") }
@@ -164,7 +195,8 @@ struct SaveSeedPhrase: View {
             ownerRepository.storeSeedPhrase(API.StoreSeedPhraseApiRequest(
                 encryptedSeedPhrase: encryptedSeedPhrase,
                 seedPhraseHash: SHA256.hash(data: phraseData).compactMap { String(format: "%02x", $0) }.joined(),
-                label: label.value
+                label: label.value,
+                encryptedNotes: encryptedNotes
             )) { result in
                 inProgress = false
 
@@ -176,6 +208,7 @@ struct SaveSeedPhrase: View {
                 }
             }
         } catch {
+            SentrySDK.captureWithTag(error: error, tagValue: "Save seed phrase")
             showError(error)
             return
         }

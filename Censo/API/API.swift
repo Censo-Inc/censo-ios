@@ -49,7 +49,7 @@ struct API {
         case deleteSeedPhrase(guid: String)
         case deleteMultipleSeedPhrases(guids: [String])
         case getSeedPhrase(guid: String)
-        case updateSeedPhrase(guid: String, label: String)
+        case updateSeedPhraseMetaInfo(guid: String, payload: UpdateSeedPhraseMetaInfoApiRequest)
         
         case requestAccess(RequestAccessApiRequest)
         case deleteAccess
@@ -80,6 +80,7 @@ struct API {
         case submitBeneficiaryVerification(BeneficiaryInvitationId, SubmitBeneficiaryVerificationApiRequest)
         case activateBeneficiary(ActivateBeneficiaryApiRequest)
         case rejectBeneficiaryVerification
+        case updateApproverContactInfo(UpdateBeneficiaryApproverContactInfoApiRequest)
     }
 }
 
@@ -142,8 +143,8 @@ extension API: TargetType {
             return "v1/vault/seed-phrases/\(guid)"
         case .deleteMultipleSeedPhrases:
             return "v1/vault/seed-phrases"
-        case .updateSeedPhrase(let guid, _):
-            return "v1/vault/seed-phrases/\(guid)"
+        case .updateSeedPhraseMetaInfo(let guid, _):
+            return "v1/vault/seed-phrases/\(guid)/meta-info"
         case .requestAccess:
             return "v1/access"
         case .deleteAccess:
@@ -192,6 +193,8 @@ extension API: TargetType {
             return "v1/policy/beneficiary/activate"
         case .rejectBeneficiaryVerification:
             return "v1/policy/beneficiary/reject"
+        case .updateApproverContactInfo:
+            return "v1/policy/beneficiary/approver-contact-info"
         }
     }
 
@@ -212,7 +215,7 @@ extension API: TargetType {
              .cancelDisabledTimelock,
              .cancelAuthenticationReset:
             return .delete
-        case .updateSeedPhrase:
+        case .updateSeedPhraseMetaInfo:
             return .patch
         case .signIn,
              .registerPushToken,
@@ -253,7 +256,8 @@ extension API: TargetType {
              .resetLoginId,
              .resetLoginIdWithPassword,
              .replacePolicyShards,
-             .replaceAuthentication:
+             .replaceAuthentication,
+             .updateApproverContactInfo:
             return .put
         }
     }
@@ -363,10 +367,8 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .resetLoginIdWithPassword(let request):
             return .requestJSONEncodable(request)
-        case .updateSeedPhrase(_, let label):
-            return .requestJSONEncodable([
-                "label": label
-            ])
+        case .updateSeedPhraseMetaInfo(_, let request):
+            return .requestJSONEncodable(request)
         case .replaceAuthentication(let request):
             return .requestJSONEncodable(request)
         case .setPromoCode(let code):
@@ -382,6 +384,8 @@ extension API: TargetType {
         case .submitBeneficiaryVerification(_, let request):
             return .requestJSONEncodable(request)
         case .activateBeneficiary(let request):
+            return .requestJSONEncodable(request)
+        case .updateApproverContactInfo(let request):
             return .requestJSONEncodable(request)
         }
     }
@@ -418,7 +422,7 @@ extension API: TargetType {
              .attestationKey,
              .getImportEncryptedData,
              .getSeedPhrase,
-             .updateSeedPhrase,
+             .updateSeedPhraseMetaInfo,
              .cancelDisabledTimelock:
             return false
         case .signIn,
@@ -453,7 +457,8 @@ extension API: TargetType {
              .acceptBeneficiaryInvitationWithPassword,
              .submitBeneficiaryVerification,
              .activateBeneficiary,
-             .rejectBeneficiaryVerification:
+             .rejectBeneficiaryVerification,
+             .updateApproverContactInfo:
             return true
         }
     }

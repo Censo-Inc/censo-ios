@@ -65,18 +65,28 @@ struct BeneficiaryPill: View {
 extension API.Policy.Beneficiary {
     static var sample: Self {
         .init(label: "Ben Eficiary", 
-              status: API.Policy.Beneficiary.Status.activated(API.Policy.Beneficiary.Status.Activated(confirmedAt: Date.now)
-             )
+              status: API.Policy.Beneficiary.Status.activated(
+                API.Policy.Beneficiary.Status.Activated(
+                    confirmedAt: Date.now,
+                    approverContactInfo: [],
+                    beneficiaryKeyInfo: API.BeneficiaryKeyInfo(
+                        publicKey: Base58EncodedPublicKey.sample, 
+                        keySignature: Base64EncodedString(data: Data()),
+                        keyTimeMillis: 123
+                    )
+                )
+              )
         )
     }
     
     static var sampleAccepted: Self {
         .init(label: "Ben Eficiary",
-              status: API.Policy.Beneficiary.Status.accepted(API.Policy.Beneficiary.Status.Accepted(
-                deviceEncryptedTotpSecret: Base64EncodedString(data: Data()),
-                acceptedAt: Date.now
+              status: API.Policy.Beneficiary.Status.accepted(
+                API.Policy.Beneficiary.Status.Accepted(
+                    deviceEncryptedTotpSecret: Base64EncodedString(data: Data()),
+                    acceptedAt: Date.now
+                )
               )
-             )
         )
     }
     

@@ -43,7 +43,6 @@ struct RenameSeedPhrase: View {
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                 }
-                .padding(.vertical)
                 
                 Button {
                     updateSeedPhraseLabel()
@@ -93,9 +92,9 @@ struct RenameSeedPhrase: View {
     
     private func updateSeedPhraseLabel() {
         inProgress = true
-        ownerRepository.updateSeedPhrase(
+        ownerRepository.updateSeedPhraseMetaInfo(
             guid: ownerState.vault.seedPhrases[editingIndex].guid,
-            label: label.value
+            .setLabel(value: label.value)
         ) { result in
             inProgress = false
 

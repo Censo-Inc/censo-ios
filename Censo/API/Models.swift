@@ -239,6 +239,7 @@ extension API {
         var encryptedSeedPhrase: Base64EncodedString
         var seedPhraseHash: String
         var label: String
+        var encryptedNotes: SeedPhraseEncryptedNotes?
     }
     
     struct StoreSeedPhraseApiResponse : Decodable {
@@ -249,7 +250,36 @@ extension API {
         var ownerState: OwnerState
     }
     
-    struct UpdateSeedPhraseApiResponse : Decodable {
+    struct UpdateSeedPhraseMetaInfoApiRequest : Encodable {
+        var update: Update
+        
+        enum Update : Encodable {
+            case setLabel(value: String)
+            case setNotes(value: SeedPhraseEncryptedNotes)
+            case deleteNotes
+            
+            enum CodingKeys: String, CodingKey {
+                case type
+                case value
+            }
+            
+            func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                switch self {
+                case .setLabel(let value):
+                    try container.encode("SetLabel", forKey: .type)
+                    try container.encode(value, forKey: .value)
+                case .setNotes(let value):
+                    try container.encode("SetNotes", forKey: .type)
+                    try container.encode(value, forKey: .value)
+                case .deleteNotes:
+                    try container.encode("DeleteNotes", forKey: .type)
+                }
+            }
+        }
+    }
+    
+    struct UpdateSeedPhraseMetaInfoApiResponse : Decodable {
         var ownerState: OwnerState
     }
     
@@ -424,6 +454,21 @@ extension API {
     }
     
     struct RejectBeneficiaryVerificationApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct UpdateBeneficiaryApproverContactInfoApiRequest: Encodable {
+        var approverContacts: [ApproverContactInfo]
+        
+        struct ApproverContactInfo: Encodable {
+            var participantId: ParticipantId
+            var beneficiaryKeyEncryptedInfo: Base64EncodedString
+            var ownerApproverKeyEncryptedInfo: Base64EncodedString
+            var masterKeyEncryptedInfo: Base64EncodedString
+        }
+    }
+    
+    struct UpdateBeneficiaryApproverContactInfoApiResponse: Decodable {
         var ownerState: OwnerState
     }
 }

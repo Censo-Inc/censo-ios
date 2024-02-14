@@ -17,8 +17,7 @@ struct OnboardingCancelNavBar: ViewModifier {
         if onboarding {
             NavigationStack {
                 content
-                    .navigationTitle(navigationTitle ?? "")
-                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationInlineTitle(navigationTitle ?? "")
                     .toolbar(content: {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {
@@ -36,8 +35,7 @@ struct OnboardingCancelNavBar: ViewModifier {
         } else if let navigationTitle = navigationTitle  {
             NavigationStack {
                 content
-                    .navigationTitle(navigationTitle)
-                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationInlineTitle(navigationTitle)
             }
         } else {
             content

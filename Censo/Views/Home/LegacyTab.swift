@@ -19,6 +19,7 @@ struct LegacyTab: View {
     @State private var showCancelBeneficiaryConfirmation = false
     @State private var cancelBeneficiaryConfirmationText: String = ""
     @State private var deleteBeneficiaryInProgress = false
+    @State private var showingEnterInfo = false
     
     var body: some View {
         NavigationStack {
@@ -36,6 +37,20 @@ struct LegacyTab: View {
                         
                         Spacer()
                         
+                        Text("Your beneficiary may need additional information about your approvers and your seed phrases")
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
+                        
+                        Button {
+                            showingEnterInfo = true
+                        } label: {
+                            Text("Provide information")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(RoundedButtonStyle())
+                        .disabled(deleteBeneficiaryInProgress)
+                        
                         Button {
                             cancelBeneficiaryConfirmationText = "This will remove \(beneficiary.label) as your beneficiary."
                             showCancelBeneficiaryConfirmation = true
@@ -44,7 +59,7 @@ struct LegacyTab: View {
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
-                        .padding(.vertical)
+                        .padding(.bottom)
                         .buttonStyle(RoundedButtonStyle())
                         .accessibilityIdentifier("removeBeneficiary")
                         .disabled(deleteBeneficiaryInProgress)
@@ -86,6 +101,10 @@ struct LegacyTab: View {
             .padding(.horizontal, 32)
             .sheet(isPresented: $showingAddBeneficiary, content: {
                 SetupBeneficiary(policy: ownerState.policy)
+            })
+            .sheet(isPresented: $showingEnterInfo, content: {
+                EnterInfoForBeneficiary(ownerState: ownerState)
+                    .interactiveDismissDisabled()
             })
             .alert("Are you sure?", isPresented: $showCancelBeneficiaryConfirmation) {
                 Button {

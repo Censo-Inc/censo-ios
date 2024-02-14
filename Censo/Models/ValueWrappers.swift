@@ -48,6 +48,10 @@ struct Base58EncodedPublicKey: Codable, Equatable {
         var container = encoder.singleValueContainer()
         try container.encode(value)
     }
+    
+    func toEncryptionKey() throws -> EncryptionKey {
+       return try EncryptionKey.generateFromPublicExternalRepresentation(base58PublicKey: self)
+    }
 }
 
 extension Array where Element == Base58EncodedPublicKey {
@@ -62,7 +66,7 @@ extension Array where Element == Base58EncodedPublicKey {
     }
 }
 
-struct Base64EncodedString: Codable, Equatable {
+struct Base64EncodedString: Codable, Equatable, Hashable {
     var value: String
     var data: Data
     
