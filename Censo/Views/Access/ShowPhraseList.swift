@@ -21,6 +21,7 @@ struct ShowPhraseList: View {
             Text("Select the seed phrase you would like to access:")
                 .font(.body)
                 .padding(.vertical)
+                .padding(.horizontal, 32)
             
             List {
                 ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
@@ -48,36 +49,36 @@ struct ShowPhraseList: View {
                             .frame(width: 24, height: 24)
                         }
                     }
-                    .padding(.top)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(.init(top: 8, leading: 32, bottom: 8, trailing: 32))
                 }
             }
-            .padding(.bottom)
             .listStyle(.plain)
             .scrollIndicators(ScrollIndicatorVisibility.hidden)
             
             Spacer()
             
-            Divider()
-                .padding(.bottom)
-            
-            Button {
-                if ownerState.policy.externalApproversCount > 0 || ownerState.timelockSetting.currentTimelockInSeconds != nil {
-                    confirmExit = true
-                } else {
-                    onFinished()
+            VStack {
+                Divider()
+                    .padding(.bottom)
+                
+                Button {
+                    if ownerState.policy.externalApproversCount > 0 || ownerState.timelockSetting.currentTimelockInSeconds != nil {
+                        confirmExit = true
+                    } else {
+                        onFinished()
+                    }
+                } label: {
+                    Text("Exit accessing phrases")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
                 }
-            } label: {
-                Text("Exit accessing phrases")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
+                .buttonStyle(RoundedButtonStyle())
+                .accessibilityIdentifier("finishedButton")
             }
-            .buttonStyle(RoundedButtonStyle())
-            .accessibilityIdentifier("finishedButton")
+            .padding(.horizontal, 32)
         }
         .padding(.vertical)
-        .padding(.horizontal, 32)
         .alert("Exit accessing phrases", isPresented: $confirmExit) {
             Button {
                 onFinished()

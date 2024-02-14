@@ -46,6 +46,7 @@ extension EnterInfoForBeneficiary {
                         }
                     }
                     .listRowSeparator(.hidden)
+                    .listRowInsets(.init(top: 8, leading: 32, bottom: 8, trailing: 32))
                 }
             }
             .listStyle(.plain)

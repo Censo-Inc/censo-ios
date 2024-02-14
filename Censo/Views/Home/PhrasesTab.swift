@@ -36,11 +36,14 @@ struct PhrasesTab: View {
             VStack(spacing: 0) {
                 List {
                     ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
-                        SeedPhrasePill(seedPhrase: ownerState.vault.seedPhrases[i], index: i, onEdit: {
-                            showingEditSheet = true
-                            editingIndex = i
-                        })
-                        .padding(.bottom)
+                        VStack {
+                            SeedPhrasePill(seedPhrase: ownerState.vault.seedPhrases[i], index: i, onEdit: {
+                                showingEditSheet = true
+                                editingIndex = i
+                            })
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(.init(top: 8, leading: 32, bottom: 8, trailing: 32))
                     }
                 }
                 .padding(.bottom)
@@ -65,61 +68,63 @@ struct PhrasesTab: View {
                     Text(ownerState.vault.seedPhrases[i].label)
                 }
 
-                Divider()
-                
-                if let timelockExpiration = timelockExpiration() {
-                    HStack {
-                        Image("HourGlass")
-                            .renderingMode(.template)
-                        TimelockCountdown(
-                            expiresAt: timelockExpiration,
-                            onExpired: refreshState
-                        )
-                    }
-                    .frame(height: 32)
-                    .padding(.vertical)
-
-                    Button(role: .destructive) {
-                        confirmAccessCancelation = true
-                    } label: {
+                VStack(spacing: 0) {
+                    Divider()
+                    
+                    if let timelockExpiration = timelockExpiration() {
                         HStack {
-                            Text("Cancel access")
-                                .font(.headline)
+                            Image("HourGlass")
+                                .renderingMode(.template)
+                            TimelockCountdown(
+                                expiresAt: timelockExpiration,
+                                onExpired: refreshState
+                            )
                         }
-                        .frame(maxWidth: .infinity)
+                        .frame(height: 32)
+                        .padding(.vertical)
+                        
+                        Button(role: .destructive) {
+                            confirmAccessCancelation = true
+                        } label: {
+                            HStack {
+                                Text("Cancel access")
+                                    .font(.headline)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(RoundedButtonStyle())
+                        .disabled(deletingAccess)
+                        .padding(.bottom)
+                        .accessibilityIdentifier("cancelAccessButton")
+                    } else {
+                        Button {
+                            showingAccess = true
+                        } label: {
+                            Text(getAccessButtonLabel())
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .disabled(ownerState.vault.seedPhrases.isEmpty)
+                        .buttonStyle(RoundedButtonStyle())
+                        .padding(.vertical)
+                        .accessibilityIdentifier("\(getAccessButtonLabel()) Button")
                     }
-                    .buttonStyle(RoundedButtonStyle())
-                    .disabled(deletingAccess)
-                    .padding(.bottom)
-                    .accessibilityIdentifier("cancelAccessButton")
-                } else {
+                    
                     Button {
-                        showingAccess = true
+                        showingAddPhrase = true
                     } label: {
-                        Text(getAccessButtonLabel())
+                        Text("Add seed phrase")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                     }
-                    .disabled(ownerState.vault.seedPhrases.isEmpty)
                     .buttonStyle(RoundedButtonStyle())
-                    .padding(.vertical)
-                    .accessibilityIdentifier("\(getAccessButtonLabel()) Button")
+                    .accessibilityIdentifier("addSeedPhraseButton")
+                    .padding(.bottom)
                 }
-                
-                Button {
-                    showingAddPhrase = true
-                } label: {
-                    Text("Add seed phrase")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(RoundedButtonStyle())
-                .accessibilityIdentifier("addSeedPhraseButton")
-                .padding(.bottom)
+                .padding(.horizontal, 32)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .padding(.horizontal, 32)
             .sheet(isPresented: $showingAddPhrase, content: {
                 AdditionalPhrase(ownerState: ownerState)
             })
