@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct RenameSeedPhrase: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var ownerRepository: OwnerRepository
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
@@ -17,8 +16,7 @@ struct RenameSeedPhrase: View {
     @State private var showingError = false
     @State private var error: Error?
 
-    var ownerState: API.OwnerState.Ready
-    var editingIndex: Int
+    var seedPhrase: API.SeedPhrase
     var onComplete: () -> Void
 
     var body: some View {
@@ -61,25 +59,19 @@ struct RenameSeedPhrase: View {
             }
             .padding(30)
             .buttonStyle(RoundedButtonStyle())
-            .navigationTitle(Text("Rename seed phrase"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
+            .navigationInlineTitle("Rename seed phrase")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                       dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button { } label: { Text("OK") }
             } message: { error in
                 Text(error.localizedDescription)
             }
             .onAppear {
-                label.value = ownerState.vault.seedPhrases[editingIndex].label
+                label.value = seedPhrase.label
             }
         }
     }
@@ -93,7 +85,7 @@ struct RenameSeedPhrase: View {
     private func updateSeedPhraseLabel() {
         inProgress = true
         ownerRepository.updateSeedPhraseMetaInfo(
-            guid: ownerState.vault.seedPhrases[editingIndex].guid,
+            guid: seedPhrase.guid,
             .setLabel(value: label.value)
         ) { result in
             inProgress = false
@@ -113,8 +105,7 @@ struct RenameSeedPhrase: View {
 #Preview {
     LoggedInOwnerPreviewContainer {
         RenameSeedPhrase(
-            ownerState: .sample,
-            editingIndex: 0,
+            seedPhrase: API.OwnerState.Ready.sample.vault.seedPhrases[0],
             onComplete: {}
         )
     }

@@ -9,23 +9,15 @@ import Foundation
 import SwiftUI
 
 struct InvalidLinkView : View {
-    @Environment(\.dismiss) var dismiss
-    
     var body: some View {
         VStack {
             Text("Invalid link")
         }
         .multilineTextAlignment(.center)
-        .navigationTitle(Text(""))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+        .navigationInlineTitle("")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
         }
     }

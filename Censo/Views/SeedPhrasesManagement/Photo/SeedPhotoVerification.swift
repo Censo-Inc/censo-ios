@@ -61,16 +61,10 @@ struct SeedPhotoVerification: View {
             .padding(.horizontal, 32)
         }
         .multilineTextAlignment(.leading)
-        .navigationTitle(Text("Seed phrase photo verification"))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+        .navigationInlineTitle("Seed phrase photo verification")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    onRetake()
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
+                DismissButton(icon: .back, action: onRetake)
             }
         }
     }

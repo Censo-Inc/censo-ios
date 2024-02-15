@@ -83,16 +83,12 @@ struct ShowPhrase: View {
             onComplete: {_ in},
             start: Date.now
         )
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
+        .navigationInlineTitle("Access")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
-        })
+        }
     }.foregroundColor(Color.Censo.primaryForeground)
 }
 
@@ -104,16 +100,12 @@ struct ShowPhrase: View {
             onComplete: {_ in},
             start: Date.now
         )
-        .navigationTitle(Text("Access"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
+        .navigationInlineTitle("Access")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
-        })
+        }
     }.foregroundColor(Color.Censo.primaryForeground)
 }
 #endif

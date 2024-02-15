@@ -53,15 +53,13 @@ struct LoggedInView: View {
                     )
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)
-                    .toolbar(content: {
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
+                            DismissButton(icon: .back, action: {
                                 self.showWelcome = true
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
+                            })
                         }
-                    })
+                    }
                 }
             case .failure(MoyaError.underlying(CensoError.resourceNotFound, nil)):
                 SignIn(session: session, onSuccess: reload) {

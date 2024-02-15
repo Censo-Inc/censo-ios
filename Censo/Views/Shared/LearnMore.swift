@@ -28,15 +28,13 @@ struct LearnMore<Content>: View where Content: View {
             }
             .padding(.vertical)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .close, action: {
                         showLearnMore = false
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    })
                 }
-            })
+            }
         }
     }
 }

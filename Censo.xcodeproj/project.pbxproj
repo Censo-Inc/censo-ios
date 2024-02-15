@@ -1147,6 +1147,7 @@
 				6C86F2152AECB71B00E73EA1 /* WordList.swift */,
 				E43C67DB2B2740BD0063188F /* GeneratePhrase.swift */,
 				6C633D7C2B5F008B00049417 /* RenameSeedPhrase.swift */,
+				E42966FB2B7C0B170044E645 /* SeedPhraseNotes.swift */,
 			);
 			path = SeedPhrasesManagement;
 			sourceTree = "<group>";
@@ -1202,7 +1203,6 @@
 				E42966F52B7C0A7B0044E645 /* Intro.swift */,
 				E42966F72B7C0AA80044E645 /* EntryTypeChoice.swift */,
 				E42966F92B7C0ADE0044E645 /* ApproversContactInfo.swift */,
-				E42966FB2B7C0B170044E645 /* SeedPhraseNotes.swift */,
 				E42966FD2B7C0B750044E645 /* SeedPhrasesList.swift */,
 			);
 			path = EnterInfoForBeneficiary;

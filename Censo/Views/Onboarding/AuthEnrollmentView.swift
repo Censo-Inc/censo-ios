@@ -30,20 +30,16 @@ struct AuthEnrollmentView: View {
                         CreatePassword { cryptedPassword in
                             onPasswordReady(cryptedPassword)
                         }
-                        .navigationBarTitleDisplayMode(.inline)
-                        .navigationTitle("Create a password")
-                        .navigationBarBackButtonHidden(true)
-                        .toolbar(content: {
+                        .navigationInlineTitle("Create a password")
+                        .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
+                                DismissButton(icon: .back, action: {
                                     onBiometryCanceled?()
                                     self.readyToStartEnrollment = false
                                     self.usePasswordAuth = false
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
+                                })
                             }
-                        })
+                        }
                     }
                 } else {
                     FacetecAuth<API.AuthEnrollmentApiResponse>(

@@ -9,8 +9,6 @@ import Foundation
 import SwiftUI
 
 struct ActivateApprover : View {
-    @Environment(\.dismiss) var dismiss
-    
     @EnvironmentObject var ownerRepository: OwnerRepository
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
@@ -41,23 +39,15 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if let onBack {
-                        Button {
-                            onBack()
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
+                        DismissButton(icon: .back, action: onBack)
                     } else {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        DismissButton(icon: .close)
                     }
                 }
-            })
+            }
         case .rename:
             RenameApprover(
                 policySetup: policySetup,
@@ -66,17 +56,14 @@ struct ActivateApprover : View {
                     mode = .activate
                 }
             )
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Rename approver")
-            .toolbar(content: {
+            .navigationInlineTitle("Rename approver")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         mode = .activate
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
         case .activate:
             VStack {
                 VStack(spacing: 0) {
@@ -268,17 +255,14 @@ struct ActivateApprover : View {
                 .padding(.bottom)
             }
             .padding(.top)
-            .navigationTitle(Text("Verify \(approver.label)"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .navigationInlineTitle("Verify \(approver.label)")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         mode = .getLive
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
             .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
             .onReceive(remoteNotificationPublisher) { _ in
                 refreshState()

@@ -116,17 +116,12 @@ struct SetupStep: View {
                         ownerState: .sample,
                         onReadyToGetStarted: {_ in}
                     )
-                    .navigationTitle(Text("Access"))
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden(true)
-                    .toolbar(content: {
+                    .navigationInlineTitle("Access")
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
+                            DismissButton(icon: .back)
                         }
-                    })
+                    }
                 }
             })
     }

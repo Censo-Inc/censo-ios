@@ -71,25 +71,18 @@ struct SeedEntry: View {
                 .buttonStyle(RoundedButtonStyle())
                 .padding(.vertical)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Text("Seed phrase input"))
-            .toolbar(content: {
+            .navigationInlineTitle("Seed phrase input")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if (words.isEmpty) {
-                        Button {
-                            onBack()
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
+                        DismissButton(icon: .back, action: onBack)
                     } else {
-                        Button {
+                        DismissButton(icon: .close, action: {
                             showingDismissAlert = true
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        })
                     }
                 }
-            })
+            }
             .navigationDestination(isPresented: $showingVerification) {
                 SeedVerification(
                     words: words,

@@ -58,18 +58,14 @@ struct PhrasesAccessAvailable: View {
                     self.step = .retrievingSeedPhrase(phraseIndex: phraseIndex, language: language)
                 }
             )
-            .navigationTitle(Text("Access"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
+            .navigationInlineTitle("Access")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         self.step = .showingList
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
         case .retrievingSeedPhrase(let phraseIndex, let language):
             ProgressView()
                 .onAppear {
@@ -124,19 +120,15 @@ struct PhrasesAccessAvailable: View {
                 },
                 start: start
             )
-            .navigationTitle(Text(label))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
+            .navigationInlineTitle(label)
             .interactiveDismissDisabled()
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .close, action: {
                         self.step = .showingList
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    })
                 }
-            })
+            }
         }
     }
     

@@ -51,27 +51,16 @@ struct SeedVerification: View {
             }
         )
         .multilineTextAlignment(.center)
-        .navigationTitle(Text("Review seed phrase"))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar(content: {
+        .navigationInlineTitle("Review seed phrase")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if (onClose == nil) {
-                    BackButton()
+                    DismissButton(icon: .back)
                 } else {
-                    Button {
-                        onClose!()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                            .foregroundColor(.black)
-                            .font(.body.bold())
-                    }
+                    DismissButton(icon: .close, action: onClose)
                 }
             }
-        })
+        }
         .alert("Are you sure?", isPresented: $showingDismissAlert) {
             Button(role: .destructive, action: { dismiss() }) {
                 Text("Exit")

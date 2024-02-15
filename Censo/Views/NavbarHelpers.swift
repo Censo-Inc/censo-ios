@@ -8,27 +8,15 @@
 import Foundation
 import SwiftUI
 
-struct BackButton : View {
+struct DismissButton : View {
     @Environment(\.dismiss) var dismiss
     
-    var action: (() -> Void)?
-    
-    var body: some View {
-        Button {
-            if let action = action {
-                action()
-            } else {
-                dismiss()
-            }
-        } label: {
-            Image(systemName: "chevron.left")
-        }
+    enum Icon {
+        case back
+        case close
     }
-}
-
-struct CloseButton : View {
-    @Environment(\.dismiss) var dismiss
     
+    var icon: Icon
     var action: (() -> Void)?
     
     var body: some View {
@@ -39,7 +27,12 @@ struct CloseButton : View {
                 dismiss()
             }
         } label: {
-            Image(systemName: "xmark")
+            switch (icon) {
+            case .back:
+                Image(systemName: "chevron.left")
+            case .close:
+                Image(systemName: "xmark")
+            }
         }
     }
 }

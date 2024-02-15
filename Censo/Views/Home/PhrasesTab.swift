@@ -14,9 +14,8 @@ struct PhrasesTab: View {
     
     @State private var showingError = false
     @State private var error: Error?
-    @State private var showingEditSheet = false
+    @State private var showingPhraseMenuSheet = false
     @State private var editingIndex: Int?
-    @State private var phraseGuidsBeingDeleted: Set<String> = []
     @State private var showingDeleteConfirmation = false
     @State private var deleteConfirmationIndex = 0
     @State private var showingAddPhrase = false
@@ -25,10 +24,11 @@ struct PhrasesTab: View {
     @State private var deletingAccess: Bool = false
     @State private var deleteConfirmationText = ""
     @State private var showingDeleteNotConfirmed: Bool = false
+    @State private var showingNotesSheet = false
     @State private var showingRenameSheet = false
 
     private func deleteConfirmationMessage(_ i: Int) -> String {
-        return  "Delete \(ownerState.vault.seedPhrases[i].label)"
+        return "Delete \(ownerState.vault.seedPhrases[i].label)"
     }
     
     var body: some View {
@@ -37,10 +37,27 @@ struct PhrasesTab: View {
                 List {
                     ForEach(0..<ownerState.vault.seedPhrases.count, id: \.self) { i in
                         VStack {
-                            SeedPhrasePill(seedPhrase: ownerState.vault.seedPhrases[i], index: i, onEdit: {
-                                showingEditSheet = true
-                                editingIndex = i
-                            })
+                            SeedPhrasePill(
+                                seedPhrase: ownerState.vault.seedPhrases[i],
+                                buttonContent: {
+                                    Button {
+                                        showingPhraseMenuSheet = true
+                                        editingIndex = i
+                                    } label: {
+                                        HStack {
+                                            Spacer()
+                                            Image(systemName: "line.3.horizontal")
+                                                .renderingMode(.template)
+                                                .resizable()
+                                                .frame(width: 26)
+                                                .font(.system(size: 30))
+                                        }
+                                    }
+                                    .accessibilityIdentifier("seedPhraseEdit\(i)Button")
+                                    .fixedSize()
+                                    .padding([.trailing], 14)
+                                }
+                            )
                         }
                         .listRowSeparator(.hidden)
                         .listRowInsets(.init(top: 8, leading: 32, bottom: 8, trailing: 32))
@@ -49,16 +66,23 @@ struct PhrasesTab: View {
                 .padding(.bottom)
                 .listStyle(.plain)
                 .scrollIndicators(ScrollIndicatorVisibility.hidden)
-                .confirmationDialog("Edit", isPresented: $showingEditSheet, presenting: editingIndex) { i in
+                .confirmationDialog("Edit", isPresented: $showingPhraseMenuSheet, presenting: editingIndex) { i in
                     Button  {
-                        showingEditSheet = false
+                        showingPhraseMenuSheet = false
+                        showingNotesSheet = true
+                    } label: {
+                        Text("Notes")
+                    }
+                    
+                    Button  {
+                        showingPhraseMenuSheet = false
                         showingRenameSheet = true
                     } label: {
                         Text("Rename")
                     }
                     
                     Button(role: .destructive) {
-                        showingEditSheet = false
+                        showingPhraseMenuSheet = false
                         showingDeleteConfirmation = true
                         deleteConfirmationIndex = i
                     } label: {
@@ -131,10 +155,22 @@ struct PhrasesTab: View {
             .sheet(isPresented: $showingAccess, content: {
                 InitPhrasesAccessFlow(ownerState: ownerState)
             })
+            .sheet(isPresented: $showingNotesSheet, content: {
+                let seedPhrase = ownerState.vault.seedPhrases[editingIndex!]
+                NavigationStack {
+                    SeedPhraseNotes(
+                        policy: ownerState.policy,
+                        publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                        seedPhrase: seedPhrase,
+                        forBeneficiary: false,
+                        dismissButtonIcon: .close
+                    )
+                    .navigationInlineTitle(seedPhrase.label)
+                }
+            })
             .sheet(isPresented: $showingRenameSheet, content: {
                 RenameSeedPhrase(
-                    ownerState: ownerState,
-                    editingIndex: editingIndex!,
+                    seedPhrase: ownerState.vault.seedPhrases[editingIndex!],
                     onComplete: {
                         showingRenameSheet = false
                     }
@@ -207,7 +243,6 @@ struct PhrasesTab: View {
     }
     
     func deletePhrase(_ seedPhrase: API.SeedPhrase) {
-        phraseGuidsBeingDeleted.insert(seedPhrase.guid)
         ownerRepository.deleteSeedPhrase(seedPhrase.guid) { result in
             switch result {
             case .success(let payload):
@@ -215,7 +250,6 @@ struct PhrasesTab: View {
             case .failure(let error):
                 showError(error)
             }
-            phraseGuidsBeingDeleted.remove(seedPhrase.guid)
         }
     }
     

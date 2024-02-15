@@ -156,32 +156,21 @@ struct AdditionalPhrase: View {
                             }
                         }
                         .padding(.horizontal, 32)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .navigationTitle("Add another seed phrase")
-                        .toolbar(content: {
-                            switch step {
-                            case .intro:
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button {
-                                        dismiss()
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                    }
-                                }
-                            case .haveMyOwn:
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button {
+                        .navigationInlineTitle("Add another seed phrase")
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                switch step {
+                                case .intro:
+                                    DismissButton(icon: .close)
+                                case .haveMyOwn:
+                                    DismissButton(icon: .back, action: {
                                         step = .intro
-                                    } label: {
-                                        Image(systemName: "chevron.left")
-                                    }
-                                }
-                            case .addPhrase, .generatePhrase, .pastePhrase, .photoPhrase:
-                                ToolbarItem() {
+                                    })
+                                case .addPhrase, .generatePhrase, .pastePhrase, .photoPhrase:
                                     EmptyView()
                                 }
                             }
-                        })
+                        }
                     }
                 }
             }

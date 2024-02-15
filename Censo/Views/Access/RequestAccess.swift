@@ -46,15 +46,11 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
                 onCancelAccess: deleteAccessAndDismiss
             )
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
         case .thisDevice(let access):
             // delete it in case this is a leftover access with other intent
             if access.intent != intent {

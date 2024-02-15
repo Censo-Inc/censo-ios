@@ -10,7 +10,6 @@ import SwiftUI
 
 
 struct ShareOwnerLoginIdResetLink: View {
-    @Environment(\.dismiss) var dismiss
     var link: URL
     
     var body: some View {
@@ -45,11 +44,7 @@ struct ShareOwnerLoginIdResetLink: View {
         .padding(.horizontal, 32)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
         }
     }

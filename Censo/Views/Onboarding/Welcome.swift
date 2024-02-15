@@ -104,15 +104,11 @@ struct Welcome: View {
                 }
                 .padding(.horizontal, 32)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            onCancel()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        DismissButton(icon: .close, action: onCancel)
                     }
-                })
+                }
             }
         }
     }

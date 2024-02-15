@@ -62,23 +62,15 @@ struct GetLiveWithOwner: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
-        .toolbar(content: {
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if let onBack {
-                    Button {
-                        onBack()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    DismissButton(icon: .back, action: onBack)
                 } else {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
             }
-        })
+        }
     }
 }
 

@@ -53,7 +53,7 @@ extension EnterInfoForBeneficiary {
             .padding(.vertical)
             .navigationInlineTitle("Legacy - Seed phrase information")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) { BackButton() }
+                ToolbarItem(placement: .navigationBarLeading) { DismissButton(icon: .back) }
             }
         }
     }

@@ -133,16 +133,12 @@ struct RenameApprover: View {
                 approver: policySetup.approvers[1],
                 onComplete: {}
             )
-            .navigationTitle(Text("Activate Neo"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .navigationInlineTitle("Activate Neo")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    DismissButton(icon: .back)
                 }
-            })
+            }
         }
     }
 }

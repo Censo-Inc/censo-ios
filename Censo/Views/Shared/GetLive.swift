@@ -63,8 +63,7 @@ struct GetLive : View {
                 .padding([.leading, .trailing], 32)
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(isApprover ? "Verify \(name)" : "Add Beneficiary")
+        .navigationInlineTitle(isApprover ? "Verify \(name)" : "Add Beneficiary")
     }
 }
 
@@ -76,14 +75,11 @@ struct GetLive : View {
                 name: "Neo",
                 onContinue: {}
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
         }
     }
 }
@@ -96,14 +92,11 @@ struct GetLive : View {
                 isApprover: false,
                 onContinue: {}
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
         }
     }
 }

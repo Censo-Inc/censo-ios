@@ -119,18 +119,12 @@ struct LoginIdResetLoggedOutSteps: View {
                     self.step = .signIn
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .navigationTitle("Reset Login ID")
-            .toolbar(content: {
+            .navigationInlineTitle("Reset Login ID")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onCancel()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close, action: onCancel)
                 }
-            })
+            }
         }
     }
 }
@@ -212,33 +206,25 @@ struct LoginIdResetLoggedInSteps: View {
                         .padding(.top)
                         .padding(.horizontal)
                     }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden(true)
-                    .navigationTitle("Reset Login ID")
-                    .toolbar(content: {
+                    .navigationInlineTitle("Reset Login ID")
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
+                            DismissButton(icon: .close, action: {
                                 Keychain.removeUserCredentials()
                                 onComplete()
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
+                            })
                         }
-                    })
+                    }
                 case .chooseVerificationMethod:
                     SelectIdentityVerificationMethod(step: $step)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .navigationBarBackButtonHidden(true)
-                        .navigationTitle("Reset Login ID")
-                        .toolbar(content: {
+                        .navigationInlineTitle("Reset Login ID")
+                        .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
+                                DismissButton(icon: .back, action: {
                                     step = .startVerification
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
+                                })
                             }
-                        })
+                        }
                 case .resetWithBiometry:
                     FacetecAuth<API.ResetLoginIdApiResponse>(
                         onFaceScanReady: { biometryData, completion in
@@ -275,18 +261,14 @@ struct LoginIdResetLoggedInSteps: View {
                         )
                         .padding(.horizontal)
                     }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden(true)
-                    .navigationTitle("Reset Login ID")
-                    .toolbar(content: {
+                    .navigationInlineTitle("Reset Login ID")
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
+                            DismissButton(icon: .back, action: {
                                 step = .chooseVerificationMethod
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
+                            })
                         }
-                    })
+                    }
                 }
             }
             .environmentObject(ownerRepository)
@@ -350,17 +332,12 @@ private let resetTokensThreshold = 2
         SelectIdentityVerificationMethod(
             step: Binding.constant(.chooseVerificationMethod)
         )
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .navigationTitle("Reset Login ID")
-        .toolbar(content: {
+        .navigationInlineTitle("Reset Login ID")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
+                DismissButton(icon: .back)
             }
-        })
+        }
     }
     .foregroundColor(.Censo.primaryForeground)
 }

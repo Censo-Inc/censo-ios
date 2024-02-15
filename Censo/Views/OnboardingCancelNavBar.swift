@@ -18,19 +18,11 @@ struct OnboardingCancelNavBar: ViewModifier {
             NavigationStack {
                 content
                     .navigationInlineTitle(navigationTitle ?? "")
-                    .toolbar(content: {
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                                onCancel()
-                            } label: {
-                                if showAsBack {
-                                    Image(systemName: "chevron.left")
-                                } else {
-                                    Image(systemName: "xmark")
-                                }
-                            }
+                            DismissButton(icon: showAsBack ? .back : .close, action: onCancel)
                         }
-                    })
+                    }
             }
         } else if let navigationTitle = navigationTitle  {
             NavigationStack {

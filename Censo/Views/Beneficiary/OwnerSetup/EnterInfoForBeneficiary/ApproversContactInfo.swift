@@ -66,7 +66,7 @@ extension EnterInfoForBeneficiary {
                         Button {
                             submit()
                         } label: {
-                            Text("Save information")
+                            Text("Save")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
@@ -91,7 +91,7 @@ extension EnterInfoForBeneficiary {
             }
             .navigationInlineTitle("Legacy - Approver information")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) { BackButton() }
+                ToolbarItem(placement: .navigationBarLeading) { DismissButton(icon: .back) }
             }
         }
         

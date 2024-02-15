@@ -42,17 +42,14 @@ struct FirstPhrase: View {
                                 onPastePhrase: { showingPastePhrase = true },
                                 onPhotoPhrase: { showingPhotoPhrase = true }
                             )
-                            .navigationTitle("Add your first seed phrase")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar(content: {
+                            .navigationInlineTitle("Add your first seed phrase")
+                            .toolbar {
                                 ToolbarItem(placement: .navigationBarLeading) {
-                                    Button {
+                                    DismissButton(icon: .back, action: {
                                         addYourOwnPhrase = false
-                                    } label: {
-                                        Image(systemName: "chevron.left")
-                                    }
+                                    })
                                 }
-                            })
+                            }
                         } else {
                             FirstTimePhrase(
                                 onGeneratePhrase: { showingGeneratePhrase = true },

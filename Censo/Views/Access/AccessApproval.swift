@@ -42,17 +42,12 @@ struct AccessApproval : View {
                     step = .enterTotp(approver: approver)
                 }
             )
-            .navigationTitle(Text(navigationTitle))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .navigationInlineTitle(navigationTitle)
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onCancel()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    DismissButton(icon: .back, action: onCancel)
                 }
-            })
+            }
         case .enterTotp(let approver):
             let approval = access.approvals.first(where: {$0.participantId == approver.participantId})!
             EnterAccessVerificationCode(
@@ -69,17 +64,14 @@ struct AccessApproval : View {
                     }
                 }
             )
-            .navigationTitle(Text(navigationTitle))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .navigationInlineTitle(navigationTitle)
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         step = .chooseApprover(selected: approver)
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
         case .approved(let ownerState):
             AccessApproved()
                 .onAppear(perform: {

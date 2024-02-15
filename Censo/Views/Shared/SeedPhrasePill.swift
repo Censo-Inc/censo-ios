@@ -7,15 +7,31 @@
 
 import SwiftUI
 
-struct SeedPhrasePill: View {
+struct SeedPhrasePill<ButtonContent : View>: View where ButtonContent: View {
     var seedPhrase: API.SeedPhrase
-    var index: Int?
     var isSelected: Bool?
-    var showSelectedCheckmark: Bool = false
-    var strikeThrough: Bool = false
-    var isDisabled: Bool = false
-    var onEdit: (() -> Void)?
+    var showSelectedCheckmark: Bool
+    var strikeThrough: Bool
+    var isDisabled: Bool
 
+    let buttonContent: () -> ButtonContent
+    
+    init(
+        seedPhrase: API.SeedPhrase,
+        isSelected: Bool? = nil,
+        showSelectedCheckmark: Bool = false,
+        strikeThrough: Bool = false,
+        isDisabled: Bool = false,
+        @ViewBuilder buttonContent: @escaping () -> ButtonContent = { EmptyView() }
+    ) {
+        self.seedPhrase = seedPhrase
+        self.isSelected = isSelected
+        self.showSelectedCheckmark = showSelectedCheckmark
+        self.strikeThrough = strikeThrough
+        self.isDisabled = isDisabled
+        self.buttonContent = buttonContent
+    }
+    
     func iconName() -> String {
         return switch seedPhrase.type {
         case .binary:
@@ -44,21 +60,11 @@ struct SeedPhrasePill: View {
                     .strikethrough(strikeThrough)
             }
             
-            if (onEdit != nil) {
-                Button {
-                    onEdit?()
-                } label: {
-                    HStack {
-                        Spacer()
-                        Image("Pencil")
-                            .renderingMode(.template)
-                            .foregroundColor(isDisabled ? .Censo.gray : isSelected == true ? .Censo.green : .Censo.primaryForeground)
-                    }
-                }
-                .accessibilityIdentifier("seedPhraseEdit\(index ?? 0)Button")
-                .padding([.trailing], 10)
-                .fixedSize()
+            Group {
+                buttonContent()
             }
+            .foregroundColor(isDisabled ? .Censo.gray : isSelected == true ? .Censo.green : .Censo.primaryForeground)
+            
             if (showSelectedCheckmark) {
                 if (isSelected == true) {
                     Image(systemName: "checkmark")
@@ -72,7 +78,6 @@ struct SeedPhrasePill: View {
                         .fixedSize()
                 }
             }
-            
         }
         .listRowSeparator(.hidden)
         .listRowInsets(EdgeInsets())
@@ -88,10 +93,10 @@ struct SeedPhrasePill: View {
 #if DEBUG
 #Preview {
     VStack {
-        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Editable", type: .binary, createdAt: Date()), onEdit: {})
-        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Editable", type: .binary, createdAt: Date()), isDisabled: true, onEdit: {})
-        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Not editable", type: .photo, createdAt: Date()), isSelected: true, showSelectedCheckmark: true)
-        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "A VERY LONG LABEL WITH EXACTLY FIFTY CHARACTERS!!!", type: .binary, createdAt: Date()), isSelected: true, showSelectedCheckmark: true, isDisabled: true, onEdit: {})
+        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Disabled and not selected", type: .binary, createdAt: Date()), isDisabled: true)
+        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Enabled and selected", type: .photo, createdAt: Date()), isSelected: true, showSelectedCheckmark: true)
+        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "Enabled and not selected", type: .binary, createdAt: Date()))
+        SeedPhrasePill(seedPhrase: API.SeedPhrase(guid: "", seedPhraseHash: .sample, label: "A VERY LONG LABEL WITH EXACTLY FIFTY CHARACTERS!!!", type: .binary, createdAt: Date()), isSelected: true, showSelectedCheckmark: true, isDisabled: true)
     }
     .padding()
     .foregroundColor(Color.Censo.primaryForeground)

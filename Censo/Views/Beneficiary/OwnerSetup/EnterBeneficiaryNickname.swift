@@ -10,8 +10,6 @@ import SwiftUI
 import Sentry
 
 struct EnterBeneficiaryNickname: View {
-    @Environment(\.dismiss) var dismiss
-    
     @EnvironmentObject var ownerRepository: OwnerRepository
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
@@ -76,17 +74,12 @@ struct EnterBeneficiaryNickname: View {
             Text(error.localizedDescription)
         }
         .padding([.leading, .trailing], 32)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Add beneficiary")
-        .toolbar(content: {
+        .navigationInlineTitle("Add beneficiary")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
-        })
+        }
     }
     
     private func showError(_ error: Error) {

@@ -110,11 +110,9 @@ struct OwnerVerification: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         step = .getLive
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
             }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in

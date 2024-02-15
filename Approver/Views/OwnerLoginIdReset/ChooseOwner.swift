@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct ChooseOwner: View {
-    @Environment(\.dismiss) var dismiss
     var owners: [Owner]
     @State private var selectedOwner: Owner?
     var onContinue: (Owner) -> Void
@@ -58,11 +57,7 @@ struct ChooseOwner: View {
         .padding(.horizontal, 32)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close)
             }
         }
     }

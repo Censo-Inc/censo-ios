@@ -92,7 +92,7 @@ struct Onboarding: View {
         .navigationBarHidden(isComplete)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                DismissButton(icon: .back)
             }
         }
         .alert("Error", isPresented: $showingError, presenting: currentError) { _ in

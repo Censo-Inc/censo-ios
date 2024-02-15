@@ -67,19 +67,12 @@ struct GeneratePhrase: View {
             }
             .padding(.horizontal, 32)
             .multilineTextAlignment(.center)
-            .navigationTitle(Text("Generate seed phrase"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
+            .navigationInlineTitle("Generate seed phrase")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.black)
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button {
                     self.error = nil

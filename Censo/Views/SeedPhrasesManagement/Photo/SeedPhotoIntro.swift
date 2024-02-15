@@ -81,15 +81,10 @@ struct SeedPhotoIntro: View {
         }
         .padding(.vertical)
         .padding(.horizontal, 32)
-        .navigationTitle(Text("Seed phrase photo"))
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationInlineTitle("Seed phrase photo")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    onBack()
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
+                DismissButton(icon: .back, action: onBack)
             }
         }
     }

@@ -41,15 +41,11 @@ struct PendingAuthResetOnThisDevice : View {
                     step = .getApproval(approver: approver)
                 }
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onCancel()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close, action: onCancel)
                 }
-            })
+            }
         case .getApproval(let approver):
             let approval = authReset.approvalForApprover(approver)!
             GetAuthResetApproval(
@@ -63,15 +59,13 @@ struct PendingAuthResetOnThisDevice : View {
                     }
                 }
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         step = .chooseApprover(selected: approver)
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
         }
     }
 }

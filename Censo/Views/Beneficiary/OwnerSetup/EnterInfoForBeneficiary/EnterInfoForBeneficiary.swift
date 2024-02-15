@@ -41,10 +41,28 @@ struct EnterInfoForBeneficiary: View {
             Intro(router: router)
                 .navigationDestination(for: Route.self) { destination in
                     switch destination {
-                    case .entryTypeChoice: EntryTypeChoice(router: router)
-                    case .approversContactInfoEntry: ApproversContactInfo(policy: ownerState.policy, publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey)
-                    case .seedPhrasesList: SeedPhrasesList(router: router, policy: ownerState.policy, vault: ownerState.vault)
-                    case .seedPhraseNotesEntry(let phrase): SeedPhraseNotes(policy: ownerState.policy, publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey, seedPhrase: phrase)
+                    case .entryTypeChoice: 
+                        EntryTypeChoice(router: router)
+                    case .approversContactInfoEntry: 
+                        ApproversContactInfo(
+                            policy: ownerState.policy,
+                            publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey
+                        )
+                    case .seedPhrasesList: 
+                        SeedPhrasesList(
+                            router: router,
+                            policy: ownerState.policy,
+                            vault: ownerState.vault
+                        )
+                    case .seedPhraseNotesEntry(let phrase):
+                        SeedPhraseNotes(
+                            policy: ownerState.policy,
+                            publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
+                            seedPhrase: phrase,
+                            forBeneficiary: true,
+                            dismissButtonIcon: .back
+                        )
+                        .navigationInlineTitle("Legacy - \(phrase.label)")
                     }
                 }
         }

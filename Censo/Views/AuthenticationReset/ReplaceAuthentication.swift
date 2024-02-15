@@ -92,15 +92,11 @@ struct ReplaceAuthentication : View {
                     }
                 }
             }
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onCancel()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close, action: onCancel)
                 }
-            })
+            }
         case .replace(newAuthType: AuthType.password):
             CreatePassword { cryptedPassword in
                 ownerRepository.replaceAuthentication(API.ReplaceAuthenticationApiRequest(
@@ -114,15 +110,13 @@ struct ReplaceAuthentication : View {
                     }
                 }
             }
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         step = .initial
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in
                 Button {
                     showingError = false

@@ -39,15 +39,13 @@ struct ContentView: View {
                         )
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationBarBackButtonHidden(true)
-                        .toolbar(content: {
+                        .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
+                                DismissButton(icon: .back, action: {
                                     self.showLogin = false
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
+                                })
                             }
-                        })
+                        }
                     }
                 } else {
                     LoggedOutWelcomeScreen(

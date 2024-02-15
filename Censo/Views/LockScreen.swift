@@ -129,15 +129,13 @@ struct LockScreen: View {
                     )
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationBarBackButtonHidden(true)
-                    .toolbar(content: {
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
+                            DismissButton(icon: .back, action: {
                                 route = .locked
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
+                            })
                         }
-                    })
+                    }
                 }
             case .none:
                 EmptyView().onAppear {

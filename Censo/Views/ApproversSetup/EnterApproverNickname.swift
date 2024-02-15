@@ -10,8 +10,6 @@ import SwiftUI
 import Sentry
 
 struct EnterApproverNickname: View {
-    @Environment(\.dismiss) var dismiss
-    
     @EnvironmentObject var ownerRepository: OwnerRepository
     @EnvironmentObject var ownerStateStoreController: OwnerStateStoreController
     
@@ -78,25 +76,16 @@ struct EnterApproverNickname: View {
             Text(error.localizedDescription)
         }
         .padding([.leading, .trailing], 32)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Name your \(isPrimary ? "first" : "second") approver")
-        .toolbar(content: {
+        .navigationInlineTitle("Name your \(isPrimary ? "first" : "second") approver")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if let onBack {
-                    Button {
-                        onBack()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    DismissButton(icon: .back, action: onBack)
                 } else {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
             }
-        })
+        }
     }
     
     private func showError(_ error: Error) {

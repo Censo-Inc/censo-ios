@@ -39,7 +39,7 @@ extension EnterInfoForBeneficiary {
             .padding(.horizontal, 32)
             .navigationInlineTitle("Legacy - Information")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) { CloseButton() }
+                ToolbarItem(placement: .navigationBarLeading) { DismissButton(icon: .close) }
             }
         }
     }

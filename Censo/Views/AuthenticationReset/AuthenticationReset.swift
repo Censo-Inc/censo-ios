@@ -38,15 +38,13 @@ struct AuthenticationReset: View {
                     } message: { error in
                         Text(error.localizedDescription)
                     }
-                    .toolbar(content: {
+                    .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
+                            DismissButton(icon: .close, action: {
                                 confirmExit = true
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
+                            })
                         }
-                    })
+                    }
             case .anotherDevice:
                 PendingAuthResetOnAnotherDevice(
                     authType: ownerState.authType,
@@ -54,15 +52,13 @@ struct AuthenticationReset: View {
                         confirmExit = true
                     }
                 )
-                .toolbar(content: {
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
+                        DismissButton(icon: .close, action: {
                             confirmExit = true
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        })
                     }
-                })
+                }
             case .thisDevice(let reset):
                 switch (reset.status) {
                 case .requested:

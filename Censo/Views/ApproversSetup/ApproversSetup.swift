@@ -152,17 +152,12 @@ struct ApproversSetup: View {
                 } message: { error in
                     Text(error.localizedDescription)
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Add approvers")
-                .toolbar(content: {
+                .navigationInlineTitle("Add approvers")
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        DismissButton(icon: .close)
                     }
-                })
+                }
                 .sheet(isPresented: $showLearnMore) {
                     LearnMore(title: "Trusted Approvers & Safety in Numbers", showLearnMore: $showLearnMore) {
                         VStack {

@@ -119,17 +119,14 @@ struct LoggedInOwnerView: View {
                                                     OwnerKeyRecovery(
                                                         ownerState: ready
                                                     )
-                                                    .navigationBarTitleDisplayMode(.inline)
-                                                    .navigationTitle("Reset Login ID")
-                                                    .toolbar(content: {
+                                                    .navigationInlineTitle("Reset Login ID")
+                                                    .toolbar {
                                                         ToolbarItem(placement: .navigationBarLeading) {
-                                                            Button {
+                                                            DismissButton(icon: .close, action: {
                                                                 cancelKeyRecovery = true
-                                                            } label: {
-                                                                Image(systemName: "xmark")
-                                                            }
+                                                            })
                                                         }
-                                                    })
+                                                    }
                                                     .deleteAllDataAlert(
                                                         title: "Cancel Key Recovery",
                                                         numSeedPhrases: ready.vault.seedPhrases.count,

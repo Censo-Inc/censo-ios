@@ -38,18 +38,12 @@ struct Settings: View {
             .scrollIndicators(ScrollIndicatorVisibility.hidden)
         }
         .padding(.horizontal)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .navigationTitle("Settings")
-        .toolbar(content: {
+        .navigationInlineTitle("Settings")
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
+                DismissButton(icon: .back)
             }
-        })
+        }
         .sheet(isPresented: $showOwners, content: {
             Owners(session: session, user: $user)
         })

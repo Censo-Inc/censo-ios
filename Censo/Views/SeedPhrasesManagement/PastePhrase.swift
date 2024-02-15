@@ -109,16 +109,10 @@ struct PastePhrase: View {
             .padding(.vertical)
             .padding(.horizontal, 32)
             .frame(maxWidth: .infinity)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Paste seed phrase")
-            .navigationBarBackButtonHidden(true)
+            .navigationInlineTitle("Paste seed phrase")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        onBack()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    DismissButton(icon: .back, action: onBack)
                 }
             }
             .alert("Error", isPresented: $showingError, presenting: error) { _ in

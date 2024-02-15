@@ -58,15 +58,11 @@ struct PhraseSaveSuccess: View {
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
         .navigationBarBackButtonHidden(true)
-        .toolbar(content: {
+        .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    onFinish()
-                } label: {
-                    Image(systemName: "xmark")
-                }
+                DismissButton(icon: .close, action: onFinish)
             }
-        })
+        }
     }
 }
 

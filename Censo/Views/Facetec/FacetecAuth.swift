@@ -83,15 +83,11 @@ struct FacetecAuth<ResponseType: BiometryVerificationResponse>: View {
                         RetryView(error: error, action: prepareBiometryVerification)
                     }
                 }
-                .toolbar(content: {
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            onCancelled()
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
+                        DismissButton(icon: .back, action: onCancelled)
                     }
-                })
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)

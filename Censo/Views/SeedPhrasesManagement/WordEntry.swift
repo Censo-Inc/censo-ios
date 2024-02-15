@@ -61,17 +61,12 @@ struct WordEntry: View {
                 }
                 .listStyle(PlainListStyle())
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Text(NumberFormatter.ordinal.string(from: NSNumber(value: number)) ?? "") + Text(" word"))
-            .toolbar(content: {
+            .navigationInlineTitle("\(NumberFormatter.ordinal.string(from: NSNumber(value: number)) ?? "") word")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
             .onAppear(perform: {
                 focused = true
             })

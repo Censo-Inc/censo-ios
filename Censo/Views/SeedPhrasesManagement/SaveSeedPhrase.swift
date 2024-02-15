@@ -57,17 +57,19 @@ struct SaveSeedPhrase: View {
                 Group {
                     switch (editStep) {
                     case .addNotes:
-                        EnterInfoForBeneficiary.SeedPhraseNotes.NotesEditor(
+                        SeedPhraseNotes.Editor(
                             policy: ownerState.policy,
                             publicMasterEncryptionKey: ownerState.vault.publicMasterEncryptionKey,
                             initialValue: self.encryptedNotes,
                             saveButtonLabel: "Continue",
+                            forBeneficiary: false,
+                            dismissButtonIcon: .back,
                             onSave: { newValue in
                                 self.encryptedNotes = newValue
                                 self.editStep = .setLabel
                             }
                         )
-                        .navigationInlineTitle("Add notes for beneficiary")
+                        .navigationInlineTitle("Add notes")
                     case .setLabel:
                         VStack(alignment: .leading, spacing: 0) {
                             Spacer()
@@ -124,11 +126,11 @@ struct SaveSeedPhrase: View {
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
                                 if canAddNotes {
-                                    BackButton(action: {
+                                    DismissButton(icon: .back, action: {
                                         self.editStep = .addNotes
                                     })
                                 } else {
-                                    BackButton()
+                                    DismissButton(icon: .back)
                                 }
                             }
                         }
@@ -157,15 +159,13 @@ struct SaveSeedPhrase: View {
                             }
                         }
                         .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(content: {
+                        .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
+                                DismissButton(icon: .close, action: {
                                     showPaywall = false
-                                } label: {
-                                    Image(systemName: "xmark")
-                                }
+                                })
                             }
-                        })
+                        }
                 }
             })
         }

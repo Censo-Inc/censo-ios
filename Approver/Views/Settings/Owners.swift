@@ -42,18 +42,12 @@ struct Owners: View {
             }
             .padding(.horizontal, 32)
             .padding(.vertical)
-            .navigationTitle(Text("Who I'm helping"))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(content: {
+            .navigationInlineTitle("Who I'm helping")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
         }
         .sheet(item: $labellingOwner) { owner in
             NavigationView {
@@ -67,15 +61,13 @@ struct Owners: View {
                     }
                 )
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
+                .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
+                        DismissButton(icon: .close, action: {
                             self.labellingOwner = nil
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
+                        })
                     }
-                })
+                }
             }
         }
     }

@@ -41,15 +41,11 @@ struct ActivateBeneficiary : View {
                     mode = .activate
                 }
             )
-            .toolbar(content: {
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+                    DismissButton(icon: .close)
                 }
-            })
+            }
         case .activated:
             Activated(
                 policy: policy,
@@ -240,17 +236,14 @@ struct ActivateBeneficiary : View {
                 .padding([.leading, .trailing], 32)
             }
             .padding([.top], 24)
-            .navigationTitle(Text("Add beneficiary"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
+            .navigationInlineTitle("Add beneficiary")
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    DismissButton(icon: .back, action: {
                         mode = .getLive
-                    } label: {
-                        Image(systemName: "chevron.left")
-                    }
+                    })
                 }
-            })
+            }
             .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
             .onReceive(remoteNotificationPublisher) { _ in
                 refreshState()
