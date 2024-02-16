@@ -10,20 +10,29 @@ import SwiftUI
 struct OperationCompletedView: View {
     @Environment(\.scenePhase) var scenePhase
     var successText: String = "Approved"
+    var showFistBump: Bool = true
     var onSuccess: () -> Void
     
     var body: some View {
         VStack(alignment: .center) {
             Spacer()
             
-            HStack {
-                Spacer()
-                
-                Image("CongratsFistBump")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(.horizontal)
-                
+            if showFistBump {
+                HStack {
+                    Spacer()
+                    
+                    Image("CongratsFistBump")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                }
+            } else {
+                Text("Approved")
+                    .font(.largeTitle)
+                    .bold()
+                    .padding()
                 Spacer()
             }
             
@@ -50,6 +59,12 @@ struct OperationCompletedView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     OperationCompletedView(successText: "Thanks for helping someone keep their crypto safe.\n\nYou may now close the app.") {}.foregroundColor(Color.Censo.primaryForeground)
 }
+
+#Preview("noFistBump") {
+    OperationCompletedView(successText: "Thanks for helping someone keep their crypto safe.\n\nYou may now close the app.", showFistBump: false) {}.foregroundColor(Color.Censo.primaryForeground)
+}
+#endif

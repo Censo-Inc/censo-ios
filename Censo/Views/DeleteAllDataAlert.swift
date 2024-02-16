@@ -34,7 +34,7 @@ struct DeleteAllDataAlert: ViewModifier {
                     }
                 }.accessibilityIdentifier("confirmDeleteAllDataButton")
             } message: {
-                Text("This action will delete **ALL** of your data. Seed phrases you have added will no longer be accessible. This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
+                Text("This action will delete **ALL** of your data.\(numSeedPhrases > 0 ? " Seed phrases you have added will no longer be accessible." : "") This action cannot be reversed.\nIf you are sure, please type:\n**\"\(deleteConfirmationMessage())\"**")
             }
             .alert("Confirmation does not match", isPresented: $incorrectConfirmation) {
                 Button("Cancel", role: .cancel) {
@@ -47,7 +47,7 @@ struct DeleteAllDataAlert: ViewModifier {
     }
     
     private func deleteConfirmationMessage() -> String {
-        return "Delete my \(numSeedPhrases) seed phrase\(numSeedPhrases == 1 ? "" : "s")"
+        return numSeedPhrases > 0 ? "Delete my \(numSeedPhrases) seed phrase\(numSeedPhrases == 1 ? "" : "s")" : "Delete my data"
     }
 }
 

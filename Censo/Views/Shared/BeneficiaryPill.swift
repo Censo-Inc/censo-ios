@@ -44,6 +44,12 @@ struct BeneficiaryPill: View {
                             .onAppear {
                                 onActivated?()
                             }
+                    default:
+                        Text("Active")
+                            .foregroundColor(Color.Censo.green)
+                            .onAppear {
+                                onActivated?()
+                            }
                     }
                 }
                 .font(.subheadline)

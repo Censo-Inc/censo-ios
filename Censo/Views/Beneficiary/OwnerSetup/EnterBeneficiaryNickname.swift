@@ -63,16 +63,7 @@ struct EnterBeneficiaryNickname: View {
             .padding(.bottom)
             .disabled(submitting || !nickname.isValid)
         }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-            } label: {
-                Text("OK")
-            }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: error)
         .padding([.leading, .trailing], 32)
         .navigationInlineTitle("Add beneficiary")
         .toolbar {

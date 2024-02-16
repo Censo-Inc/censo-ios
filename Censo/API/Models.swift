@@ -432,7 +432,7 @@ extension API {
         var signature: Base64EncodedString
         var timeMillis: UInt64
     }
-    
+
     struct SubmitBeneficiaryVerificationApiResponse: Decodable {
         var ownerState: OwnerState
     }
@@ -447,7 +447,6 @@ extension API {
         var keyConfirmationTimeMillis: UInt64
         var encryptedKeys: [BeneficiaryEncryptedKey]
     }
-
     
     struct ActivateBeneficiaryApiResponse: Decodable {
         var ownerState: OwnerState
@@ -469,6 +468,53 @@ extension API {
     }
     
     struct UpdateBeneficiaryApproverContactInfoApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+
+    struct SubmitTakeoverTotpVerificationApiRequest: Encodable {
+        var beneficiaryPublicKey: Base58EncodedPublicKey
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
+    }
+    
+    struct RetrieveTakeoverKeyApiRequest: Encodable {
+        var biometryData: Authentication.FacetecBiometry
+    }
+    
+    struct RetrieveTakeoverKeyWithPasswordApiRequest: Encodable {
+        var password: Authentication.Password
+    }
+    
+    struct FinalizeTakeoverApiRequest: Encodable {
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
+        var password: Authentication.Password?
+    }
+    
+    struct InitiateTakeoverApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct CancelTakeoverApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct SubmitTakeoverTotpVerificationApiResponse: Decodable {
+        var ownerState: OwnerState
+    }
+    
+    struct RetrieveTakeoverKeyApiResponse: Decodable, BiometryVerificationResponse {
+        var ownerState: OwnerState
+        var encryptedKey: Base64EncodedString
+        var scanResultBlob: String
+    }
+    
+    struct RetrieveTakeoverKeyWithPasswordApiResponse: Decodable {
+        var ownerState: OwnerState
+        var encryptedKey: Base64EncodedString
+    }
+    
+    struct FinalizeTakeoverApiResponse: Decodable {
         var ownerState: OwnerState
     }
 }

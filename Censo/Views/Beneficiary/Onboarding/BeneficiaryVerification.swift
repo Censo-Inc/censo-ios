@@ -119,6 +119,70 @@ struct BeneficiaryVerification: View {
 }
 
 #if DEBUG
+
+extension API.OwnerState.Beneficiary.Phase.ApproverContactInfo {
+    static var sample: Self {
+        .init(
+            participantId: .random(),
+            label: "Approver One"
+        )
+    }
+}
+
+extension API.OwnerState.Beneficiary.Phase.TakeoverInitiated {
+    static var sample: Self {
+        .init(
+            guid: "guid",
+            approverContactInfo: [
+                .sample,
+                API.OwnerState.Beneficiary.Phase.ApproverContactInfo(
+                    participantId: .random(),
+                    label: "Approver Two"
+                )
+            ],
+            timelockPeriodInMillis: 300000
+        )
+    }
+}
+
+extension API.OwnerState.Beneficiary.Phase.TakeoverRejected {
+    static var sample: Self {
+        .init(
+            guid: "guid",
+            approverContactInfo: .sample
+        )
+    }
+}
+
+extension API.OwnerState.Beneficiary.Phase.TakeoverTimelocked {
+    static var sample: Self {
+        .init(
+            guid: "guid",
+            unlocksAt: Date.now.addingTimeInterval(TimeInterval(172802)),
+            approverContactInfo: .sample
+        )
+    }
+}
+
+extension API.OwnerState.Beneficiary.Phase.TakeoverVerificationPending {
+    static var sample: Self {
+        .init(
+            guid: "guid",
+            approverContactInfo: .sample
+        )
+    }
+}
+
+extension API.OwnerState.Beneficiary.Phase.TakeoverAvailable {
+    static var sample: Self {
+        .init(
+            guid: "guid",
+            approverContactInfo: .sample,
+            ownerParticipantId: ParticipantId.random()
+        )
+    }
+}
+
 extension API.OwnerState.Beneficiary {
     static var sample: Self {
         .init(
@@ -126,6 +190,33 @@ extension API.OwnerState.Beneficiary {
             entropy: Base64EncodedString(data: Data()),
             authType: .facetec,
             phase: .accepted
+        )
+    }
+    
+    static var sampleTakeoverInitiated: Self {
+        .init(
+            invitationId: try! BeneficiaryInvitationId(value: ""),
+            entropy: Base64EncodedString(data: Data()),
+            authType: .facetec,
+            phase: .takeoverInitiated(.sample)
+        )
+    }
+    
+    static var sampleTakeoverVerificationPending: Self {
+        .init(
+            invitationId: try! BeneficiaryInvitationId(value: ""),
+            entropy: Base64EncodedString(data: Data()),
+            authType: .facetec,
+            phase: .takeoverVerificationPending(.sample)
+        )
+    }
+    
+    static var sampleTakeoverAvailable: Self {
+        .init(
+            invitationId: try! BeneficiaryInvitationId(value: ""),
+            entropy: Base64EncodedString(data: Data()),
+            authType: .facetec,
+            phase: .takeoverAvailable(.sample)
         )
     }
 }

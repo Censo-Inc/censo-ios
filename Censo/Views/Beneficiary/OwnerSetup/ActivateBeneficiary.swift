@@ -244,6 +244,7 @@ struct ActivateBeneficiary : View {
                     })
                 }
             }
+            .errorAlert(isPresented: $showingError, presenting: error)
             .modifier(RefreshOnTimer(timer: $refreshStatePublisher, refresh: refreshState, isIdleTimerDisabled: true))
             .onReceive(remoteNotificationPublisher) { _ in
                 refreshState()
@@ -261,11 +262,6 @@ struct ActivateBeneficiary : View {
     }
     
     private func activateBeneficiary(status: API.Policy.Beneficiary.Status.VerificationSubmitted) {
-        guard let ownerEntropy = policy.ownerEntropy else {
-            showError(CensoError.invalidEntropy)
-            return
-        }
-        
         var confirmationSucceeded = false
         do {
             confirmationSucceeded = try verifyBeneficiarySignature(status: status)

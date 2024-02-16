@@ -13,6 +13,7 @@ import CryptoKit
 typealias InvitationId = String
 typealias AccessApprovalId = String
 typealias AuthenticationResetApprovalId = String
+typealias TakeoverId = String
 
 struct API {
     var deviceKey: DeviceKey
@@ -43,9 +44,15 @@ struct API {
         case acceptAuthenticationResetRequest(AuthenticationResetApprovalId)
         case rejectAuthenticationResetRequest(AuthenticationResetApprovalId)
         case submitAuthenticationResetTotpVerification(AuthenticationResetApprovalId, SubmitAuthenticationResetTotpVerificationApiRequest)
+        
+        case approveTakeoverInitiation(TakeoverId, ApproveTakeoverInitiationApiRequest)
+        case rejectTakeoverInitiation(TakeoverId)
+        case storeTakeoverTotpSecret(TakeoverId, Base64EncodedString)
+        case approveTakeoverTotpVerification(TakeoverId, Base64EncodedString)
+        case rejectTakeoverTotpVerification(TakeoverId)
     }
     
-    enum ApproverPhase: Codable, Equatable {
+    enum ApproverPhase: Decodable, Equatable {
         case waitingForCode(WaitingForCode)
         case waitingForVerification
         case verificationRejected(VerificationRejected)
@@ -56,6 +63,9 @@ struct API {
         case authenticationResetRequested(AuthenticationResetRequested)
         case authenticationResetWaitingForCode(AuthenticationResetWaitingForCode)
         case authenticationResetVerificationRejected(AuthenticationResetVerificationRejected)
+        case takeoverRequested(TakeoverRequested)
+        case takeoverVerification(TakeoverVerification)
+        case takeoverConfirmation(TakeoverConfirmation)
         
         struct WaitingForCode: Codable, Equatable {
             var entropy: Base64EncodedString
@@ -99,6 +109,31 @@ struct API {
             var entropy: Base64EncodedString
         }
         
+        struct TakeoverRequested: Codable, Equatable {
+            var createdAt: Date
+            var entropy: Base64EncodedString
+            var timelockPeriodInMillis: UInt64
+        }
+        
+        struct TakeoverVerification: Codable, Equatable {
+            var createdAt: Date
+            var encryptedTotpSecret: Base64EncodedString
+            var unlocksAt: Date?
+        }
+        
+        struct TakeoverConfirmation: Codable, Equatable {
+            var createdAt: Date
+            var approverKeySignature: Base64EncodedString
+            var approverKeySignatureTimeMillis: UInt64
+            var timelockPeriodInMillis: UInt64
+            var encryptedTotpSecret: Base64EncodedString
+            var beneficiaryKeySignature: Base64EncodedString
+            var beneficiaryKeySignatureTimeMillis: UInt64
+            var beneficiaryPublicKey: Base58EncodedPublicKey
+            var approverEncryptedKey: Base64EncodedString
+            var entropy: Base64EncodedString
+        }
+        
         enum ApproverPhaseCodingKeys: String, CodingKey {
             case type
         }
@@ -127,40 +162,14 @@ struct API {
                 self = .authenticationResetWaitingForCode(try AuthenticationResetWaitingForCode(from: decoder))
             case "AuthenticationResetVerificationRejected":
                 self = .authenticationResetVerificationRejected(try AuthenticationResetVerificationRejected(from: decoder))
+            case "TakeoverRequested":
+                self = .takeoverRequested(try TakeoverRequested(from: decoder))
+            case "TakeoverVerification":
+                self = .takeoverVerification(try TakeoverVerification(from: decoder))
+            case "TakeoverConfirmation":
+                self = .takeoverConfirmation(try TakeoverConfirmation(from: decoder))
             default:
                 throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
-            }
-        }
-        
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: ApproverPhaseCodingKeys.self)
-            switch self {
-            case .waitingForCode:
-                try container.encode("WaitingForCode", forKey: .type)
-            case .waitingForVerification:
-                try container.encode("WaitingForVerification", forKey: .type)
-            case .verificationRejected:
-                try container.encode("VerificationRejected", forKey: .type)
-            case .complete:
-                try container.encode("Complete", forKey: .type)
-            case .accessRequested(let phase):
-                try container.encode("AccessRequested", forKey: .type)
-                try phase.encode(to: encoder)
-            case .accessVerification(let phase):
-                try container.encode("AccessVerification", forKey: .type)
-                try phase.encode(to: encoder)
-            case .accessConfirmation(let phase):
-                try container.encode("AccessConfirmation", forKey: .type)
-                try phase.encode(to: encoder)
-            case .authenticationResetRequested(let phase):
-                try container.encode("AuthenticationResetRequested", forKey: .type)
-                try phase.encode(to: encoder)
-            case .authenticationResetWaitingForCode(let phase):
-                try container.encode("AuthenticationResetWaitingForCode", forKey: .type)
-                try phase.encode(to: encoder)
-            case .authenticationResetVerificationRejected(let phase):
-                try container.encode("AuthenticationResetVerificationRejected", forKey: .type)
-                try phase.encode(to: encoder)
             }
         }
         
@@ -187,12 +196,18 @@ struct API {
                     waitingForCode.entropy
                 case .authenticationResetVerificationRejected(let rejected):
                     rejected.entropy
+                case .takeoverRequested(let takeoverRequested):
+                    takeoverRequested.entropy
+                case .takeoverVerification:
+                    nil
+                case .takeoverConfirmation(let takeoverConfirmation):
+                    takeoverConfirmation.entropy
                 }
             }
         }
     }
 
-    struct ApproverState: Codable {
+    struct ApproverState: Decodable {
         var participantId: ParticipantId
         var phase: ApproverPhase
         var invitationId: String?
@@ -200,7 +215,7 @@ struct API {
         var ownerLoginIdResetToken: OwnerLoginIdResetToken?
     }
     
-    struct OwnerLoginIdResetToken: Codable, Equatable, Hashable {
+    struct OwnerLoginIdResetToken: Decodable, Equatable, Hashable {
         var value: String
         var url: URL
         
@@ -225,10 +240,6 @@ struct API {
             hasher.combine(value)
         }
         
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        }
     }
     
     struct ApproverUser: Decodable {
@@ -241,21 +252,21 @@ struct API {
         }
     }
     
-    struct AcceptInvitationApiResponse: Codable {
+    struct AcceptInvitationApiResponse: Decodable {
         var approverState: ApproverState
     }
     
-    struct SubmitApproverVerificationApiRequest: Codable {
+    struct SubmitApproverVerificationApiRequest: Encodable {
         var signature: Base64EncodedString
         var timeMillis: UInt64
         var approverPublicKey: Base58EncodedPublicKey
     }
     
-    struct SubmitApproverVerificationApiResponse: Codable {
+    struct SubmitApproverVerificationApiResponse: Decodable {
         var approverState: ApproverState
     }
     
-    struct OwnerVerificationApiResponse: Codable {
+    struct OwnerVerificationApiResponse: Decodable {
         var approverStates: [ApproverState]
     }
 
@@ -267,21 +278,26 @@ struct API {
         var keyId: String
     }
     
-    struct AcceptAuthenticationResetRequestApiResponse: Codable {
+    struct AcceptAuthenticationResetRequestApiResponse: Decodable {
         var approverStates: [ApproverState]
     }
     
-    struct RejectAuthenticationResetRequestApiResponse: Codable {
+    struct RejectAuthenticationResetRequestApiResponse: Decodable {
         var approverStates: [ApproverState]
     }
     
-    struct SubmitAuthenticationResetTotpVerificationApiRequest: Codable {
+    struct SubmitAuthenticationResetTotpVerificationApiRequest: Encodable {
         var signature: Base64EncodedString
         var timeMillis: UInt64
     }
     
-    struct SubmitAuthenticationResetTotpVerificationApiResponse: Codable {
+    struct SubmitAuthenticationResetTotpVerificationApiResponse: Decodable {
         var approverStates: [ApproverState]
+    }
+    
+    struct ApproveTakeoverInitiationApiRequest: Encodable {
+        var signature: Base64EncodedString
+        var timeMillis: UInt64
     }
 }
 
@@ -327,6 +343,16 @@ extension API: TargetType {
             return "v1/authentication-reset/\(approvalId)/rejection"
         case .submitAuthenticationResetTotpVerification(let approvalId, _):
             return "v1/authentication-reset/\(approvalId)/totp-verification"
+        case .approveTakeoverInitiation(let takeoverId, _):
+            return "v1/takeover/\(takeoverId)/approval"
+        case .rejectTakeoverInitiation(let takeoverId):
+            return "v1/takeover/\(takeoverId)/rejection"
+        case .storeTakeoverTotpSecret(let takeoverId, _):
+            return "v1/takeover/\(takeoverId)/totp"
+        case .approveTakeoverTotpVerification(let takeoverId, _):
+            return "v1/takeover/\(takeoverId)/totp-verification/approval"
+        case .rejectTakeoverTotpVerification(let takeoverId):
+            return "v1/takeover/\(takeoverId)/totp-verification/rejection"
         }
     }
 
@@ -344,7 +370,12 @@ extension API: TargetType {
              .createOwnerLoginIdResetToken,
              .acceptAuthenticationResetRequest,
              .rejectAuthenticationResetRequest,
-             .submitAuthenticationResetTotpVerification:
+             .submitAuthenticationResetTotpVerification,
+             .approveTakeoverInitiation,
+             .rejectTakeoverInitiation,
+             .storeTakeoverTotpSecret,
+             .approveTakeoverTotpVerification,
+             .rejectTakeoverTotpVerification:
             return .post
         case .labelOwner:
             return .put
@@ -369,7 +400,9 @@ extension API: TargetType {
              .attestationKey,
              .createOwnerLoginIdResetToken,
              .acceptAuthenticationResetRequest,
-             .rejectAuthenticationResetRequest:
+             .rejectAuthenticationResetRequest,
+             .rejectTakeoverInitiation,
+             .rejectTakeoverTotpVerification:
             return .requestPlain
         case .registerAttestationObject(let challenge, let attestation, let keyId):
             #if DEBUG
@@ -407,6 +440,16 @@ extension API: TargetType {
             ])
         case .submitAuthenticationResetTotpVerification(_, let request):
             return .requestJSONEncodable(request)
+        case .approveTakeoverInitiation(_, let request):
+            return .requestJSONEncodable(request)
+        case .storeTakeoverTotpSecret(_, let deviceEncryptedTotpSecret):
+            return .requestJSONEncodable([
+                "deviceEncryptedTotpSecret": deviceEncryptedTotpSecret
+            ])
+        case .approveTakeoverTotpVerification(_, let encryptedKey):
+            return .requestJSONEncodable([
+                "encryptedKey": encryptedKey
+            ])
         }
     }
 
@@ -442,7 +485,12 @@ extension API: TargetType {
              .createOwnerLoginIdResetToken,
              .acceptAuthenticationResetRequest,
              .rejectAuthenticationResetRequest,
-             .submitAuthenticationResetTotpVerification:
+             .submitAuthenticationResetTotpVerification,
+             .approveTakeoverInitiation,
+             .rejectTakeoverInitiation,
+             .storeTakeoverTotpSecret,
+             .approveTakeoverTotpVerification,
+             .rejectTakeoverTotpVerification:
             return true
         }
     }
@@ -490,7 +538,9 @@ extension API.ApproverPhase {
              .accessVerification,
              .authenticationResetRequested,
              .authenticationResetWaitingForCode,
-             .authenticationResetVerificationRejected:
+             .takeoverRequested,
+             .takeoverConfirmation,
+             .takeoverVerification:
             return true
         default:
             return false

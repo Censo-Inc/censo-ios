@@ -7,6 +7,7 @@
 
 import Foundation
 import Moya
+import Sentry
 
 final class OwnerRepository : ObservableObject {
     private var apiProvider: MoyaProvider<API>
@@ -264,5 +265,79 @@ final class OwnerRepository : ObservableObject {
     
     func updateApproversContactInfo(_ contactInfos: [API.UpdateBeneficiaryApproverContactInfoApiRequest.ApproverContactInfo], _ completion: @escaping (Result<API.UpdateBeneficiaryApproverContactInfoApiResponse, MoyaError>) -> Void) {
         apiProvider.decodableRequest(with: session, endpoint: .updateApproverContactInfo(API.UpdateBeneficiaryApproverContactInfoApiRequest(approverContacts: contactInfos)), completion: completion)
+   }
+
+    func initiateTakeover(_ completion: @escaping (Result<API.InitiateTakeoverApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .initiateTakeover, completion: completion)
+    }
+    
+    func cancelTakeover(_ completion: @escaping (Result<API.CancelTakeoverApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .cancelTakeover, completion: completion)
+    }
+    
+    func submitTakeoverTotpVerification(code: String, _ completion: @escaping (Result<API.SubmitTakeoverTotpVerificationApiResponse, MoyaError>) -> Void) throws {
+        guard let (timeMillis, signature) = TotpUtils.signCode(code: code, signingKey: deviceKey),
+              let beneficiaryPublicKey = try deviceKey.publicExternalRepresentation().base58EncodedPublicKey()
+        else {
+            throw CensoError.failedToCreateSignature
+        }
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .submitTakeoverTotpVerfication(API.SubmitTakeoverTotpVerificationApiRequest(
+                beneficiaryPublicKey: beneficiaryPublicKey,
+                signature: signature,
+                timeMillis: timeMillis
+            )),
+            completion: completion)
+    }
+    
+    func retrieveTakeoverKey(_ payload: API.RetrieveTakeoverKeyApiRequest, _ completion: @escaping (Result<API.RetrieveTakeoverKeyApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .retrieveTakeoverKey(payload), completion: completion)
+    }
+    
+    func retrieveTakeoverKeyWithPassword(_ payload: API.RetrieveTakeoverKeyWithPasswordApiRequest, _ completion: @escaping (Result<API.RetrieveTakeoverKeyWithPasswordApiResponse, MoyaError>) -> Void) {
+        apiProvider.decodableRequest(with: session, endpoint: .retrieveTakeoverKeyWithPassword(payload), completion: completion)
+    }
+    
+    func finalizeTakeover(beneficiary: API.OwnerState.Beneficiary,
+                          takeover: API.OwnerState.Beneficiary.Phase.TakeoverAvailable,
+                          doubleEncryptedKey: Base64EncodedString,
+                          password: API.Authentication.Password?,
+                          _ completion: @escaping (Result<API.FinalizeTakeoverApiResponse, MoyaError>) -> Void) throws {
+        
+        let tag = "finalizeTakeover"
+        // decrypt the key with the beneficary device key
+        let encryptedKey = try deviceKey.decrypt(data: doubleEncryptedKey.data)
+        SentrySDK.addCrumb(category: tag, message: "first decryption")
+        
+        // decrypt that with the beneficary approver key
+        let beneficiaryApproverKey = try getOrCreateApproverKey(keyId: beneficiary.invitationId, entropy: beneficiary.entropy.data)
+        let ownerKeyData = try beneficiaryApproverKey.decrypt(base64EncodedString: Base64EncodedString(data: encryptedKey))
+        SentrySDK.addCrumb(category: tag, message: "second decryption")
+
+        let ownerApproverKey = try EncryptionKey.generateFromPrivateKeyRaw(data: ownerKeyData)
+        SentrySDK.addCrumb(category: tag, message: "owner key regenerated")
+        
+        // persist the owner key
+        try persistApproverKey(keyId: takeover.ownerParticipantId, key: ownerApproverKey, entropy: beneficiary.entropy.data)
+        SentrySDK.addCrumb(category: tag, message: "owner key persisted")
+        
+        // sign the takeover id and time millis with that key.
+        let timeMillis = UInt64(Date().timeIntervalSince1970 * 1000)
+        guard let idBytes = takeover.guid.data(using: .utf8),
+              let timeMillisData = String(timeMillis).data(using: .utf8),
+              let signature = try? ownerApproverKey.signature(for: idBytes + timeMillisData)
+        else {
+            throw CensoError.failedToCreateSignature
+        }
+        
+        apiProvider.decodableRequest(
+            with: session,
+            endpoint: .finalizeTakeover(API.FinalizeTakeoverApiRequest(
+                signature: signature,
+                timeMillis: timeMillis,
+                password: password
+            )),
+            completion: completion)
     }
 }

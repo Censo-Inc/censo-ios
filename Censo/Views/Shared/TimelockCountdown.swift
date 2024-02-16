@@ -1,15 +1,8 @@
 //
-//  TimelockExpirationCountdown.swift
+//  TimelockCountdown.swift
 //  Censo
 //
 //  Created by Brendan Flood on 1/5/24.
-//
-
-//
-//  AccessExpirationCountdown.swift
-//  Censo
-//
-//  Created by Brendan Flood on 10/26/23.
 //
 
 import Foundation

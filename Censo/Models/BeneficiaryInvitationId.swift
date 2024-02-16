@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 struct BeneficiaryInvitationId: Codable, Equatable, Hashable, KeyId {
     var value: String
     var url: URL

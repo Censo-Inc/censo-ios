@@ -81,6 +81,13 @@ struct API {
         case activateBeneficiary(ActivateBeneficiaryApiRequest)
         case rejectBeneficiaryVerification
         case updateApproverContactInfo(UpdateBeneficiaryApproverContactInfoApiRequest)
+        
+        case initiateTakeover
+        case cancelTakeover
+        case submitTakeoverTotpVerfication(SubmitTakeoverTotpVerificationApiRequest)
+        case retrieveTakeoverKey(RetrieveTakeoverKeyApiRequest)
+        case retrieveTakeoverKeyWithPassword(RetrieveTakeoverKeyWithPasswordApiRequest)
+        case finalizeTakeover(FinalizeTakeoverApiRequest)
     }
 }
 
@@ -195,6 +202,17 @@ extension API: TargetType {
             return "v1/policy/beneficiary/reject"
         case .updateApproverContactInfo:
             return "v1/policy/beneficiary/approver-contact-info"
+        case .initiateTakeover,
+             .cancelTakeover:
+            return "v1/takeover"
+        case .submitTakeoverTotpVerfication:
+            return "v1/takeover/totp-verification"
+        case .retrieveTakeoverKey:
+            return "v1/takeover/retrieval"
+        case .retrieveTakeoverKeyWithPassword:
+            return "v1/takeover/retrieval-password"
+        case .finalizeTakeover:
+            return "v1/takeover/finalize"
         }
     }
 
@@ -213,7 +231,8 @@ extension API: TargetType {
              .deletePolicySetup,
              .deleteBeneficiary,
              .cancelDisabledTimelock,
-             .cancelAuthenticationReset:
+             .cancelAuthenticationReset,
+             .cancelTakeover:
             return .delete
         case .updateSeedPhraseMetaInfo:
             return .patch
@@ -250,7 +269,12 @@ extension API: TargetType {
              .acceptBeneficiaryInvitationWithPassword,
              .submitBeneficiaryVerification,
              .activateBeneficiary,
-             .rejectBeneficiaryVerification:
+             .rejectBeneficiaryVerification,
+             .initiateTakeover,
+             .submitTakeoverTotpVerfication,
+             .retrieveTakeoverKey,
+             .retrieveTakeoverKeyWithPassword,
+             .finalizeTakeover:
             return .post
         case .replacePolicy,
              .resetLoginId,
@@ -281,7 +305,9 @@ extension API: TargetType {
              .createDevice,
              .requestAuthenticationReset,
              .cancelAuthenticationReset,
-             .rejectBeneficiaryVerification:
+             .rejectBeneficiaryVerification,
+             .initiateTakeover,
+             .cancelTakeover:
             return .requestPlain
         case .signIn(let credentials):
             return .requestJSONEncodable([
@@ -387,6 +413,14 @@ extension API: TargetType {
             return .requestJSONEncodable(request)
         case .updateApproverContactInfo(let request):
             return .requestJSONEncodable(request)
+        case .submitTakeoverTotpVerfication(let request):
+            return .requestJSONEncodable(request)
+        case .retrieveTakeoverKey(let request):
+            return .requestJSONEncodable(request)
+        case .retrieveTakeoverKeyWithPassword(let request):
+            return .requestJSONEncodable(request)
+        case .finalizeTakeover(let request):
+            return .requestJSONEncodable(request)
         }
     }
 
@@ -458,7 +492,13 @@ extension API: TargetType {
              .submitBeneficiaryVerification,
              .activateBeneficiary,
              .rejectBeneficiaryVerification,
-             .updateApproverContactInfo:
+             .updateApproverContactInfo,
+             .initiateTakeover,
+             .cancelTakeover,
+             .submitTakeoverTotpVerfication,
+             .retrieveTakeoverKey,
+             .retrieveTakeoverKeyWithPassword,
+             .finalizeTakeover:
             return true
         }
     }

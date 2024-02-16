@@ -15,6 +15,7 @@ enum ValueWrapperError: Error {
     case invalidInvitationId
     case invalidResetToken
     case invalidBinaryPhrase
+    case invalidTakeoverId
 }
 
 struct Base58EncodedPublicKey: Codable, Equatable {

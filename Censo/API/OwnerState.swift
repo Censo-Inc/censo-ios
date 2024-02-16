@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias TakeoverId = String
+
 extension API {
     struct ProspectApprover: Decodable, Equatable {
         var invitationId: InvitationId?
@@ -208,6 +210,7 @@ extension API {
                 case accepted(Accepted)
                 case verificationSubmitted(VerificationSubmitted)
                 case activated(Activated)
+                case takeoverInProgress(TakeoverInProgress)
                 
                 struct ApproverPublicKey: Decodable, Equatable {
                     var participantId: ParticipantId
@@ -239,6 +242,12 @@ extension API {
                     var beneficiaryKeyInfo: BeneficiaryKeyInfo
                 }
                 
+                struct TakeoverInProgress: Codable, Equatable {
+                    var guid: TakeoverId
+                    var createdAt: Date
+                    var unlocksAt: Date?
+                }
+                
                 enum ApproverStatusCodingKeys: String, CodingKey {
                     case type
                 }
@@ -255,6 +264,8 @@ extension API {
                         self = .verificationSubmitted(try VerificationSubmitted(from: decoder))
                     case "Activated":
                         self = .activated(try Activated(from: decoder))
+                    case "TakeoverInProgress":
+                        self = .takeoverInProgress(try TakeoverInProgress(from: decoder))
                     default:
                         throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
                     }
@@ -264,7 +275,8 @@ extension API {
             var isActivated: Bool {
                 get {
                     switch (status) {
-                    case .activated: return true
+                    case .activated,
+                         .takeoverInProgress: return true
                     default: return false
                     }
                 }
@@ -573,6 +585,14 @@ extension API {
                 case waitingForVerification
                 case verificationRejected
                 case activated
+                case takeoverInitiated(TakeoverInitiated)
+                case takeoverRejected(TakeoverRejected)
+                case takeoverTimelocked(TakeoverTimelocked)
+                case takeoverVerificationPending(TakeoverVerificationPending)
+                case takeoverWaitingForVerificationSignature(TakeoverWaitingForVerificationSignature)
+                case takeoverVerificationSignatureSubmited(TakeoverVerificationSignatureSubmited)
+                case takeoverVerificationSignatureRejected(TakeoverVerificationSignatureRejected)
+                case takeoverAvailable(TakeoverAvailable)
                 
                 enum BeneficiaryPhaseCodingKeys: String, CodingKey {
                     case type
@@ -590,8 +610,149 @@ extension API {
                         self = .verificationRejected
                     case "Activated":
                         self = .activated
+                    case "TakeoverInitiated":
+                        self = .takeoverInitiated(try TakeoverInitiated(from: decoder))
+                    case "TakeoverRejected":
+                        self = .takeoverRejected(try TakeoverRejected(from: decoder))
+                    case "TakeoverTimelocked":
+                        self = .takeoverTimelocked(try TakeoverTimelocked(from: decoder))
+                    case "TakeoverVerificationPending":
+                        self = .takeoverVerificationPending(try TakeoverVerificationPending(from: decoder))
+                    case "TakeoverWaitingForVerificationSignature":
+                        self = .takeoverWaitingForVerificationSignature(try TakeoverWaitingForVerificationSignature(from: decoder))
+                    case "TakeoverVerificationSignatureSubmited":
+                        self = .takeoverVerificationSignatureSubmited(try TakeoverVerificationSignatureSubmited(from: decoder))
+                    case "TakeoverVerificationSignatureRejected":
+                        self = .takeoverVerificationSignatureRejected(try TakeoverVerificationSignatureRejected(from: decoder))
+                    case "TakeoverAvailable":
+                        self = .takeoverAvailable(try TakeoverAvailable(from: decoder))
                     default:
                         throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid ApproverStatus")
+                    }
+                }
+                
+                struct ApproverContactInfo: Decodable, Equatable {
+                    var participantId: ParticipantId
+                    var label: String
+                    var encryptedContactInfo: Base64EncodedString?
+                }
+                
+                struct TakeoverInitiated: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: [ApproverContactInfo]
+                    var timelockPeriodInMillis: UInt64
+                }
+                
+                struct TakeoverRejected: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverTimelocked: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var unlocksAt: Date
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverVerificationPending: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverWaitingForVerificationSignature: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverVerificationSignatureSubmited: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverVerificationSignatureRejected: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                }
+                
+                struct TakeoverAvailable: Decodable, Equatable {
+                    var guid: TakeoverId
+                    var approverContactInfo: ApproverContactInfo
+                    var ownerParticipantId: ParticipantId
+                }
+                
+                var takeoverId: TakeoverId {
+                    get {
+                        switch self {
+                        case .takeoverInitiated(let takeover): return takeover.guid
+                        case .takeoverRejected(let takeover): return takeover.guid
+                        case .takeoverTimelocked(let takeover): return takeover.guid
+                        case .takeoverVerificationPending(let takeover): return takeover.guid
+                        case .takeoverWaitingForVerificationSignature(let takeover): return takeover.guid
+                        case .takeoverVerificationSignatureSubmited(let takeover): return takeover.guid
+                        case .takeoverVerificationSignatureRejected(let takeover): return takeover.guid
+                        case .takeoverAvailable(let takeover): return takeover.guid
+                        default: return ""
+                        }
+                    }
+                }
+                
+                var approverContact: ApproverContactInfo {
+                    get {
+                        switch self {
+                        case .takeoverRejected(let takeover): return takeover.approverContactInfo
+                        case .takeoverTimelocked(let takeover): return takeover.approverContactInfo
+                        case .takeoverVerificationPending(let takeover): return takeover.approverContactInfo
+                        case .takeoverWaitingForVerificationSignature(let takeover): return takeover.approverContactInfo
+                        case .takeoverVerificationSignatureSubmited(let takeover): return takeover.approverContactInfo
+                        case .takeoverVerificationSignatureRejected(let takeover): return takeover.approverContactInfo
+                        case .takeoverAvailable(let takeover): return takeover.approverContactInfo
+                        default: return ApproverContactInfo(participantId: ParticipantId.random(), label: "")
+                        }
+                    }
+                }
+                
+                var waitingForSignature: Bool {
+                    get {
+                        switch self {
+                        case .takeoverWaitingForVerificationSignature,
+                             .takeoverVerificationSignatureRejected:
+                            return true
+                        default:
+                            return false
+                        }
+                    }
+                }
+                
+                var waitingForVerification: Bool {
+                    get {
+                        switch self {
+                        case .takeoverWaitingForVerificationSignature:
+                            return true
+                        default:
+                            return false
+                        }
+                    }
+                }
+                
+                var isTakeoverAvailable: Bool {
+                    get {
+                        switch self {
+                        case .takeoverAvailable:
+                            return true
+                        default:
+                            return false
+                        }
+                    }
+                }
+                
+                var takeoverAvailable: TakeoverAvailable? {
+                    get {
+                        switch self {
+                        case .takeoverAvailable(let takeover):
+                            return takeover
+                        default:
+                            return nil
+                        }
                     }
                 }
             }
@@ -611,6 +772,16 @@ extension API {
             var onboarded: Bool
             var canRequestAuthenticationReset: Bool
             var authenticationReset: AuthenticationReset?
+            
+            func takeoverInProgress() -> API.Policy.Beneficiary.Status.TakeoverInProgress? {
+                switch (self.policy.beneficiary?.status) {
+                case .takeoverInProgress(let takeover):
+                    return takeover
+                default:
+                    break
+                }
+                return nil
+            }
         }
 
         enum OwnerStateCodingKeys: String, CodingKey {

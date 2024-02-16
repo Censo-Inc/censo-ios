@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct SeedPhotoVerification: View {
     var imageData: Data
     var onSubmit: (Data) -> Void

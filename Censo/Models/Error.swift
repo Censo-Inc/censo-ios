@@ -15,6 +15,7 @@ enum CensoError: Swift.Error, Equatable {
     case underMaintenance
     case invalidIdentifier
     case failedToCreateSignature
+    case failedToVerifySignature
     case cannotCreateTotpSecret
     case failedToRecoverPrivateKey
     case failedToRecoverShard
@@ -35,6 +36,7 @@ enum CensoError: Swift.Error, Equatable {
     case invitationNotFound
     case invitationAlreadyAccepted
     case accessRequestNotFound
+    case takeoverRequestNotFound
     case upgradeRequired
     case productNotFound
     case purchaseFailed
@@ -54,6 +56,7 @@ enum CensoError: Swift.Error, Equatable {
     case failedToEncryptApproverContactInfo
     case failedToDecryptSeedPhraseNotes
     case failedToEncryptSeedPhraseNotes
+    case withinTimelock
 }
 
 extension CensoError: LocalizedError {
@@ -73,6 +76,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("The identifier is not valid.", comment: "Invalid Identifier")
         case .failedToCreateSignature:
             return NSLocalizedString("Failed to create verification signature", comment: "Verification Signature failed")
+        case .failedToVerifySignature:
+            return NSLocalizedString("Failed to verify signature", comment: "Verify Signature failed")
         case .cannotCreateTotpSecret:
             return NSLocalizedString("Cannot create rotating pin code", comment: "Pin code creation failed")
         case .failedToRecoverPrivateKey:
@@ -117,6 +122,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Invitation already accepted", comment: "Already accepted")
         case .accessRequestNotFound:
             return NSLocalizedString("Access request not found", comment: "Not found")
+        case .takeoverRequestNotFound:
+            return NSLocalizedString("Takeover request not found", comment: "Not found")
         case .upgradeRequired:
             return NSLocalizedString("App is out-of-date, you must upgrade to continue", comment: "Upgrade required")
         case .purchaseFailed:
@@ -155,6 +162,8 @@ extension CensoError: LocalizedError {
             return NSLocalizedString("Cannot decrypt seed phrase notes", comment: "Owner/beneficiary error")
         case .failedToEncryptSeedPhraseNotes:
             return NSLocalizedString("Cannot encrypt seed phrase notes", comment: "Owner error")
+        case .withinTimelock:
+            return NSLocalizedString("Still within the timelock", comment: "Approver/Beneficiary error")
         }
         
     }

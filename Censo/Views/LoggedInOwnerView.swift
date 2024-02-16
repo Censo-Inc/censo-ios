@@ -99,8 +99,8 @@ struct LoggedInOwnerView: View {
                                         case .beneficiary(let beneficiary):
                                             switch beneficiary.phase {
                                             case .accepted,
-                                                    .verificationRejected,
-                                                    .waitingForVerification:
+                                                .verificationRejected,
+                                                .waitingForVerification:
                                                 BeneficiaryVerification(beneficiary: beneficiary)
                                                     .onboardingCancelNavBar {
                                                         cancelOnboarding = true
@@ -111,7 +111,19 @@ struct LoggedInOwnerView: View {
                                             case .activated where beneficiarySetup:
                                                 BeneficiaryActivated()
                                             case .activated:
-                                                BeneficiaryWelcomeBack()
+                                                BeneficiaryWelcomeBack(ownerState: beneficiary)
+                                            case .takeoverInitiated(let takeover):
+                                                TakeoverInitiated(beneficiary: beneficiary, takeover: takeover)
+                                            case .takeoverRejected(let takeover):
+                                                TakeoverRejected(takeover: takeover)
+                                            case .takeoverTimelocked(let takeover):
+                                                TakeoverTimelocked(takeover: takeover)
+                                            case .takeoverVerificationPending,
+                                                 .takeoverVerificationSignatureRejected,
+                                                 .takeoverVerificationSignatureSubmited,
+                                                 .takeoverWaitingForVerificationSignature,
+                                                 .takeoverAvailable:
+                                                TakeoverReady(beneficiary: beneficiary, onCancel: {})
                                             }
                                         case .ready(let ready):
                                             if ready.policy.ownersApproverKeyRecoveryRequired(ownerRepository) {
@@ -140,7 +152,10 @@ struct LoggedInOwnerView: View {
                                                         ownerState: ready,
                                                         onCancel: onCancelOnboarding
                                                     )
-                                                    
+                                                } else if let beneficiary = ready.policy.beneficiary,
+                                                          let takeoverInProgress = ready.takeoverInProgress(),
+                                                          takeoverInProgress.unlocksAt != nil {
+                                                    TakeoverInProgress(beneficiary: beneficiary, takeover: takeoverInProgress)
                                                 } else {
                                                     HomeScreen(ownerState: ready)
                                                 }
@@ -172,7 +187,7 @@ struct LoggedInOwnerView: View {
                                                 }
                                             }
                                         case .initial,
-                                                .beneficiary:
+                                             .beneficiary:
                                             ProgressView().onAppear {
                                                 importPhase = .none
                                             }

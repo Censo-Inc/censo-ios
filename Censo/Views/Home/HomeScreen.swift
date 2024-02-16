@@ -81,7 +81,7 @@ struct HomeScreen: View {
                 }
                 
                 VStack(spacing: 0) {
-                    SettingsTab(ownerState: ownerState)
+                    SettingsTab(ownerState: .ready(ownerState))
                     tabDivider()
                 }
                 .tabItem {

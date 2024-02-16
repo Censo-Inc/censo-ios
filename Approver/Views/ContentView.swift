@@ -12,6 +12,8 @@ import Sentry
 enum ApproverRoute : Hashable {
     case onboard(inviteCode: String)
     case approval(participantId: ParticipantId, approvalId: String)
+    case takeoverInitiation(participantId: ParticipantId, takeoverId: TakeoverId)
+    case takeoverVerification(participantId: ParticipantId, takeoverId: TakeoverId)
 }
 
 struct ContentView: View {
@@ -100,6 +102,26 @@ struct ContentView: View {
                                                 self.route = nil
                                             }
                                         )
+                                    case .takeoverInitiation(let participantId, let takeoverId):
+                                        TakeoverInitiation(
+                                            session: session,
+                                            participantId: participantId,
+                                            takeoverId: takeoverId,
+                                            onSuccess: {
+                                                navigateToRoute = false
+                                                self.route = nil
+                                            }
+                                        )
+                                    case .takeoverVerification(let participantId, let takeoverId):
+                                        TakeoverVerification(
+                                            session: session,
+                                            participantId: participantId,
+                                            takeoverId: takeoverId,
+                                            onSuccess: {
+                                                navigateToRoute = false
+                                                self.route = nil
+                                            }
+                                        )
                                     case nil:
                                         ProgressView()
                                             .onAppear {
@@ -149,7 +171,7 @@ struct ContentView: View {
         guard scheme.starts(with: "censo"),
               url.pathComponents.count > 1,
               let action = url.host,
-              ["invite", "access", "auth-reset"].contains(action) else {
+              ["invite", "access", "auth-reset", "takeover-initiation", "takeover-verification"].contains(action) else {
             showError(CensoError.invalidUrl(url: "\(url)"))
             return
         }
@@ -171,6 +193,30 @@ struct ContentView: View {
             }
             if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
                 self.route = .approval(participantId: participantId, approvalId: url.pathComponents[3])
+                self.navigateToRoute = true
+            } else {
+                SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Other Link Paste")
+                showError(CensoError.invalidIdentifier)
+            }
+        } else if ["takeover-initiation"].contains(action) {
+            if url.pathComponents.count <= 3 {
+                showError(CensoError.invalidUrl(url: "\(url)"))
+                return
+            }
+            if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
+                self.route = .takeoverInitiation(participantId: participantId, takeoverId: url.pathComponents[3])
+                self.navigateToRoute = true
+            } else {
+                SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Other Link Paste")
+                showError(CensoError.invalidIdentifier)
+            }
+        } else if ["takeover-verification"].contains(action) {
+            if url.pathComponents.count <= 3 {
+                showError(CensoError.invalidUrl(url: "\(url)"))
+                return
+            }
+            if let participantId = try? ParticipantId(value: url.pathComponents[2]) {
+                self.route = .takeoverVerification(participantId: participantId, takeoverId: url.pathComponents[3])
                 self.navigateToRoute = true
             } else {
                 SentrySDK.captureWithTag(error: CensoError.invalidIdentifier, tagValue: "Other Link Paste")
