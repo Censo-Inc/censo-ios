@@ -32,18 +32,21 @@ struct DashboardTab: View {
                         .fontWeight(.semibold)
                 }
                 .padding()
+                .frame(maxWidth: .infinity)
 
                 Text("\(ownerState.vault.seedPhrases.count == 1 ? "It is" : "They are") stored securely and accessible **only** to you.")
                     .font(.title3)
                     .padding()
+                    .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding()
+            .fixedSize(horizontal: false, vertical: true)
             .clipShape(RoundedRectangle(cornerRadius: 16.0))
             .background(
                 RoundedRectangle(cornerRadius: 16.0)
                     .fill(Color.Censo.aquaBlue.opacity(0.24))
+                    .padding()
             )
             Spacer()
                 .frame(maxHeight: 32)
@@ -53,7 +56,7 @@ struct DashboardTab: View {
                     Text("\nYou can increase security by adding approvers.")
                         .font(.title)
                         .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity)
                     Button {
                         if ownerState.hasBlockingPhraseAccessRequest {
                             self.error = CensoError.cannotSetupApproversWhileAccessInProgress
@@ -73,7 +76,7 @@ struct DashboardTab: View {
                     Text("Your Approvers")
                         .font(.title2)
                         .fontWeight(.semibold)
-                    
+
                     VStack(spacing: 30) {
                         ForEach(Array(ownerState.policy.externalApprovers.enumerated()), id: \.offset) { i, approver in
                             ApproverPill(approver: .trusted(approver))
@@ -82,6 +85,7 @@ struct DashboardTab: View {
                 }
             }
             .padding()
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
         }
