@@ -69,8 +69,7 @@ struct PushNotificationSettings: View {
                         }
                 }
             }
-            .navigationTitle("Allow push notifications")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationInlineTitle("Allow push notifications")
         }
     }
     

@@ -20,12 +20,15 @@ struct TakeoverReady: View {
         case retrieveKey(API.OwnerState.Beneficiary.Phase.TakeoverAvailable)
         case finalize(API.OwnerState.Beneficiary.Phase.TakeoverAvailable, Base64EncodedString, API.Authentication.Password?)
         case takeoverDone(API.OwnerState)
+        case promptForPush(API.OwnerState)
     }
     
     @State private var step: Step = .enterTotp
     @State private var showingCancelConfirmation = false
     @State private var showingError = false
     @State private var error: Error?
+    
+    @AppStorage("pushNotificationsEnabled") var pushNotificationsEnabled: String?
     
     var body: some View {
         
@@ -74,9 +77,26 @@ struct TakeoverReady: View {
             TakeoverComplete()
                 .onAppear(perform: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        ownerStateStoreController.replace(ownerState)
+                        if pushNotificationsEnabled != "true" {
+                            step = .promptForPush(ownerState)
+                        } else {
+                            ownerStateStoreController.replace(ownerState)
+                        }
                     }
                 })
+        case .promptForPush(let ownerState):
+            NavigationStack {
+                PushNotificationSettings {
+                    ownerStateStoreController.replace(ownerState)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        DismissButton(icon: .close) {
+                            ownerStateStoreController.replace(ownerState)
+                        }
+                    }
+                }
+            }
         }
     }
     
