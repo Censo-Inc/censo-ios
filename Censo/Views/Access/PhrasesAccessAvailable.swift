@@ -43,14 +43,7 @@ struct PhrasesAccessAvailable: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .interactiveDismissDisabled()
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button {
-                } label: {
-                    Text("OK")
-                }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
         case .intro(let phraseIndex):
             PhraseAccessIntro(
                 ownerState: ownerState,
@@ -80,14 +73,8 @@ struct PhrasesAccessAvailable: View {
                         }
                     )
                 }
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button {
-                        self.step = .showingList
-                    } label: {
-                        Text("OK")
-                    }
-                } message: { error in
-                    Text(error.localizedDescription)
+                .errorAlert(isPresented: $showingError, presenting: error) {
+                    self.step = .showingList
                 }
         case .retrievingShards(let phraseIndex, let encryptedSeedPhrase, let language):
             RetrieveAccessShards(

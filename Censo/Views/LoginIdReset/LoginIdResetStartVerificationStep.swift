@@ -51,14 +51,8 @@ struct LoginIdResetStartVerificationStep: View {
                 .disabled(!enabled || ownerRepository == nil || creatingDevice)
             }
         )
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel, action: {
-                showingError = false
-                currentError = nil
-                creatingDevice = false
-            })
-        } message: { error in
-            Text(error.localizedDescription)
+        .errorAlert(isPresented: $showingError, presenting: currentError) {
+            creatingDevice = false
         }
     }
     

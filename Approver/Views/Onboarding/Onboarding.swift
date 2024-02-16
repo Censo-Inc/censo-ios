@@ -95,12 +95,8 @@ struct Onboarding: View {
                 DismissButton(icon: .back)
             }
         }
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel) {
-                dismiss()
-            }
-        } message: { error in
-            Text(error.localizedDescription)
+        .errorAlert(isPresented: $showingError, presenting: currentError) {
+            dismiss()
         }
     }
     

@@ -96,14 +96,7 @@ struct ContentView: View {
                 self.showBeneficiaryLoggedOutWelcome = true
             }
         })
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel, action: {
-                self.url = nil
-                self.currentError = nil
-            })
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: currentError)
     }
 
     private func openURL(_ url: URL) {

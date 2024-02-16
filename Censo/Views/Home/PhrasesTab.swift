@@ -185,14 +185,7 @@ struct PhrasesTab: View {
             } message: {
                 Text("If you cancel access you will need to wait for the timelock period to access your phrases again. Are you sure?")
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button {
-                    showingError = false
-                    error = nil
-                } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
             .alert("Delete Confirmation", isPresented: $showingDeleteConfirmation, presenting: deleteConfirmationIndex) { i in
                 TextField(text: $deleteConfirmationText) {
                     Text(deleteConfirmationMessage(i))

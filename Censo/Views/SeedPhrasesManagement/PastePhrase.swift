@@ -115,11 +115,7 @@ struct PastePhrase: View {
                     DismissButton(icon: .back, action: onBack)
                 }
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button { } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
             .navigationDestination(isPresented: $showingVerification, destination: {
                 SeedVerification(
                     words: BIP39.splitToWords(phrase: pastedPhrase),

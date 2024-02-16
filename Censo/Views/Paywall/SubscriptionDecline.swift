@@ -90,16 +90,7 @@ struct SubscriptionDecline: View {
                         )
                     }
                 )
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button {
-                        showingError = false
-                        error = nil
-                    } label: {
-                        Text("OK")
-                    }
-                } message: { error in
-                    Text("There was an error deleting your data.\n\(error.localizedDescription)")
-                }
+                .errorAlert(isPresented: $showingError, presenting: error)
             }
         }
     }

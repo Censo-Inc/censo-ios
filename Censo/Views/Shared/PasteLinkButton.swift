@@ -25,14 +25,7 @@ struct PasteLinkButton: View {
         }
         .buttonStyle(RoundedButtonStyle())
         .accessibilityIdentifier("pasteFromClipboardButton")
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button("OK", role: .cancel, action: {
-                self.error = nil
-                self.showingError = false
-            })
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: error)
     }
     
     private func handlePastedInfo() {

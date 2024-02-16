@@ -50,16 +50,7 @@ struct PromoCodeEntry: View {
             .textFieldStyle(RoundedTextFieldStyle())
             .presentationDetents([.height(160)])
         }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-            } label: {
-                Text("OK")
-            }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: error)
         .alert("Promo code accepted!", isPresented: $showPromoCodeAccepted) {
             Button {
                 onPromoCodeAccepted()

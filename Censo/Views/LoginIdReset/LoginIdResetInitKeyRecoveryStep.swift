@@ -54,14 +54,8 @@ struct LoginIdResetInitKeyRecoveryStep : View {
                 .disabled(!enabled || inProgress)
             }
         )
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel, action: {
-                showingError = false
-                currentError = nil
-                inProgress = false
-            })
-        } message: { error in
-            Text(error.localizedDescription)
+        .errorAlert(isPresented: $showingError, presenting: currentError) {
+            inProgress = false
         }
     }
     

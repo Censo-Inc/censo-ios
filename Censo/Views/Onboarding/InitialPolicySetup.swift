@@ -94,16 +94,8 @@ struct InitialPolicySetup: View {
                 showAsBack: true
             )
         }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-                createPolicyParams = nil
-            } label: {
-                Text("OK")
-            }
-        } message: { error in
-            Text(error.localizedDescription)
+        .errorAlert(isPresented: $showingError, presenting: error) {
+            createPolicyParams = nil
         }
     }
     

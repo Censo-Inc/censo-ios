@@ -193,6 +193,7 @@
 		6C9246292B7EA497008B008D /* View+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9246272B7EA497008B008D /* View+Alert.swift */; };
 		6C92462B2B7EA760008B008D /* CancelTakeoverWithConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C92462A2B7EA760008B008D /* CancelTakeoverWithConfirmation.swift */; };
 		6C9397C72AE2BE2E009E8BFB /* UnlockedDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9397C62AE2BE2E009E8BFB /* UnlockedDuration.swift */; };
+		6C9E9ECD2B800DB900FBB313 /* PointGrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAAF6F52B7E821C00B50C4F /* PointGrant.swift */; };
 		6CA0329E2B584494005EE075 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA0329D2B584494005EE075 /* ZoomableScrollView.swift */; };
 		6CA032A02B5960AD005EE075 /* SeedPhotoVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA0329F2B5960AD005EE075 /* SeedPhotoVerification.swift */; };
 		6CA032A22B596443005EE075 /* PhotoPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA032A12B596442005EE075 /* PhotoPhrase.swift */; };
@@ -261,7 +262,6 @@
 		BD8FCDD52B7510360032E334 /* PromoCodeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8FCDD42B7510360032E334 /* PromoCodeEntry.swift */; };
 		BDAAF6F42B7A8BA300B50C4F /* SeedPhrasePill.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAAF6F32B7A8BA300B50C4F /* SeedPhrasePill.swift */; };
 		BDAAF6F62B7E821C00B50C4F /* PointGrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAAF6F52B7E821C00B50C4F /* PointGrant.swift */; };
-		BDAAF6F72B7E821C00B50C4F /* PointGrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAAF6F52B7E821C00B50C4F /* PointGrant.swift */; };
 		BDAAF6FC2B7E9B4E00B50C4F /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = BDAAF6FB2B7E9B4E00B50C4F /* success.json */; };
 		BDAAF6FD2B7E9B4E00B50C4F /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = BDAAF6FB2B7E9B4E00B50C4F /* success.json */; };
 		BDAAF7022B7EB17400B50C4F /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = BDAAF7012B7EB17400B50C4F /* Lottie */; };
@@ -1758,10 +1758,10 @@
 				6CD6DAF42ABC9AC500974035 /* MoyaProvider+Session.swift in Sources */,
 				6CFEAD5A2AF15B3800C20140 /* LoginBottomLinks.swift in Sources */,
 				3D55E6072B51B6EA0096F612 /* DateHelper.swift in Sources */,
-				BDAAF6F72B7E821C00B50C4F /* PointGrant.swift in Sources */,
 				E4BC28BF2B31B5070099AF8E /* LimitedLengthString.swift in Sources */,
 				6CFEAD642AF1C94B00C20140 /* OperationCompletedView.swift in Sources */,
 				BDFE3C102AD8707E000C76D4 /* SymmetricEncryption.swift in Sources */,
+				6C9E9ECD2B800DB900FBB313 /* PointGrant.swift in Sources */,
 				E475C8FD2B63DA7E0051CCD6 /* InvalidLinkView.swift in Sources */,
 				E4ADF6592AF1127000EFCF4F /* SigningKey.swift in Sources */,
 				6C0AF9602ACC5CEC009A9B54 /* OwnerVerification.swift in Sources */,

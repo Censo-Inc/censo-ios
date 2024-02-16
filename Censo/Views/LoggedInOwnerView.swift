@@ -222,11 +222,7 @@ struct LoggedInOwnerView: View {
                 }
                 .environmentObject(ownerStateStore.controller())
                 .environmentObject(ownerRepository)
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button { } label: { Text("OK") }
-                } message: { error in
-                    Text(error.localizedDescription)
-                }
+                .errorAlert(isPresented: $showingError, presenting: error)
                 .alert("Exit Setup", isPresented: $cancelOnboarding) {
                     Button(role: .destructive) {
                         deleteOwner(ownerRepository, ownerState, onSuccess: {}, onFailure: showError)

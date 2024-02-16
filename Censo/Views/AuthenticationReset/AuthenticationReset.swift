@@ -28,16 +28,7 @@ struct AuthenticationReset: View {
                     .onAppear {
                         requestAuthenticationReset()
                     }
-                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                        Button {
-                            showingError = false
-                            error = nil
-                        } label: {
-                            Text("OK")
-                        }
-                    } message: { error in
-                        Text(error.localizedDescription)
-                    }
+                    .errorAlert(isPresented: $showingError, presenting: error)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
                             DismissButton(icon: .close, action: {

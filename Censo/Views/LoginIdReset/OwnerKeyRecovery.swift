@@ -82,14 +82,8 @@ struct OwnerKeyRecovery: View {
                             .onAppear {
                                 recoverOwnerApproverKey(encryptedShards)
                             }
-                            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                                Button {
-                                    self.step = .cleanup
-                                } label: {
-                                    Text("OK")
-                                }
-                            } message: { error in
-                                Text(error.localizedDescription)
+                            .errorAlert(isPresented: $showingError, presenting: error) {
+                                self.step = .cleanup
                             }
                     case .recovered(let ownerState):
                         VStack {
@@ -121,16 +115,8 @@ struct OwnerKeyRecovery: View {
                                     showSheet = false
                                 })
                             }
-                            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                                Button {
-                                    self.error = nil
-                                    self.showingError = false
-                                    self.showSheet = false
-                                } label: {
-                                    Text("OK")
-                                }
-                            } message: { error in
-                                Text(error.localizedDescription)
+                            .errorAlert(isPresented: $showingError, presenting: error) {
+                                self.showSheet = false
                             }
                     }
                 }

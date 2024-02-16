@@ -76,16 +76,7 @@ struct PasswordAuth<ResponseType : Decodable>: View {
             .accessibilityIdentifier("continueButton")
         }
         .padding()
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button {
-                showingError = false
-                error = nil
-            } label: {
-                Text("OK")
-            }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: error)
     }
     
     private func doSubmit() {

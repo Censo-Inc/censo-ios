@@ -37,13 +37,7 @@ struct SeedPhraseNotes: View {
                 submit(newValue)
             }
         )
-        .alert("Error", isPresented: $showErrorAlert, presenting: error) { _ in
-            Button {
-                self.error = nil
-            } label: { Text("OK") }
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showErrorAlert, presenting: error)
     }
     
     private func submit(_ encryptedNotes: API.SeedPhraseEncryptedNotes?) {
@@ -139,13 +133,7 @@ struct SeedPhraseNotes: View {
                         .disabled(disabled)
                     }
                     .scrollDismissesKeyboard(.interactively)
-                    .alert("Error", isPresented: $showErrorAlert, presenting: error) { _ in
-                        Button {
-                            self.error = nil
-                        } label: { Text("OK") }
-                    } message: { error in
-                        Text(error.localizedDescription)
-                    }
+                    .errorAlert(isPresented: $showErrorAlert, presenting: error)
                 }
             }
             .alert("Are you sure?", isPresented: $showingDismissAlert) {

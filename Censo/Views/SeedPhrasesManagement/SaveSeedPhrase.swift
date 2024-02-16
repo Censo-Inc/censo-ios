@@ -136,11 +136,7 @@ struct SaveSeedPhrase: View {
                         }
                     }
                 }
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button { } label: { Text("OK") }
-                } message: { error in
-                    Text("Failed to save phrase.\n\(error.localizedDescription)")
-                }
+                .errorAlert(isPresented: $showingError, presenting: error)
                 .interactiveDismissDisabled()
                 .onAppear {
                     if (requestedLabel != nil && label.value == "") {

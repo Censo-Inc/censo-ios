@@ -35,14 +35,8 @@ struct InitApproversRemovalFlow: View {
                         createPolicySetupWithoutExternalApprovers()
                     }
                     .navigationBarTitleDisplayMode(.inline)
-                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                        Button {
-                            dismiss()
-                        } label: {
-                            Text("OK")
-                        }
-                    } message: { error in
-                        Text(error.localizedDescription)
+                    .errorAlert(isPresented: $showingError, presenting: error) {
+                        dismiss()
                     }
             case .replacingPolicy:
                 ReplacePolicy(

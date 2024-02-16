@@ -63,28 +63,16 @@ struct ReplacePolicy: View {
                 .onAppear {
                     replacePolicy(encryptedShards)
                 }
-                .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                    Button {
-                        step = .cleanup
-                    } label: {
-                        Text("OK")
-                    }
-                } message: { error in
-                    Text(error.localizedDescription)
+                .errorAlert(isPresented: $showingError, presenting: error) {
+                    step = .cleanup
                 }
             case .cleanup:
                 ProgressView()
                     .onAppear {
                         deleteAccessIfExists(onSuccess: onCanceled)
                     }
-                    .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                        Button {
-                            onCanceled()
-                        } label: {
-                            Text("OK")
-                        }
-                    } message: { error in
-                        Text(error.localizedDescription)
+                    .errorAlert(isPresented: $showingError, presenting: error) {
+                        onCanceled()
                     }
             }
         } else {

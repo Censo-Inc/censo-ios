@@ -65,11 +65,7 @@ struct RenameSeedPhrase: View {
                     DismissButton(icon: .close)
                 }
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button { } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
             .onAppear {
                 label.value = seedPhrase.label
             }

@@ -63,11 +63,7 @@ struct Settings: View {
         } message: {
             Text("You are about to permanently delete your data and stop being an approver. THIS CANNOT BE UNDONE! The seed phrases you are helping to protect may become inaccessible if you confirm this action.\nAre you sure?")
         }
-        .alert("Error", isPresented: $showingError, presenting: error) { _ in
-            Button("OK", role: .cancel, action: {})
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: error)
     }
 }
 

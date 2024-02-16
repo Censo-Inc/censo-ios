@@ -117,16 +117,7 @@ struct ReplaceAuthentication : View {
                     })
                 }
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button {
-                    showingError = false
-                    error = nil
-                } label: {
-                    Text("OK")
-                }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
         case .replace(newAuthType: AuthType.facetec):
             FacetecAuth<API.ReplaceBiometryApiResponse>(
                 onFaceScanReady: { facetecBiometry, completion in

@@ -82,13 +82,7 @@ extension EnterInfoForBeneficiary {
                 }
             }
             .padding(.vertical)
-            .alert("Error", isPresented: $showErrorAlert, presenting: error) { _ in
-                Button {
-                    self.error = nil
-                } label: { Text("OK") }
-            } message: { error in
-                Text("Failed to save phrase.\n\(error.localizedDescription)")
-            }
+            .errorAlert(isPresented: $showErrorAlert, presenting: error)
             .navigationInlineTitle("Legacy - Approver information")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) { DismissButton(icon: .back) }

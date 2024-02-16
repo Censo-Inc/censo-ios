@@ -56,13 +56,7 @@ struct LoginIdResetCollectTokensStep: View {
                 }
             }
         )
-        .alert("Error", isPresented: $showingError, presenting: currentError) { _ in
-            Button("OK", role: .cancel, action: {
-                currentError = nil
-            })
-        } message: { error in
-            Text(error.localizedDescription)
-        }
+        .errorAlert(isPresented: $showingError, presenting: currentError)
     }
     
     private func showError(_ error: Error) {

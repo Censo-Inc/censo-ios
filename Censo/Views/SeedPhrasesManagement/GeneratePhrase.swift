@@ -73,14 +73,7 @@ struct GeneratePhrase: View {
                     DismissButton(icon: .close)
                 }
             }
-            .alert("Error", isPresented: $showingError, presenting: error) { _ in
-                Button {
-                    self.error = nil
-                    self.showingError = false
-                } label: { Text("OK") }
-            } message: { error in
-                Text(error.localizedDescription)
-            }
+            .errorAlert(isPresented: $showingError, presenting: error)
             .navigationDestination(isPresented: $showingVerification, destination: {
                 SeedVerification(
                     words: phrase,

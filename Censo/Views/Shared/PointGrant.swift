@@ -104,7 +104,10 @@ struct LottieView: UIViewRepresentable {
 #if DEBUG
 #Preview {
     ZStack {
-        Activated(policy: .sample2Approvers)
+        OperationCompletedView(
+            successText: "Thanks for helping someone keep their crypto safe.",
+            onSuccess: {}
+        ).foregroundColor(Color.Censo.primaryForeground)
         PointGrant(startingPoints: 150, deltaPoints: 100)
     }
 }
