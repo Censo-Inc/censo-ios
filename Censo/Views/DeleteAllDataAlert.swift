@@ -52,10 +52,17 @@ struct DeleteAllDataAlert: ViewModifier {
 }
 
 extension View {
-    func deleteAllDataAlert(title: String, numSeedPhrases: Int, deleteRequested: Binding<Bool>, onDelete: @escaping () -> Void) -> some View {
-        modifier(DeleteAllDataAlert(title: title, numSeedPhrases: numSeedPhrases, deleteRequested: deleteRequested, onDelete: onDelete))
+    func deleteAllDataAlert(title: String, ownerState: API.OwnerState, deleteRequested: Binding<Bool>, onDelete: @escaping () -> Void) -> some View {
+        let numSeedPhrases: Int
+        switch ownerState {
+        case .ready(let ready):
+            numSeedPhrases = ready.vault.seedPhrases.count
+        default:
+            numSeedPhrases = 0
+        }
+        
+        return modifier(DeleteAllDataAlert(title: title, numSeedPhrases: numSeedPhrases, deleteRequested: deleteRequested, onDelete: onDelete))
     }
-    
 }
 
 #if DEBUG
@@ -63,7 +70,7 @@ extension View {
     Text("Hello")
         .deleteAllDataAlert(
             title: "Delete Data",
-            numSeedPhrases: 1,
+            ownerState: .ready(.sample),
             deleteRequested: .constant(true),
             onDelete: {}
         )

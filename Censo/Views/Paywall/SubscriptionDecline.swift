@@ -76,7 +76,7 @@ struct SubscriptionDecline: View {
                 }
                 .deleteAllDataAlert(
                     title: "Delete Data Confirmation",
-                    numSeedPhrases: numSeedPhrases(),
+                    ownerState: ownerState,
                     deleteRequested: $deleteAll,
                     onDelete: {
                         deleteOwner(
@@ -92,16 +92,6 @@ struct SubscriptionDecline: View {
                 )
                 .errorAlert(isPresented: $showingError, presenting: error)
             }
-        }
-    }
-    
-    private func numSeedPhrases() -> Int {
-        return switch ownerState {
-        case .initial,
-             .beneficiary:
-            0
-        case .ready(let ready):
-            ready.vault.seedPhrases.count
         }
     }
 }

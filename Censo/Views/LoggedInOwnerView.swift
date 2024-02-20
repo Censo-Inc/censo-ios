@@ -141,7 +141,7 @@ struct LoggedInOwnerView: View {
                                                     }
                                                     .deleteAllDataAlert(
                                                         title: "Cancel Key Recovery",
-                                                        numSeedPhrases: ready.vault.seedPhrases.count,
+                                                        ownerState: ownerState,
                                                         deleteRequested:$cancelKeyRecovery) {
                                                             deleteOwner(ownerRepository, ownerState, onSuccess: {}, onFailure: showError)
                                                         }

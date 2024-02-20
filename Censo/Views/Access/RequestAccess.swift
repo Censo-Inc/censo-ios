@@ -105,10 +105,6 @@ struct RequestAccess<AccessAvailableView>: View where AccessAvailableView : View
         }
     }
     
-    private func refreshState() {
-        ownerStateStoreController.reload()
-    }
-    
     private func showError(_ error: Error) {
         self.showingError = true
         self.error = error

@@ -13,8 +13,6 @@ struct SettingsTab: View {
     
     var ownerState: API.OwnerState
     
-    @State private var readyOwnerState: API.OwnerState.Ready?
-    
     @State private var showingError = false
     @State private var error: Error?
     @State private var resetRequested = false
@@ -34,9 +32,6 @@ struct SettingsTab: View {
                 SettingsItem(title: "Lock app", buttonText: "Lock", buttonIdentifier: "lockButton", description: "Lock the app so that it cannot be accessed without a face scan. This will prevent someone who has your phone from entering the Censo app.") {
                     lock()
                 }
-                .onAppear {
-                    readyOwnerState = ready
-                }
                 
                 let externalApprovers = ready.policy.approvers
                     .filter({ !$0.isOwner })
@@ -46,10 +41,12 @@ struct SettingsTab: View {
                         if ready.hasBlockingPhraseAccessRequest {
                             showError(CensoError.cannotRemoveApproversWhileAccessInProgress)
                         } else {
-                            readyOwnerState = ready
                             showApproversRemoval = true
                         }
                     }
+                    .sheet(isPresented: $showApproversRemoval, content: {
+                        InitApproversRemovalFlow(ownerState: ready)
+                    })
                 }
                 
                 if ready.timelockSetting.currentTimelockInSeconds == nil {
@@ -87,9 +84,6 @@ struct SettingsTab: View {
         .padding(.bottom)
         .listStyle(.plain)
         .scrollIndicators(ScrollIndicatorVisibility.hidden)
-        .sheet(isPresented: $showApproversRemoval, content: {
-            InitApproversRemovalFlow(ownerState: readyOwnerState!)
-        })
         .sheet(isPresented: $showPushNotificationSettings, content: {
             PushNotificationSettings {
                 showPushNotificationSettings = false
@@ -105,7 +99,7 @@ struct SettingsTab: View {
         )
         .deleteAllDataAlert(
             title: "Delete Data Confirmation",
-            numSeedPhrases: readyOwnerState != nil ? readyOwnerState!.vault.seedPhrases.count : 0,
+            ownerState: ownerState,
             deleteRequested: $resetRequested,
             onDelete: deleteUser
         )

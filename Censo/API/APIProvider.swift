@@ -11,6 +11,10 @@ import Moya
 struct APIProviderEnvironmentKey: EnvironmentKey {
     static var defaultValue: MoyaProvider<API> = MoyaProvider(
         plugins: [
+            NetworkLoggerPlugin(configuration: NetworkLoggerPlugin.Configuration(
+                formatter: .init(responseData: JSONResponseDataFormatter),
+                logOptions: .verbose
+            )),
             AuthPlugin(),
             ErrorResponsePlugin(),
             MaintenancePlugin(),

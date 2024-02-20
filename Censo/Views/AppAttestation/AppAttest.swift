@@ -48,8 +48,8 @@ struct AppAttest<Content>: View where Content : View {
                         .environment(\.apiProvider, MoyaProvider(
                             endpointClosure: assertedEndpointClosure(),
                             requestClosure: assertedRequestClosure(keyId: attestKey.keyId),
-                            plugins: apiProvider.plugins)
-                        )
+                            plugins: apiProvider.plugins
+                        ))
                 }
             } else {
                 AttestKeyVerification(session: session, keyId: attestKey.keyId) {
